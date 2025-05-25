@@ -11,8 +11,8 @@ using PreSchoolBE.src.Infrastructure.EntitiesConfigurations;
 namespace PreSchoolBE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250525112536_Role")]
-    partial class Role
+    [Migration("20250525151844_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,9 @@ namespace PreSchoolBE.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConfirmationToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()

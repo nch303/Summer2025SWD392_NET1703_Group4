@@ -120,7 +120,7 @@ namespace Application.Services.AuthService
                     <tr>
                         <td bgcolor=""#E0F7FA"" style=""padding: 30px; text-align: center; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;"">
                             <p style=""color: #555; font-size: 14px; line-height: 1.6; margin: 0;"">
-                                <span style=""color: #6C4675; font-weight: bold;"">Trường Mẫu Giáo Bé Vui</span> - Nơi nuôi dưỡng ước mơ của bé! <br>
+                                <span style=""color: #6C4675; font-weight: bold;"">Trường Mẫu Giáo Little Stars</span> - Nơi nuôi dưỡng ước mơ của bé! <br>
                                 Nếu bạn không đăng ký, vui lòng bỏ qua email này.
                             </p>
                             <div style=""margin: 20px 0;"">

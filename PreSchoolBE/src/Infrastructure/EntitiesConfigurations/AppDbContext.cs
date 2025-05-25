@@ -17,7 +17,7 @@ namespace PreSchoolBE.src.Infrastructure.EntitiesConfigurations
                 .WithMany(r => r.Accounts)
                 .HasForeignKey(u => u.RoleId);
 
-          
+
         }
     }
 }
