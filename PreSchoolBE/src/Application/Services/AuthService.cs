@@ -90,7 +90,7 @@ namespace Application.Services.AuthService
                                 </p>
                             </div>
                             
-                            <a href=""{{confirmationLink}}"" style=""display: inline-block; background: linear-gradient(135deg, #FF85A2, #FF4D6D); color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 50px; font-size: 16px; font-weight: bold; margin-top: 10px; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); transition: all 0.3s;"">
+                            <a href=""{confirmationLink}"" style=""display: inline-block; background: linear-gradient(135deg, #FF85A2, #FF4D6D); color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 50px; font-size: 16px; font-weight: bold; margin-top: 10px; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); transition: all 0.3s;"">
                                 Kích hoạt tài khoản
                             </a>
                         </td>
