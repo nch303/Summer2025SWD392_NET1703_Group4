@@ -1,0 +1,6 @@
+@PreSchoolBE_HostAddress = http://localhost:5242
+
+GET {{PreSchoolBE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
