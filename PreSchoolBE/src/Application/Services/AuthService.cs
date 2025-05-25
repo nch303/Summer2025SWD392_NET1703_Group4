@@ -157,7 +157,7 @@ namespace Application.Services.AuthService
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
                 throw new Exception("Invalid username or password.");
 
-            if (!user.Status!.Equals("Inactive"))
+            if (!user.Status!.Equals("Active"))
                 throw new Exception("Account is not activated. Please check your email.");
 
             return GenerateJwtToken(user);
