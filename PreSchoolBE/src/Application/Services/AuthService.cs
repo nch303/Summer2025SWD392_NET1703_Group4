@@ -49,7 +49,7 @@ namespace Application.Services.AuthService
             await _context.SaveChangesAsync();
 
             // Send confirmation email
-            var confirmationLink = $"https://yourdomain.com/api/auth/confirm?token={confirmationToken}";
+            var confirmationLink = $"http://localhost:3000/confirm?token={confirmationToken}";
 
 
             var emailBody = $@"<!DOCTYPE html>
@@ -175,10 +175,12 @@ namespace Application.Services.AuthService
         }
         private string GenerateJwtToken(Account user)
         {
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FullName)
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Role, user.Role!.Name)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
