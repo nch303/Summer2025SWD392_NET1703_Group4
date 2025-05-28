@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PreSchoolBE.src.Infrastructure.Entities
 {
-    public class Role
+    public class TypeProgram
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public int ID { get; set; }
+        public string? Name { get; set; }
 
-        public ICollection<Account>? Accounts { get; set; }
+        public ICollection<EnrichmentProgram> Programs { get; set; }
     }
 }
