@@ -1,0 +1,108 @@
+# .NET Core build artifacts
+bin/
+obj/
+*.csproj.user
+*.sln.DotSettings.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio and Rider files
+.idea/
+*.DotSettings.user
+.vscode/
+*.vs/
+
+# NuGet Packages
+*.nupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Dependency directories
+**/node_modules/
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Test results
+TestResults/
+*.trx
+*.xml
+
+# Build output
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+
+# Dependency and Package Manager files
+*.lock.json
+
+# Environment-specific configuration
+appsettings.*.json
+
+# Sensitive files (if accidentally created)
+*.env
+.env.*
+secrets.json
+
+# Database files (if any)
+*.mdf
+*.ldf
+
+# Runtime files
+*.pidb
+*.cache
+*.ilk
+*.pdb
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+ehthumbs.db
+
+# Ignore migrations folder (optional, if you don't want to track migrations)
+# src/Infrastructure/Migrations/
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# Ignore coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# Ignore user-specific files
+*.local
+
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
