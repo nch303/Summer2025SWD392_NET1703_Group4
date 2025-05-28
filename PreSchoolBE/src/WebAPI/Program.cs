@@ -77,7 +77,7 @@ builder.Services.AddControllers();
 // Add Swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjectName API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "PreSchool API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

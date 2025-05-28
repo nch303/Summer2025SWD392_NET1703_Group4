@@ -24,7 +24,6 @@
     <Folder Include="src\Application\Interfaces\IRepositories\" />
     <Folder Include="src\Application\Mappings\" />
     <Folder Include="src\Infrastructure\Repositories\" />
-    <Folder Include="src\WebAPI\Middlewares\" />
     <Folder Include="src\WebAPI\Swaggers\" />
 <None Update="appsettings.json">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
