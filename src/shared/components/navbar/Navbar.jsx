@@ -80,17 +80,11 @@ const Navbar = () => {
             <Link to="/" className={`navbar-link ${isActive('/') && !isActive('/dashboard') ? 'active' : ''}`}>
               Home
             </Link>
-            <Link to="/dashboard" className={`navbar-link ${isActive('/dashboard') ? 'active' : ''}`}>
-              Dashboard
+            <Link to="/contact" className={`navbar-link ${isActive('/contact') ? 'active' : ''}`}>
+              Contact
             </Link>
-            <Link to="/students" className={`navbar-link ${isActive('/students') ? 'active' : ''}`}>
-              Students
-            </Link>
-            <Link to="/classes" className={`navbar-link ${isActive('/classes') ? 'active' : ''}`}>
-              Classes
-            </Link>
-            <Link to="/enrollment" className={`navbar-link ${isActive('/enrollment') ? 'active' : ''}`}>
-              Enrollment
+            <Link to="/about-us" className={`navbar-link ${isActive('/about-us') ? 'active' : ''}`}>
+              About Us
             </Link>
             <Link to="/news" className={`navbar-link ${isActive('/news') ? 'active' : ''}`}>
               News

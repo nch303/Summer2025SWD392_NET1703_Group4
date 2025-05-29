@@ -11,6 +11,8 @@ export const ROUTES = {
   CLASSES: '/classes',
   PROFILE: '/profile',
   NEWS: '/news',
+  ABOUT_US: '/about-us',
+  CONTACT: '/contact',
   // Staff management routes
   STAFF: '/staff',
   STAFF_DASHBOARD: '/staff/dashboard',
