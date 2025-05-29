@@ -22,10 +22,10 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public string? Status { get; set; }
 
         [ForeignKey("ParentID")]
-        public Account? Parent { get; set; }
+        public Account? Parents { get; set; }
 
-        public ICollection<ClassChildren> ClassChildrens { get; set; }
-        public ICollection<EnrollmentApplication> EnrollmentApplications { get; set; }
-        public ICollection<Invoice> Invoices { get; set; }
+        public ICollection<ClassChildren>? ClassChildrens { get; set; }
+        public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
+        public ICollection<Invoice>? Invoices { get; set; }
     }
 }

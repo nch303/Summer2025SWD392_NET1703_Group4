@@ -19,9 +19,9 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         [Required]
         public int TypeProgramID { get; set; }
         [ForeignKey("TypeProgramID")]
-        public TypeProgram? TypeProgram { get; set; }
+        public TypeProgram? TypePrograms { get; set; }
 
-        public ICollection<EnrollmentApplication> EnrollmentApplications { get; set; }
-        public ICollection<InvoiceDetail> InvoiceDetails { get; set; }
+        public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
+        public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
     }
 }

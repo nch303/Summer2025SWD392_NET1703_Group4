@@ -20,10 +20,10 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public Guid ChildrenID { get; set; }
 
         [ForeignKey("InvoiceID")]
-        public Invoice? Invoice { get; set; }
+        public Invoice? Invoices { get; set; }
         [ForeignKey("ProgramID")]
-        public EnrichmentProgram? Program { get; set; }
+        public EnrichmentProgram? Programs { get; set; }
         [ForeignKey("ChildrenID")]
-        public Children? Children { get; set; }
+        public Children? Childrens { get; set; }
     }
 }

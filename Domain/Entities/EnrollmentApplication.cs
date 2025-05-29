@@ -24,12 +24,12 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public DateTime ApprovalDate { get; set; }
 
         [ForeignKey("ChildrenID")]
-        public Children? Children { get; set; }
+        public Children? Childrens { get; set; }
 
         [ForeignKey("ParentID")]
-        public Account? Account { get; set; }
+        public Account? Accounts { get; set; }
 
         [ForeignKey("ProgramID")]
-        public EnrichmentProgram? Program { get; set; }
+        public EnrichmentProgram? Programs { get; set; }
     }
 }

@@ -19,9 +19,9 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public DateTime Date { get; set; }
 
         [ForeignKey("AccountID")]
-        public Account? InvoiceAccount { get; set; }
+        public Account? Accounts { get; set; }
         [ForeignKey("ChildrenID")]
-        public Children? Children { get; set; }
-        public ICollection<InvoiceDetail> InvoiceDetails { get; set; }
+        public Children? Childrens { get; set; }
+        public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
     }
 }

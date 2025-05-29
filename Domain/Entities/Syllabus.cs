@@ -11,7 +11,7 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public string? Name { get; set; }
         public int SlotAmount { get; set; }
 
-        public ICollection<Class> Classes { get; set; }
-        public ICollection<SyllabusDetail> SyllabusDetails { get; set; }    
+        public ICollection<Class>? Classes { get; set; }
+        public ICollection<SyllabusDetail>? SyllabusDetails { get; set; }    
     }
 }

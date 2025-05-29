@@ -14,10 +14,10 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int ClassID { get; set; }
 
         [ForeignKey("ChildrenID")]
-        public Children? Children { get; set; }
+        public Children? Childrens { get; set; }
         [ForeignKey("ClassID")]
-        public Class? Class { get; set; }
+        public Class? Classes { get; set; }
 
-        public ICollection<Attendance> Attendances { get; set; }
+        public ICollection<Attendance>? Attendances { get; set; }
     }
 }

@@ -16,10 +16,10 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int Quantity { get; set; }
         public string? Status { get; set; }
 
-        public ICollection<ClassChildren> ClassChildrens { get; set; }
+        public ICollection<ClassChildren>? ClassChildrens { get; set; }
 
         [ForeignKey("SyllabusID")]
-        public Syllabus? Syllabus { get; set; }
-        public ICollection<ClassTeacher> ClassTeachers { get; set; }    
+        public Syllabus? Syllabi { get; set; }
+        public ICollection<ClassTeacher>? ClassTeachers { get; set; }    
     }
 }

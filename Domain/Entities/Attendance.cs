@@ -16,6 +16,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public string? Notes { get; set; }
 
         [ForeignKey("ClassChildrenID")]
-        public ClassChildren? ClassChildren { get; set; }
+        public ClassChildren? ClassChildrens { get; set; }
     }
 }

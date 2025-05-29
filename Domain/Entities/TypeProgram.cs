@@ -9,6 +9,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int ID { get; set; }
         public string? Name { get; set; }
 
-        public ICollection<EnrichmentProgram> Programs { get; set; }
+        public ICollection<EnrichmentProgram>? Programs { get; set; }
     }
 }

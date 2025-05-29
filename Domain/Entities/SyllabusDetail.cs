@@ -16,6 +16,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int SyllabusID { get; set; }
 
         [ForeignKey("SyllabusID")]
-        public Syllabus? Syllabus { get; set; }
+        public Syllabus? Syllabi { get; set; }
     }
 }
