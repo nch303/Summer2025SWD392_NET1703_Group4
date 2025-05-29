@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace PreSchoolBE.src.Application.Interfaces.IServices
+namespace Application.Interfaces.IServices
 {
     public interface IEmailService
     {

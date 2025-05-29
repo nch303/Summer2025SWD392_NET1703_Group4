@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PreSchoolBE.src.Infrastructure.Entities;
+using Domain.Entities;
 
-namespace PreSchoolBE.src.Infrastructure.EntitiesConfigurations
+namespace Infrastructure.EntitiesConfigurations
 {
     public class AppDbContext : DbContext
     {
@@ -23,6 +23,7 @@ namespace PreSchoolBE.src.Infrastructure.EntitiesConfigurations
         public DbSet<TypeProgram> TypePrograms { get; set; }
         public DbSet<Syllabus> Syllabi { get; set; }
         public DbSet<SyllabusDetail> SyllabusDetails { get; set; }
+        public DbSet<GradeLevel> GradeLevels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,15 +46,21 @@ namespace PreSchoolBE.src.Infrastructure.EntitiesConfigurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EnrollmentApplication>()
-                .HasOne(ea => ea.Programs)
-                .WithMany(p => p.EnrollmentApplications)
-                .HasForeignKey(ea => ea.ProgramID)
+                .HasOne(ea => ea.GradeLevels)
+                .WithMany(gl => gl.EnrollmentApplications)
+                .HasForeignKey(ea => ea.GradeLevelID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EnrollmentApplication>()
                 .HasOne(ea => ea.Childrens)
                 .WithMany(ch => ch.EnrollmentApplications)
                 .HasForeignKey(ea => ea.ChildrenID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EnrollmentApplication>()
+                .HasOne(ea => ea.Invoices)
+                .WithOne(i => i.EnrollmentApplications)
+                .HasForeignKey<EnrollmentApplication>(ea => ea.InvoiceID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Children>()

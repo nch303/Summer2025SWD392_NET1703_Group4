@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class EnrichmentProgram
     {
@@ -20,8 +20,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int TypeProgramID { get; set; }
         [ForeignKey("TypeProgramID")]
         public TypeProgram? TypePrograms { get; set; }
-
-        public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
         public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
     }
 }

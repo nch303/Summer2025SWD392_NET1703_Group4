@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class TypeProgram
     {

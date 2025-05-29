@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class Invoice
     {
@@ -23,5 +23,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         [ForeignKey("ChildrenID")]
         public Children? Childrens { get; set; }
         public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
+        public EnrollmentApplication? EnrollmentApplications { get; set; }
     }
 }

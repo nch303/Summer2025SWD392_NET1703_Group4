@@ -1,7 +1,7 @@
 ﻿using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using PreSchoolBE.src.Infrastructure.Entities;
-using PreSchoolBE.src.Infrastructure.EntitiesConfigurations;
+using Domain.Entities;
+using Infrastructure.EntitiesConfigurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
