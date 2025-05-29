@@ -17,6 +17,9 @@ import NewsPage from '../pages/news/NewsPage';
 import NotFoundPage from '../shared/components/error/NotFoundPage';
 import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
+import AboutUsPage from '../pages/about-us/AboutUsPage';
+import ContactPage from '../pages/contact/ContactPage';
+
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 // import StaffList from '../features/staff/pages/StaffList';
@@ -50,6 +53,8 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/news" element={<NewsPage />} />
+          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
         </Route>
         
         {/* Staff Management Routes */}

@@ -8,6 +8,9 @@ import ProfilePage from '../pages/profile/ProfilePage';
 import NewsPage from '../pages/news/NewsPage';
 import NotFoundPage from '../shared/components/error/NotFoundPage';
 import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
+import AboutUsPage from '../pages/about-us/AboutUsPage';
+import ContactPage from '../pages/contact/ContactPage';
+
 import { ROUTES } from '../shared/constants/routes';
 
 // Staff feature imports
@@ -24,6 +27,8 @@ export const router = createBrowserRouter([
       { path: ROUTES.FORGOT_PASSWORD, element: <ForgotPasswordPage /> },
       { path: ROUTES.PROFILE, element: <ProfilePage /> },
       { path: ROUTES.NEWS, element: <NewsPage /> },
+      { path: ROUTES.ABOUT_US, element: <AboutUsPage /> },
+      { path: ROUTES.CONTACT, element: <ContactPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
