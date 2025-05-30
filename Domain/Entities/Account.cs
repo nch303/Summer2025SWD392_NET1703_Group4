@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class Account
     {
@@ -25,11 +25,11 @@ namespace PreSchoolBE.src.Infrastructure.Entities
 
         [ForeignKey("RoleId")]
         public Role? Role { get; set; }
-        public ICollection<Invoice> Invoices { get; set; }
-        public ICollection<Notification> Notifications { get; set; }
-        public ICollection<EnrollmentApplication> EnrollmentApplications { get; set; }
-        public ICollection<Children> Childrens { get; set; }
-        public ICollection<ClassTeacher> ClassTeachers { get; set; }
+        public ICollection<Invoice>? Invoices { get; set; }
+        public ICollection<Notification>? Notifications { get; set; }
+        public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
+        public ICollection<Children>? Childrens { get; set; }
+        public ICollection<ClassTeacher>? ClassTeachers { get; set; }
     }
 
 }

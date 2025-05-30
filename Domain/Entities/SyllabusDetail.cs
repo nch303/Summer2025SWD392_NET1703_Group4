@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class SyllabusDetail
     {
@@ -16,6 +16,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int SyllabusID { get; set; }
 
         [ForeignKey("SyllabusID")]
-        public Syllabus? Syllabus { get; set; }
+        public Syllabus? Syllabi { get; set; }
     }
 }

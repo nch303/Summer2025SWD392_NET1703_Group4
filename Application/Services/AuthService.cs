@@ -8,7 +8,7 @@ using PreSchoolBE.src.Application.DTOs.Request;
 using Microsoft.Extensions.Configuration;
 using BCrypt.Net;
 using PreSchoolBE.src.Application.Interfaces.IServices;
-using PreSchoolBE.src.Infrastructure.Entities;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class ClassTeacher
     {
@@ -15,8 +15,8 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int ClassID { get; set; }
 
         [ForeignKey("TeacherID")]
-        public Account? Teacher { get; set; }
+        public Account? Teachers { get; set; }
         [ForeignKey("ClassID")]
-        public Class? Class { get; set; }
+        public Class? Classes { get; set; }
     }
 }

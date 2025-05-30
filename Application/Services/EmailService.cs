@@ -1,10 +1,10 @@
 ﻿using System.Net.Mail;
 using System.Net;
-using PreSchoolBE.src.Application.Interfaces.IServices;
+using Application.Interfaces.IServices;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace PreSchoolBE.src.Application.Services
+namespace Application.Services
 {
     public class EmailService : IEmailService
     {

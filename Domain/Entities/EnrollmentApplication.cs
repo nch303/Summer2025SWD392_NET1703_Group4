@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
 	public class EnrollmentApplication
 	{
@@ -14,22 +14,24 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public string? AcademicYear { get; set; }
         public string? Status { get; set; }
 
-        public int StaffID { get; set; }
-
         [Required]
-        public int ProgramID { get; set; }
+        public int GradeLevelID { get; set; }
         [Required]
         public Guid ChildrenID { get; set; }
+        [Required]
+        public Guid InvoiceID { get; set; }
 
         public DateTime ApprovalDate { get; set; }
 
         [ForeignKey("ChildrenID")]
-        public Children? Children { get; set; }
+        public Children? Childrens { get; set; }
 
         [ForeignKey("ParentID")]
-        public Account? Account { get; set; }
+        public Account? Accounts { get; set; }
 
-        [ForeignKey("ProgramID")]
-        public EnrichmentProgram? Program { get; set; }
+        [ForeignKey("GradeLevelID")]
+        public GradeLevel? GradeLevels { get; set; }
+        [ForeignKey("InvoiceID")]
+        public Invoice? Invoices { get; set; }
     }
 }

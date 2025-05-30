@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using PreSchoolBE.src.Application.Interfaces.IServices;
-using PreSchoolBE.src.Infrastructure.EntitiesConfigurations;
+using Infrastructure.EntitiesConfigurations;
 using PreSchoolBE.src.Application.Services;
 using Domain.Interfaces;
 using Infrastructure.Repositories;

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class Notification
     {
@@ -17,6 +17,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public string? Type { get; set; }
 
         [ForeignKey("AccountID")]
-        public Account? Account { get; set; }
+        public Account? Accounts { get; set; }
     }
 }

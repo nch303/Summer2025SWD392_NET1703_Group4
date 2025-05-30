@@ -2,7 +2,7 @@
 using PreSchoolBE.src.Application.DTOs.Request;
 using System.Threading.Tasks;
 
-namespace PreSchoolBE.src.Application.Interfaces.IServices
+namespace Application.Interfaces
 {
     public interface IAuthService
     {

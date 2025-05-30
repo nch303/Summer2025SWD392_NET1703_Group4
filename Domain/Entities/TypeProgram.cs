@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PreSchoolBE.src.Infrastructure.Entities
+namespace Domain.Entities
 {
     public class TypeProgram
     {
@@ -9,6 +9,6 @@ namespace PreSchoolBE.src.Infrastructure.Entities
         public int ID { get; set; }
         public string? Name { get; set; }
 
-        public ICollection<EnrichmentProgram> Programs { get; set; }
+        public ICollection<EnrichmentProgram>? Programs { get; set; }
     }
 }
