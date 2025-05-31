@@ -1,14 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import './staffDashboard.css';
 
 const StaffDashboard = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+
   return (
     <div className="staff-dashboard">
       <div className="dashboard-header">
-        <h2>Staff Dashboard</h2>
-        <div className="dashboard-breadcrumb">
-          <Link to="/">Home</Link> / <span>Staff Dashboard</span>
+        <div className="dashboard-title-section">
+          <h2>Staff Dashboard</h2>
+          <div className="dashboard-breadcrumb">
+            <Link to="/">Home</Link> / <span>Staff Dashboard</span>
+          </div>
         </div>
+        <div className="dashboard-actions">
+          <div className="search-container">
+            <input type="text" placeholder="Search staff..." className="search-input" />
+            <button className="search-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+              </svg>
+            </button>
+          </div>
+          <button className="action-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            Add Staff
+          </button>
+        </div>
+      </div>
+      
+      <div className="dashboard-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          Overview
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'attendance' ? 'active' : ''}`}
+          onClick={() => setActiveTab('attendance')}
+        >
+          Attendance
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'performance' ? 'active' : ''}`}
+          onClick={() => setActiveTab('performance')}
+        >
+          Performance
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'reports' ? 'active' : ''}`}
+          onClick={() => setActiveTab('reports')}
+        >
+          Reports
+        </button>
       </div>
       
       <div className="dashboard-cards">
@@ -21,6 +69,12 @@ const StaffDashboard = () => {
           <div className="card-info">
             <h3>42</h3>
             <p>Total Staff</p>
+            <div className="card-trend positive">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 14l5-5 5 5H7z" />
+              </svg>
+              <span>+5% this month</span>
+            </div>
           </div>
         </div>
         
@@ -33,6 +87,12 @@ const StaffDashboard = () => {
           <div className="card-info">
             <h3>38</h3>
             <p>Present Today</p>
+            <div className="card-trend positive">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 14l5-5 5 5H7z" />
+              </svg>
+              <span>90% attendance</span>
+            </div>
           </div>
         </div>
         
@@ -45,6 +105,12 @@ const StaffDashboard = () => {
           <div className="card-info">
             <h3>4</h3>
             <p>On Leave</p>
+            <div className="card-trend negative">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 10l5 5 5-5H7z" />
+              </svg>
+              <span>-1 since yesterday</span>
+            </div>
           </div>
         </div>
         
@@ -57,109 +123,224 @@ const StaffDashboard = () => {
           <div className="card-info">
             <h3>5</h3>
             <p>New This Month</p>
+            <div className="card-trend positive">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 14l5-5 5 5H7z" />
+              </svg>
+              <span>+2 from last month</span>
+            </div>
           </div>
         </div>
       </div>
       
-      <div className="dashboard-charts">
-        <div className="chart-container">
-          <div className="chart-header">
+      <div className="dashboard-widgets">
+        <div className="widget widget-attendance">
+          <div className="widget-header">
             <h3>Staff Attendance (Last 30 Days)</h3>
+            <div className="widget-actions">
+              <button className="widget-action active">30d</button>
+              <button className="widget-action">90d</button>
+              <button className="widget-action">1y</button>
+              <button className="widget-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="chart-placeholder">
-            [Attendance Chart Visualization]
+          <div className="chart-area">
+            <div className="chart-container">
+              <div className="chart-placeholder">
+                <svg className="placeholder-chart" viewBox="0 0 500 200">
+                  <path d="M0,150 C100,100 200,190 300,120 C400,50 500,80 500,150" stroke="#4a6cf7" strokeWidth="3" fill="none" />
+                  <path d="M0,150 C100,100 200,190 300,120 C400,50 500,80 500,150 L500,200 L0,200 Z" fill="url(#blueGradient)" fillOpacity="0.2" />
+                  <defs>
+                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#4a6cf7" stopOpacity="0.5" />
+                      <stop offset="100%" stopColor="#4a6cf7" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="chart-legend">
+                  <div className="legend-item">
+                    <span className="legend-color" style={{backgroundColor: "#4a6cf7"}}></span>
+                    <span>Present</span>
+                  </div>
+                  <div className="legend-item">
+                    <span className="legend-color" style={{backgroundColor: "#ffab00"}}></span>
+                    <span>On Leave</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
-        <div className="chart-container">
-          <div className="chart-header">
-            <h3>Staff Department Distribution</h3>
+        <div className="widget widget-distribution">
+          <div className="widget-header">
+            <h3>Staff Distribution</h3>
+            <div className="widget-actions">
+              <button className="widget-action active">Department</button>
+              <button className="widget-action">Role</button>
+              <button className="widget-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="chart-placeholder">
-            [Department Distribution Chart]
+          <div className="chart-area">
+            <div className="donut-chart-container">
+              <svg className="donut-chart" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#4a6cf7" strokeWidth="30" strokeDasharray="251.2 502.4" strokeDashoffset="0"></circle>
+                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#54d62c" strokeWidth="30" strokeDasharray="125.6 502.4" strokeDashoffset="-251.2"></circle>
+                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#ffab00" strokeWidth="30" strokeDasharray="75.36 502.4" strokeDashoffset="-376.8"></circle>
+                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#a46bf5" strokeWidth="30" strokeDasharray="50.24 502.4" strokeDashoffset="-452.16"></circle>
+                <text x="100" y="100" textAnchor="middle" dy="0.3em" className="donut-chart-text">42</text>
+                <text x="100" y="120" textAnchor="middle" dy="0.3em" className="donut-chart-subtext">Staff</text>
+              </svg>
+              <div className="chart-legend">
+                <div className="legend-item">
+                  <span className="legend-color" style={{backgroundColor: "#4a6cf7"}}></span>
+                  <span>Teachers (50%)</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{backgroundColor: "#54d62c"}}></span>
+                  <span>Admin (25%)</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{backgroundColor: "#ffab00"}}></span>
+                  <span>Support (15%)</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{backgroundColor: "#a46bf5"}}></span>
+                  <span>Other (10%)</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       
-      <div className="recent-staff">
-        <div className="recent-staff-header">
+      <div className="dashboard-table-section">
+        <div className="table-header">
           <h3>Recently Added Staff</h3>
-          <Link to="/staff/list" className="view-all-btn">View All</Link>
+          <div className="table-actions">
+            <div className="table-filter">
+              <select className="filter-select">
+                <option>All Staff</option>
+                <option>Active</option>
+                <option>On Leave</option>
+                <option>Inactive</option>
+              </select>
+            </div>
+            <Link to="/staff/list" className="view-all-btn">View All</Link>
+          </div>
         </div>
         
-        <table className="staff-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Position</th>
-              <th>Department</th>
-              <th>Join Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div className="staff-avatar">JD</div>
-                  <span style={{ marginLeft: '10px' }}>John Doe</span>
-                </div>
-              </td>
-              <td>Lead Teacher</td>
-              <td>Kindergarten</td>
-              <td>May 15, 2023</td>
-              <td><span className="staff-status status-active">Active</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div className="staff-avatar">JS</div>
-                  <span style={{ marginLeft: '10px' }}>Jane Smith</span>
-                </div>
-              </td>
-              <td>Assistant Teacher</td>
-              <td>Preschool</td>
-              <td>Jun 2, 2023</td>
-              <td><span className="staff-status status-active">Active</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div className="staff-avatar">RJ</div>
-                  <span style={{ marginLeft: '10px' }}>Robert Johnson</span>
-                </div>
-              </td>
-              <td>Administrator</td>
-              <td>Admin</td>
-              <td>Jun 10, 2023</td>
-              <td><span className="staff-status status-leave">On Leave</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div className="staff-avatar">MW</div>
-                  <span style={{ marginLeft: '10px' }}>Maria Wilson</span>
-                </div>
-              </td>
-              <td>Nurse</td>
-              <td>Health</td>
-              <td>Jul 3, 2023</td>
-              <td><span className="staff-status status-active">Active</span></td>
-            </tr>
-            <tr>
-              <td>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div className="staff-avatar">TB</div>
-                  <span style={{ marginLeft: '10px' }}>Thomas Brown</span>
-                </div>
-              </td>
-              <td>Janitor</td>
-              <td>Maintenance</td>
-              <td>Jul 15, 2023</td>
-              <td><span className="staff-status status-inactive">Inactive</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="table-container">
+          <table className="staff-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th>Join Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div className="staff-info">
+                    <div className="staff-avatar">JD</div>
+                    <div className="staff-details">
+                      <span className="staff-name">John Doe</span>
+                      <span className="staff-email">john.doe@example.com</span>
+                    </div>
+                  </div>
+                </td>
+                <td>Lead Teacher</td>
+                <td>Kindergarten</td>
+                <td>May 15, 2023</td>
+                <td><span className="staff-status status-active">Active</span></td>
+                <td>
+                  <div className="action-buttons">
+                    <button className="action-icon edit-icon" title="Edit">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                      </svg>
+                    </button>
+                    <button className="action-icon view-icon" title="View Profile">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div className="staff-info">
+                    <div className="staff-avatar">JS</div>
+                    <div className="staff-details">
+                      <span className="staff-name">Jane Smith</span>
+                      <span className="staff-email">jane.smith@example.com</span>
+                    </div>
+                  </div>
+                </td>
+                <td>Assistant Teacher</td>
+                <td>Preschool</td>
+                <td>Jun 2, 2023</td>
+                <td><span className="staff-status status-active">Active</span></td>
+                <td>
+                  <div className="action-buttons">
+                    <button className="action-icon edit-icon" title="Edit">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                      </svg>
+                    </button>
+                    <button className="action-icon view-icon" title="View Profile">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div className="staff-info">
+                    <div className="staff-avatar">RJ</div>
+                    <div className="staff-details">
+                      <span className="staff-name">Robert Johnson</span>
+                      <span className="staff-email">robert.j@example.com</span>
+                    </div>
+                  </div>
+                </td>
+                <td>Administrator</td>
+                <td>Admin</td>
+                <td>Jun 10, 2023</td>
+                <td><span className="staff-status status-leave">On Leave</span></td>
+                <td>
+                  <div className="action-buttons">
+                    <button className="action-icon edit-icon" title="Edit">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                      </svg>
+                    </button>
+                    <button className="action-icon view-icon" title="View Profile">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
