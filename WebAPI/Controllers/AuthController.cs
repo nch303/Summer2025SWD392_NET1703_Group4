@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using PreSchoolBE.src.Application.DTOs.Request;
-using PreSchoolBE.src.Application.Interfaces.IServices;
 
 namespace PreSchoolBE.Controllers
 {

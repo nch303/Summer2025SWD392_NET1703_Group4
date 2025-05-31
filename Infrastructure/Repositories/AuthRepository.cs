@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Infrastructure.EntitiesConfigurations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +20,7 @@ namespace Infrastructure.Repositories
 
         public async Task RegisterAsync(Account account)
         {
+            account.Id = Guid.NewGuid();
             if (await _context.Accounts.AnyAsync(u => u.Email == account.Email))
                 throw new Exception("Email already exists.");
 

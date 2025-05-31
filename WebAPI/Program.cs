@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using PreSchoolBE.src.Application.Interfaces.IServices;
 using Infrastructure.EntitiesConfigurations;
-using PreSchoolBE.src.Application.Services;
 using Domain.Interfaces;
 using Infrastructure.Repositories;
+using Application.Interfaces;
+using Application.Interfaces.IServices;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

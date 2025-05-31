@@ -1,17 +1,16 @@
-﻿
-using PreSchoolBE.src.Application.Services;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System;
 using PreSchoolBE.src.Application.DTOs.Request;
 using Microsoft.Extensions.Configuration;
 using BCrypt.Net;
-using PreSchoolBE.src.Application.Interfaces.IServices;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Application.Interfaces;
+using Application.Interfaces.IServices;
 
 namespace Application.Services.AuthService
 {
@@ -21,10 +20,10 @@ namespace Application.Services.AuthService
         private readonly IEmailService _emailService;
         private readonly IAuthRepository _authRepository;
 
-        public AuthService( IConfiguration configuration, IAuthRepository authRepository)
+        public AuthService( IConfiguration configuration, IAuthRepository authRepository, IEmailService emailService)
         {
             _configuration = configuration;
-            _emailService = new EmailService(configuration);
+            _emailService = emailService;
             _authRepository = authRepository;
         }
 
