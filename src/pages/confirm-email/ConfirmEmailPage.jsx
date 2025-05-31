@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { confirmEmail } from './ConfirmEmailService';
-import { ROUTES } from '../../shared/constants/routes';
-import { useCustomToast } from '../../shared/components/toast/CustomToast';
+import { ROUTES } from '../../constants/routes';
+import { useCustomToast } from '../../components/toast/CustomToast';
 import './ConfirmEmailPage.css';
 
 const ConfirmEmailPage = () => {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ProcessingSpinner } from '../../shared/components/spinner/ProcessingSpinner';
+import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import './RegisterPage.css';
 import { registerUser } from './RegisterService';
-import { useCustomToast } from '../../shared/components/toast/CustomToast';
+import { useCustomToast } from '../../components/toast/CustomToast';
 
 const RegisterPage = () => {
   const navigate = useNavigate();

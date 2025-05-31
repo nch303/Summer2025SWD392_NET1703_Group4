@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentUser } from '../../shared/components/navbar/NavbarService';
+import { getCurrentUser } from '../../components/navbar/NavbarService';
 import './ProfilePage.css';
 
 const ProfilePage = () => {

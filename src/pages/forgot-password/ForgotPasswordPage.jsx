@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../shared/constants/routes';
-import '../login/LoginPage.css';
+import { ROUTES } from '../../constants/routes';
 import './ForgotPasswordPage.css';
 
 const ForgotPasswordPage = () => {

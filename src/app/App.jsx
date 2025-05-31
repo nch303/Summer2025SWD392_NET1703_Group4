@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import ScrollToTop from '../shared/components/scroll-button/ScrollToTop';
-import LoadingCover from '../shared/components/loading-cover/LoadingCover';
-import { ProcessingSpinnerProvider } from '../shared/components/spinner/ProcessingSpinner';
+import ScrollToTop from '../components/scroll-button/ScrollToTop';
+import LoadingCover from '../components/loading-cover/LoadingCover';
+import { ProcessingSpinnerProvider } from '../components/spinner/ProcessingSpinner';
 // Layout
 import MainLayout from '../layouts/main-layout/MainLayout';
 import StaffLayout from '../layouts/staff-layout/StaffLayout';
@@ -14,7 +14,7 @@ import LoginPage from '../pages/login/LoginPage';
 import RegisterPage from '../pages/register/RegisterPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import NewsPage from '../pages/news/NewsPage';
-import NotFoundPage from '../shared/components/error/NotFoundPage';
+import NotFoundPage from '../components/error/NotFoundPage';
 import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import AboutUsPage from '../pages/about-us/AboutUsPage';

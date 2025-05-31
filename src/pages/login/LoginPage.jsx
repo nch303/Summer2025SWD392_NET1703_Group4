@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ProcessingSpinner } from '../../shared/components/spinner/ProcessingSpinner';
+import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { loginUser } from './LoginService';
-import { ROUTES } from '../../shared/constants/routes';
+import { ROUTES } from '../../constants/routes';
 import './LoginPage.css';
-import { useCustomToast } from '../../shared/components/toast/CustomToast';
+import { useCustomToast } from '../../components/toast/CustomToast';
 
 const LoginPage = () => {
   const navigate = useNavigate();
