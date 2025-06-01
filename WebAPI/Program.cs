@@ -50,7 +50,6 @@ var issuer = jwtConfig["Issuer"];
 var audience = jwtConfig["Audience"];
 var expiryInMinutes = jwtConfig["ExpiryInMinutes"];
 
-Console.WriteLine($"JwtSettings - SecretKey: {secretKey}, Issuer: {issuer}, Audience: {audience}, ExpiryInMinutes: {expiryInMinutes}");
 
 if (string.IsNullOrEmpty(secretKey))
 {
