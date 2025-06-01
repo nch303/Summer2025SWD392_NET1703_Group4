@@ -12,5 +12,6 @@ namespace Application.Interfaces
         Task<Account> GetAccountByEmailAsync(string email);
         Task<Account> GetCurrentAccount();
         Task<Account> GetAccountByIdAsync(Guid id);
+        Task<Account> UpdateAccountTokenAsync(string email, string token);
     }
 }

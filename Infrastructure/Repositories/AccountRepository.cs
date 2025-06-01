@@ -27,9 +27,19 @@ namespace Infrastructure.Repositories
 
         public async Task<Account> GetAccountByIdAsync(Guid id)
         {
-                var account = await _context.Accounts.Include(a => a.Role)
-                    .FirstOrDefaultAsync(a => a.Id == id);
+            var account = await _context.Accounts.Include(a => a.Role)
+                .FirstOrDefaultAsync(a => a.Id == id);
             return account!;
-        }   
+        }
+
+        public async Task<Account> UpdateAccountTokenAsync(string email, string token)
+        {
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email.ToLower().Trim() == email.ToLower().Trim());
+            if (account == null) return null!;
+            account.ConfirmationToken = token;
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+            return account;
+        }
     }
 }

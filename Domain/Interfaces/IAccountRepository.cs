@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task<Account> GetAccountByEmailAsync(string email);
         Task<Account> GetAccountByIdAsync(Guid id);
+        Task<Account> UpdateAccountTokenAsync(string email, string token);
     }
 }

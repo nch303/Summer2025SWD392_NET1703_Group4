@@ -104,5 +104,15 @@ namespace Application.Services
                 throw new Exception($"Failed to validate token: {ex.Message}", ex);
             }
         }
+
+        public async Task<Account> UpdateAccountTokenAsync(string email, string token)
+        {
+            var account = await _accountRepository.UpdateAccountTokenAsync(email, token);
+            if (account == null)
+            {
+                throw new Exception("Failed to update account token.");
+            }
+            return account;
+        }
     }
 }

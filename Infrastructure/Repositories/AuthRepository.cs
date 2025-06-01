@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
             var account = await _context.Accounts.FirstOrDefaultAsync(a => a.ConfirmationToken == token);
             if (account == null)
             {
-                throw new Exception("Invalid confirmation token.");
+                throw new Exception("Fail to confirm. Please resend email and try again.");
             }
             account.Status = "Active";
             account.ConfirmationToken = null; // Clear the confirmation token after successful confirmation

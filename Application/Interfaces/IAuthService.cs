@@ -9,6 +9,7 @@ namespace Application.Interfaces
         Task<string> RegisterAsync(RegisterRequest request);
         Task<string> LoginAsync(LoginRequest request);
         Task ConfirmEmailAsync(string token);
+        Task<string> ReSendConfirmAccountEmailAsync(string email);
     }
 
 }

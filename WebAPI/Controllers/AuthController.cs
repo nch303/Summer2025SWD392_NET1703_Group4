@@ -24,7 +24,7 @@ namespace PreSchoolBE.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -38,7 +38,7 @@ namespace PreSchoolBE.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -52,7 +52,21 @@ namespace PreSchoolBE.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("resend-confirmation-email")]
+        public async Task<IActionResult> ReSendConfirmAccountEmail(string email)
+        {
+            try
+            {
+                var result = await _authService.ReSendConfirmAccountEmailAsync(email);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
