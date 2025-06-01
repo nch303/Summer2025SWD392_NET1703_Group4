@@ -28,12 +28,6 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Account> GetAccountByEmailAsync(string email)
-        {
-            var account = _context.Accounts.FirstOrDefault(a => a.Email == email);
-            return account!;
-        }
-
         public async Task<Account> LoginAsync(string email, string password)
         {
             var user = await _context.Accounts

@@ -19,18 +19,20 @@ namespace Application.Services.AuthService
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly IAuthRepository _authRepository;
+        private readonly IAccountService _accountService;
 
-        public AuthService( IConfiguration configuration, IAuthRepository authRepository, IEmailService emailService)
+        public AuthService( IConfiguration configuration, IAuthRepository authRepository, IEmailService emailService, IAccountService accountService)
         {
             _configuration = configuration;
             _emailService = emailService;
             _authRepository = authRepository;
+            _accountService = accountService;
         }
 
         public async Task<string> RegisterAsync(RegisterRequest registerDto)
         {
             
-            var existedAccount =  await _authRepository.GetAccountByEmailAsync(registerDto.Email);
+            var existedAccount =  await _accountService.GetAccountByEmailAsync(registerDto.Email);
             if (existedAccount != null)
                 throw new Exception("Email already exists.");
 

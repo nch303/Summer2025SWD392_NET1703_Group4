@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Application.DTOs.Reponse;
 
 namespace Application.Mappings
 {
@@ -15,6 +16,7 @@ namespace Application.Mappings
         public MappingProfile()
         {
             CreateMap<RegisterRequest, Account>();
+            CreateMap<Account, AccountResponse>();
         }
     }
 }

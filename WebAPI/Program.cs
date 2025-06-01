@@ -1,15 +1,16 @@
+using Application.Interfaces;
+using Application.Interfaces.IServices;
+using Application.Mappings;
+using Application.Services;
 using Application.Services.AuthService;
+using Domain.Interfaces;
+using Infrastructure.EntitiesConfigurations;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
-using Infrastructure.EntitiesConfigurations;
-using Domain.Interfaces;
-using Infrastructure.Repositories;
-using Application.Interfaces;
-using Application.Interfaces.IServices;
-using Application.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // Add repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 
 // add CORS
@@ -78,7 +81,11 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Add Swagger
 builder.Services.AddSwaggerGen(c =>
