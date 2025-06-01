@@ -10,6 +10,8 @@ import NotFoundPage from '../shared/components/error/NotFoundPage';
 import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
 import AboutUsPage from '../pages/about-us/AboutUsPage';
 import ContactPage from '../pages/contact/ContactPage';
+import AuthRoute from '../components/route-guard/AuthRoute';
+import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 
 import { ROUTES } from '../shared/constants/routes';
 
@@ -22,10 +24,26 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: ROUTES.LOGIN, element: <LoginPage /> },
-      { path: ROUTES.REGISTER, element: <RegisterPage /> },
-      { path: ROUTES.FORGOT_PASSWORD, element: <ForgotPasswordPage /> },
-      { path: ROUTES.PROFILE, element: <ProfilePage /> },
+      { 
+        path: ROUTES.LOGIN, 
+        element: <AuthRoute><LoginPage /></AuthRoute> 
+      },
+      { 
+        path: ROUTES.REGISTER, 
+        element: <AuthRoute><RegisterPage /></AuthRoute> 
+      },
+      { 
+        path: ROUTES.FORGOT_PASSWORD, 
+        element: <AuthRoute><ForgotPasswordPage /></AuthRoute> 
+      },
+      { 
+        path: ROUTES.CONFIRM_EMAIL, 
+        element: <AuthRoute><ConfirmEmailPage /></AuthRoute> 
+      },
+      { 
+        path: ROUTES.PROFILE, 
+        element: <ProtectedRoute><ProfilePage /></ProtectedRoute> 
+      },
       { path: ROUTES.NEWS, element: <NewsPage /> },
       { path: ROUTES.ABOUT_US, element: <AboutUsPage /> },
       { path: ROUTES.CONTACT, element: <ContactPage /> },
@@ -34,7 +52,7 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTES.STAFF,
-    element: <StaffLayout />,
+    element: <ProtectedRoute><StaffLayout /></ProtectedRoute>,
     children: [
       { index: true, element: <Navigate to={ROUTES.STAFF_DASHBOARD} replace /> },
       { path: 'dashboard', element: <StaffDashboard /> },

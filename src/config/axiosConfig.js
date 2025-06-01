@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logoutUser } from '../components/navbar/NavbarService';
 
 // Tạo instance của axios
 const api = axios.create({
@@ -28,10 +29,15 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Xử lý lỗi toàn cục, ví dụ: lỗi 401 (Unauthorized)
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      // Chuyển hướng đến trang đăng nhập nếu cần
+    // Check if error is due to unauthorized access (token expired or invalid)
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      console.log('Token expired or unauthorized access, logging out...');
+      
+      // Clear token and logout
+      logoutUser();
+      
+      // Redirect to login page
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }

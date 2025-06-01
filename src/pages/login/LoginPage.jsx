@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { loginUser } from './LoginService';
 import { ROUTES } from '../../constants/routes';
 import './LoginPage.css';
 import { useCustomToast } from '../../components/toast/CustomToast';
+import { useUser } from '../../contexts/UserContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const toast = useCustomToast();
+  const { fetchCurrentUser } = useUser();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const hasShownErrorToast = useRef(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,38 +25,77 @@ const LoginPage = () => {
       ...prev,
       [name]: value,
     }));
+    // Reset error state when user types in fields
+    if (error) {
+      setError('');
+      // Reset the toast shown flag when user makes changes
+      hasShownErrorToast.current = false;
+    }
+  };
+
+  // Function to determine redirect path based on user role
+  const getRedirectPath = (userRole) => {
+    // Make sure we're working with a string and trim any whitespace
+    const role = userRole?.trim() || '';
+    
+    // Case-insensitive comparison
+    switch (role.toLowerCase()) {
+      case 'admin':
+        return ROUTES.ADMIN_DASHBOARD || '/admin';
+      case 'teacher':
+        return ROUTES.TEACHER_DASHBOARD || '/teacher';
+      case 'staff':
+        return ROUTES.STAFF_DASHBOARD || '/staff';
+      default:
+        return ROUTES.HOME || '/';
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
+    // Reset toast flag on new submission
+    hasShownErrorToast.current = false;
     
     try {
+      // Đăng nhập để lấy token
       const result = await loginUser(formData.email, formData.password);
       
-      // Show success message using custom toast
-      toast.success('Login successful! Redirecting...', {
-        position: 'top-right',
-        duration: 1500
-      });
+      // Lấy thông tin người dùng đầy đủ từ token
+      const userData = await fetchCurrentUser();
+      console.log("Login successful, user data:", userData); // Debug log
       
-      // Delay navigation to show the toast
-      setTimeout(() => {
-        navigate(ROUTES.HOME);
-      }, 1500);
+      if (userData) {
+        // Sử dụng roleNname từ userData thay vì result
+        const redirectPath = getRedirectPath(userData.roleName);
+        
+        toast.success(`Đăng nhập thành công! Đang chuyển hướng...`, {
+          position: 'top-right',
+          duration: 1500
+        });
+        
+        // Đảm bảo có đủ thời gian để context update
+        setTimeout(() => {
+          navigate(redirectPath);
+        }, 2000);
+      }
     } catch (error) {
       setError(error.message);
       
-      // Hiển thị thông báo đặc biệt nếu tài khoản chưa kích hoạt
-      if (error.message.includes("Account is not activated. Please check your email.")) {
-        toast.error(error.message, {
-          duration: 5000  // Hiển thị lâu hơn để người dùng có thời gian đọc
-        });
+      // Only show toast if we haven't already shown one for this error
+      if (!hasShownErrorToast.current) {
+        // Hiển thị thông báo đặc biệt nếu tài khoản chưa kích hoạt
+        if (error.message.includes("Account is not activated. Please check your email.")) {
+          toast.error(error.message, {
+            duration: 5000  // Hiển thị lâu hơn để người dùng có thời gian đọc
+          });
+        } else {
+          toast.error(error.message || 'Login failed. Please try again.');
+        }
         
-        // Có thể thêm một nút hoặc link để người dùng gửi lại email kích hoạt ở đây
-      } else {
-        toast.error(error.message || 'Login failed. Please try again.');
+        // Mark that we've shown the toast
+        hasShownErrorToast.current = true;
       }
     } finally {
       setIsLoading(false);
