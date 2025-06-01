@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentUserProfile } from './ProfileService';
 import './ProfilePage.css';
+import { useUser } from '../../contexts/UserContext';
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
+  const { currentUser, isLoading: contextLoading, setCurrentUser } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -16,26 +16,17 @@ const ProfilePage = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userData = await getCurrentUserProfile();
-        setUser(userData);
-        setFormData({
-          fullName: userData?.fullName || '',
-          email: userData?.email || '',
-          phoneNumber: userData?.phoneNumber || '',
-          address: userData?.address || '',
-          bio: userData?.bio || '',
-        });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    if (currentUser) {
+      setFormData({
+        fullName: currentUser?.fullName || '',
+        email: currentUser?.email || '',
+        phoneNumber: currentUser?.phoneNumber || '',
+        address: currentUser?.address || '',
+        bio: currentUser?.bio || '',
+      });
+      setIsLoading(false);
+    }
+  }, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,8 +49,8 @@ const ProfilePage = () => {
       // In a real app, you would call an API to update the user profile
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      // Update local user state with form data
-      setUser(prev => ({
+      // Update user state in context with form data
+      setCurrentUser(prev => ({
         ...prev,
         ...formData
       }));
@@ -73,7 +64,7 @@ const ProfilePage = () => {
     }
   };
 
-  if (isLoading && !user) {
+  if (contextLoading || (isLoading && !currentUser)) {
     return (
       <div className="profile-loading-container">
         <div className="profile-loading-spinner"></div>
@@ -126,9 +117,9 @@ const ProfilePage = () => {
                 </svg>
               </div>
             </div>
-            <h3 className="profile-name">{user?.fullName}</h3>
+            <h3 className="profile-name">{currentUser?.fullName}</h3>
             <div className="profile-role-badge">
-              {user?.roleName === 'Admin' ? 'Quản Trị Viên' : user?.roleName === 'Staff' ? 'Nhân viên' : user?.roleName === 'Teacher' ? 'Giáo viên' : user?.roleName === 'Parent' ? 'Phụ huynh' : 'Người dùng'}
+              {currentUser?.roleName === 'Admin' ? 'Quản Trị Viên' : currentUser?.roleName === 'Staff' ? 'Nhân viên' : currentUser?.roleName === 'Teacher' ? 'Giáo viên' : currentUser?.roleName === 'Parent' ? 'Phụ huynh' : 'Người dùng'}
             </div>
             <div className="profile-stats">
               <div className="profile-stat">
@@ -251,7 +242,7 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <div className="profile-data">
-                      <span>{user?.fullName || "—"}</span>
+                      <span>{currentUser?.fullName || "—"}</span>
                     </div>
                   )}
                 </div>
@@ -291,7 +282,7 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <div className="profile-data">
-                      <span>{user?.phoneNumber || "—"}</span>
+                      <span>{currentUser?.phoneNumber || "—"}</span>
                     </div>
                   )}
                 </div>
@@ -313,7 +304,7 @@ const ProfilePage = () => {
                     </div>
                   ) : (
                     <div className="profile-data">
-                      <span>{user?.address || "—"}</span>
+                      <span>{currentUser?.address || "—"}</span>
                     </div>
                   )}
                 </div>
@@ -341,7 +332,7 @@ const ProfilePage = () => {
                   ></textarea>
                 ) : (
                   <div className="profile-data bio-data">
-                    <p>{user?.bio || "Chưa có thông tin."}</p>
+                    <p>{currentUser?.bio || "Chưa có thông tin."}</p>
                   </div>
                 )}
               </div>

@@ -22,13 +22,11 @@ import ContactPage from '../pages/contact/ContactPage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
-// import StaffList from '../features/staff/pages/StaffList';
-// import AddStaff from '../features/staff/pages/AddStaff';
-// import StaffAttendance from '../features/staff/pages/StaffAttendance';
-// import StaffSchedule from '../features/staff/pages/StaffSchedule';
-// import StaffPayroll from '../features/staff/pages/StaffPayroll';
-// import StaffPerformance from '../features/staff/pages/StaffPerformance';
-// import StaffTraining from '../features/staff/pages/StaffTraining';
+
+// Route Guards
+import ProtectedRoute from '../components/route-guard/ProtectedRoute';
+import AuthRoute from '../components/route-guard/AuthRoute';
+import { UserProvider } from '../contexts/UserContext';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -43,35 +41,60 @@ function App() {
 
   return (
     <ProcessingSpinnerProvider>
-      <ScrollToTop />
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/confirm" element={<ConfirmEmailPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/about-us" element={<AboutUsPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-        </Route>
-        
-        {/* Staff Management Routes */}
-        <Route path="/staff" element={<StaffLayout />}>
-          <Route index element={<Navigate to="/staff/dashboard" replace />} />
-          <Route path="dashboard" element={<StaffDashboard />} />
-          {/* <Route path="list" element={<StaffList />} />
-          <Route path="add" element={<AddStaff />} />
-          <Route path="attendance" element={<StaffAttendance />} />
-          <Route path="schedule" element={<StaffSchedule />} />
-          <Route path="payroll" element={<StaffPayroll />} />
-          <Route path="performance" element={<StaffPerformance />} />
-          <Route path="training" element={<StaffTraining />} /> */}
-        </Route>
-        
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <UserProvider>
+        <ScrollToTop />
+        <Routes>
+          {/* Public Routes - Main Layout */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            
+            {/* Auth routes - redirect if already logged in */}
+            <Route path="/login" element={
+              <AuthRoute>
+                <LoginPage />
+              </AuthRoute>
+            } />
+            
+            <Route path="/register" element={
+              <AuthRoute>
+                <RegisterPage />
+              </AuthRoute>
+            } />
+            
+            <Route path="/forgot-password" element={
+              <AuthRoute>
+                <ForgotPasswordPage />
+              </AuthRoute>
+            } />
+            
+            <Route path="/confirm" element={
+              <AuthRoute>
+                <ConfirmEmailPage />
+              </AuthRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/news" element={<NewsPage />} />
+            <Route path="/about-us" element={<AboutUsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </Route>
+   
+          {/* Staff Routes */}
+          <Route path="/staff" element={
+            <ProtectedRoute allowedRoles={['Staff']}>
+              <StaffLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<Navigate to="/staff/dashboard" replace />} />
+            <Route path="dashboard" element={<StaffDashboard />} />
+          </Route>
+          
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </UserProvider>
     </ProcessingSpinnerProvider>
   );
 }

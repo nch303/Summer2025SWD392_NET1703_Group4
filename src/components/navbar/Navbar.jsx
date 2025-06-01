@@ -1,33 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { logoutUser, getCurrentUser } from './NavbarService';
+import { useUser } from '../../contexts/UserContext';
 import './navbar.css';
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser, isLoggedIn, handleLogout, fetchCurrentUser } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const dropdownRef = useRef(null);
+  const lastPathRef = useRef(location.pathname);
   
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      const token = localStorage.getItem('token');
-      
-      if (token) {
-        const user = await getCurrentUser();
-        setIsLoggedIn(true);
-        setCurrentUser(user);
-      } else {
-        setIsLoggedIn(false);
-        setCurrentUser(null);
-      }
-    };
+    // Check if user just logged in (coming from login page)
+    const isComingFromLogin = lastPathRef.current.includes('/login') && 
+                             !location.pathname.includes('/login');
     
-    checkAuthStatus();
-  }, [location.pathname]);
+    if (isComingFromLogin) {
+      // Refresh user data when coming from login page
+      fetchCurrentUser();
+    }
+    
+    // Update last path reference
+    lastPathRef.current = location.pathname;
+  }, [location.pathname, fetchCurrentUser]); 
   
   const isActive = (path) => {
     if (path === '/') {
@@ -36,10 +33,8 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
   
-  const handleLogout = () => {
-    logoutUser();
-    setIsLoggedIn(false);
-    setCurrentUser(null);
+  const onLogout = () => {
+    handleLogout();
     navigate('/login');
   };
 
@@ -99,8 +94,8 @@ const Navbar = () => {
                   className="user-dropdown-toggle"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  <div className="user-avatar">A</div>
-                  <span className="user-name">{currentUser?.name || 'Admin'}</span>
+                  <div className="user-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
+                  <span className="user-name">{currentUser?.fullName || 'Admin'}</span>
                   <svg 
                     className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`} 
                     xmlns="http://www.w3.org/2000/svg" 
@@ -114,9 +109,9 @@ const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="user-dropdown">
                     <div className="dropdown-user-details">
-                      <div className="dropdown-avatar">A</div>
+                      <div className="dropdown-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
                       <div className="dropdown-user-info">
-                        <div className="dropdown-user-name">{currentUser?.name || 'Admin User'}</div>
+                        <div className="dropdown-user-name">{currentUser?.fullName || 'Admin User'}</div>
                         <div className="dropdown-user-email">{currentUser?.email || 'admin@example.com'}</div>
                       </div>
                     </div>
@@ -133,7 +128,7 @@ const Navbar = () => {
                       </svg>
                       Notifications
                     </Link>
-                    <button onClick={() => { handleLogout(); setIsDropdownOpen(false); }} className="dropdown-item">
+                    <button onClick={() => { onLogout(); setIsDropdownOpen(false); }} className="dropdown-item">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
                       </svg>
@@ -229,9 +224,9 @@ const Navbar = () => {
           {isLoggedIn ? (
             <>
               <div className="mobile-user">
-                <div className="mobile-avatar">A</div>
+                <div className="mobile-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
                 <div className="mobile-user-info">
-                  <div className="mobile-user-name">{currentUser?.name || 'Admin User'}</div>
+                  <div className="mobile-user-name">{currentUser?.fullName || 'Admin User'}</div>
                   <div className="mobile-user-email">{currentUser?.email || 'admin@example.com'}</div>
                 </div>
               </div>
@@ -246,7 +241,7 @@ const Navbar = () => {
               <button 
                 className="mobile-link"
                 onClick={() => {
-                  handleLogout();
+                  onLogout();
                   setIsMobileMenuOpen(false);
                 }}
               >
