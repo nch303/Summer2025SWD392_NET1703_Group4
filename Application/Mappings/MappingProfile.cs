@@ -20,8 +20,12 @@ namespace Application.Mappings
             CreateMap<RegisterRequest, Account>();
             CreateMap<Account, AccountResponse>();
             CreateMap<Invoice, InvoiceResponse>();
-            CreateMap<EnrollmentApplication, EnrollmentApplicationResponse>();
 
+            CreateMap<ChildrenRequest, Children>();
+            CreateMap<Children, ChildrenResponse>();
+            CreateMap<Children, AllChildrenResponse>();
+
+            CreateMap<EnrollmentApplication, EnrollmentApplicationResponse>();
             CreateMap<EnrollmentApplicationRequest, EnrollmentApplication>();
         }
     }
