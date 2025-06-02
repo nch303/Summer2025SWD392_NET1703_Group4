@@ -33,7 +33,7 @@ namespace PreSchoolBE.Controllers
         {
             try
             {
-                var token = await _authService.LoginAsync(loginDto);
+                var token = "Bearer " + await _authService.LoginAsync(loginDto);
                 return Ok(new { Token = token });
             }
             catch (Exception ex)
