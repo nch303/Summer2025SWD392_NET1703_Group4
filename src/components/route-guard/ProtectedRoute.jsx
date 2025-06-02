@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import ProcessingSpinner from '../spinner/ProcessingSpinner';
@@ -11,31 +11,64 @@ import ProcessingSpinner from '../spinner/ProcessingSpinner';
  * @param {string} [props.redirectPath='/login'] - Where to redirect unauthorized users
  */
 const ProtectedRoute = ({ children, allowedRoles = [], redirectPath = '/login' }) => {
-  const { currentUser, isLoading } = useUser();
+  const { currentUser, isLoading, fetchCurrentUser, isInitialized } = useUser();
   const location = useLocation();
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [verifiedUser, setVerifiedUser] = useState(null);
+
+  // Khi component mount, xác thực lại user nếu cần
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        // Nếu chưa có currentUser nhưng có token, thử fetch lại
+        if (!currentUser && localStorage.getItem('token')) {
+          console.log("ProtectedRoute - No user but token exists, fetching user");
+          const userData = await fetchCurrentUser();
+          setVerifiedUser(userData);
+        } else {
+          setVerifiedUser(currentUser);
+        }
+      } catch (error) {
+        console.error("ProtectedRoute - Error verifying user:", error);
+        setVerifiedUser(null);
+      } finally {
+        setIsVerifying(false);
+      }
+    };
+
+    verifyUser();
+  }, [currentUser, fetchCurrentUser]);
 
   console.log("ProtectedRoute - Current user:", currentUser);
+  console.log("ProtectedRoute - Verified user:", verifiedUser);
+  console.log("ProtectedRoute - Is loading:", isLoading);
+  console.log("ProtectedRoute - Is verifying:", isVerifying);
+  console.log("ProtectedRoute - Is initialized:", isInitialized);
   console.log("ProtectedRoute - Allowed roles:", allowedRoles);
 
-  if (isLoading) {
-    return <ProcessingSpinner />;
+  // Hiển thị spinner khi đang tải hoặc đang xác minh
+  if (isLoading || isVerifying) {
+    return <ProcessingSpinner message="Đang xác thực..." />;
   }
 
-  // If no user is logged in, redirect to login
-  if (!currentUser) {
-    console.log("ProtectedRoute - No user, redirecting to login");
+  // Ưu tiên dùng verifiedUser nếu có, không thì dùng currentUser
+  const user = verifiedUser || currentUser;
+
+  // Nếu không có user sau khi đã xác minh xong, chuyển hướng đến đăng nhập
+  if (!user) {
+    console.log("ProtectedRoute - No user after verification, redirecting to login");
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
 
-  // If role check is required and user doesn't have required role
+  // Nếu cần kiểm tra role và user không có quyền yêu cầu
   if (allowedRoles.length > 0) {
     // Log for debugging
-    console.log("ProtectedRoute - User role:", currentUser.roleName);
+    console.log("ProtectedRoute - User role:", user.roleName);
     console.log("ProtectedRoute - Checking against allowed roles:", allowedRoles);
     
     // More flexible role check: case-insensitive check + trim whitespace
     const hasAllowedRole = allowedRoles.some(role => 
-      currentUser.roleName?.toLowerCase().trim() === role.toLowerCase().trim()
+      user.roleName?.toLowerCase().trim() === role.toLowerCase().trim()
     );
     
     if (!hasAllowedRole) {

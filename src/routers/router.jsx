@@ -1,22 +1,23 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import MainLayout from '../layouts/main-layout/MainLayout';
-import StaffLayout from '../layouts/staff-layout/StaffLayout';
+import MainLayout from '../layouts/MainLayout';
+import StaffLayout from '../layouts/StaffLayout';
 import HomePage from '../pages/home/HomePage';
 import LoginPage from '../pages/login/LoginPage';
 import RegisterPage from '../pages/register/RegisterPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import NewsPage from '../pages/news/NewsPage';
-import NotFoundPage from '../shared/components/error/NotFoundPage';
+import NotFoundPage from '../components/error/NotFoundPage';
 import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
 import AboutUsPage from '../pages/about-us/AboutUsPage';
 import ContactPage from '../pages/contact/ContactPage';
 import AuthRoute from '../components/route-guard/AuthRoute';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
-
-import { ROUTES } from '../shared/constants/routes';
+import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
+import { ROUTES } from '../constants/routes';
 
 // Staff feature imports
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
+
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       { 
         path: ROUTES.PROFILE, 
         element: <ProtectedRoute><ProfilePage /></ProtectedRoute> 
+      },
+      {
+        path: ROUTES.CHILD_PROFILE,
+        element: <ProtectedRoute><ChildProfileManagement /></ProtectedRoute>
       },
       { path: ROUTES.NEWS, element: <NewsPage /> },
       { path: ROUTES.ABOUT_US, element: <AboutUsPage /> },

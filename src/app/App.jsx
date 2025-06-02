@@ -5,14 +5,15 @@ import ScrollToTop from '../components/scroll-button/ScrollToTop';
 import LoadingCover from '../components/loading-cover/LoadingCover';
 import { ProcessingSpinnerProvider } from '../components/spinner/ProcessingSpinner';
 // Layout
-import MainLayout from '../layouts/main-layout/MainLayout';
-import StaffLayout from '../layouts/staff-layout/StaffLayout';
+import MainLayout from '../layouts/MainLayout';
+import StaffLayout from '../layouts/StaffLayout';
 
 // Pages
 import HomePage from '../pages/home/HomePage';
 import LoginPage from '../pages/login/LoginPage';
 import RegisterPage from '../pages/register/RegisterPage';
 import ProfilePage from '../pages/profile/ProfilePage';
+import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
 import NewsPage from '../pages/news/NewsPage';
 import NotFoundPage from '../components/error/NotFoundPage';
 import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
@@ -75,6 +76,11 @@ function App() {
             <Route path="/profile" element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile/children" element={
+              <ProtectedRoute>
+                <ChildProfileManagement />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />

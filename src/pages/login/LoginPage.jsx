@@ -10,7 +10,7 @@ import { useUser } from '../../contexts/UserContext';
 const LoginPage = () => {
   const navigate = useNavigate();
   const toast = useCustomToast();
-  const { fetchCurrentUser } = useUser();
+  const { fetchCurrentUser, setLoggedInUser } = useUser();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -62,23 +62,43 @@ const LoginPage = () => {
       // Đăng nhập để lấy token
       const result = await loginUser(formData.email, formData.password);
       
-      // Lấy thông tin người dùng đầy đủ từ token
-      const userData = await fetchCurrentUser();
-      console.log("Login successful, user data:", userData); // Debug log
-      
-      if (userData) {
-        // Sử dụng roleNname từ userData thay vì result
-        const redirectPath = getRedirectPath(userData.roleName);
+      if (result && result.token) {
+        // Cập nhật trạng thái người dùng ngay lập tức với token mới nhận
+        const token = result.token;
         
-        toast.success(`Đăng nhập thành công! Đang chuyển hướng...`, {
-          position: 'top-right',
-          duration: 1500
-        });
-        
-        // Đảm bảo có đủ thời gian để context update
-        setTimeout(() => {
-          navigate(redirectPath);
-        }, 2000);
+        // Nếu kết quả đã có thông tin user, cập nhật luôn
+        if (result.user) {
+          setLoggedInUser(result.user, token);
+          
+          // Điều hướng người dùng dựa vào role
+          const redirectPath = getRedirectPath(result.user.roleName);
+          toast.success('Đăng nhập thành công!', {
+            duration: 2000
+          });
+          
+          // Chuyển hướng người dùng sau khi hiển thị thông báo
+          setTimeout(() => {
+            navigate(redirectPath);
+          }, 1000);
+        } else {
+          // Nếu không có thông tin user từ API login, fetch lại
+          const userData = await fetchCurrentUser();
+          
+          if (userData) {
+            // Điều hướng người dùng dựa vào role
+            const redirectPath = getRedirectPath(userData.roleName);
+            toast.success('Đăng nhập thành công!', {
+              duration: 2000
+            });
+            
+            // Chuyển hướng người dùng sau khi hiển thị thông báo
+            setTimeout(() => {
+              navigate(redirectPath);
+            }, 1000);
+          }
+        }
+      } else {
+        throw new Error('Login failed. No token received.');
       }
     } catch (error) {
       setError(error.message);
@@ -106,9 +126,6 @@ const LoginPage = () => {
     <div className="login-page">
       {/* Processing Spinner */}
       <ProcessingSpinner isVisible={isLoading} message="Signing in..." />
-      
-      {/* Custom Toast Container */}
-      <toast.ToastContainer position="top-right" />
       
       {/* Day-night gradient separator */}
       <div className="day-night-separator"></div>
