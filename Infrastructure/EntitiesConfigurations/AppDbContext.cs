@@ -40,10 +40,17 @@ namespace Infrastructure.EntitiesConfigurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EnrollmentApplication>()
-                .HasOne(ea => ea.Accounts)
-                .WithMany(a => a.EnrollmentApplications)
-                .HasForeignKey(ea => ea.ParentID)
+                .HasOne(e => e.Parent)
+                .WithMany(a => a.ApplicationsSubmitted)
+                .HasForeignKey(e => e.ParentID)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EnrollmentApplication>()
+                .HasOne(e => e.Staff)
+                .WithMany(a => a.ApplicationsApproved)
+                .HasForeignKey(e => e.StaffID)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             modelBuilder.Entity<EnrollmentApplication>()
                 .HasOne(ea => ea.GradeLevels)
