@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Application.DTOs.Reponse;
 using Application.DTOs.Response;
+using Application.DTOs.Request;
 
 namespace Application.Mappings
 {
@@ -19,6 +20,11 @@ namespace Application.Mappings
             CreateMap<RegisterRequest, Account>();
             CreateMap<Account, AccountResponse>();
             CreateMap<Invoice, InvoiceResponse>();
+
+            CreateMap<ChildrenRequest, Children>();
+            CreateMap<Children, ChildrenResponse>();
+            CreateMap<Children, AllChildrenResponse>();
+
         }
     }
 }
