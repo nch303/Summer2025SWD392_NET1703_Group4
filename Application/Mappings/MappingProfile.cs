@@ -25,6 +25,8 @@ namespace Application.Mappings
             CreateMap<Children, ChildrenResponse>();
             CreateMap<Children, AllChildrenResponse>();
 
+            CreateMap<EnrollmentApplication, EnrollmentApplicationResponse>();
+            CreateMap<EnrollmentApplicationRequest, EnrollmentApplication>();
         }
     }
 }

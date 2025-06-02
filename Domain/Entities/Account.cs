@@ -27,7 +27,8 @@ namespace Domain.Entities
         public Role? Role { get; set; }
         public ICollection<Invoice>? Invoices { get; set; }
         public ICollection<Notification>? Notifications { get; set; }
-        public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
+        public ICollection<EnrollmentApplication>? ApplicationsSubmitted { get; set; } // as Parent
+        public ICollection<EnrollmentApplication>? ApplicationsApproved { get; set; }  // as Staff
         public ICollection<Children>? Childrens { get; set; }
         public ICollection<ClassTeacher>? ClassTeachers { get; set; }
     }

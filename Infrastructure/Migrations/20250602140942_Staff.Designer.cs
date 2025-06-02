@@ -4,6 +4,7 @@ using Infrastructure.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250602140942_Staff")]
+    partial class Staff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,13 +260,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("GradeLevelID")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("InvoiceID")
+                    b.Property<Guid>("InvoiceID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ParentID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("StaffID")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -276,8 +280,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("GradeLevelID");
 
                     b.HasIndex("InvoiceID")
-                        .IsUnique()
-                        .HasFilter("[InvoiceID] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("ParentID");
 
@@ -617,7 +620,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Invoice", "Invoices")
                         .WithOne("EnrollmentApplications")
                         .HasForeignKey("Domain.Entities.EnrollmentApplication", "InvoiceID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.Account", "Parent")
                         .WithMany("ApplicationsSubmitted")
@@ -628,7 +632,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Account", "Staff")
                         .WithMany("ApplicationsApproved")
                         .HasForeignKey("StaffID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Childrens");
 

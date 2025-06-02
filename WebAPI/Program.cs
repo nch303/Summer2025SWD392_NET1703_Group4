@@ -27,6 +27,7 @@ builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IInvoiceDetailService, InvoiceDetailService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IChildrenService, ChildrenService>();
+builder.Services.AddScoped<IEAService, EAService>();
 
 // Add repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceDetailRepository, InvoiceDetailRepository>();
 builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
+builder.Services.AddScoped<IEARepository, EARepository>();
 
 // Add VnPay settings
 builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
