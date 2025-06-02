@@ -13,7 +13,7 @@ export const loginUser = async (email, password) => {
         password
       });
       
-      // Store token in localStorage
+      // Store token in localStorage - token now comes with "Bearer " prefix included
       if (response.data && response.data.token) {
         localStorage.setItem('token', response.data.token);
       }
