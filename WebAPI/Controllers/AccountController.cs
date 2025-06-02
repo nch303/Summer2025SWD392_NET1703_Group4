@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Reponse;
 using Application.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -19,6 +20,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getCurrentAccount")]
+        [Authorize]
         public async Task<IActionResult> GetCurrentAccount()
         {
             try

@@ -3,6 +3,7 @@ using Application.Interfaces.IServices;
 using Application.Mappings;
 using Application.Services;
 using Application.Services.AuthService;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.EntitiesConfigurations;
 using Infrastructure.Repositories;
@@ -22,10 +23,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IInvoiceDetailService, InvoiceDetailService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 // Add repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceDetailRepository, InvoiceDetailRepository>();
+
+// Add VnPay settings
+builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
 
 
 // add CORS
