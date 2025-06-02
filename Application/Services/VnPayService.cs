@@ -34,18 +34,43 @@ namespace Application.Services
 
         public async Task<string> CreatePaymentUrl(VnPayRequest request, HttpContext context)
         {
+            var invoiceId = Guid.NewGuid(); // Generate a new invoice ID for the payment 
+
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+            var tick = DateTime.Now.Ticks.ToString();
+            var pay = new VnPayLibrary();
+            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
+
+            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
+            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
+            pay.AddRequestData("vnp_Amount", ((int)request.Amount * 100).ToString());
+            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
+            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
+            pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
+            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
+            pay.AddRequestData("vnp_OrderInfo", $"{request.Name}|{request.OrderDescription}|{request.Amount}|invoiceID:{invoiceId}");
+            pay.AddRequestData("vnp_OrderType", request.OrderType);
+            pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
+            pay.AddRequestData("vnp_TxnRef", tick);
+
+            var paymentUrl =
+                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
             // Get current account
             var currentAccount = _accountService.GetCurrentAccount();
 
             // Save invoice and invoice details
             var invoice = new Invoice
             {
-                ID = Guid.NewGuid(),
+                ID = invoiceId,
                 Amount = request.Amount,
                 ChildrenID = request.ChildrenID,
                 Date = DateTime.Now,
                 AccountID = currentAccount.Result.Id,
-                Status = "Pending"
+                Status = "Pending",
+                PaymentLink = paymentUrl
             };
             await _invoiceService.CreateAsync(invoice);
 
@@ -62,30 +87,7 @@ namespace Application.Services
                 await _invoiceDetailService.CreateAsync(invoiceDetail);
             }
 
-            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
-            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = DateTime.Now.Ticks.ToString();
-            var pay = new VnPayLibrary();
-            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
 
-            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
-            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
-            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)request.Amount * 100).ToString());
-            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
-            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
-            pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
-            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{request.Name}|{request.OrderDescription}|{request.Amount}|invoiceID:{invoice.ID}");
-            pay.AddRequestData("vnp_OrderType", request.OrderType);
-            pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", tick);
-
-            var paymentUrl =
-                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
-
-
-           
             return paymentUrl;
         }
 

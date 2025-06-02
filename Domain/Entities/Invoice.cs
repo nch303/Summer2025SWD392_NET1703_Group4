@@ -17,6 +17,7 @@ namespace Domain.Entities
         public decimal Amount { get; set; }
         public string? Status { get; set; }
         public DateTime Date { get; set; }
+        public string? PaymentLink { get; set; }
 
         [ForeignKey("AccountID")]
         public Account? Accounts { get; set; }

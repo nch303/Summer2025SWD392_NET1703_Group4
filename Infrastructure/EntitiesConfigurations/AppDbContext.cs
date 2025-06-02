@@ -145,7 +145,7 @@ namespace Infrastructure.EntitiesConfigurations
     }
 }
 
-//dotnet ef migrations add InitialCreate (Create database)
+//dotnet ef migrations add InitialCreate --project Infrastructure --startup-project WebAPI
 
 //dotnet ef database update (Accept update database)
 
