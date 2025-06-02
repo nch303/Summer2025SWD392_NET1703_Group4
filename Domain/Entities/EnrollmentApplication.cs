@@ -18,8 +18,8 @@ namespace Domain.Entities
         public int GradeLevelID { get; set; }
         [Required]
         public Guid ChildrenID { get; set; }
-        [Required]
-        public Guid InvoiceID { get; set; }
+        public Guid? InvoiceID { get; set; }
+        public Guid? StaffID { get; set; }
 
         public DateTime ApprovalDate { get; set; }
 
@@ -27,11 +27,13 @@ namespace Domain.Entities
         public Children? Childrens { get; set; }
 
         [ForeignKey("ParentID")]
-        public Account? Accounts { get; set; }
+        public Account? Parent { get; set; }
 
         [ForeignKey("GradeLevelID")]
         public GradeLevel? GradeLevels { get; set; }
         [ForeignKey("InvoiceID")]
         public Invoice? Invoices { get; set; }
+        [ForeignKey("StaffID")]
+        public Account? Staff { get; set; }
     }
 }
