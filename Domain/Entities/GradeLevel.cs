@@ -17,5 +17,8 @@ namespace Domain.Entities
         public bool IsDelete { get; set; }
 
         public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
+        public ICollection<TuitionFee>? TuitionFees { get; set; }
+        public ICollection<Class>? Classes { get; set; }
+        public ICollection<ChildrenGrade>? ChildrenGrades { get; set; }
     }
 }

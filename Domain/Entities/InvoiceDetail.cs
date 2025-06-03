@@ -10,9 +10,8 @@ namespace Domain.Entities
 
         [Required]
         public Guid InvoiceID { get; set; }
-
-        [Required]
-        public int ProgramID { get; set; }
+        public int? ProgramID { get; set; }
+        public int? TuitionFeeID { get; set; }
 
         public decimal Price { get; set; }
 
@@ -25,5 +24,7 @@ namespace Domain.Entities
         public EnrichmentProgram? Programs { get; set; }
         [ForeignKey("ChildrenID")]
         public Children? Childrens { get; set; }
+        [ForeignKey("TuitionFeeID")]
+        public TuitionFee? TuitionFees { get; set; }
     }
 }

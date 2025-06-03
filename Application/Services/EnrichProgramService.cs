@@ -17,7 +17,7 @@ namespace Application.Services
         {
             _enrichProgramRepository = enrichProgramRepository;
         }
-        public async Task<EnrichmentProgram> GetProgramByIdAsync(int programId)
+        public async Task<EnrichmentProgram> GetProgramByIdAsync(int? programId)
         {
             var program = await _enrichProgramRepository.GetProgramByIdAsync(programId);
             if (program == null)

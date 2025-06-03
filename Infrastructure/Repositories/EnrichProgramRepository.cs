@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
      
-        public async Task<EnrichmentProgram> GetProgramByIdAsync(int programId)
+        public async Task<EnrichmentProgram> GetProgramByIdAsync(int? programId)
         {
             var program = await _context.EnrichmentPrograms.FindAsync(programId);
             return program!;

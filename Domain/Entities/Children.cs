@@ -27,5 +27,6 @@ namespace Domain.Entities
         public ICollection<ClassChildren>? ClassChildrens { get; set; }
         public ICollection<EnrollmentApplication>? EnrollmentApplications { get; set; }
         public ICollection<Invoice>? Invoices { get; set; }
+        public ICollection<ChildrenGrade>? ChildrenGrades { get; set; }
     }
 }

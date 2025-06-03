@@ -12,6 +12,8 @@ namespace Domain.Entities
 
         [Required]
         public int SyllabusID { get; set; }
+        [Required]
+        public int GradeLevelID { get; set; }
 
         public int Quantity { get; set; }
         public string? Status { get; set; }
@@ -20,6 +22,8 @@ namespace Domain.Entities
 
         [ForeignKey("SyllabusID")]
         public Syllabus? Syllabi { get; set; }
+        [ForeignKey("GradeLevelID")]
+        public GradeLevel? GradeLevels { get; set; }
         public ICollection<ClassTeacher>? ClassTeachers { get; set; }    
     }
 }

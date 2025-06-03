@@ -9,6 +9,6 @@ namespace Application.Interfaces
 {
     public interface IEnrichProgramService
     {
-        Task<EnrichmentProgram> GetProgramByIdAsync(int programId);
+        Task<EnrichmentProgram> GetProgramByIdAsync(int? programId);
     }
 }
