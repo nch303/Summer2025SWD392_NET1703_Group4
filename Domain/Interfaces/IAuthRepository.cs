@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Task RegisterAsync(Account account);
         Task<Account> LoginAsync(string email, string password);
         Task ConfirmEmailAsync(string token);
+        
     }
 }

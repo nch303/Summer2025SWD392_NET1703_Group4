@@ -125,6 +125,11 @@ namespace Application.Services
             return account;
         }
 
+        public async Task UpdateAccountAsync(Account account)
+        {
+            await _accountRepository.UpdateAccountAsync(account);
+        }
+
         public async Task<Account> CreateAccountAsync(Account account)
         {
             if (account == null)
