@@ -11,6 +11,7 @@ export const ROUTES = {
   CLASSES: '/classes',
   PROFILE: '/profile',
   PAYMENT_HISTORY: '/payment-history',
+  INVOICE_DETAIL: '/invoice-detail/:invoiceId',
   NEWS: '/news',
   ABOUT_US: '/about-us',
   CONTACT: '/contact',

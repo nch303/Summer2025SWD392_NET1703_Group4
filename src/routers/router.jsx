@@ -14,6 +14,7 @@ import AuthRoute from '../components/route-guard/AuthRoute';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
+import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 import { ROUTES } from '../constants/routes';
 
 // Staff feature imports
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.PAYMENT_HISTORY,
         element: <ProtectedRoute><PaymentHistoryPage /></ProtectedRoute>
+      },
+      {
+        path: ROUTES.INVOICE_DETAIL,
+        element: <ProtectedRoute><InvoiceDetailPage /></ProtectedRoute>
       },
       { path: ROUTES.NEWS, element: <NewsPage /> },
       { path: ROUTES.ABOUT_US, element: <AboutUsPage /> },

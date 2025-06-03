@@ -612,3 +612,57 @@ input[type="text"].payment-search-input {
     font-size: 13px;
   }
 }
+
+.payment-pay-link {
+  display: inline-flex;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.payment-pay-link:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.payment-pay-link i {
+  margin-right: 5px;
+}
+
+.payment-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.payment-search-input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.payment-search-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 40px;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.payment-search-button:hover {
+  color: var(--primary-color);
+}
