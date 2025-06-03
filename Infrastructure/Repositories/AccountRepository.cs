@@ -54,6 +54,16 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Account> UpdateAccountByUserAsync(Account account)
+        {
+            var updateAccount = _context.Accounts.FirstOrDefault(a => a.Id == account.Id);
+            updateAccount!.FullName = account.FullName;
+            updateAccount.PhoneNumber = account.PhoneNumber;
+            _context.Accounts.Update(updateAccount);
+            await _context.SaveChangesAsync();
+            return account;
+        }
+
         public async Task ChangePasswordAsync(string newPassword, Account account)
         {
             account.Password = newPassword;

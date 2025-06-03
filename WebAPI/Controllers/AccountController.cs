@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Reponse;
+﻿using Application.DTOs.Response;
 using Application.DTOs.Request;
 using Application.Interfaces;
 using AutoMapper;
@@ -113,6 +113,25 @@ namespace WebAPI.Controllers
                 var response = _mapper.Map<AccountResponse>(updatedAccount);
                 var role = await _roleService.GetById(updatedAccount.RoleId);
                 response.RoleName = role.Name;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("update-user-profile")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserProfileRequest request)
+        {
+            try
+            {
+                var account = await _accountService.GetCurrentAccount();
+                var id = account.Id;
+                account = _mapper.Map<Account>(request);
+                account.Id = id;
+                var updatedAccount = await _accountService.UpdateAccountByUserAsync(account);
+                var response = _mapper.Map<UpdateUserProfileResponse>(updatedAccount);
                 return Ok(response);
             }
             catch (Exception ex)

@@ -85,7 +85,7 @@ namespace PreSchoolBE.Controllers
             return Ok("Reset email sent successfully");
         }
 
-        [HttpPost("reset-password")]
+        [HttpPut("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
             if (string.IsNullOrEmpty(request.Token) || string.IsNullOrEmpty(request.NewPassword))
@@ -112,7 +112,7 @@ namespace PreSchoolBE.Controllers
             }
         }
         [Authorize]
-        [HttpPost("change-password")]
+        [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             try
