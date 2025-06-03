@@ -109,8 +109,28 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("ByCurrentAccount")]
+        [Authorize]
+        public async Task<IActionResult> GetByCurrentAccountAsync()
+        {
+            var currentAccount = await _accountService.GetCurrentAccount();
+            if (currentAccount == null)
+            {
+                return Unauthorized(new { message = "Unauthorized" });
+            }
+            var invoices = await _invoiceService.GetByAccountIdAsync(currentAccount.Id);
+            var invoiceResponses = _mapper.Map<List<InvoiceResponse>>(invoices);
+            for (int i = 0; i < invoiceResponses.Count; i++)
+            {
+                var invoiceResponse = invoiceResponses[i];
+                var parentAccount = await _accountService.GetAccountByIdAsync(currentAccount.Id);
+                invoiceResponse.ParentName = parentAccount.FullName;
+                var children = await _childrenService.GetChildByIdAsync(invoices[i].ChildrenID);
+                invoiceResponse.ChildrenName = children!.Name!;
+            }
+            return Ok(invoiceResponses);
 
-
+        }
 
     }
 }

@@ -26,6 +26,16 @@ namespace Application.Services
             _configuration = configuration;
         }
 
+        public async Task<Account> GetAccountByPhoneNumberAsync(string phoneNumber)
+        {
+            var account = await _accountRepository.GetAccountByPhoneNumberAsync(phoneNumber);
+            if (account == null)
+            {
+                throw new Exception("Account not found with the provided phone number.");
+            }
+            return account;
+        }
+
         public async Task<Account> GetAccountByEmailAsync(string email)
         {
             var account = await _accountRepository.GetAccountByEmailAsync(email);
@@ -120,5 +130,105 @@ namespace Application.Services
             await _accountRepository.UpdateAccountAsync(account);
         }
 
+        public async Task<Account> CreateAccountAsync(Account account)
+        {
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account), "Account cannot be null.");
+            }
+
+            //Check existing account by email
+            var existingAccount = await _accountRepository.GetAccountByEmailAsync(account.Email);
+            if (existingAccount != null)
+            {
+                throw new Exception("This email already exists.");
+            }
+
+            //Check existing account by phone number
+            var existingPhoneAccount = await _accountRepository.GetAccountByPhoneNumberAsync(account.PhoneNumber);
+            if (existingPhoneAccount != null)
+            {
+                throw new Exception("This phone number already exists.");
+            }
+
+            account.Status = "Active";
+            var createdAccount = await _accountRepository.CreateAccountAsync(account);
+            if (createdAccount == null)
+            {
+                throw new Exception("Failed to create account.");
+            }
+            return createdAccount;
+        }
+
+        public async Task<List<Account>> GetAllAsync()
+        {
+            var accounts = await _accountRepository.GetAllAsync();
+            if (accounts.Count == 0)
+            {
+                throw new Exception("No accounts found.");
+            }
+            return accounts;
+        }
+
+        public async Task<Account> UpdateAccountAsync(Account account)
+        {
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account), "Account cannot be null.");
+            }
+
+            //Check existing account by email
+            var existingEmailAccount = await _accountRepository.GetAccountByEmailAsync(account.Email);
+            if (existingEmailAccount != null)
+            {
+                throw new Exception("This email already exists.");
+            }
+
+            //Check existing account by phone number
+            var existingPhoneAccount = await _accountRepository.GetAccountByPhoneNumberAsync(account.PhoneNumber);
+            if (existingPhoneAccount != null)
+            {
+                throw new Exception("This phone number already exists.");
+            }
+
+            var existingAccount = await _accountRepository.GetAccountByIdAsync(account.Id);
+            if (existingAccount == null)
+            {
+                throw new Exception("Account not found.");
+            }
+
+            var updatedAccount = await _accountRepository.UpdateAccountAsync(account);
+            if (updatedAccount == null)
+            {
+                throw new Exception("Failed to update account.");
+            }
+            return updatedAccount;
+        }
+
+        public async Task<Account> BanAccountAsync(Guid id)
+        {
+            var account = await _accountRepository.GetAccountByIdAsync(id);
+            if (account == null)
+            {
+                throw new Exception("Account not found.");
+            }
+            account.Status = "Banned"; // Update the status to "Banned"
+            var updatedAccount = await _accountRepository.UpdateAccountAsync(account);
+            if (updatedAccount == null)
+            {
+                throw new Exception("Failed to ban account.");
+            }
+            return updatedAccount;
+        }
+
+        public async Task<Account> GetByIdAsync(Guid id)
+        {
+            var account = await _accountRepository.GetAccountByIdAsync(id);
+            if (account == null)
+            {
+                throw new Exception("Account not found.");
+            }
+            return account;
+        }
     }
 }

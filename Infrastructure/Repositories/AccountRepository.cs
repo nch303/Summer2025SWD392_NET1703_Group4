@@ -19,6 +19,12 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Account> GetAccountByPhoneNumberAsync(string phoneNumber)
+        {
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber);
+            return account!;
+        }
+
         public async Task<Account> GetAccountByEmailAsync(string email)
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
@@ -55,5 +61,44 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Account> CreateAccountAsync(Account account)
+        {
+            await _context.Accounts.AddAsync(account);
+            await _context.SaveChangesAsync();
+            return account;
+        }
+
+        public async Task<List<Account>> GetAllAsync()
+        {
+            var accounts = await _context.Accounts.ToListAsync();
+            return accounts;
+        }
+
+        public async Task<Account> UpdateAccountAsync(Account account)
+        {
+            var existingAccount = await _context.Accounts.FindAsync(account.Id);
+            existingAccount!.FullName = account.FullName;
+            existingAccount.PhoneNumber = account.PhoneNumber;
+            existingAccount.Email = account.Email;
+            existingAccount.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
+
+            _context.Accounts.Update(existingAccount);
+            await _context.SaveChangesAsync();
+            return existingAccount;
+        }
+
+        public async Task<Account> BanAccountAsync(Guid id)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+            _context.Accounts.Update(account!);
+            await _context.SaveChangesAsync();
+            return account!;
+        }
+
+        public async Task<Account> GetByIdAsync(Guid id)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+            return account!;
+        }
     }
 }

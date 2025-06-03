@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateChildAsync([FromBody] ChildrenRequest childRequest)
-        {            
+        {
             try
             {
                 var child = _mapper.Map<Children>(childRequest);
@@ -86,11 +86,32 @@ namespace WebAPI.Controllers
             {
                 var children = await _childrenService.GetAllChildrenAsync();
                 var childrenResponse = _mapper.Map<List<AllChildrenResponse>>(children);
-                for (int i=0; i<children.Count(); i++)
+                for (int i = 0; i < children.Count(); i++)
                 {
                     var parent = _accountService.GetAccountByIdAsync(children[i].ParentID);
                     childrenResponse[i].ParentName = parent.Result.FullName;
                     childrenResponse[i].PhoneNumber = parent.Result.PhoneNumber;
+                }
+                return Ok(childrenResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("byParentId/{parentId}")]
+        public async Task<IActionResult> GetChildrenByParentIdAsync(Guid parentId)
+        {
+            try
+            {
+                var children = await _childrenService.GetChildrenByParentIdAsync(parentId);
+                var childrenResponse = _mapper.Map<List<AllChildrenResponse>>(children);
+                for (int i = 0; i < children.Count(); i++)
+                {
+                    var parent = await _accountService.GetAccountByIdAsync(children[i].ParentID);
+                    childrenResponse[i].ParentName = parent.FullName;
+                    childrenResponse[i].PhoneNumber = parent.PhoneNumber;
                 }
                 return Ok(childrenResponse);
             }

@@ -13,6 +13,7 @@ namespace Domain.Interfaces
         Task<Children> UpdateChildAsync(Children child);
         Task<Children> GetChildByIdAsync(Guid id);
         Task<List<Children>> GetAllChildrenAsync();
+        Task<List<Children>> GetChildrenByParentIdAsync(Guid id);
 
     }
 }

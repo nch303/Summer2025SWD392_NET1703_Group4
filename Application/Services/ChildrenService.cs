@@ -51,5 +51,15 @@ namespace Application.Services
         {
             return await _childrenRepository.GetAllChildrenAsync();
         }
+
+        public async Task<List<Children>> GetChildrenByParentIdAsync(Guid parentId)
+        {
+            var children = await _childrenRepository.GetChildrenByParentIdAsync(parentId);
+            if (children == null || children.Count == 0)
+            {
+                throw new Exception("No children found for this parent.");
+            }
+            return children;
+        }
     }
 }
