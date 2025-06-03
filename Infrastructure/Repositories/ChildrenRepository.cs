@@ -51,5 +51,12 @@ namespace Infrastructure.Repositories
         .Where(c => c.Status == "Active")
         .ToListAsync();
         }
+
+        public async Task<List<Children>> GetChildrenByParentIdAsync(Guid id)
+        {
+            return await _context.Childrens
+                .Where(c => c.ParentID == id)
+                .ToListAsync();
+        }
     }
 }
