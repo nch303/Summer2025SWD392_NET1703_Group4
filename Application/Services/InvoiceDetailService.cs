@@ -23,5 +23,15 @@ namespace Application.Services
             if (invoiceDetail == null) throw new ArgumentNullException(nameof(invoiceDetail));
             return await _invoiceDetailRepository.CreateAsync(invoiceDetail);
         }
+
+        public async Task<List<InvoiceDetail>> GetByInvoiceIdAsync(Guid invoiceId)
+        {
+            var invoiceDetails = await _invoiceDetailRepository.GetByInvoiceIdAsync(invoiceId);
+            if (invoiceDetails.Count == 0)
+            {
+                throw new KeyNotFoundException($"No invoice details found for Invoice ID: {invoiceId}");
+            }
+            return invoiceDetails;
+        }
     }
 }
