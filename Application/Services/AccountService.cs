@@ -1,15 +1,16 @@
-﻿using Application.Interfaces;
-using Domain.Entities;
-using Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTOs.Request;
+using Application.Interfaces;
+using Domain.Entities;
+using Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Services
 {
@@ -128,6 +129,11 @@ namespace Application.Services
         public async Task UpdateAccountAsync(Account account)
         {
             await _accountRepository.UpdateAccountAsync(account);
+        }
+
+        public async Task<Account> UpdateAccountByUserAsync(Account account)
+        {
+            return await _accountRepository.UpdateAccountByUserAsync(account);
         }
 
         public async Task<Account> CreateAccountAsync(Account account)

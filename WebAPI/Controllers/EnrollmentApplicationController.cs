@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("submit-application")]
         public async Task<IActionResult> SubmitApplication([FromBody] EnrollmentApplicationRequest request, Guid parentID, Guid childID)
         {
             try

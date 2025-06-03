@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs.Request;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Application.Interfaces
         Task<Account> GetAccountByIdAsync(Guid id);
         Task<Account> UpdateAccountTokenAsync(string email, string token);
         Task UpdateAccountAsync(Account account);
-
+        Task<Account> UpdateAccountByUserAsync(Account account);
         Task<Account> CreateAccountAsync(Account account);
         Task<List<Account>> GetAllAsync();
         Task<Account> UpdateAccountByAdminAsync(Account account);
