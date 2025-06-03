@@ -10,6 +10,7 @@ namespace Application.DTOs.Response
     {
         public string? AcademicYear { get; set; }
         public int GradeLevelID { get; set; }
+        public string? Status { get; set; }
     }
 }
 

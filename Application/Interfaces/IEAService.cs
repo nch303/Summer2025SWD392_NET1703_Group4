@@ -11,5 +11,6 @@ namespace Application.Interfaces
     public interface IEAService
     {
         Task<EnrollmentApplication> CreateEnrollmentApplicationAsync(EnrollmentApplicationRequest request, Guid parentID, Guid childID);
+        Task<EnrollmentApplication> ViewApplicationAsync(Guid parentID);
     }
 }
