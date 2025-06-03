@@ -20,9 +20,11 @@ import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import AboutUsPage from '../pages/about-us/AboutUsPage';
 import ContactPage from '../pages/contact/ContactPage';
+import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
+import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
 
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
@@ -83,6 +85,11 @@ function App() {
                 <ChildProfileManagement />
               </ProtectedRoute>
             } />
+            <Route path="/payment-history" element={
+              <ProtectedRoute>
+                <PaymentHistoryPage />
+              </ProtectedRoute>
+            } />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
@@ -96,6 +103,7 @@ function App() {
           }>
             <Route index element={<Navigate to="/staff/dashboard" replace />} />
             <Route path="dashboard" element={<StaffDashboard />} />
+            <Route path="students" element={<ChildrenManagement />} />
           </Route>
           
           <Route path="*" element={<NotFoundPage />} />

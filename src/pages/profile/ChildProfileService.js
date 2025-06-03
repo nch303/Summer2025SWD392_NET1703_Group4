@@ -1,12 +1,13 @@
 import api from '../../config/axiosConfig';
 
 /**
- * Get all children for the current parent
- * @returns {Promise<Array>} List of children
+ * Get all children for a specific parent
+ * @param {string} parentId - ID của phụ huynh
+ * @returns {Promise<Array>} Danh sách trẻ
  */
-export const getParentChildren = async () => {
+export const getChildrenByParentId = async (parentId) => {
   try {
-    const response = await api.get('/api/Children/parent');
+    const response = await api.get(`/api/Children/byParentId/${parentId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching children:', error);

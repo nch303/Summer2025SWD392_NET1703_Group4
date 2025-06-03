@@ -13,11 +13,12 @@ import ContactPage from '../pages/contact/ContactPage';
 import AuthRoute from '../components/route-guard/AuthRoute';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
+import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import { ROUTES } from '../constants/routes';
 
 // Staff feature imports
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
-
+import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
         path: ROUTES.CHILD_PROFILE,
         element: <ProtectedRoute><ChildProfileManagement /></ProtectedRoute>
       },
+      {
+        path: ROUTES.PAYMENT_HISTORY,
+        element: <ProtectedRoute><PaymentHistoryPage /></ProtectedRoute>
+      },
       { path: ROUTES.NEWS, element: <NewsPage /> },
       { path: ROUTES.ABOUT_US, element: <AboutUsPage /> },
       { path: ROUTES.CONTACT, element: <ContactPage /> },
@@ -61,6 +66,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to={ROUTES.STAFF_DASHBOARD} replace /> },
       { path: 'dashboard', element: <StaffDashboard /> },
+      { path: 'students', element: <ChildrenManagement /> },
     ],
   },
 ]);

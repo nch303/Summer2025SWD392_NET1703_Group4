@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getParentChildren, addChild, updateChild, deleteChild } from './ChildProfileService';
+import { getChildrenByParentId, addChild, updateChild, deleteChild } from './ChildProfileService';
+import { useUser } from '../../contexts/UserContext';
 import './ProfilePage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,20 +12,25 @@ const ChildProfileManagement = () => {
   const [isEditingChild, setIsEditingChild] = useState(null);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [formSubmitting, setFormSubmitting] = useState(false);
+  const { currentUser } = useUser();
   
   const [childFormData, setChildFormData] = useState({
-    fullName: '',
-    dateOfBirth: '',
-    gender: 'male',
-    allergies: '',
-    medicalConditions: '',
-    emergencyContact: '',
-    notes: '',
+    name: '',
+    birthday: '',
+    gender: 'Male',
+    avatar: '',
+    city: '',
+    birthCertificate: '',
+    parentName: '',
+    phoneNumber: ''
   });
+
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [birthCertificateFile, setBirthCertificateFile] = useState(null);
 
   useEffect(() => {
     fetchChildren();
-  }, []);
+  }, [currentUser?.id]);
   
   // Control body scroll when modal is open/closed
   useEffect(() => {
@@ -43,9 +49,15 @@ const ChildProfileManagement = () => {
   }, [isModalOpen]);
 
   const fetchChildren = async () => {
+    if (!currentUser?.id) {
+      setIsLoading(false);
+      setError('Không thể xác định thông tin phụ huynh.');
+      return;
+    }
+    
     try {
       setIsLoading(true);
-      const data = await getParentChildren();
+      const data = await getChildrenByParentId(currentUser.id);
       setChildren(data || []);
       setError('');
     } catch (error) {
@@ -66,13 +78,14 @@ const ChildProfileManagement = () => {
 
   const resetForm = () => {
     setChildFormData({
-      fullName: '',
-      dateOfBirth: '',
-      gender: 'male',
-      allergies: '',
-      medicalConditions: '',
-      emergencyContact: '',
-      notes: '',
+      name: '',
+      birthday: '',
+      gender: 'Male',
+      avatar: '',
+      city: '',
+      birthCertificate: '',
+      parentName: '',
+      phoneNumber: ''
     });
   };
 
@@ -84,15 +97,32 @@ const ChildProfileManagement = () => {
 
   const openEditModal = (child) => {
     setIsEditingChild(child.id);
+    
+    let birthdayFormatted = '';
+    if (child.birthday) {
+      // Xử lý đúng ngày sinh bằng cách sử dụng chuỗi trực tiếp
+      const rawDate = new Date(child.birthday);
+      const year = rawDate.getFullYear();
+      // Tháng bắt đầu từ 0 nên cộng thêm 1
+      let month = rawDate.getMonth() + 1;
+      // Đảm bảo định dạng 2 chữ số
+      month = month < 10 ? `0${month}` : month;
+      let day = rawDate.getDate();
+      day = day < 10 ? `0${day}` : day;
+      birthdayFormatted = `${year}-${month}-${day}`;
+    }
+    
     setChildFormData({
-      fullName: child.fullName || '',
-      dateOfBirth: child.dateOfBirth ? new Date(child.dateOfBirth).toISOString().split('T')[0] : '',
-      gender: child.gender || 'male',
-      allergies: child.allergies || '',
-      medicalConditions: child.medicalConditions || '',
-      emergencyContact: child.emergencyContact || '',
-      notes: child.notes || '',
+      name: child.name || '',
+      birthday: birthdayFormatted,
+      gender: child.gender || 'Male',
+      avatar: child.avatar || '',
+      city: child.city || '',
+      birthCertificate: child.birthCertificate || '',
+      parentName: child.parentName || '',
+      phoneNumber: child.phoneNumber || ''
     });
+    
     setIsModalOpen(true);
   };
 
@@ -162,6 +192,23 @@ const ChildProfileManagement = () => {
     }
   };
 
+  const handleFileChange = (e, fileType) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (fileType === 'avatar') {
+        setChildFormData(prev => ({...prev, avatar: reader.result}));
+        setAvatarFile(file);
+      } else if (fileType === 'birthCertificate') {
+        setChildFormData(prev => ({...prev, birthCertificate: reader.result}));
+        setBirthCertificateFile(file);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   if (isLoading && !children.length) {
     return (
       <div className="profile-loading-container">
@@ -209,32 +256,37 @@ const ChildProfileManagement = () => {
         <div className="children-list">
           <div className="children-grid">
             {children.map((child) => (
-              <div key={child.id} className="child-card">
+              <div key={child.id} className="child-card child-card-row">
                 <div className="child-avatar">
-                  <FontAwesomeIcon icon="children" size="2x" />
+                  {child.avatar ? (
+                    <img 
+                      src={child.avatar} 
+                      alt={`Ảnh của ${child.name}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                    />
+                  ) : (
+                    <FontAwesomeIcon icon="children" size="2x" />
+                  )}
                 </div>
                 <div className="child-info">
-                  <h3 className="child-name">{child.fullName}</h3>
+                  <h3 className="child-name">{child.name}</h3>
                   <p className="child-dob">
-                    {new Date(child.dateOfBirth).toLocaleDateString('vi-VN')}
+                    {new Date(child.birthday).toLocaleDateString('vi-VN', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })}
                   </p>
-                  <div className="child-details">
-                    {child.allergies && (
-                      <p className="child-allergies">
-                        <strong>Dị ứng:</strong> {child.allergies}
-                      </p>
-                    )}
-                    {child.medicalConditions && (
-                      <p className="child-medical">
-                        <strong>Tình trạng y tế:</strong> {child.medicalConditions}
-                      </p>
-                    )}
-                    {child.emergencyContact && (
-                      <p className="child-contact">
-                        <strong>Liên hệ KCấp:</strong> {child.emergencyContact}
-                      </p>
-                    )}
-                  </div>
+                </div>
+                <div className="child-details-row">
+                  <p className="child-gender">
+                    <FontAwesomeIcon icon={child.gender === 'Male' ? 'mars' : 'venus'} />
+                    <span>{child.gender === 'Male' ? 'Nam' : 'Nữ'}</span>
+                  </p>
+                  <p className="child-city">
+                    <FontAwesomeIcon icon="map-marker-alt" />
+                    <span>{child.city || 'Chưa cập nhật'}</span>
+                  </p>
                 </div>
                 <div className="child-actions">
                   <button
@@ -247,7 +299,7 @@ const ChildProfileManagement = () => {
                   </button>
                   <button
                     className="delete-child-btn"
-                    onClick={() => handleDeleteChild(child.id, child.fullName)}
+                    onClick={() => handleDeleteChild(child.id, child.name)}
                     title="Xóa thông tin"
                     aria-label="Xóa thông tin"
                   >
@@ -281,7 +333,7 @@ const ChildProfileManagement = () => {
       {/* Modal Form */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content child-detail-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h3>{isEditingChild ? 'Cập nhật thông tin của bé' : 'Thêm hồ sơ mới của bé'}</h3>
               <button className="modal-close-btn" onClick={closeModal} aria-label="Đóng">
@@ -290,17 +342,56 @@ const ChildProfileManagement = () => {
             </div>
             
             <div className="modal-body">
+              
               <form className="profile-form" onSubmit={handleSubmitForm}>
+                <h4 className="form-section-title">
+                  <FontAwesomeIcon icon="child" />
+                  {isEditingChild ? 'Cập nhật thông tin trẻ' : 'Thông tin cơ bản của trẻ'}
+                </h4>
+                
+                <div className="form-group">
+                  <label htmlFor="avatar">
+                    <FontAwesomeIcon icon="user-circle" className="input-label-icon" /> Ảnh đại diện
+                  </label>
+                  <div className="file-upload-container">
+                    <input
+                      type="file"
+                      id="avatar"
+                      name="avatar"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, 'avatar')}
+                      className="file-input"
+                    />
+                    <label htmlFor="avatar" className="file-upload-btn">
+                      <FontAwesomeIcon icon="cloud-upload-alt" /> Chọn ảnh đại diện
+                    </label>
+                    <span className="file-name">
+                      {avatarFile ? avatarFile.name : 'Chưa chọn file'}
+                    </span>
+                  </div>
+                  
+                  {childFormData.avatar && (
+                    <div className="avatar-preview">
+                      <img 
+                        src={childFormData.avatar} 
+                        alt="Xem trước ảnh đại diện" 
+                      />
+                    </div>
+                  )}
+                </div>
+                
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="fullName">Họ và tên của bé *</label>
+                    <label htmlFor="name">
+                       Họ và tên của bé *
+                    </label>
                     <div className="input-with-icon">
                       <FontAwesomeIcon icon="user" />
                       <input
                         type="text"
-                        id="fullName"
-                        name="fullName"
-                        value={childFormData.fullName}
+                        id="name"
+                        name="name"
+                        value={childFormData.name}
                         onChange={handleInputChange}
                         required
                         placeholder="Nhập họ và tên của bé"
@@ -309,14 +400,16 @@ const ChildProfileManagement = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="dateOfBirth">Ngày sinh *</label>
+                    <label htmlFor="birthday">
+                      Ngày sinh *
+                    </label>
                     <div className="input-with-icon">
-                      <FontAwesomeIcon icon="calendar-days" />
+                      <FontAwesomeIcon icon="birthday-cake" />
                       <input
                         type="date"
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        value={childFormData.dateOfBirth}
+                        id="birthday"
+                        name="birthday"
+                        value={childFormData.birthday}
                         onChange={handleInputChange}
                         required
                       />
@@ -324,84 +417,130 @@ const ChildProfileManagement = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="gender">Giới tính</label>
-                  <div className="radio-group">
-                    <label className={`radio-label ${childFormData.gender === 'male' ? 'active' : ''}`}>
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="male"
-                        checked={childFormData.gender === 'male'}
-                        onChange={handleInputChange}
-                      />
-                      <span>Nam</span>
-                    </label>
-                    <label className={`radio-label ${childFormData.gender === 'female' ? 'active' : ''}`}>
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="female"
-                        checked={childFormData.gender === 'female'}
-                        onChange={handleInputChange}
-                      />
-                      <span>Nữ</span>
-                    </label>
-                  </div>
-                </div>
-
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="allergies">Dị ứng (nếu có)</label>
-                    <textarea
-                      id="allergies"
-                      name="allergies"
-                      value={childFormData.allergies}
-                      onChange={handleInputChange}
-                      rows="2"
-                      placeholder="Mô tả các dị ứng của bé (nếu có)"
-                    ></textarea>
+                    <label htmlFor="gender">
+                      <FontAwesomeIcon icon="venus-mars" className="input-label-icon" /> Giới tính
+                    </label>
+                    <div className="radio-group">
+                      <label className={`radio-label ${childFormData.gender === 'Male' ? 'active' : ''}`}>
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Male"
+                          checked={childFormData.gender === 'Male'}
+                          onChange={handleInputChange}
+                        />
+                        <FontAwesomeIcon icon="mars" /> <span>Nam</span>
+                      </label>
+                      <label className={`radio-label ${childFormData.gender === 'Female' ? 'active' : ''}`}>
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Female"
+                          checked={childFormData.gender === 'Female'}
+                          onChange={handleInputChange}
+                        />
+                        <FontAwesomeIcon icon="venus" /> <span>Nữ</span>
+                      </label>
+                    </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="medicalConditions">Tình trạng y tế (nếu có)</label>
-                    <textarea
-                      id="medicalConditions"
-                      name="medicalConditions"
-                      value={childFormData.medicalConditions}
-                      onChange={handleInputChange}
-                      rows="2"
-                      placeholder="Ghi chú về tình trạng sức khỏe đặc biệt"
-                    ></textarea>
+                    <label htmlFor="city">
+                      Thành phố
+                    </label>
+                    <div className="input-with-icon">
+                      <FontAwesomeIcon icon="map-marker-alt" />
+                      <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        value={childFormData.city}
+                        onChange={handleInputChange}
+                        placeholder="Nhập thành phố"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="emergencyContact">Liên hệ khẩn cấp *</label>
-                  <div className="input-with-icon">
-                    <FontAwesomeIcon icon="phone" />
+                  <label htmlFor="birthCertificate">
+                    <FontAwesomeIcon icon="file-certificate" className="input-label-icon" /> Giấy khai sinh
+                  </label>
+                  <div className="file-upload-container">
                     <input
-                      type="text"
-                      id="emergencyContact"
-                      name="emergencyContact"
-                      placeholder="Tên & số điện thoại"
-                      value={childFormData.emergencyContact}
-                      onChange={handleInputChange}
-                      required
+                      type="file"
+                      id="birthCertificate"
+                      name="birthCertificate"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e, 'birthCertificate')}
+                      className="file-input"
                     />
+                    <label htmlFor="birthCertificate" className="file-upload-btn">
+                      <FontAwesomeIcon icon="file-upload" /> Chọn ảnh giấy khai sinh
+                    </label>
+                    <span className="file-name">
+                      {birthCertificateFile ? birthCertificateFile.name : 'Chưa chọn file'}
+                    </span>
                   </div>
+                  
+                  {childFormData.birthCertificate && (
+                    <div className="certificate-preview-small">
+                      <img 
+                        src={childFormData.birthCertificate} 
+                        alt="Xem trước giấy khai sinh" 
+                      />
+                      <div className="certificate-overlay-small">
+                        <FontAwesomeIcon icon="search-plus" /> Nhấn để xem chi tiết
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="notes">Ghi chú</label>
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    value={childFormData.notes}
-                    onChange={handleInputChange}
-                    rows="3"
-                    placeholder="Thông tin thêm về bé (sở thích, đặc điểm đặc biệt, v.v.)"
-                  ></textarea>
+                <div className="section-divider"></div>
+
+                <h4 className="form-section-title">
+                  <FontAwesomeIcon icon="user-friends" />
+                  Thông tin phụ huynh
+                </h4>
+                
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="parentName">
+                       Họ tên phụ huynh *
+                    </label>
+                    <div className="input-with-icon">
+                      <FontAwesomeIcon icon="user-tie" />
+                      <input
+                        type="text"
+                        id="parentName"
+                        name="parentName"
+                        value={childFormData.parentName}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Nhập họ tên phụ huynh"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="phoneNumber">
+                      <FontAwesomeIcon icon="phone-alt" className="input-label-icon" /> Số điện thoại *
+                    </label>
+                    <div className="input-with-icon">
+                      <FontAwesomeIcon icon="phone" />
+                      <input
+                        type="text"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={childFormData.phoneNumber}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Nhập số điện thoại liên hệ"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="modal-footer">
@@ -426,7 +565,7 @@ const ChildProfileManagement = () => {
                       </>
                     ) : (
                       <>
-                        <FontAwesomeIcon icon="check" />
+                        <FontAwesomeIcon icon="save" />
                         {isEditingChild ? 'Cập nhật thông tin' : 'Lưu thông tin'}
                       </>
                     )}

@@ -13,7 +13,19 @@ import {
   faKey,
   faEye,
   faEyeSlash,
-  faCog
+  faCog,
+  faSignature,
+  faBirthdayCake,
+  faMars,
+  faVenus,
+  faCity,
+  faMapMarkerAlt,
+  faUserTie,
+  faUserFriends,
+  faUserCheck,
+  faUserTimes,
+  faChild,
+  
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -31,7 +43,18 @@ library.add(
   faKey,
   faEye,
   faEyeSlash,
-  faCog
+  faCog,
+  faSignature,
+  faBirthdayCake,
+  faMars,
+  faVenus,
+  faCity,
+  faMapMarkerAlt,
+  faUserTie,
+  faUserFriends,
+  faUserCheck,
+  faUserTimes,
+  faChild,
 );
 
 // Không cần export vì đã đăng ký vào library 
