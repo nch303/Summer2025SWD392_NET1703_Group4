@@ -215,5 +215,15 @@ namespace Application.Services
             }
             return updatedAccount;
         }
+
+        public async Task<Account> GetByIdAsync(Guid id)
+        {
+            var account = await _accountRepository.GetAccountByIdAsync(id);
+            if (account == null)
+            {
+                throw new Exception("Account not found.");
+            }
+            return account;
+        }
     }
 }

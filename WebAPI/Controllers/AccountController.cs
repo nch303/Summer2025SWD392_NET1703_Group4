@@ -41,6 +41,27 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("{Id}")]  
+        public async Task<IActionResult> GetAccountById(Guid Id)
+        {
+            try
+            {
+                var account = await _accountService.GetAccountByIdAsync(Id);
+                if (account == null)
+                {
+                    return NotFound("Account not found.");
+                }
+                var response = _mapper.Map<AccountResponse>(account);
+                var role = await _roleService.GetById(account.RoleId);
+                response.RoleName = role.Name;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("byAdmin")]
         public async Task<IActionResult> CreateAccount([FromBody] AccountRequest request)
         {

@@ -81,5 +81,11 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return account!;
         }
+
+        public async Task<Account> GetByIdAsync(Guid id)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+            return account!;
+        }
     }
 }

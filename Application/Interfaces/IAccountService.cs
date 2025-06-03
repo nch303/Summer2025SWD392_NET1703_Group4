@@ -18,6 +18,6 @@ namespace Application.Interfaces
         Task<List<Account>> GetAllAsync();
         Task<Account> UpdateAccountAsync(Account account);
         Task<Account> BanAccountAsync(Guid id);
-
+        Task<Account> GetByIdAsync(Guid id);
     }
 }
