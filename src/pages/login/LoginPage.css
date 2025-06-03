@@ -1,0 +1,843 @@
+/* LoginPage.css */
+.login-page {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to right, #2c3e50, #3498db, #9dd5f5); /* Night to day gradient */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Decorative elements */
+  .login-decoration {
+    position: absolute;
+    z-index: 1;
+  }
+  
+  /* Day-night separator */
+  .day-night-separator {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, 
+      rgba(44, 62, 80, 0.8) 0%, 
+      rgba(52, 152, 219, 0.6) 50%, 
+      rgba(157, 213, 245, 0.4) 100%);
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+  
+  /* Enhanced sun with shimmering edge effect */
+  .sun-element {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #ffeb3b, #ff9800);
+    top: 15%;
+    right: 15%;
+    z-index: 1;
+    animation: sun-glow 8s infinite alternate;
+    position: relative; /* Add for pseudo-element positioning */
+  }
+  
+  /* Add a shimmer effect around the sun */
+  .sun-element::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: radial-gradient(circle at center, rgba(255, 255, 0, 0.7) 30%, rgba(255, 215, 0, 0.5) 50%, rgba(255, 165, 0, 0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: sun-shimmer 5s infinite alternate;
+  }
+  
+  /* Add a second sparkling layer */
+  .sun-element::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.7;
+    animation: sun-sparkle 3s infinite;
+  }
+  
+  /* Modified sun glow animation */
+  @keyframes sun-glow {
+    0% {
+      box-shadow: 0 0 50px rgba(255, 152, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
+      transform: scale(1);
+    }
+    100% {
+      box-shadow: 0 0 70px rgba(255, 152, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6);
+      transform: scale(1.05);
+    }
+  }
+  
+  /* Shimmer animation for the outer glow */
+  @keyframes sun-shimmer {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+  }
+  
+  /* Sparkle animation for the edges */
+  @keyframes sun-sparkle {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  
+  /* Add this new class to rotate the entire ray container */
+  .sun-ray-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    animation: rotate-rays 20s linear infinite;
+  }
+  
+  .sun-ray {
+    position: absolute;
+    background-color: rgba(255, 235, 59, 0.4);
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 0;
+  }
+  
+  .ray-1 { width: 100px; height: 2px; transform: rotate(0deg); }
+  .ray-2 { width: 90px; height: 2px; transform: rotate(45deg); }
+  .ray-3 { width: 80px; height: 2px; transform: rotate(90deg); }
+  .ray-4 { width: 90px; height: 2px; transform: rotate(135deg); }
+  .ray-5 { width: 100px; height: 2px; transform: rotate(180deg); }
+  .ray-6 { width: 90px; height: 2px; transform: rotate(225deg); }
+  .ray-7 { width: 80px; height: 2px; transform: rotate(270deg); }
+  .ray-8 { width: 90px; height: 2px; transform: rotate(315deg); }
+  
+  /* Define the rotation animation */
+  @keyframes rotate-rays {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+  }
+  }
+  
+  /* Moon element */
+  .moon-element {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f5f5f5, #e0e0e0);
+    top: 20%;
+    left: 15%;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    z-index: 1;
+    animation: moon-glow 8s infinite alternate;
+  }
+  
+  .moon-crater {
+    position: absolute;
+    background-color: rgba(200, 200, 200, 0.5);
+    border-radius: 50%;
+  }
+  
+  .crater-1 {
+    width: 25px;
+    height: 25px;
+    top: 30px;
+    left: 25px;
+  }
+  
+  .crater-2 {
+    width: 15px;
+    height: 15px;
+    top: 60px;
+    left: 65px;
+  }
+  
+  .crater-3 {
+    width: 20px;
+    height: 20px;
+    top: 75px;
+    left: 40px;
+  }
+  
+  @keyframes moon-glow {
+    0% {
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+      transform: scale(1);
+    }
+    100% {
+      box-shadow: 0 0 60px rgba(255, 255, 255, 0.7);
+      transform: scale(1.03);
+    }
+  }
+  
+  /* Stars */
+  .stars-container {
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  .star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: twinkle 4s infinite alternate;
+  }
+  
+  .star-1 { width: 3px; height: 3px; top: 15%; left: 20%; animation-delay: 0s; }
+  .star-2 { width: 2px; height: 2px; top: 25%; left: 10%; animation-delay: 0.5s; }
+  .star-3 { width: 4px; height: 4px; top: 35%; left: 25%; animation-delay: 1s; }
+  .star-4 { width: 2px; height: 2px; top: 45%; left: 15%; animation-delay: 1.5s; }
+  .star-5 { width: 3px; height: 3px; top: 55%; left: 5%; animation-delay: 2s; }
+  .star-6 { width: 4px; height: 4px; top: 65%; left: 30%; animation-delay: 2.5s; }
+  .star-7 { width: 2px; height: 2px; top: 75%; left: 12%; animation-delay: 3s; }
+  .star-8 { width: 3px; height: 3px; top: 85%; left: 22%; animation-delay: 3.5s; }
+  
+  @keyframes twinkle {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.3); }
+  }
+  
+  /* Rainbow decorations */
+  .login-rainbow {
+    position: absolute;
+    height: 10px;
+    width: 100%;
+    left: 0;
+    background: linear-gradient(to right, 
+      #f44336, #ff9800, #ffeb3b, 
+      #4caf50, #2196f3, #3f51b5, #9c27b0);
+    z-index: 2;
+  }
+  
+  .top-rainbow {
+    top: 0;
+  }
+  
+  .bottom-rainbow {
+    bottom: 0;
+  }
+  
+  /* Main container */
+  .login-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    position: relative;
+    z-index: 5;
+  }
+  
+  .login-card {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Card gradient border */
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(to right, #ff9800, #8bc34a);
+    border-radius: 20px 20px 0 0;
+  }
+  
+  /* Colorful dots - match registration page */
+  .color-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  
+  .dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    animation: bounce 2s infinite alternate;
+  }
+  
+  .dot-red {
+    background-color: #f44336;
+    animation-delay: 0s;
+  }
+  
+  .dot-yellow {
+    background-color: #ffeb3b;
+    animation-delay: 0.2s;
+  }
+  
+  .dot-green {
+    background-color: #4caf50;
+    animation-delay: 0.4s;
+  }
+  
+  .dot-blue {
+    background-color: #2196f3;
+    animation-delay: 0.6s;
+  }
+  
+  .dot-purple {
+    background-color: #9c27b0;
+    animation-delay: 0.8s;
+  }
+  
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  /* Remove the underline from login header since we're using dots instead */
+  .login-underline {
+    display: none;
+  }
+  
+  /* Header */
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .login-logo {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #ff8a65, #ff5722);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 6px 12px rgba(255, 87, 34, 0.2);
+  }
+  
+  .login-logo svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+  }
+  
+  .login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff5722;
+    margin-bottom: 0.5rem;
+  }
+  
+  .login-subtitle {
+    font-size: 1.25rem;
+    color: #ff8a65;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  /* Error message */
+  .login-error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    border-left: 4px solid #d32f2f;
+  }
+  
+  .login-error svg {
+    width: 24px;
+    height: 24px;
+    color: #d32f2f;
+    margin-right: 0.75rem;
+  }
+  
+  /* Form */
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .login-input-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #455a64;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .login-label svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    color: #ff8a65;
+  }
+  
+  .login-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background-color: #fff;
+  }
+  
+  .login-input:focus {
+    border-color: #ff8a65;
+    box-shadow: 0 0 0 3px rgba(255, 138, 101, 0.2);
+    outline: none;
+  }
+  
+  .login-input::placeholder {
+    color: #bdbdbd;
+  }
+  
+  /* Options */
+  .login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .login-remember {
+    display: flex;
+    align-items: center;
+  }
+  
+  .remember-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    accent-color: #ff8a65;
+  }
+  
+  .remember-label {
+    font-size: 0.9rem;
+    color: #546e7a;
+  }
+  
+  .forgot-link {
+    font-size: 0.9rem;
+    color: #ff8a65;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+  
+  .forgot-link:hover {
+    color: #ff5722;
+    text-decoration: underline;
+  }
+  
+  /* Submit button */
+  .login-button {
+    background: linear-gradient(to right, #ff8a65, #ff5722);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(255, 87, 34, 0.2);
+    margin-top: 1rem;
+  }
+  
+  .login-button:hover {
+    background: linear-gradient(to right, #ff7043, #f4511e);
+    box-shadow: 0 6px 12px rgba(255, 87, 34, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .login-button:disabled {
+    background: #e0e0e0;
+    color: #9e9e9e;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* Register link */
+  .login-register {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #546e7a;
+  }
+  
+  .register-link {
+    color: #ff8a65;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 0.5rem;
+    transition: color 0.3s;
+  }
+  
+  .register-link:hover {
+    color: #ff5722;
+    text-decoration: underline;
+  }
+  
+  /* Decoration elements */
+  .login-decoration-container {
+    display: none;
+  }
+  
+  .pencil-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    transform: rotate(-15deg);
+    margin-top: 2rem;
+  }
+  
+  .pencil {
+    width: 12px;
+    height: 120px;
+    border-radius: 6px;
+    position: relative;
+  }
+  
+  .pencil::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 15px solid #f5f5f5;
+  }
+  
+  .pencil::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 12px;
+    height: 15px;
+    background-color: #ffecb3;
+    border-radius: 0 0 6px 6px;
+  }
+  
+  .pencil-red {
+    background-color: #f44336;
+    animation: float-pencil 4s infinite alternate;
+  }
+  
+  .pencil-blue {
+    background-color: #2196f3;
+    animation: float-pencil 4s infinite alternate;
+    animation-delay: 0.5s;
+  }
+  
+  .pencil-green {
+    background-color: #4caf50;
+    animation: float-pencil 4s infinite alternate;
+    animation-delay: 1s;
+  }
+  
+  .pencil-yellow {
+    background-color: #ffc107;
+    animation: float-pencil 4s infinite alternate;
+    animation-delay: 1.5s;
+  }
+  
+  @keyframes float-pencil {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .book-stack {
+    position: relative;
+    height: 100px;
+    width: 150px;
+    margin: 2rem 0;
+  }
+  
+  .book {
+    position: absolute;
+    width: 150px;
+    height: 20px;
+    border-radius: 2px 10px 10px 2px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .book-blue {
+    background-color: #2196f3;
+    bottom: 0;
+    transform: rotate(0deg);
+    z-index: 3;
+  }
+  
+  .book-red {
+    background-color: #f44336;
+    bottom: 15px;
+    transform: rotate(-5deg);
+    z-index: 2;
+  }
+  
+  .book-green {
+    background-color: #4caf50;
+    bottom: 25px;
+    transform: rotate(-10deg);
+    z-index: 1;
+  }
+  
+  .crayon-box {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+  }
+  
+  .crayon {
+    width: 10px;
+    height: 60px;
+    border-radius: 5px 5px 0 0;
+  }
+  
+  .crayon-red { 
+    background-color: #f44336; 
+    height: 40px;
+    animation: crayon-bounce 2s infinite alternate;
+  }
+  .crayon-orange { 
+    background-color: #ff9800; 
+    height: 50px;
+    animation: crayon-bounce 2s infinite alternate;
+    animation-delay: 0.2s;
+  }
+  .crayon-yellow { 
+    background-color: #ffc107; 
+    height: 45px;
+    animation: crayon-bounce 2s infinite alternate;
+    animation-delay: 0.4s;
+  }
+  .crayon-green { 
+    background-color: #4caf50; 
+    height: 55px;
+    animation: crayon-bounce 2s infinite alternate;
+    animation-delay: 0.6s;
+  }
+  .crayon-blue { 
+    background-color: #2196f3; 
+    height: 35px;
+    animation: crayon-bounce 2s infinite alternate;
+    animation-delay: 0.8s;
+  }
+  .crayon-purple { 
+    background-color: #9c27b0; 
+    height: 48px;
+    animation: crayon-bounce 2s infinite alternate;
+    animation-delay: 1s;
+  }
+  
+  @keyframes crayon-bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  /* Rainbow footer */
+  .login-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(to right, #f44336, #ff9800, #ffc107, #4caf50, #2196f3, #3f51b5, #9c27b0);
+    z-index: 1;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .login-container {
+      flex-direction: column;
+      max-width: 600px;
+    }
+  
+    .login-decoration-container {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .login-form-wrapper {
+      padding: 2rem 1.5rem;
+    }
+  
+    .login-title {
+      font-size: 1.5rem;
+    }
+  
+    .login-subtitle {
+      font-size: 1rem;
+    }
+  
+    .login-options {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  /* Remove old success popup styles */
+  .success-popup {
+    display: none;
+  }
+
+  /* New toast notification styles */
+  .success-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #43a047, #66bb6a);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    overflow: hidden;
+    min-width: 300px;
+    max-width: 400px;
+    z-index: 1000;
+    animation: slide-in-right 0.5s ease forwards;
+  }
+
+  .success-toast-icon {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+  }
+
+  .success-toast-icon svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+  }
+
+  .success-toast-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .success-toast-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .success-toast-message {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .success-toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 0;
+    animation: progress 1.5s linear forwards;
+  }
+
+  @keyframes slide-in-right {
+    0% {
+      transform: translateX(100%) translateY(-10px);
+      opacity: 0;
+    }
+    60% {
+      transform: translateX(-10px) translateY(0);
+    }
+    100% {
+      transform: translateX(0) translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes progress {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }

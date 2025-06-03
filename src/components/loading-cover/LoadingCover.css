@@ -1,0 +1,252 @@
+.loading-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #89CFF0; /* Light blue background */
+    z-index: 9999;
+    overflow: hidden;
+  }
+  
+  .loading-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* School Bus Animation */
+  .school-bus {
+    position: absolute;
+    top: 50%;
+    left: -100px;
+    transform: translateY(-50%);
+    animation: driveBus 5s linear infinite;
+  }
+  
+  @keyframes driveBus {
+    0% {
+      left: -100px;
+    }
+    100% {
+      left: calc(100% + 100px);
+    }
+  }
+  
+  .bus-body {
+    width: 160px;
+    height: 70px;
+    background-color: #FFD800;
+    border-radius: 10px;
+    position: relative;
+  }
+  
+  .bus-window {
+    position: absolute;
+    background-color: #ADD8E6;
+    border: 2px solid #333;
+  }
+  
+  .bus-window.front {
+    width: 30px;
+    height: 25px;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+  }
+  
+  .bus-window.middle {
+    width: 30px;
+    height: 25px;
+    top: 10px;
+    left: 50px;
+    border-radius: 5px;
+  }
+  
+  .bus-window.back {
+    width: 30px;
+    height: 25px;
+    top: 10px;
+    left: 90px;
+    border-radius: 5px;
+  }
+  
+  .bus-wheel {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: #333;
+    border-radius: 50%;
+    bottom: -12px;
+    animation: rotateWheel 1s linear infinite;
+  }
+  
+  @keyframes rotateWheel {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .bus-wheel.front {
+    left: 20px;
+  }
+  
+  .bus-wheel.back {
+    right: 20px;
+  }
+  
+  .bus-light {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #FFF;
+    border-radius: 50%;
+    bottom: 20px;
+    left: 0;
+    animation: blinkLight 1s ease-in-out infinite;
+  }
+  
+  @keyframes blinkLight {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  /* Loading Text Animation */
+  .loading-text {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 28px;
+    color: #FF6B6B;
+    letter-spacing: 5px;
+  }
+  
+  .loading-text span {
+    display: inline-block;
+    animation: bounce 1s ease infinite alternate;
+  }
+  
+  .loading-text span:nth-child(2) { animation-delay: 0.1s; }
+  .loading-text span:nth-child(3) { animation-delay: 0.2s; }
+  .loading-text span:nth-child(4) { animation-delay: 0.3s; }
+  .loading-text span:nth-child(5) { animation-delay: 0.4s; }
+  .loading-text span:nth-child(6) { animation-delay: 0.5s; }
+  .loading-text span:nth-child(7) { animation-delay: 0.6s; }
+  .loading-text span:nth-child(8) { animation-delay: 0.7s; }
+  .loading-text span:nth-child(9) { animation-delay: 0.8s; }
+  .loading-text span:nth-child(10) { animation-delay: 0.9s; }
+  
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-15px);
+    }
+  }
+  
+  /* Clouds Animation */
+  .clouds {
+    width: 100%;
+    position: absolute;
+    top: 20%;
+  }
+  
+  .cloud {
+    position: absolute;
+    background-color: white;
+    border-radius: 50px;
+  }
+  
+  .cloud:before, .cloud:after {
+    content: '';
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+  }
+  
+  .cloud1 {
+    width: 100px;
+    height: 40px;
+    left: 20%;
+    animation: floatCloud 15s linear infinite;
+  }
+  
+  .cloud1:before {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    left: 15px;
+  }
+  
+  .cloud1:after {
+    width: 40px;
+    height: 40px;
+    top: -20px;
+    right: 15px;
+  }
+  
+  .cloud2 {
+    width: 120px;
+    height: 40px;
+    left: 50%;
+    animation: floatCloud 18s linear infinite;
+    animation-delay: -5s;
+  }
+  
+  .cloud2:before {
+    width: 60px;
+    height: 60px;
+    top: -30px;
+    left: 15px;
+  }
+  
+  .cloud2:after {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    right: 15px;
+  }
+  
+  .cloud3 {
+    width: 80px;
+    height: 30px;
+    left: 70%;
+    animation: floatCloud 12s linear infinite;
+    animation-delay: -8s;
+  }
+  
+  .cloud3:before {
+    width: 40px;
+    height: 40px;
+    top: -20px;
+    left: 10px;
+  }
+  
+  .cloud3:after {
+    width: 30px;
+    height: 30px;
+    top: -15px;
+    right: 10px;
+  }
+  
+  @keyframes floatCloud {
+    0% {
+      transform: translateX(100vw);
+    }
+    100% {
+      transform: translateX(-100px);
+    }
+  }
