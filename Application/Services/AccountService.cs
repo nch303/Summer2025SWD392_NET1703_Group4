@@ -170,7 +170,7 @@ namespace Application.Services
             return accounts;
         }
 
-        public async Task<Account> UpdateAccountAsync(Account account)
+        public async Task<Account> UpdateAccountByAdminAsync(Account account)
         {
             if (account == null)
             {
@@ -197,7 +197,7 @@ namespace Application.Services
                 throw new Exception("Account not found.");
             }
 
-            var updatedAccount = await _accountRepository.UpdateAccountAsync(account);
+            var updatedAccount = await _accountRepository.UpdateAccountByAdminAsync(account);
             if (updatedAccount == null)
             {
                 throw new Exception("Failed to update account.");
@@ -213,7 +213,7 @@ namespace Application.Services
                 throw new Exception("Account not found.");
             }
             account.Status = "Banned"; // Update the status to "Banned"
-            var updatedAccount = await _accountRepository.UpdateAccountAsync(account);
+            var updatedAccount = await _accountRepository.BanAccountAsync(id);
             if (updatedAccount == null)
             {
                 throw new Exception("Failed to ban account.");

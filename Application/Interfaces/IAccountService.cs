@@ -18,7 +18,7 @@ namespace Application.Interfaces
 
         Task<Account> CreateAccountAsync(Account account);
         Task<List<Account>> GetAllAsync();
-        Task<Account> UpdateAccountAsync(Account account);
+        Task<Account> UpdateAccountByAdminAsync(Account account);
         Task<Account> BanAccountAsync(Guid id);
         Task<Account> GetByIdAsync(Guid id);
     }

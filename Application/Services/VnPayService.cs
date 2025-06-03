@@ -73,7 +73,8 @@ namespace Application.Services
                 Date = DateTime.Now,
                 AccountID = currentAccount.Result.Id,
                 Status = "Pending",
-                PaymentLink = paymentUrl
+                PaymentLink = paymentUrl,
+                Name = request.Name
             };
             await _invoiceService.CreateAsync(invoice);
 

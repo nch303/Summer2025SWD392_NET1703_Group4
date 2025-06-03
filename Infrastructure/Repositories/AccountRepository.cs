@@ -74,7 +74,7 @@ namespace Infrastructure.Repositories
             return accounts;
         }
 
-        public async Task<Account> UpdateAccountAsync(Account account)
+        public async Task<Account> UpdateAccountByAdminAsync(Account account)
         {
             var existingAccount = await _context.Accounts.FindAsync(account.Id);
             existingAccount!.FullName = account.FullName;

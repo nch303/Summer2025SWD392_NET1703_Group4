@@ -4,6 +4,7 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using PreSchoolBE.src.Application.Services;
 
 namespace WebAPI.Controllers
 {
@@ -14,20 +15,47 @@ namespace WebAPI.Controllers
         private readonly IChildrenService _childrenService;
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public ChildrenController(IChildrenService childrenService, IMapper mapper, IAccountService accountService)
+        public ChildrenController(IChildrenService childrenService, IMapper mapper, IAccountService accountService
+            , ICloudinaryService cloudinaryService)
         {
             _childrenService = childrenService;
             _mapper = mapper;
             _accountService = accountService;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateChildAsync([FromBody] ChildrenRequest childRequest)
+        public async Task<IActionResult> CreateChildAsync([FromForm] ChildrenRequest childRequest)
         {
             try
             {
+                string? avatarUrl = null;
+                string? birthCertificateUrl = null;
+
+                try
+                {
+                    if (childRequest.Avatar != null && childRequest.Avatar.Length > 0)
+                    {
+                        using var stream = childRequest.Avatar.OpenReadStream();
+                        avatarUrl = await _cloudinaryService.UploadImageAsync(stream, childRequest.Avatar.FileName);
+                    }
+
+                    if (childRequest.BirthCertificate != null && childRequest.BirthCertificate.Length > 0)
+                    {
+                        using var stream = childRequest.BirthCertificate.OpenReadStream();
+                        birthCertificateUrl = await _cloudinaryService.UploadImageAsync(stream, childRequest.BirthCertificate.FileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"File upload failed: {ex.Message}");
+                }
+
                 var child = _mapper.Map<Children>(childRequest);
+                child.Avatar = avatarUrl;
+                child.BirthCertificate = birthCertificateUrl;
                 var createdChild = await _childrenService.CreateChildAsync(child);
                 var createdChildResponse = _mapper.Map<ChildrenResponse>(createdChild);
                 return Ok(createdChildResponse);

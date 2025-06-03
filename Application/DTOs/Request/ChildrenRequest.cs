@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace Application.DTOs.Request
         public string? Name { get; set; }
         public DateTime Birthday { get; set; }
         public string? Gender { get; set; }
-        public string? Avatar { get; set; }
+        public IFormFile? Avatar { get; set; }
         public string? City { get; set; }
-        public string? BirthCertificate { get; set; }
+        public IFormFile? BirthCertificate { get; set; }
     }
 }

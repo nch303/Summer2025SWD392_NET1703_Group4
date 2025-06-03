@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using PreSchoolBE.src.Application.Configurations;
 
@@ -9,13 +10,14 @@ namespace PreSchoolBE.src.Application.Services
     public class CloudinaryService : ICloudinaryService
     {
         private readonly Cloudinary _cloudinary;
+        private readonly IConfiguration _configuration;
 
-        public CloudinaryService(IOptions<CloudinarySettings> config)
+        public CloudinaryService(IConfiguration config)
         {
             var account = new Account(
-                config.Value.CloudName,
-                config.Value.ApiKey,
-                config.Value.ApiSecret
+                config["CloudinarySettings:CloudName"],
+                config["CloudinarySettings:ApiKey"],
+                config["CloudinarySettings:ApiSecret"]
             );
             _cloudinary = new Cloudinary(account);
         }

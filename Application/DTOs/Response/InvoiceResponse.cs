@@ -9,6 +9,7 @@ namespace Application.DTOs.Response
 {
     public class InvoiceResponse
     {
+        public Guid ID { get; set; }
         public String Name { get; set; }
         public String ParentName { get; set; }
         public String ChildrenName { get; set; }

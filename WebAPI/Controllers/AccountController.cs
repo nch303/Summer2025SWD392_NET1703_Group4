@@ -109,7 +109,7 @@ namespace WebAPI.Controllers
                 var account = await _accountService.GetAccountByIdAsync(Id);
                 account = _mapper.Map<Account>(request);
                 account.Id = Id;
-                var updatedAccount = await _accountService.UpdateAccountAsync(account);
+                var updatedAccount = await _accountService.UpdateAccountByAdminAsync(account);
                 var response = _mapper.Map<AccountResponse>(updatedAccount);
                 var role = await _roleService.GetById(updatedAccount.RoleId);
                 response.RoleName = role.Name;
