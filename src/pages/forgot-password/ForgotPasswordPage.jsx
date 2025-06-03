@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
+import { requestPasswordReset } from './ForgotPasswordService';
 import './ForgotPasswordPage.css';
 
 const ForgotPasswordPage = () => {
@@ -20,14 +21,13 @@ const ForgotPasswordPage = () => {
     setIsLoading(true);
     
     try {
-      // In a real app, you would call a password reset service
-      // await resetPasswordRequest(email);
+      // Gọi API quên mật khẩu
+      await requestPasswordReset(email);
       
-      // For now, we'll simulate a successful request
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Chuyển sang trạng thái đã gửi thành công
       setIsSubmitted(true);
     } catch (error) {
-      setError(error.message || 'Failed to send reset link. Please try again.');
+      setError(error.message || 'Không thể gửi email đặt lại mật khẩu. Vui lòng thử lại sau.');
     } finally {
       setIsLoading(false);
     }

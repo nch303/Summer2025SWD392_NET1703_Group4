@@ -115,11 +115,12 @@ const ChangePasswordForm = () => {
     
     try {
       // Gọi API thay đổi mật khẩu
-      await changePassword({
+      const result = await changePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       });
       
+      // Hiển thị thông báo thành công
       setMessage({
         text: 'Đổi mật khẩu thành công!',
         type: 'success'
@@ -132,8 +133,9 @@ const ChangePasswordForm = () => {
         confirmPassword: '',
       });
     } catch (error) {
+      // Hiển thị thông báo thất bại
       setMessage({
-        text: error.message || 'Có lỗi xảy ra khi đổi mật khẩu. Vui lòng kiểm tra lại mật khẩu hiện tại.',
+        text: error.message || 'Đổi mật khẩu không thành công. Vui lòng kiểm tra lại mật khẩu hiện tại.',
         type: 'error'
       });
     } finally {

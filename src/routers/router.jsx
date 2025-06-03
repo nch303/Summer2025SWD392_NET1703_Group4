@@ -44,6 +44,10 @@ export const router = createBrowserRouter([
         element: <AuthRoute><ConfirmEmailPage /></AuthRoute> 
       },
       { 
+        path: ROUTES.RESET_PASSWORD, 
+        element: <AuthRoute><ResetPasswordPage /></AuthRoute> 
+      },
+      { 
         path: ROUTES.PROFILE, 
         element: <ProtectedRoute><ProfilePage /></ProtectedRoute> 
       },
