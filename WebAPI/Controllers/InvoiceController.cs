@@ -132,5 +132,21 @@ namespace WebAPI.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+            var invoice = await _invoiceService.GetByIdAsync(id);
+            if (invoice == null)
+            {
+                return NotFound(new { message = "Invoice not found" });
+            }
+            var invoiceResponse = _mapper.Map<InvoiceResponse>(invoice);
+            var parentAccount = await _accountService.GetAccountByIdAsync(invoice.AccountID);
+            invoiceResponse.ParentName = parentAccount.FullName;
+            var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
+            invoiceResponse.ChildrenName = children!.Name!;
+            return Ok(invoiceResponse);
+
+        }
     }
 }
