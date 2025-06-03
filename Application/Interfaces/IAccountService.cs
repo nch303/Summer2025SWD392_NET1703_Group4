@@ -9,9 +9,15 @@ namespace Application.Interfaces
 {
     public interface IAccountService
     {
+        Task<Account> GetAccountByPhoneNumberAsync(string phoneNumber);
         Task<Account> GetAccountByEmailAsync(string email);
         Task<Account> GetCurrentAccount();
         Task<Account> GetAccountByIdAsync(Guid id);
         Task<Account> UpdateAccountTokenAsync(string email, string token);
+        Task<Account> CreateAccountAsync(Account account);
+        Task<List<Account>> GetAllAsync();
+        Task<Account> UpdateAccountAsync(Account account);
+        Task<Account> BanAccountAsync(Guid id);
+
     }
 }

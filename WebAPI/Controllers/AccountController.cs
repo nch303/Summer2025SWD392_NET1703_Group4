@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.Reponse;
+using Application.DTOs.Request;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,15 +10,17 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController: ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
+        private readonly IRoleService _roleService;
 
-        public AccountController(IAccountService accountService, IMapper mapper)
+        public AccountController(IAccountService accountService, IMapper mapper, IRoleService roleService)
         {
             _accountService = accountService;
             _mapper = mapper;
+            _roleService = roleService;
         }
 
         [HttpGet("getCurrentAccount")]
@@ -27,9 +31,89 @@ namespace WebAPI.Controllers
             {
                 var account = await _accountService.GetCurrentAccount();
                 var accountResponse = new AccountResponse();
-                _mapper.Map(account,accountResponse);
+                _mapper.Map(account, accountResponse);
                 accountResponse.RoleName = account.Role!.Name;
                 return Ok(accountResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("byAdmin")]
+        public async Task<IActionResult> CreateAccount([FromBody] AccountRequest request)
+        {
+            try
+            {
+                var account = _mapper.Map<Account>(request);
+                var createdAccount = await _accountService.CreateAccountAsync(account);
+                var response = _mapper.Map<AccountResponse>(createdAccount);
+                var role = await _roleService.GetById(createdAccount.RoleId);
+                response.RoleName = role.Name;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("AllAccount")]
+        public async Task<IActionResult> GetAllAccounts()
+        {
+            try
+            {
+                var accounts = await _accountService.GetAllAsync();
+                var accountResponses = _mapper.Map<List<AccountResponse>>(accounts);
+                for (int i = 0; i < accountResponses.Count; i++)
+                {
+                    var accountResponse = accountResponses[i];
+                    var role = await _roleService.GetById(accounts[i].RoleId);
+                    accountResponse.RoleName = role.Name;
+                }
+                return Ok(accountResponses);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> UpdateAccount(Guid Id, [FromBody] AccountRequest request)
+        {
+            try
+            {
+                var account = await _accountService.GetAccountByIdAsync(Id);
+                account = _mapper.Map<Account>(request);
+                account.Id = Id;
+                var updatedAccount = await _accountService.UpdateAccountAsync(account);
+                var response = _mapper.Map<AccountResponse>(updatedAccount);
+                var role = await _roleService.GetById(updatedAccount.RoleId);
+                response.RoleName = role.Name;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> BanAccount(Guid Id)
+        {
+            try
+            {
+                var bannedAccount = await _accountService.BanAccountAsync(Id);
+                if (bannedAccount == null)
+                {
+                    return NotFound("Account not found.");
+                }
+                var response = _mapper.Map<AccountResponse>(bannedAccount);
+                var role = await _roleService.GetById(bannedAccount.RoleId);
+                response.RoleName = role.Name;
+                return Ok("The account ID: " + bannedAccount!.Id + " is banned successfully");
             }
             catch (Exception ex)
             {
