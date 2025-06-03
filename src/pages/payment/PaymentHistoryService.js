@@ -1,12 +1,17 @@
 import api from '../../config/axiosConfig';
+import { useUser } from '../../contexts/UserContext'; // Import useUser hook nếu chưa có
 
 /**
  * Get payment history for the current user
  * @returns {Promise<Array>} List of payment transactions
  */
-export const getUserPaymentHistory = async () => {
+export const getUserPaymentHistory = async (userId) => {
   try {
-    const response = await api.get('/api/Payments/history');
+    const response = await api.get('/api/Invoice/byAccountId', {
+      params: {
+        accountId: userId
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching payment history:', error);

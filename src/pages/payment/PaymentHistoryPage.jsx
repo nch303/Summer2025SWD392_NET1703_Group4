@@ -4,12 +4,13 @@ import { getUserPaymentHistory, getChildPaymentHistory } from './PaymentHistoryS
 import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import './PaymentHistoryPage.css';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { useUser } from '../../contexts/UserContext';
 
 const PaymentHistoryPage = () => {
   const { childId } = useParams();
   const navigate = useNavigate();
   const toast = useCustomToast();
+  const { currentUser } = useUser();
   
   const [payments, setPayments] = useState([]);
   const [children, setChildren] = useState([]);
@@ -45,6 +46,7 @@ const PaymentHistoryPage = () => {
   // Get status label
   const getStatusLabel = (status) => {
     switch (status.toLowerCase()) {
+      case 'success':
       case 'completed':
       case 'hoàn thành':
         return <span className="payment-status payment-status-completed">Hoàn thành</span>;
@@ -61,6 +63,17 @@ const PaymentHistoryPage = () => {
         return <span className="payment-status">{status}</span>;
     }
   };
+
+  // Tổng số tiền đã thanh toán
+  const getTotalPaid = () => {
+    return payments
+      .filter(payment => 
+        payment.status?.toLowerCase() === 'completed' || 
+        payment.status?.toLowerCase() === 'success' || 
+        payment.status?.toLowerCase() === 'hoàn thành')
+      .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+  };
+
   // Fetch payment history
   useEffect(() => {
     const fetchPaymentHistory = async () => {
@@ -71,56 +84,32 @@ const PaymentHistoryPage = () => {
         if (selectedChild && selectedChild !== 'all') {
           paymentData = await getChildPaymentHistory(selectedChild);
         } else {
-          paymentData = await getUserPaymentHistory();
+          paymentData = await getUserPaymentHistory(currentUser?.id);
         }
         
-        // Apply filters if any
-        let filteredPayments = paymentData;
-        
-        // Search term filter
-        if (searchTerm) {
-          const term = searchTerm.toLowerCase();
-          filteredPayments = filteredPayments.filter(payment => 
-            payment.description?.toLowerCase().includes(term) ||
-            payment.paymentMethod?.toLowerCase().includes(term) ||
-            payment.childName?.toLowerCase().includes(term) ||
-            payment.invoiceNumber?.toLowerCase().includes(term)
-          );
+        if (paymentData && Array.isArray(paymentData)) {
+          setFilteredPayments(paymentData); // Đặt dữ liệu ban đầu
+          setPayments(paymentData);
+          setTotalPages(Math.ceil(paymentData.length / paymentsPerPage));
+        } else {
+          setFilteredPayments([]);
+          setPayments([]);
+          setTotalPages(0);
         }
-        
-        // Date range filter
-        if (startDate) {
-          const start = new Date(startDate);
-          filteredPayments = filteredPayments.filter(payment => 
-            new Date(payment.paymentDate) >= start
-          );
-        }
-        
-        if (endDate) {
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59); // End of the day
-          filteredPayments = filteredPayments.filter(payment => 
-            new Date(payment.paymentDate) <= end
-          );
-        }
-        
-        // Sort payments by date (newest first)
-        filteredPayments.sort((a, b) => 
-          new Date(b.paymentDate) - new Date(a.paymentDate)
-        );
-        
-        setPayments(filteredPayments);
-        setTotalPages(Math.ceil(filteredPayments.length / paymentsPerPage));
       } catch (error) {
         console.error('Error fetching payment history:', error);
         toast.error('Không thể tải lịch sử thanh toán. Vui lòng thử lại sau.');
+        setFilteredPayments([]);
+        setPayments([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPaymentHistory();
-  }, [selectedChild]);
+    if (currentUser?.id) {
+      fetchPaymentHistory();
+    }
+  }, [selectedChild, currentUser]);
 
   // Tách việc filter dữ liệu thành effect riêng để không cần gọi API lại
   useEffect(() => {
@@ -134,28 +123,49 @@ const PaymentHistoryPage = () => {
       if (searchTerm) {
         const term = searchTerm.toLowerCase();
         filteredPayments = filteredPayments.filter(payment => 
+          // Tìm kiếm trong mô tả
           payment.description?.toLowerCase().includes(term) ||
-          payment.paymentMethod?.toLowerCase().includes(term) ||
-          payment.childName?.toLowerCase().includes(term) ||
-          payment.invoiceNumber?.toLowerCase().includes(term)
+          payment.name?.toLowerCase().includes(term) ||
+          
+          // Tìm kiếm trong phương thức thanh toán
+          (payment.paymentMethod?.toLowerCase().includes(term)) || 
+          
+          // Tìm kiếm theo tên trẻ
+          payment.childrenName?.toLowerCase().includes(term) || 
+          payment.childName?.toLowerCase().includes(term) || 
+          
+          // Tìm kiếm theo tên phụ huynh
+          payment.parentName?.toLowerCase().includes(term) ||
+          
+          // Tìm kiếm theo mã giao dịch
+          payment.id?.toLowerCase().includes(term)
         );
       }
       
       // Date range filter
       if (startDate) {
         const start = new Date(startDate);
-        filteredPayments = filteredPayments.filter(payment => 
-          new Date(payment.paymentDate) >= start
-        );
+        filteredPayments = filteredPayments.filter(payment => {
+          const paymentDate = new Date(payment.date || payment.paymentDate);
+          return paymentDate >= start;
+        });
       }
       
       if (endDate) {
         const end = new Date(endDate);
         end.setHours(23, 59, 59); // End of the day
-        filteredPayments = filteredPayments.filter(payment => 
-          new Date(payment.paymentDate) <= end
-        );
+        filteredPayments = filteredPayments.filter(payment => {
+          const paymentDate = new Date(payment.date || payment.paymentDate);
+          return paymentDate <= end;
+        });
       }
+      
+      // Sort payments by date (newest first)
+      filteredPayments.sort((a, b) => {
+        const dateA = new Date(a.date || a.paymentDate);
+        const dateB = new Date(b.date || b.paymentDate);
+        return dateB - dateA;
+      });
       
       setFilteredPayments(filteredPayments);
       setTotalPages(Math.ceil(filteredPayments.length / paymentsPerPage));
@@ -213,44 +223,22 @@ const PaymentHistoryPage = () => {
     navigate('/payment-history');
   };
 
-  // Tính toán thống kê thanh toán theo trạng thái
-  const getPaymentStats = () => {
-    if (payments.length === 0) return [];
+  // Thêm hàm này vào component
+  const shortenTransactionId = (id) => {
+    if (!id) return 'N/A';
     
-    const statusCounts = payments.reduce((acc, payment) => {
-      const status = payment.status?.toLowerCase() || 'unknown';
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    }, {});
+    // Nếu id là UUID (định dạng có dấu gạch ngang)
+    if (id.includes('-')) {
+      const parts = id.split('-');
+      return `${parts[0].slice(0, 6)}...${parts[parts.length-1].slice(-4)}`;
+    }
     
-    const COLORS = {
-      'completed': '#4CAF50',
-      'hoàn thành': '#4CAF50',
-      'pending': '#FF9800',
-      'chờ xử lý': '#FF9800',
-      'cancelled': '#9E9E9E',
-      'hủy': '#9E9E9E',
-      'failed': '#F44336',
-      'thất bại': '#F44336',
-      'unknown': '#2196F3'
-    };
+    // Nếu id là chuỗi dài
+    if (id.length > 10) {
+      return `${id.slice(0, 6)}...${id.slice(-4)}`;
+    }
     
-    return Object.entries(statusCounts).map(([status, count]) => ({
-      name: status === 'completed' || status === 'hoàn thành' ? 'Hoàn thành' :
-            status === 'pending' || status === 'chờ xử lý' ? 'Chờ xử lý' :
-            status === 'cancelled' || status === 'hủy' ? 'Đã hủy' :
-            status === 'failed' || status === 'thất bại' ? 'Thất bại' : 'Khác',
-      value: count,
-      color: COLORS[status] || '#2196F3'
-    }));
-  };
-
-  // Tổng số tiền đã thanh toán
-  const getTotalPaid = () => {
-    return payments
-      .filter(payment => payment.status?.toLowerCase() === 'completed' || 
-                         payment.status?.toLowerCase() === 'hoàn thành')
-      .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+    return id;
   };
 
   return (
@@ -260,20 +248,6 @@ const PaymentHistoryPage = () => {
       <div className="payment-history-container">
         <div className="payment-header">
           <h1 className="payment-history-title">Lịch sử thanh toán</h1>
-          <div className="payment-view-toggle">
-            <button 
-              className={`payment-view-toggle-btn ${showStats ? 'active' : ''}`}
-              onClick={() => setShowStats(true)}
-            >
-              <i className="fas fa-chart-pie"></i> Thống kê
-            </button>
-            <button 
-              className={`payment-view-toggle-btn ${!showStats ? 'active' : ''}`}
-              onClick={() => setShowStats(false)}
-            >
-              <i className="fas fa-list"></i> Chi tiết
-            </button>
-          </div>
         </div>
 
         {showStats && payments.length > 0 && (
@@ -308,6 +282,7 @@ const PaymentHistoryPage = () => {
                   <p className="payment-stat-value">
                     {payments.filter(p => 
                       p.status?.toLowerCase() === 'completed' || 
+                      p.status?.toLowerCase() === 'success' ||
                       p.status?.toLowerCase() === 'hoàn thành'
                     ).length}
                   </p>
@@ -328,31 +303,6 @@ const PaymentHistoryPage = () => {
                   </p>
                 </div>
               </div>
-            </div>
-            
-            <div className="payment-chart-container">
-              <h3 className="payment-chart-title">Phân bố trạng thái thanh toán</h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={getPaymentStats()}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    nameKey="name"
-                    label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {getPaymentStats().map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [`${value} giao dịch`, 'Số lượng']} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
             </div>
           </div>
         )}
@@ -380,13 +330,25 @@ const PaymentHistoryPage = () => {
             </div>
             
             <div className="payment-filter-group payment-search-group">
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm..." 
-                className="payment-search-input" 
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
+              <div className="payment-search-wrapper">
+                <input 
+                  type="text" 
+                  placeholder="Tìm theo tên trẻ, mã giao dịch..." 
+                  className="payment-search-input" 
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      // Just reuse the existing filter logic by triggering a state update
+                      setSearchTerm(searchTerm);
+                    }
+                  }}
+                />
+                <button className="payment-search-button" onClick={() => setSearchTerm(searchTerm)}>
+                  <i className="fas fa-search"></i>
+                </button>
+              </div>
             </div>
           </div>
           
@@ -445,20 +407,22 @@ const PaymentHistoryPage = () => {
               <tbody>
                 {currentPayments.map(payment => (
                   <tr key={payment.id} className={`payment-row payment-status-${payment.status?.toLowerCase()}`}>
-                    <td className="payment-id">{payment.invoiceNumber}</td>
+                    <td className="payment-id">
+                      <span title={payment.id}>{shortenTransactionId(payment.id)}</span>
+                    </td>
                     <td>
                       <div className="payment-date">
                         <i className="fas fa-calendar"></i>
-                        <span>{formatDate(payment.paymentDate)}</span>
+                        <span>{formatDate(payment.date || payment.paymentDate)}</span>
                       </div>
                     </td>
                     <td>
                       <div className="payment-child">
-                        <span className="payment-child-avatar">{payment.childName?.charAt(0) || '?'}</span>
-                        <span>{payment.childName}</span>
+                        <span className="payment-child-avatar">{payment.childrenName?.charAt(0) || payment.childName?.charAt(0) || '?'}</span>
+                        <span>{payment.childrenName || payment.childName}</span>
                       </div>
                     </td>
-                    <td className="payment-description">{payment.description}</td>
+                    <td className="payment-description">{payment.description || payment.name}</td>
                     <td className="payment-amount">{formatCurrency(payment.amount)}</td>
                     <td>
                       <div className="payment-method">
@@ -468,17 +432,28 @@ const PaymentHistoryPage = () => {
                           payment.paymentMethod?.toLowerCase().includes('transfer') ? 'fa-university' :
                           'fa-money-check'
                         }`}></i>
-                        <span>{payment.paymentMethod}</span>
+                        <span>{payment.paymentMethod || 'VNPay'}</span>
                       </div>
                     </td>
                     <td>{getStatusLabel(payment.status)}</td>
                     <td>
-                      <Link 
-                        to={`/payment-details/${payment.id}`} 
-                        className="payment-detail-link"
-                      >
-                        <i className="fas fa-file-invoice"></i> Chi tiết
-                      </Link>
+                      {payment.status.toLowerCase() === 'pending' && payment.paymentLink ? (
+                        <a 
+                          href={payment.paymentLink} 
+                          className="payment-pay-link"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <i className="fas fa-credit-card"></i> Thanh toán
+                        </a>
+                      ) : (
+                        <Link 
+                          to={`/invoice-detail/${payment.id}`} 
+                          className="payment-detail-link"
+                        >
+                          <i className="fas fa-file-invoice"></i> Chi tiết
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 ))}

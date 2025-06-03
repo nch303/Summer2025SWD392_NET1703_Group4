@@ -21,6 +21,7 @@ import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import AboutUsPage from '../pages/about-us/AboutUsPage';
 import ContactPage from '../pages/contact/ContactPage';
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
+import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -88,6 +89,11 @@ function App() {
             <Route path="/payment-history" element={
               <ProtectedRoute>
                 <PaymentHistoryPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/invoice-detail/:invoiceId" element={
+              <ProtectedRoute>
+                <InvoiceDetailPage />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />
