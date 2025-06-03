@@ -6,5 +6,6 @@ namespace Application.Interfaces.IServices
     {
         Task SendEmailAsync(string toEmail, string subject, string body);
         Task SendInvoiceEmailAsync(string toEmail, string subject, string body, byte[] attachmentBytes = null, string attachmentName = "invoice.pdf");
+        string GetResetPasswordEmailBody(string resetLink, string Fullname);
     }
 }

@@ -12,5 +12,8 @@ namespace Domain.Interfaces
         Task<Account> GetAccountByEmailAsync(string email);
         Task<Account> GetAccountByIdAsync(Guid id);
         Task<Account> UpdateAccountTokenAsync(string email, string token);
+        Task UpdateAccountAsync(Account account);
+        Task ChangePasswordAsync(string newPassword, Account account);
+
     }
 }

@@ -30,6 +30,8 @@ builder.Services.AddScoped<IChildrenService, ChildrenService>();
 builder.Services.AddScoped<IEAService, EAService>();
 builder.Services.AddScoped<IEnrichProgramService, EnrichProgramService>();
 
+
+
 // Add repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();

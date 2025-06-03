@@ -41,5 +41,19 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return account;
         }
+
+        public async Task UpdateAccountAsync(Account account)
+        {
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangePasswordAsync(string newPassword, Account account)
+        {
+            account.Password = newPassword;
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

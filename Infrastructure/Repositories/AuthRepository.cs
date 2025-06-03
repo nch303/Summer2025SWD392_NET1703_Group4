@@ -48,5 +48,7 @@ namespace Infrastructure.Repositories
             account.ConfirmationToken = null; // Clear the confirmation token after successful confirmation
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

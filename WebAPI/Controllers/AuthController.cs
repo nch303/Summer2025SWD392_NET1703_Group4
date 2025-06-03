@@ -1,5 +1,9 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Request;
+using Application.Interfaces;
+using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using PreSchoolBE.src.Application.DTOs.Request;
 
 namespace PreSchoolBE.Controllers
@@ -67,6 +71,58 @@ namespace PreSchoolBE.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            bool emailSent = await _authService.ForgotPasswordAsync(request.Email!);
+            if (!emailSent)
+            {
+                return BadRequest("Email not found or failed to send reset email");
+            }
+            return Ok("Reset email sent successfully");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Token) || string.IsNullOrEmpty(request.NewPassword))
+            {
+                return BadRequest("Token and new password are required");
+            }
+
+            try
+            {
+                bool result = await _authService.ResetPasswordAsync(request.Token, request.NewPassword);
+                if (!result)
+                {
+                    return BadRequest("Invalid or expired token");
+                }
+                return Ok("Password reset successfully");
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                return BadRequest("The reset password link has expired. Please request a new one.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                await _authService.ChangePasswordAsync(request);
+                return Ok("Change password successfully");
+            }
+            catch (Exception)
+            {
+                return Unauthorized("Change password unsuccessfully");
             }
         }
     }
