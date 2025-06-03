@@ -20,9 +20,7 @@ const ChildProfileManagement = () => {
     gender: 'Male',
     avatar: '',
     city: '',
-    birthCertificate: '',
-    parentName: '',
-    phoneNumber: ''
+    birthCertificate: ''
   });
 
   const [avatarFile, setAvatarFile] = useState(null);
@@ -83,29 +81,31 @@ const ChildProfileManagement = () => {
       gender: 'Male',
       avatar: '',
       city: '',
-      birthCertificate: '',
-      parentName: '',
-      phoneNumber: ''
+      birthCertificate: ''
     });
   };
 
   const openAddModal = () => {
     resetForm();
     setIsEditingChild(null);
+    setAvatarFile(null);
+    setBirthCertificateFile(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (child) => {
     setIsEditingChild(child.id);
     
+    // Reset file state
+    setAvatarFile(null);
+    setBirthCertificateFile(null);
+    
+    // Format ngày sinh
     let birthdayFormatted = '';
     if (child.birthday) {
-      // Xử lý đúng ngày sinh bằng cách sử dụng chuỗi trực tiếp
       const rawDate = new Date(child.birthday);
       const year = rawDate.getFullYear();
-      // Tháng bắt đầu từ 0 nên cộng thêm 1
       let month = rawDate.getMonth() + 1;
-      // Đảm bảo định dạng 2 chữ số
       month = month < 10 ? `0${month}` : month;
       let day = rawDate.getDate();
       day = day < 10 ? `0${day}` : day;
@@ -118,9 +118,7 @@ const ChildProfileManagement = () => {
       gender: child.gender || 'Male',
       avatar: child.avatar || '',
       city: child.city || '',
-      birthCertificate: child.birthCertificate || '',
-      parentName: child.parentName || '',
-      phoneNumber: child.phoneNumber || ''
+      birthCertificate: child.birthCertificate || ''
     });
     
     setIsModalOpen(true);
@@ -139,14 +137,23 @@ const ChildProfileManagement = () => {
     setFormSubmitting(true);
     
     try {
+      // Thêm file vào childFormData để truyền vào API
+      const formDataWithFiles = {
+        ...childFormData,
+        avatarFile: avatarFile,
+        birthCertificateFile: birthCertificateFile
+      };
+      
       if (isEditingChild) {
-        await updateChild(isEditingChild, childFormData);
+        // Cập nhật thông tin trẻ
+        await updateChild(isEditingChild, formDataWithFiles);
         setMessage({
           text: 'Đã cập nhật thông tin của bé thành công!',
           type: 'success'
         });
       } else {
-        await addChild(childFormData);
+        // Thêm thông tin trẻ mới
+        await addChild(formDataWithFiles);
         setMessage({
           text: 'Đã thêm thông tin của bé thành công!',
           type: 'success'
@@ -196,14 +203,20 @@ const ChildProfileManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
     
+    // Lưu file để gửi đến API
+    if (fileType === 'avatar') {
+      setAvatarFile(file);
+    } else if (fileType === 'birthCertificate') {
+      setBirthCertificateFile(file);
+    }
+    
+    // Tạo URL để hiển thị preview
     const reader = new FileReader();
     reader.onloadend = () => {
       if (fileType === 'avatar') {
         setChildFormData(prev => ({...prev, avatar: reader.result}));
-        setAvatarFile(file);
       } else if (fileType === 'birthCertificate') {
         setChildFormData(prev => ({...prev, birthCertificate: reader.result}));
-        setBirthCertificateFile(file);
       }
     };
     reader.readAsDataURL(file);
@@ -496,51 +509,6 @@ const ChildProfileManagement = () => {
                       </div>
                     </div>
                   )}
-                </div>
-
-                <div className="section-divider"></div>
-
-                <h4 className="form-section-title">
-                  <FontAwesomeIcon icon="user-friends" />
-                  Thông tin phụ huynh
-                </h4>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="parentName">
-                       Họ tên phụ huynh *
-                    </label>
-                    <div className="input-with-icon">
-                      <FontAwesomeIcon icon="user-tie" />
-                      <input
-                        type="text"
-                        id="parentName"
-                        name="parentName"
-                        value={childFormData.parentName}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Nhập họ tên phụ huynh"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="phoneNumber">
-                      <FontAwesomeIcon icon="phone-alt" className="input-label-icon" /> Số điện thoại *
-                    </label>
-                    <div className="input-with-icon">
-                      <FontAwesomeIcon icon="phone" />
-                      <input
-                        type="text"
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        value={childFormData.phoneNumber}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Nhập số điện thoại liên hệ"
-                      />
-                    </div>
-                  </div>
                 </div>
 
                 <div className="modal-footer">
