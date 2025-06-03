@@ -9,6 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IEnrichProgramRepository
     {
-        Task<EnrichmentProgram> GetProgramByIdAsync(int programId);
+        Task<EnrichmentProgram> GetProgramByIdAsync(int? programId);
     }
 }

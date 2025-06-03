@@ -24,6 +24,8 @@ namespace Infrastructure.EntitiesConfigurations
         public DbSet<Syllabus> Syllabi { get; set; }
         public DbSet<SyllabusDetail> SyllabusDetails { get; set; }
         public DbSet<GradeLevel> GradeLevels { get; set; }
+        public DbSet<ChildrenGrade> ChildrenGrades { get; set; }
+        public DbSet<TuitionFee> TuitionFees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -130,6 +132,12 @@ namespace Infrastructure.EntitiesConfigurations
                 .HasForeignKey(cl => cl.SyllabusID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Class>()
+                .HasOne(cl => cl.GradeLevels)
+                .WithMany(gl => gl.Classes)
+                .HasForeignKey(cl => cl.GradeLevelID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<SyllabusDetail>()
                 .HasOne(sd => sd.Syllabi)
                 .WithMany(s => s.SyllabusDetails)
@@ -140,6 +148,18 @@ namespace Infrastructure.EntitiesConfigurations
                 .HasOne(p => p.TypePrograms)
                 .WithMany(tp => tp.Programs)
                 .HasForeignKey(p => p.TypeProgramID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChildrenGrade>()
+                .HasOne(cg => cg.GradeLevels)
+                .WithMany(gl => gl.ChildrenGrades)
+                .HasForeignKey(cg => cg.GradeLevelID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChildrenGrade>()
+                .HasOne(cg => cg.Childrens)
+                .WithMany(c => c.ChildrenGrades)
+                .HasForeignKey(cg => cg.ChildrenID)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
