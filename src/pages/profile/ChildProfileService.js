@@ -31,13 +31,40 @@ export const getChildById = async (childId) => {
 };
 
 /**
- * Add a new child
- * @param {Object} childData - The child's information
+ * Add a new child with multipart/form-data support
+ * @param {Object} childData - The child's information including files
  * @returns {Promise<Object>} Created child data
  */
 export const addChild = async (childData) => {
   try {
-    const response = await api.post('/api/Children', childData);
+    // Tạo FormData object để gửi dữ liệu dạng multipart
+    const formData = new FormData();
+    
+    // Thêm các thông tin cơ bản - chỉ giữ lại các trường cần thiết
+    formData.append('Name', childData.name);
+    formData.append('Birthday', childData.birthday);
+    formData.append('Gender', childData.gender);
+    formData.append('City', childData.city || '');
+    
+    // Nếu có file avatar, thêm vào form data
+    if (childData.avatarFile) {
+      formData.append('Avatar', childData.avatarFile);
+    }
+    
+    // Nếu có file giấy khai sinh, thêm vào form data
+    if (childData.birthCertificateFile) {
+      formData.append('BirthCertificate', childData.birthCertificateFile);
+    }
+    
+    // Không có thông tin phụ huynh
+    
+    // Gửi request với header đúng định dạng
+    const response = await api.post('/api/Children', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    
     return response.data;
   } catch (error) {
     console.error('Error creating child profile:', error);
@@ -46,14 +73,39 @@ export const addChild = async (childData) => {
 };
 
 /**
- * Update child information
+ * Update child information with multipart/form-data support
  * @param {string} childId - The child's ID
- * @param {Object} childData - Updated child information
+ * @param {Object} childData - Updated child information including files
  * @returns {Promise<Object>} Updated child data
  */
 export const updateChild = async (childId, childData) => {
   try {
-    const response = await api.put(`/api/Children/${childId}`, childData);
+    // Tạo FormData object để gửi dữ liệu dạng multipart
+    const formData = new FormData();
+    
+    // Thêm các thông tin cơ bản
+    formData.append('Name', childData.name);
+    formData.append('Birthday', childData.birthday);
+    formData.append('Gender', childData.gender);
+    formData.append('City', childData.city || '');
+    
+    // Nếu có file avatar, thêm vào form data
+    if (childData.avatarFile) {
+      formData.append('Avatar', childData.avatarFile);
+    }
+    
+    // Nếu có file giấy khai sinh, thêm vào form data
+    if (childData.birthCertificateFile) {
+      formData.append('BirthCertificate', childData.birthCertificateFile);
+    }
+    
+    // Gửi request với header đúng định dạng
+    const response = await api.put(`/api/Children/${childId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    
     return response.data;
   } catch (error) {
     console.error(`Error updating child ${childId}:`, error);
