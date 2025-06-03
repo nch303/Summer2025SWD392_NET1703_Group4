@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs.Response;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace Application.Interfaces
         Task<Invoice?> GetByIdAsync(Guid id);
         Task<List<Invoice>> GetByAccountIdAsync(Guid accountId);
         Task<List<Invoice>> GetAllInvoiceAsync();
+        byte[] GenerateInvoicePDF(InvoicePDFResponse invoice);
     }
 }

@@ -1,71 +1,43 @@
-﻿using Application.DTOs.Request;
-using Application.DTOs.Response;
+﻿using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Interfaces.IServices;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
-using Infrastructure.EntitiesConfigurations;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/vnpay")]
     [ApiController]
-    public class VNPayController : ControllerBase
+    [Route("api/[controller]")]
+    public class EmailController : ControllerBase
     {
-        private readonly IVnPayService _vnPayService;
+        private readonly IEmailService _emailService;
         private readonly IInvoiceService _invoiceService;
-        private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
         private readonly IChildrenService _childrenService;
         private readonly IInvoiceDetailService _invoiceDetailService;
+        private readonly IMapper _mapper;
         private readonly IEnrichProgramService _enrichProgramService;
-        private readonly IEmailService _emailService;
 
-        public VNPayController(IVnPayService vnPayService, IInvoiceService invoiceService, IMapper mapper
-            , IAccountService accountService, IChildrenService childrenService, IInvoiceDetailService invoiceDetailService
-            , IEnrichProgramService enrichProgramService, IEmailService emailService)
+        public EmailController(IEmailService emailService, IInvoiceService invoiceService, IAccountService accountService
+            , IChildrenService childrenService, IInvoiceDetailService invoiceDetailService, IMapper mapper
+            , IEnrichProgramService enrichProgramService)
         {
-            _vnPayService = vnPayService;
+            _emailService = emailService;
             _invoiceService = invoiceService;
-            _mapper = mapper;
             _accountService = accountService;
             _childrenService = childrenService;
             _invoiceDetailService = invoiceDetailService;
+            _mapper = mapper;
             _enrichProgramService = enrichProgramService;
-            _emailService = emailService;
         }
 
-        [HttpPost("create-payment-url")]
-        public async Task<IActionResult> CreatePaymentUrlVnpay(VnPayRequest request)
+        [HttpPost("send-email")]
+        public async Task<IActionResult> SendInvoiceEmailAsync(Guid invoiceId)
         {
-            var url = await _vnPayService.CreatePaymentUrl(request, HttpContext);
-
-            return Ok(new { Url = url });
-        }
-
-        [HttpGet("PaymentCallbackVnpay")]
-        public async Task<IActionResult> PaymentCallbackVnpay()
-        {
-            var response = _vnPayService.PaymentExecute(Request.Query).Result;
-
-            // Lấy chuỗi OrderInfo từ request
-            string vnpOrderInfo = Request.Query["vnp_OrderInfo"];
-
-            // Tách chuỗi theo dấu '|'
-            var parts = vnpOrderInfo.Split('|');
-
-            // Lấy phần chứa invoice ID (giả sử luôn ở phần thứ 4)
-            var invoicePart = parts.FirstOrDefault(p => p.StartsWith("invoiceID:"));
-            var invoiceId = Guid.Parse(invoicePart?.Substring("invoiceID:".Length) ?? "0");
-            if (response.VnPayResponseCode == "00")
+            try
             {
-                await _invoiceService.UpdateStatusAsync(invoiceId, "Success");
-
-                /// Gửi email hóa đơn   
                 var invoice = await _invoiceService.GetByIdAsync(invoiceId);
                 var invoicePDFResponse = _mapper.Map<InvoicePDFResponse>(invoice);
 
@@ -91,19 +63,18 @@ namespace WebAPI.Controllers
 
                 /// Construct email details
                 await _emailService.SendInvoiceEmailAsync(
-                    parentAccount.Email,
+                    "nguyenchihao7n2@gmail.com",
                     "Hóa đơn thanh toán từ Trường Mầm Non",
                     "<p>Kính gửi quý phụ huynh,</p><p>Vui lòng xem hóa đơn thanh toán đính kèm.</p><p>Trân trọng,</p><p>Trường Mầm Non Little Stars</p>",
                     pdfBytes, "invoice.pdf"
                 );
+
+                return Ok(new { Message = "Email sent successfully." });
             }
-            else
+            catch (Exception ex)
             {
-                await _invoiceService.UpdateStatusAsync(invoiceId, "Failed");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-
-            return Ok(response);
         }
-
     }
 }

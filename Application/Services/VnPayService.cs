@@ -21,14 +21,17 @@ namespace Application.Services
         private readonly IInvoiceService _invoiceService;
         private readonly IInvoiceDetailService  _invoiceDetailService;
         private readonly IAccountService _accountService;
+        private readonly IEnrichProgramService _enrichProgramService;
 
 
-        public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService, IAccountService accountService)
+        public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
+            , IAccountService accountService, IEnrichProgramService enrichProgramService)
         {
             _configuration = configuration;
             _invoiceService = invoiceService;
             _invoiceDetailService = invoiceDetailService;
             _accountService = accountService;
+            _enrichProgramService = enrichProgramService;
         }
 
 
@@ -76,12 +79,13 @@ namespace Application.Services
 
             foreach (var enrichmentProgramId in request.enrichmentPrograms)
             {
+                var program = await _enrichProgramService.GetProgramByIdAsync(enrichmentProgramId);
                 var invoiceDetail = new InvoiceDetail
                 {
                     ID = Guid.NewGuid(),
                     InvoiceID = invoice.ID,
                     ProgramID = enrichmentProgramId,
-                    Price = 100000, // Assuming a fixed price for simplicity, you can modify this as needed
+                    Price = program.Fee, 
                     ChildrenID = request.ChildrenID
                 };
                 await _invoiceDetailService.CreateAsync(invoiceDetail);

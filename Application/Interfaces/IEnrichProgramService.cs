@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IInvoiceDetailService
+    public interface IEnrichProgramService
     {
-        Task<InvoiceDetail> CreateAsync(InvoiceDetail invoiceDetail);
-        Task<List<InvoiceDetail>> GetByInvoiceIdAsync(Guid invoiceId);
+        Task<EnrichmentProgram> GetProgramByIdAsync(int programId);
     }
 }

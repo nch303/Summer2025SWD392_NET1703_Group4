@@ -1,11 +1,19 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Response;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using Document = QuestPDF.Fluent.Document;
+
 
 namespace Application.Services
 {
@@ -45,6 +53,173 @@ namespace Application.Services
         public async Task<List<Invoice>> GetAllInvoiceAsync()
         {
             return await _invoiceRepository.GetAllInvoiceAsync();
+        }
+
+        public byte[] GenerateInvoicePDF(InvoicePDFResponse invoice)
+        {
+            var vietnamCulture = new CultureInfo("vi-VN");
+            // Bảng màu mới - màu chủ đạo cho trường mẫu giáo
+            var primaryColor = Colors.Pink.Medium; // Màu hồng phù hợp với mẫu giáo
+            var accentColor = Colors.Blue.Lighten3;  // Màu xanh nhạt trẻ em
+            var lightBgColor = Colors.Pink.Lighten5; // Màu hồng rất nhạt làm nền
+            var borderColor = Colors.Pink.Lighten3; // Màu hồng nhạt cho viền
+            var textColor = Colors.Grey.Darken3;
+
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(25);
+                    page.Size(PageSizes.A4);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(10).FontFamily("Arial").FontColor(textColor));
+
+                    // Header sạch và gọn gàng hơn
+                    page.Header().PaddingBottom(15).Row(row =>
+                    {
+                        // Thông tin trường
+                        row.RelativeItem(2).Column(col =>
+                        {
+                            col.Item().Text("TRƯỜNG MẦM NON LITTLE STARS ").Bold().FontSize(16).FontColor(primaryColor);
+                            col.Item().PaddingTop(3).Text("Đường D1, Quận Thủ Đức, TP.HCM").FontSize(9);
+                            col.Item().Text("Email: little-stars-preschool@gmail.com | SĐT: 028.1234.5678").FontSize(9);
+                        });
+
+                        // Tiêu đề hóa đơn
+                        row.RelativeItem(2).Border(1).BorderColor(borderColor)
+                           .Background(lightBgColor).Padding(12)
+                           .Column(titleCol =>
+                           {
+                               titleCol.Item().Text("HÓA ĐƠN THANH TOÁN").Bold().FontSize(14).FontColor(primaryColor).AlignCenter();
+                               titleCol.Item().PaddingTop(5).Text($"Mã hóa đơn: {invoice.InvoiceDetails[0].InvoiceID}").FontSize(9).AlignCenter();
+                               titleCol.Item().Text($"Ngày: {invoice.Date:dd/MM/yyyy}").FontSize(9).AlignCenter();
+                           });
+                    });
+
+                    // Nội dung chính
+                    page.Content().PaddingVertical(10).Column(col =>
+                    {
+                        // Thông tin khách hàng
+                        col.Item().Border(1).BorderColor(borderColor)
+                           .Background(lightBgColor).Padding(15)
+                           .Column(info =>
+                           {
+                               info.Item().Text("THÔNG TIN THANH TOÁN").Bold().FontSize(11).FontColor(primaryColor);
+                               info.Item().PaddingTop(5).Grid(grid =>
+                               {
+                                   grid.Columns(2);
+                                   grid.Item().Text($"Tên giao dịch:").SemiBold();
+                                   grid.Item().Text($"{invoice.Name}");
+                                   grid.Item().Text($"Phụ huynh:").SemiBold();
+                                   grid.Item().Text($"{invoice.ParentName}");
+                               });
+                           });
+
+                        col.Item().PaddingTop(15);
+
+                        // Bảng chi tiết gọn gàng hơn
+                        col.Item().Column(column =>
+                        {
+                            // Tiêu đề bảng
+                            column.Item().Border(1).BorderColor(borderColor).BorderBottom(0)
+                                  .Background(primaryColor).Padding(8)
+                                  .Text("CHI TIẾT HÓA ĐƠN").Bold().FontSize(11).FontColor(Colors.White).AlignCenter();
+
+                            // Bảng chi tiết
+                            column.Item().Border(1).BorderColor(borderColor).BorderTop(0)
+                                  .Table(table =>
+                                  {
+                                      table.ColumnsDefinition(columns =>
+                                      {
+                                          columns.RelativeColumn(3); // Tên chương trình
+                                          columns.RelativeColumn(2); // Tên trẻ
+                                          columns.RelativeColumn(1); // Giá
+                                      });
+
+                                      // Header
+                                      table.Header(header =>
+                                      {
+                                          header.Cell().Element(CellStyleHeader).Text("CHƯƠNG TRÌNH");
+                                          header.Cell().Element(CellStyleHeader).Text("TRẺ");
+                                          header.Cell().Element(CellStyleHeader).Text("GIÁ TIỀN");
+
+                                          IContainer CellStyleHeader(IContainer container) =>
+                                      container.DefaultTextStyle(x => x.SemiBold().FontColor(Colors.White).FontSize(9))
+                                              .Padding(8)
+                                              .Background(accentColor);
+                                      });
+
+                                      // Rows đơn giản và rõ ràng - xen kẽ màu nhẹ
+                                      bool isEvenRow = false;
+                                      foreach (var detail in invoice.InvoiceDetails)
+                                      {
+                                          table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ProgramName ?? "");
+                                          table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ChildrenName ?? "");
+                                          table.Cell().Element(container => CellStyleBody(container, isEvenRow)).AlignRight()
+                                        .Text(detail.Price.ToString("C0", vietnamCulture));
+
+                                          isEvenRow = !isEvenRow;
+                                      }
+
+                                      IContainer CellStyleBody(IContainer container, bool isEven) =>
+                                  container.Padding(8)
+                                          .BorderBottom(0.5f).BorderColor(borderColor)
+                                          .Background(isEven ? Colors.White : Colors.Pink.Lighten5);
+                                  });
+                        });
+
+                        // Tổng cộng nổi bật
+                        col.Item().AlignRight().PaddingTop(15)
+                           .Border(1).BorderColor(borderColor)
+                           .Background(lightBgColor).Padding(10)
+                           .Text(txt =>
+                           {
+                               txt.Span("TỔNG CỘNG: ").Bold().FontSize(11);
+                               txt.Span(invoice.Amount.ToString("C0", vietnamCulture)).Bold().FontSize(13).FontColor(primaryColor);
+                           });
+
+                        // Ghi chú thanh toán gọn gàng
+                        col.Item().PaddingTop(15).Border(1).BorderColor(borderColor)
+                           .Padding(15)
+                           .Column(notes =>
+                           {
+                               notes.Item().Text("THÔNG TIN THANH TOÁN").Bold().FontSize(11).FontColor(primaryColor);
+                               notes.Item().PaddingTop(5).Grid(grid =>
+                               {
+                                   grid.Columns(2);
+                                   grid.Item().Text("Ngân hàng:").SemiBold().FontSize(9);
+                                   grid.Item().Text("VCB - Chi nhánh TP.HCM").FontSize(9);
+                                   grid.Item().Text("Số tài khoản:").SemiBold().FontSize(9);
+                                   grid.Item().Text("0281000675888").FontSize(9);
+                                   grid.Item().Text("Chủ tài khoản:").SemiBold().FontSize(9);
+                                   grid.Item().Text("TRƯỜNG MẦM NON LITTLE STARS").FontSize(9);
+                               });
+                           });
+                    });
+
+                    // Footer đơn giản
+                    page.Footer().Column(footer =>
+                    {
+                        footer.Item().BorderTop(0.5f).BorderColor(borderColor).PaddingTop(10)
+                              .AlignCenter()
+                              .Text(txt =>
+                              {
+                                  txt.Span("© 2023 Trường Mầm Non XYZ - Mọi quyền được bảo lưu").FontSize(8).FontColor(Colors.Grey.Medium);
+                              });
+
+                        footer.Item().PaddingTop(3).AlignCenter()
+                              .Text(text =>
+                              {
+                                  text.Span("Trang ").FontSize(8).FontColor(Colors.Grey.Medium);
+                                  text.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Medium);
+                                  text.Span(" / ").FontSize(8).FontColor(Colors.Grey.Medium);
+                                  text.TotalPages().FontSize(8).FontColor(Colors.Grey.Medium);
+                              });
+                    });
+                });
+            });
+
+            return document.GeneratePdf();
         }
     }
 }

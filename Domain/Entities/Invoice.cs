@@ -7,6 +7,7 @@ namespace Domain.Entities
     {
         [Key]
         public Guid ID { get; set; }
+        public string? Name { get; set; }
 
         [Required]
         public Guid AccountID { get; set; }

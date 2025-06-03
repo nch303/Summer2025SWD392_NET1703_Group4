@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IInvoiceDetailRepository
     {
         Task<InvoiceDetail> CreateAsync(InvoiceDetail invoiceDetail);   
+        Task<List<InvoiceDetail>> GetByInvoiceIdAsync(Guid invoiceId);
     }
 }
