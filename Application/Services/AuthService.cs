@@ -1,8 +1,10 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Request;
+using Application.Interfaces;
 using Application.Interfaces.IServices;
 using BCrypt.Net;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PreSchoolBE.src.Application.DTOs.Request;
@@ -22,13 +24,18 @@ namespace Application.Services.AuthService
         private readonly IEmailService _emailService;
         private readonly IAuthRepository _authRepository;
         private readonly IAccountService _accountService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService( IConfiguration configuration, IAuthRepository authRepository, IEmailService emailService, IAccountService accountService)
+        public AuthService(IConfiguration configuration, IAuthRepository authRepository, IEmailService emailService, IAccountService accountService, IAccountRepository accountRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _emailService = emailService;
             _authRepository = authRepository;
             _accountService = accountService;
+            _accountRepository = accountRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<string> RegisterAsync(RegisterRequest registerDto)
@@ -51,7 +58,7 @@ namespace Application.Services.AuthService
                 throw new Exception("Invalid phone number format. It should start with 0 or +84 and have 10 digits.");
             }
 
-            var existedAccount =  await _accountService.GetAccountByEmailAsync(registerDto.Email);
+            var existedAccount = await _accountService.GetAccountByEmailAsync(registerDto.Email);
             if (existedAccount != null)
                 throw new Exception("Email already exists.");
 
@@ -199,7 +206,8 @@ namespace Application.Services.AuthService
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Role, user.Role!.Name)
+                new Claim(ClaimTypes.Role, user.Role!.Name),
+                new Claim(ClaimTypes.Email, user.Email!)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
@@ -362,5 +370,152 @@ namespace Application.Services.AuthService
             await _emailService.SendEmailAsync(account.Email, "Account Activation", emailBody);
             return "Confirmation email resent successfully. Please check your email to activate your account.";
         }
+
+        public async Task<bool> ForgotPasswordAsync(string email)
+        {
+            var account = await _accountService.GetAccountByEmailAsync(email);
+            if (account == null)
+            {
+                return false; // Email does not exist
+            }
+
+            // Generate JWT token to reset password
+            string token = GenerateResetToken(account.Email!);
+
+            // Create reset password link
+            string clientUrl = _configuration["ClientUrl"]!;
+            string resetLink = $"{clientUrl}/reset-password/{token}";
+
+            // Send reset password email
+            var emailBody = _emailService.GetResetPasswordEmailBody(resetLink, account.FullName!);
+            await _emailService.SendEmailAsync(account.Email!, "Reset your password", emailBody);
+            return true;
+
+        }
+
+        private string GenerateResetToken(string email)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["ResetJwt:Key"]!);
+            var tokenValidity = int.Parse(_configuration["ResetJwt:TokenValidityMins"]!);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, email) }),
+                Expires = DateTime.UtcNow.AddMinutes(tokenValidity),
+                Issuer = _configuration["ResetJwt:Issuer"],
+                Audience = _configuration["ResetJwt:Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        private string? ValidateResetToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["ResetJwt:Key"]!);
+
+            try
+            {
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["ResetJwt:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["ResetJwt:Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                if (validatedToken is JwtSecurityToken jwtSecurityToken)
+                {
+                    if (jwtSecurityToken.ValidTo < DateTime.UtcNow)
+                    {
+                        throw new SecurityTokenExpiredException("Reset password token has expired. Please request a new one.");
+                    }
+                }
+
+                var emailClaim = principal.FindFirst(ClaimTypes.Email);
+                return emailClaim?.Value;
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                Console.WriteLine($"Token expired: {ex.Message}");
+                return null;
+            }
+            catch (SecurityTokenException ex)
+            {
+                Console.WriteLine($"Invalid token: {ex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error while validating token: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> ResetPasswordAsync(string token, string newPassword)
+        {
+            try
+            {
+                var email = ValidateResetToken(token);
+                if (string.IsNullOrEmpty(email))
+                    return false;
+
+                var user = await _accountService.GetAccountByEmailAsync(email);
+                if (user == null)
+                    return false;
+
+                user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                await _accountService.UpdateAccountAsync(user); 
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Account> GetCurrentAccountAsync()
+        {
+            var email = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
+                throw new Exception("Không tìm thấy người dùng từ token.");
+
+            return await _accountRepository.GetAccountByEmailAsync(email);
+        }
+
+
+        public async Task ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            var user = await GetCurrentAccountAsync();
+            if (user == null)
+            {
+                throw new Exception("Người dùng không tồn tại.");
+            }
+
+            // 1. Kiểm tra mật khẩu cũ có đúng không
+            if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.Password))
+            {
+                throw new UnauthorizedAccessException("Mật khẩu cũ không chính xác.");
+            }
+
+            // 2. Hash mật khẩu mới
+            var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            // 3. Gọi repository để cập nhật
+            await _accountRepository.ChangePasswordAsync(newHashedPassword, user);
+        }
+
+
+
     }
 }

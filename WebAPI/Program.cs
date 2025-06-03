@@ -31,6 +31,8 @@ builder.Services.AddScoped<IEAService, EAService>();
 builder.Services.AddScoped<IEnrichProgramService, EnrichProgramService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
+
+
 // Add repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
