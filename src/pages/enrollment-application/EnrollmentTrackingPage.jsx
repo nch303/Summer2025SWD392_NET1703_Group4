@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getEnrollmentApplicationsProgress } from './EnrollmentTrackingService';
+import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail } from './EnrollmentTrackingService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import './EnrollmentTrackingPage.css';
@@ -14,6 +14,12 @@ const EnrollmentTrackingPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [applicationDetail, setApplicationDetail] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const modalOverlayRef = useRef(null);
   
   const { showSpinner, hideSpinner } = useProcessingSpinner();
   const toast = useCustomToast();
@@ -39,6 +45,84 @@ const EnrollmentTrackingPage = () => {
       setIsRefreshing(false);
     }
   };
+
+  const fetchApplicationDetail = async (eAId) => {
+    try {
+      setLoadingDetail(true);
+      const data = await getEnrollmentApplicationDetail(eAId);
+      setApplicationDetail(data);
+    } catch (err) {
+      toast.error('Không thể tải thông tin chi tiết đơn đăng ký.');
+      console.error('Error fetching application detail:', err);
+    } finally {
+      setLoadingDetail(false);
+    }
+  };
+
+  const handleDetailClick = (application) => {
+    // Store the current scroll position
+    const scrollY = window.scrollY;
+    
+    // Add styles directly to prevent scrolling and maintain page position
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.classList.add('no-scroll');
+    
+    setSelectedApplication(application);
+    fetchApplicationDetail(application.eaid);
+    setShowDetailModal(true);
+    
+    setTimeout(() => {
+      setModalVisible(true);
+    }, 10);
+  };
+
+  const closeDetailModal = () => {
+    setModalVisible(false);
+    
+    setTimeout(() => {
+      // Restore the scroll position when modal closes
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.classList.remove('no-scroll');
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      
+      setShowDetailModal(false);
+      setSelectedApplication(null);
+      setApplicationDetail(null);
+    }, 250);
+  };
+
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && showDetailModal) {
+        closeDetailModal();
+      }
+    };
+
+    if (showDetailModal) {
+      window.addEventListener('keydown', handleEscKey);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleEscKey);
+    };
+  }, [showDetailModal]);
+
+  useEffect(() => {
+    if (applicationDetail && applicationDetail.avatar) {
+      const img = new Image();
+      img.src = applicationDetail.avatar;
+    }
+    
+    if (applicationDetail && applicationDetail.birthCertificate) {
+      const img = new Image();
+      img.src = applicationDetail.birthCertificate;
+    }
+  }, [applicationDetail]);
 
   const refreshData = () => {
     setIsRefreshing(true);
@@ -76,6 +160,12 @@ const EnrollmentTrackingPage = () => {
       case 'Reject': return 'Đã từ chối';
       default: return 'Đang xử lý';
     }
+  };
+  
+  const formatDate = (dateString) => {
+    if (!dateString || dateString.includes('0001-01-01')) return 'Chưa có';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
   };
   
   const filteredAndSortedApplications = useMemo(() => {
@@ -343,7 +433,10 @@ const EnrollmentTrackingPage = () => {
                         Thanh toán ngay
                       </button>
                     )}
-                    <button className="tracking-action-btn tracking-detail-btn">
+                    <button 
+                      className="tracking-action-btn tracking-detail-btn"
+                      onClick={() => handleDetailClick(app)}
+                    >
                       <FontAwesomeIcon icon="info-circle" />
                       Chi tiết
                     </button>
@@ -388,6 +481,157 @@ const EnrollmentTrackingPage = () => {
           )}
         </div>
       </div>
+      
+      {showDetailModal && (
+        <div 
+          className={`tracking-modal-overlay ${modalVisible ? 'visible' : ''}`}
+          onClick={closeDetailModal}
+          ref={modalOverlayRef}
+        >
+          <div 
+            className="tracking-modal-content" 
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="tracking-modal-header">
+              <h2>Thông tin chi tiết đơn đăng ký</h2>
+              <button className="tracking-modal-close-btn" onClick={closeDetailModal}>
+                <FontAwesomeIcon icon="times" />
+              </button>
+            </div>
+            
+            <div className="tracking-modal-body">
+              {loadingDetail ? (
+                <div className="tracking-modal-loading">
+                  <div className="tracking-loading-spinner"></div>
+                  <p>Đang tải thông tin chi tiết...</p>
+                </div>
+              ) : applicationDetail ? (
+                <div className="tracking-detail-content">
+                  <div className="tracking-detail-header">
+                    <div className="tracking-detail-avatar">
+                      {applicationDetail.avatar ? (
+                        <img src={applicationDetail.avatar} alt={applicationDetail.childrenName} />
+                      ) : (
+                        <div className="tracking-detail-avatar-placeholder">
+                          <FontAwesomeIcon icon="child" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="tracking-detail-main-info">
+                      <h3>{applicationDetail.childrenName}</h3>
+                      <div className={`tracking-detail-status ${getStatusColor(applicationDetail.status)}`}>
+                        <FontAwesomeIcon icon={getStatusIcon(applicationDetail.status)} />
+                        <span>{getStatusText(applicationDetail.status)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="tracking-detail-sections">
+                    <div className="tracking-detail-section">
+                      <h4>
+                        <FontAwesomeIcon icon="info-circle" />
+                        Thông tin cơ bản
+                      </h4>
+                      <div className="tracking-detail-grid">
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Ngày sinh:</span>
+                          <span className="tracking-detail-value">{formatDate(applicationDetail.birthday)}</span>
+                        </div>
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Giới tính:</span>
+                          <span className="tracking-detail-value">
+                            {applicationDetail.gender === 'Male' ? 'Nam' : 'Nữ'}
+                          </span>
+                        </div>
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Thành phố:</span>
+                          <span className="tracking-detail-value">{applicationDetail.city}</span>
+                        </div>
+                        {applicationDetail.status === 'Enrolled' && (
+                          <div className="tracking-detail-item">
+                            <span className="tracking-detail-label">Ngày nhập học:</span>
+                            <span className="tracking-detail-value">{formatDate(applicationDetail.enrollDate)}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="tracking-detail-section">
+                      <h4>
+                        <FontAwesomeIcon icon="user" />
+                        Thông tin phụ huynh
+                      </h4>
+                      <div className="tracking-detail-grid">
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Họ và tên:</span>
+                          <span className="tracking-detail-value">{applicationDetail.parentName}</span>
+                        </div>
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Số điện thoại:</span>
+                          <span className="tracking-detail-value">{applicationDetail.parentPhone}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="tracking-detail-section">
+                      <h4>
+                        <FontAwesomeIcon icon="file-alt" />
+                        Giấy tờ
+                      </h4>
+                      <div className="tracking-detail-documents">
+                        <div className="tracking-detail-document">
+                          <p>Giấy khai sinh</p>
+                          {applicationDetail.birthCertificate ? (
+                            <div className="tracking-detail-document-preview">
+                              <img 
+                                src={applicationDetail.birthCertificate} 
+                                alt="Giấy khai sinh"
+                                onClick={() => window.open(applicationDetail.birthCertificate, '_blank')}
+                                className="document-image"
+                                onError={(e) => {
+                                  e.target.onerror = null; 
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                              <div className="tracking-detail-document-overlay">
+                                <FontAwesomeIcon icon="search-plus" />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="tracking-detail-document-missing">
+                              <FontAwesomeIcon icon="file-excel" />
+                              <span>Chưa cung cấp</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="tracking-detail-error">
+                  <FontAwesomeIcon icon="exclamation-circle" />
+                  <p>Không thể tải thông tin chi tiết. Vui lòng thử lại sau.</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="tracking-modal-footer">
+              <button className="tracking-btn-secondary" onClick={closeDetailModal}>
+                <FontAwesomeIcon icon="times" />
+                Đóng
+              </button>
+              {applicationDetail && applicationDetail.status === 'Approved' && (
+                <button className="tracking-btn-primary">
+                  <FontAwesomeIcon icon="credit-card" />
+                  Thanh toán
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

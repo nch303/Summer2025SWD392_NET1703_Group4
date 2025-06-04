@@ -14,6 +14,22 @@ export const getEnrollmentApplicationsProgress = async () => {
   }
 };
 
+/**
+ * Get detailed information for a specific enrollment application
+ * @param {string} eAId - The enrollment application ID
+ * @returns {Promise} A promise that resolves to the application details
+ */
+export const getEnrollmentApplicationDetail = async (eAId) => {
+  try {
+    const response = await api.get(`/api/EnrollmentApplication/view-application-detail/${eAId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching enrollment application detail:', error);
+    throw error;
+  }
+};
+
 export default {
-  getEnrollmentApplicationsProgress
+  getEnrollmentApplicationsProgress,
+  getEnrollmentApplicationDetail
 };

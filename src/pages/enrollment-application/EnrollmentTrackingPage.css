@@ -56,6 +56,13 @@
     --inactive-rgb: 176, 190, 197;
 }
 
+/* Disable body scrolling when modal is open */
+body.no-scroll {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+}
+
 /* Base container */
 .tracking-container {
     background-color: #f6f8fa;
@@ -1005,4 +1012,382 @@ input[type="text"].tracking-search-input {
 
 .tracking-status-tabs::-webkit-scrollbar-thumb:hover {
     background: #ccc;
+}
+
+/* Modal styles */
+.tracking-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(3px);
+    will-change: opacity;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.tracking-modal-overlay.visible {
+    opacity: 1;
+}
+
+.tracking-modal-content {
+    background-color: white;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+}
+
+.tracking-modal-overlay.visible .tracking-modal-content {
+    transform: translateY(0);
+}
+
+.tracking-modal-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.tracking-modal-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.tracking-modal-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tracking-modal-close-btn:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tracking-modal-body {
+    padding: 0;
+    overflow-y: auto;
+    max-height: calc(90vh - 140px);
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    will-change: scroll-position;
+}
+
+.tracking-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.tracking-modal-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* Detail content styling */
+.tracking-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.tracking-detail-header {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    padding: 32px 24px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 24px;
+}
+
+.tracking-detail-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary-color-light);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.tracking-detail-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tracking-detail-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: var(--primary-color);
+}
+
+.tracking-detail-main-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tracking-detail-main-info h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--text-color-dark);
+}
+
+.tracking-detail-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.tracking-detail-status.tracking-pending {
+    background-color: var(--pending-color-light);
+    color: #e65100;
+}
+
+.tracking-detail-status.tracking-approved {
+    background-color: var(--approved-color-light);
+    color: #2e7d32;
+}
+
+.tracking-detail-status.tracking-paid {
+    background-color: var(--paid-color-light);
+    color: #0d47a1;
+}
+
+.tracking-detail-status.tracking-enrolled {
+    background-color: var(--enrolled-color-light);
+    color: #6a1b9a;
+}
+
+.tracking-detail-status.tracking-rejected {
+    background-color: var(--rejected-color-light);
+    color: #b71c1c;
+}
+
+.tracking-detail-sections {
+    padding: 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.tracking-detail-section {
+    background-color: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.tracking-detail-section h4 {
+    margin: 0 0 16px;
+    color: var(--text-color-dark);
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tracking-detail-section h4 svg {
+    color: var(--primary-color);
+}
+
+.tracking-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.tracking-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tracking-detail-label {
+    color: var(--text-color-muted);
+    font-size: 14px;
+}
+
+.tracking-detail-value {
+    color: var(--text-color-dark);
+    font-weight: 500;
+}
+
+.tracking-detail-documents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.tracking-detail-document {
+    width: 180px;
+}
+
+.tracking-detail-document p {
+    margin: 0 0 10px;
+    font-weight: 500;
+}
+
+.tracking-detail-document-preview {
+    position: relative;
+    height: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background-color: #f0f0f0;
+}
+
+.tracking-detail-document-preview::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f0f0f0 0%, #f8f8f8 50%, #f0f0f0 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    z-index: 1;
+}
+
+.tracking-detail-document-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 2;
+}
+
+.tracking-detail-document-preview img.loaded ~ .tracking-detail-document-preview::before {
+    display: none;
+}
+
+.tracking-detail-document-preview img.loaded ~ .tracking-detail-document-overlay {
+    z-index: 3;
+}
+
+.tracking-detail-document-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tracking-detail-document-preview:hover .tracking-detail-document-overlay {
+    opacity: 1;
+}
+
+.tracking-detail-document-missing {
+    height: 140px;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text-color-muted);
+}
+
+.tracking-detail-document-missing svg {
+    font-size: 36px;
+}
+
+.tracking-detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--danger-color);
+    text-align: center;
+    gap: 16px;
+}
+
+.tracking-detail-error svg {
+    font-size: 48px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .tracking-detail-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .tracking-modal-footer {
+        flex-direction: column;
+    }
+    
+    .tracking-modal-footer button {
+        width: 100%;
+    }
+    
+    .tracking-detail-grid {
+        grid-template-columns: 1fr;
+    }
 }
