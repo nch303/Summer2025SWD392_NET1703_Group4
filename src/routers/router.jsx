@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Route } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import StaffLayout from '../layouts/StaffLayout';
 import HomePage from '../pages/home/HomePage';
@@ -15,11 +15,14 @@ import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
+import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
+import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 import { ROUTES } from '../constants/routes';
 
 // Staff feature imports
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
+import ProtectedRoute from '../components/route-guard/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +65,14 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.INVOICE_DETAIL,
         element: <ProtectedRoute><InvoiceDetailPage /></ProtectedRoute>
+      },
+      {
+        path: ROUTES.ENROLLMENT_APPLICATION,
+        element: <ProtectedRoute><EnrollmentApplicationPage /></ProtectedRoute>
+      },
+      {
+        path: ROUTES.ENROLLMENT_TRACKING,
+        element: <ProtectedRoute><EnrollmentTrackingPage/></ProtectedRoute>
       },
       { path: ROUTES.NEWS, element: <NewsPage /> },
       { path: ROUTES.ABOUT_US, element: <AboutUsPage /> },

@@ -123,12 +123,20 @@ const Navbar = () => {
                       Profile
                     </Link>
                     {currentUser?.roleName === 'Parent' && (
-                      <Link to="/payment-history" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14c1.1 0 2 .9 2 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
-                        </svg>
-                        Payment History
-                      </Link>
+                      <>
+                        <Link to="/payment-history" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14c1.1 0 2 .9 2 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                          </svg>
+                          Payment History
+                        </Link>
+                        <Link to="/enrollment-tracking" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          </svg>
+                          Enrollment Tracking
+                        </Link>
+                      </>
                     )}
                     <Link to="/notifications" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -227,13 +235,22 @@ const Navbar = () => {
             Activities
           </Link>
           {currentUser?.roleName === 'Parent' && (
-            <Link 
-              to="/payment-history" 
-              className="mobile-link"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Payment History
-            </Link>
+            <>
+              <Link 
+                to="/payment-history" 
+                className="mobile-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Payment History
+              </Link>
+              <Link 
+                to="/enrollment-tracking" 
+                className="mobile-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Enrollment Tracking
+              </Link>
+            </>
           )}
         </div>
         
