@@ -1,7 +1,10 @@
 ﻿using Application.DTOs.Request;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
+using Azure.Core;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -12,20 +15,23 @@ namespace WebAPI.Controllers
     {
         private readonly IEAService _eAService;
         private readonly IMapper _mapper;
+        private readonly IAccountService _accountService;
 
-        public EnrollmentApplicationController(IEAService eAService, IMapper mapper)
+        public EnrollmentApplicationController(IEAService eAService, IMapper mapper, IAccountService accountService)
         {
             _eAService = eAService;
             _mapper = mapper;
+            _accountService = accountService;
         }
 
         [HttpPost("submit-application")]
-        public async Task<IActionResult> SubmitApplication([FromBody] EnrollmentApplicationRequest request, Guid parentID, Guid childID)
+        public async Task<IActionResult> SubmitApplication([FromBody] EnrollmentApplicationRequest request, Guid childID)
         {
             try
             {
-                var app = await _eAService.CreateEnrollmentApplicationAsync(request, parentID, childID);
-                var response = new EnrollmentApplicationResponse();
+                var parent = await _accountService.GetCurrentAccount();
+                var app = await _eAService.CreateEnrollmentApplicationAsync(request, parent.Id, childID);
+                var response = new EnrollmentApplicationListResponse();
                 _mapper.Map(app, response);
                 return Ok(response);
             }
@@ -35,6 +41,37 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("view-applications-progress")]
+        public async Task<IActionResult> ViewListApplicationProgress()
+        {
+            try
+            {
+                var parent = await _accountService.GetCurrentAccount();
+                var applications = await _eAService.ViewListApplicationAsync(parent.Id);
+                var responseList = _mapper.Map<List<EnrollmentApplicationListResponse>>(applications);
 
+                return Ok(responseList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("view-application-detail/{eAId}")]
+        public async Task<IActionResult> ViewApplicationDetail(Guid eAId)
+        {
+            try
+            {
+                var application = await _eAService.ViewApplicationDetail(eAId);
+                var response = _mapper.Map<EADetailResponse>(application);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

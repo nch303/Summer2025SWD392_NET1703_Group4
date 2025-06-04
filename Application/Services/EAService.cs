@@ -34,5 +34,15 @@ namespace Application.Services
 
             return await _eARepository.CreateEnrollmentApplicationAsync(application);
         }
+
+        public async Task<List<EnrollmentApplication>> ViewListApplicationAsync(Guid parentID)
+        {
+            return await _eARepository.ViewListApplicationAsync(parentID);
+        }
+
+        public async Task<EnrollmentApplication> ViewApplicationDetail(Guid eAId)
+        {
+            return await _eARepository.ViewApplicationDetail(eAId);
+        }
     }
 }

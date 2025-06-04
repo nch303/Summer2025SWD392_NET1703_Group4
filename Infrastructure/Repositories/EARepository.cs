@@ -32,5 +32,24 @@ namespace Infrastructure.Repositories
                 throw new Exception("Database update failed: " + ex.InnerException?.Message, ex);
             }
         }
+
+        public async Task<List<EnrollmentApplication>> ViewListApplicationAsync(Guid parentID)
+        {
+            var applications = await _context.EnrollmentApplications
+                .Include(ea => ea.Childrens)
+                .Include(ea => ea.GradeLevels)
+                .Where(a => a.ParentID == parentID).ToListAsync();
+            return applications!;
+        }
+
+        public async Task<EnrollmentApplication> ViewApplicationDetail(Guid eAId)
+        {
+            var application = await _context.EnrollmentApplications
+               .Include(ea => ea.Childrens)
+               .Include(ea => ea.Parent)
+               .FirstOrDefaultAsync(ea => ea.ID == eAId);
+
+            return application!;
+        }
     }
 }
