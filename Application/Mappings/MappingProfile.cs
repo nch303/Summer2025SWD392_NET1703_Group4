@@ -26,7 +26,20 @@ namespace Application.Mappings
             CreateMap<Children, ChildrenResponse>();
             CreateMap<Children, AllChildrenResponse>();
 
-            CreateMap<EnrollmentApplication, EnrollmentApplicationResponse>();
+            CreateMap<EnrollmentApplication, EnrollmentApplicationListResponse>()
+                .ForMember(dest => dest.EAID, opt => opt.MapFrom(src => src.ID))
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
+            CreateMap<EnrollmentApplication, EADetailResponse>()
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent!.FullName))
+                .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Parent!.PhoneNumber))
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
+                .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Childrens!.Birthday))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Childrens!.Gender))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Childrens!.Avatar))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Childrens!.City))
+                .ForMember(dest => dest.EnrollDate, opt => opt.MapFrom(src => src.Childrens!.EnrollDate))
+                .ForMember(dest => dest.BirthCertificate, opt => opt.MapFrom(src => src.Childrens!.BirthCertificate));
             CreateMap<EnrollmentApplicationRequest, EnrollmentApplication>();
 
             CreateMap<Invoice, InvoiceResponse>();

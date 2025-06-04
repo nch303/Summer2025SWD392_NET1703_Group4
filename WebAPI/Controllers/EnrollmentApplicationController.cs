@@ -25,12 +25,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("submit-application")]
-        public async Task<IActionResult> SubmitApplication([FromBody] EnrollmentApplicationRequest request, Guid parentID, Guid childID)
+        public async Task<IActionResult> SubmitApplication([FromBody] EnrollmentApplicationRequest request, Guid childID)
         {
             try
             {
-                var app = await _eAService.CreateEnrollmentApplicationAsync(request, parentID, childID);
-                var response = new EnrollmentApplicationResponse();
+                var parent = await _accountService.GetCurrentAccount();
+                var app = await _eAService.CreateEnrollmentApplicationAsync(request, parent.Id, childID);
+                var response = new EnrollmentApplicationListResponse();
                 _mapper.Map(app, response);
                 return Ok(response);
             }
@@ -40,15 +41,31 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("view-application-progress")]
-        public async Task<IActionResult> ViewApplicationProgress()
+        [HttpGet("view-applications-progress")]
+        public async Task<IActionResult> ViewListApplicationProgress()
         {
             try
             {
                 var parent = await _accountService.GetCurrentAccount();
-                var app = await _eAService.ViewApplicationAsync(parent.Id);
-                var response = new EnrollmentApplicationResponse();
-                _mapper.Map(app, response);
+                var applications = await _eAService.ViewListApplicationAsync(parent.Id);
+                var responseList = _mapper.Map<List<EnrollmentApplicationListResponse>>(applications);
+
+                return Ok(responseList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("view-application-detail/{eAId}")]
+        public async Task<IActionResult> ViewApplicationDetail(Guid eAId)
+        {
+            try
+            {
+                var application = await _eAService.ViewApplicationDetail(eAId);
+                var response = _mapper.Map<EADetailResponse>(application);
+
                 return Ok(response);
             }
             catch (Exception ex)

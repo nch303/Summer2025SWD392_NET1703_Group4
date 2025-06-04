@@ -10,6 +10,7 @@ namespace Domain.Interfaces
     public interface IEARepository
     {
         Task<EnrollmentApplication> CreateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication);
-        Task<EnrollmentApplication> ViewApplicationAsync(Guid parentID);
+        Task<List<EnrollmentApplication>> ViewListApplicationAsync(Guid parentID);
+        Task<EnrollmentApplication> ViewApplicationDetail(Guid eAId);
     }
 }
