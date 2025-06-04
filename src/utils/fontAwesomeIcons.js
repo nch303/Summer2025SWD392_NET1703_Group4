@@ -50,7 +50,8 @@ import {
   faCalendarAlt,
   faFilter,
   faUndo,
-  faCreditCard
+  faCreditCard,
+  faFileAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -105,7 +106,8 @@ library.add(
   faCalendarAlt,
   faFilter,
   faUndo,
-  faCreditCard
+  faCreditCard,
+  faFileAlt
 );
 
 // Không cần export vì đã đăng ký vào library 
