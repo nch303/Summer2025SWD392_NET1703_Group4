@@ -23,6 +23,8 @@ import ContactPage from '../pages/contact/ContactPage';
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
+import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
+import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -52,20 +54,20 @@ function App() {
           {/* Public Routes - Main Layout */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
-            
+
             {/* Auth routes - redirect if already logged in */}
             <Route path="/login" element={
               <AuthRoute>
                 <LoginPage />
               </AuthRoute>
             } />
-            
+
             <Route path="/register" element={
               <AuthRoute>
                 <RegisterPage />
               </AuthRoute>
             } />
-            
+
             <Route path="/forgot-password" element={
               <AuthRoute>
                 <ForgotPasswordPage />
@@ -77,7 +79,7 @@ function App() {
                 <ResetPasswordPage />
               </AuthRoute>
             } />
-            
+
             <Route path="/confirm" element={
               <AuthRoute>
                 <ConfirmEmailPage />
@@ -88,10 +90,11 @@ function App() {
                 <ProfilePage />
               </ProtectedRoute>
             } />
-            <Route path="/profile/children" element={
+            <Route path="/profile/:tab" element={
               <ProtectedRoute>
-                <ChildProfileManagement />
+                <ProfilePage />
               </ProtectedRoute>
+
             } />
             <Route path="/payment-history" element={
               <ProtectedRoute>
@@ -103,11 +106,21 @@ function App() {
                 <InvoiceDetailPage />
               </ProtectedRoute>
             } />
+            <Route path="/enrollment-application/:childId" element={
+              <ProtectedRoute>
+                <EnrollmentApplicationPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/enrollment-tracking" element={
+              <ProtectedRoute>
+                <EnrollmentTrackingPage />
+              </ProtectedRoute>
+            } />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
-   
+
           {/* Staff Routes */}
           <Route path="/staff" element={
             <ProtectedRoute allowedRoles={['Staff']}>
@@ -118,7 +131,7 @@ function App() {
             <Route path="dashboard" element={<StaffDashboard />} />
             <Route path="students" element={<ChildrenManagement />} />
           </Route>
-          
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </UserProvider>

@@ -25,7 +25,32 @@ import {
   faUserCheck,
   faUserTimes,
   faChild,
-  
+  faUserPlus,
+  faUserMinus,
+  faUserCircle,
+  faCloudUploadAlt,
+  faVenusMars,
+  faFilePdf,
+  faFileUpload,
+  faSearchPlus,
+  faSave,
+  // Add the missing icons for EnrollmentTrackingPage
+  faTasks,
+  faSync,
+  faSearch,
+  faSort,
+  faList,
+  faClock,
+  faCheckCircle,
+  faMoneyCheckAlt,
+  faTimesCircle,
+  faClipboardList,
+  faInfoCircle,
+  faGraduationCap,
+  faCalendarAlt,
+  faFilter,
+  faUndo,
+  faCreditCard
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -55,6 +80,32 @@ library.add(
   faUserCheck,
   faUserTimes,
   faChild,
+  faUserPlus,
+  faUserMinus,
+  faUserCircle,
+  faCloudUploadAlt,
+  faVenusMars,
+  faFilePdf,
+  faFileUpload,
+  faSearchPlus,
+  faSave,
+  // Add the missing icons for EnrollmentTrackingPage
+  faTasks,
+  faSync,
+  faSearch,
+  faSort,
+  faList,
+  faClock,
+  faCheckCircle,
+  faMoneyCheckAlt,
+  faTimesCircle,
+  faClipboardList,
+  faInfoCircle,
+  faGraduationCap,
+  faCalendarAlt,
+  faFilter,
+  faUndo,
+  faCreditCard
 );
 
 // Không cần export vì đã đăng ký vào library 
