@@ -47,6 +47,8 @@ namespace Application.Mappings
 
             CreateMap<InvoiceDetail, InvoiceDetailResponse>();
 
+            CreateMap<GradeLevel, GradeLevelResponse>();
+
         }
     }
 }

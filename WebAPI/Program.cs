@@ -32,6 +32,7 @@ builder.Services.AddScoped<IEAService, EAService>();
 builder.Services.AddScoped<IEnrichProgramService, EnrichProgramService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IGradeLevelService, GradeLevelService>();
 
 
 
@@ -44,6 +45,7 @@ builder.Services.AddScoped<IChildrenRepository, ChildrenRepository>();
 builder.Services.AddScoped<IEARepository, EARepository>();
 builder.Services.AddScoped<IEnrichProgramRepository, EnrichProgramRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IGradeLevelRepository, GradeLevelRepository>();
 
 // Add VnPay settings
 builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
