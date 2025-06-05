@@ -102,7 +102,7 @@ const EnrollmentApplicationPage = () => {
       });
       
       setTimeout(() => {
-        navigate('/profile/children');
+        navigate('/enrollment-tracking');
       }, 2000);
       
     } catch (err) {

@@ -4,8 +4,11 @@ import { useUser } from '../../contexts/UserContext';
 import ChildProfileManagement from './ChildProfileManagement';
 import ChangePasswordForm from './ChangePasswordForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
+  const { tab } = useParams();
+  const navigate = useNavigate();
   const { currentUser, isLoading: contextLoading, setCurrentUser } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -18,6 +21,15 @@ const ProfilePage = () => {
     bio: '',
   });
   const [message, setMessage] = useState({ text: '', type: '' });
+
+  useEffect(() => {
+    // Xác định activeTab từ thông tin URL
+    if (tab) {
+      setActiveTab(tab);
+    } else {
+      setActiveTab('profile');
+    }
+  }, [tab]);
 
   useEffect(() => {
     if (currentUser) {
@@ -43,6 +55,14 @@ const ProfilePage = () => {
   const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(email);
+  };
+
+  const handleTabChange = (tabName) => {
+    if (tabName === 'profile') {
+      navigate('/profile');
+    } else {
+      navigate(`/profile/${tabName}`);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -150,7 +170,7 @@ const ProfilePage = () => {
           <div className="sidebar-menu">
             <div 
               className={`sidebar-menu-item ${activeTab === 'profile' ? 'active' : ''}`}
-              onClick={() => setActiveTab('profile')}
+              onClick={() => handleTabChange('profile')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -162,7 +182,7 @@ const ProfilePage = () => {
             {isParent && (
               <div 
                 className={`sidebar-menu-item ${activeTab === 'children' ? 'active' : ''}`}
-                onClick={() => setActiveTab('children')}
+                onClick={() => handleTabChange('children')}
               >
                 <FontAwesomeIcon icon="children" />
                 Hồ sơ của bé
@@ -171,7 +191,7 @@ const ProfilePage = () => {
             
             <div 
               className={`sidebar-menu-item ${activeTab === 'security' ? 'active' : ''}`}
-              onClick={() => setActiveTab('security')}
+              onClick={() => handleTabChange('security')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
@@ -180,7 +200,7 @@ const ProfilePage = () => {
             </div>
             <div 
               className={`sidebar-menu-item ${activeTab === 'settings' ? 'active' : ''}`}
-              onClick={() => setActiveTab('settings')}
+              onClick={() => handleTabChange('settings')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
@@ -401,8 +421,6 @@ const ProfilePage = () => {
                   </p>
                 </div>
                 <ChangePasswordForm />
-                
-                {/* Có thể thêm các phần bảo mật khác ở đây trong tương lai */}
               </div>
             </div>
           )}

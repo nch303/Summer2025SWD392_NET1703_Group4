@@ -8,7 +8,6 @@ import './EnrollmentTrackingPage.css';
 
 const EnrollmentTrackingPage = () => {
   const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,7 +29,6 @@ const EnrollmentTrackingPage = () => {
   
   const fetchApplications = async () => {
     try {
-      setLoading(true);
       showSpinner('Đang tải thông tin đăng ký...');
       const data = await getEnrollmentApplicationsProgress();
       setApplications(data || []);
@@ -40,7 +38,6 @@ const EnrollmentTrackingPage = () => {
       toast.error('Không thể tải thông tin đăng ký.');
       console.error('Error fetching applications:', err);
     } finally {
-      setLoading(false);
       hideSpinner();
       setIsRefreshing(false);
     }
@@ -197,17 +194,6 @@ const EnrollmentTrackingPage = () => {
       return 0;
     });
   }, [applications, filterStatus, searchQuery, sortOrder]);
-  
-  if (loading && applications.length === 0) {
-    return (
-      <div className="tracking-container">
-        <div className="tracking-loading-overlay">
-          <div className="tracking-loading-spinner"></div>
-          <p>Đang tải thông tin đăng ký...</p>
-        </div>
-      </div>
-    );
-  }
   
   return (
     <div className="tracking-container">
