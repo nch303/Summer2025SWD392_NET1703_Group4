@@ -27,7 +27,7 @@ const NotFoundPage = () => {
             </div>
             
             <h1 className="error-title">Ôi không!</h1>
-            <p className="error-message">Trang bạn đang tìm kiếm đã đi chơi mất rồi</p>
+            <p className="error-message-not-found">Trang bạn đang tìm kiếm đã đi chơi mất rồi</p>
             
             <div className="balloons">
               <div className="balloon balloon-1"></div>

@@ -40,26 +40,24 @@ export const getCurrentUserProfile = async () => {
  */
 export const changePassword = async (passwordData) => {
   try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No authentication token found. Please log in again.');
-    }
-    
-    const response = await api.post('/api/Account/changePassword', {
-      currentPassword: passwordData.currentPassword,
+    const response = await api.put('/api/Auth/change-password', {
+      oldPassword: passwordData.currentPassword,
       newPassword: passwordData.newPassword
     });
     
-    return response.data;
+    // Kiểm tra phản hồi từ API
+    if (response.data === 'Change password successfully') {
+      return { success: true, message: 'Đổi mật khẩu thành công!' };
+    } else {
+      throw new Error('Đổi mật khẩu không thành công');
+    }
   } catch (error) {
     console.error('Error changing password:', error);
     
-    if (error.response) {
-      if (error.response.status === 401) {
+    // Nếu server trả về thông báo cụ thể
+    if (error.response && error.response.data) {
+      if (error.response.data === 'Change password unsuccessfully') {
         throw new Error('Mật khẩu hiện tại không chính xác.');
-      }
-      if (error.response.status === 400 && error.response.data) {
-        throw new Error(error.response.data.message || 'Vui lòng kiểm tra lại thông tin.');
       }
     }
     

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './sidebar.css';
+import { ROUTES } from '../../constants/routes';
 
 const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
   const location = useLocation();
@@ -82,7 +83,7 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
         <Link to="/staff/performance" className={`sidebar-link ${isActive('/staff/performance') ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
             </svg>
           </div>
           <span className="sidebar-text">Performance</span>
@@ -94,6 +95,12 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
             </svg>
           </div>
           <span className="sidebar-text">Training</span>
+        </Link>
+        <Link to={ROUTES.STAFF_STUDENTS} className={`sidebar-link ${isActive(ROUTES.STAFF_STUDENTS) ? 'active' : ''}`}>
+          <div className="sidebar-icon">
+            <i className="fas fa-child"></i>
+          </div>
+          <span className="sidebar-text">Students</span>
         </Link>
       </nav>
     </aside>

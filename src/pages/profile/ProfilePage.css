@@ -733,11 +733,94 @@ textarea {
 }
 
 .children-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-top: 24px;
   padding: 0 24px 24px;
+}
+
+.child-card-row {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  gap: 20px;
+  width: 100%;
+}
+
+.child-card-row .child-avatar {
+  width: 60px;
+  height: 60px;
+  margin-right: 0;
+}
+
+.child-card-row .child-info {
+  width: 180px;
+  min-width: 180px;
+}
+
+.child-card-row .child-name {
+  font-size: 1.1rem;
+  margin: 0 0 4px 0;
+}
+
+.child-card-row .child-dob {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.child-details-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+}
+
+.child-details-row p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.child-details-row p svg {
+  color: var(--primary-color);
+}
+
+.child-card-row .child-actions {
+  position: static;
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 992px) {
+  .child-details-row {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .child-card-row {
+    flex-wrap: wrap;
+  }
+  
+  .child-card-row .child-info {
+    width: calc(100% - 80px);
+    min-width: auto;
+  }
+  
+  .child-details-row {
+    width: 100%;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .child-card-row .child-actions {
+    margin-left: auto;
+    margin-top: 12px;
+  }
 }
 
 .child-card {
@@ -1570,4 +1653,472 @@ textarea {
   font-size: 0.8rem;
   color: #64748b;
   text-align: right;
+}
+
+/* Enhanced Child Detail Modal */
+.child-detail-modal {
+  max-width: 900px;
+}
+
+.child-detail-preview {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 30px;
+  border: 1px solid #e2e8f0;
+}
+
+.child-profile-header {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.child-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 4px solid white;
+}
+
+.child-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder-large {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-color-light) 0%, var(--primary-color) 100%);
+  color: white;
+}
+
+.child-header-info {
+  flex-grow: 1;
+}
+
+.child-header-info h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.8rem;
+  color: var(--text-color-dark);
+}
+
+.child-badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.gender-badge, .city-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.gender-badge {
+  background-color: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-color);
+}
+
+.gender-badge.male {
+  background-color: rgba(66, 153, 225, 0.1);
+  color: #3182ce;
+}
+
+.gender-badge.female {
+  background-color: rgba(236, 72, 153, 0.1);
+  color: #db2777;
+}
+
+.city-badge {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+}
+
+.city-badge svg {
+  margin-right: 6px;
+}
+
+.birth-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.birth-info svg {
+  color: var(--primary-color);
+}
+
+.birth-certificate-section {
+  margin-bottom: 24px;
+}
+
+.birth-certificate-section h4,
+.parent-info-section h4,
+.form-section-title {
+  font-size: 1.1rem;
+  margin: 0 0 16px 0;
+  color: var(--text-color-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.birth-certificate-section h4 svg,
+.parent-info-section h4 svg,
+.form-section-title svg {
+  color: var(--primary-color);
+}
+
+.certificate-preview {
+  max-width: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.certificate-preview:hover {
+  transform: translateY(-5px);
+}
+
+.certificate-image {
+  max-width: 100%;
+  display: block;
+}
+
+.certificate-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.certificate-preview:hover .certificate-overlay {
+  opacity: 1;
+}
+
+.certificate-overlay svg {
+  margin-right: 8px;
+}
+
+.parent-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.info-item {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.info-item label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-color-muted);
+  margin-bottom: 8px;
+}
+
+.info-value {
+  font-weight: 600;
+  color: var(--text-color-dark);
+}
+
+@media (max-width: 768px) {
+  .child-profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .child-badges {
+    justify-content: center;
+  }
+  
+  .birth-info {
+    justify-content: center;
+  }
+  
+  .certificate-preview {
+    margin: 0 auto;
+  }
+  
+  .parent-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Thêm styles mới cho form cập nhật */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(var(--accent-rgb), 0.2), transparent);
+  margin: 28px 0 24px;
+}
+
+.avatar-preview {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.avatar-preview img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-preview-small {
+  margin-top: 12px;
+  position: relative;
+  max-width: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.certificate-preview-small img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.certificate-overlay-small {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.certificate-overlay-small a {
+  color: white;
+  text-decoration: none;
+}
+
+.certificate-preview-small:hover .certificate-overlay-small {
+  opacity: 1;
+}
+
+/* Styles cập nhật cho form headers */
+.form-section-title {
+  font-size: 1.1rem;
+  margin: 0 0 16px 0;
+  color: var(--text-color-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 10px;
+}
+
+.form-section-title svg {
+  color: var(--primary-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .certificate-preview-small {
+    margin: 12px auto 0;
+  }
+}
+
+/* Styles cho file upload */
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.file-upload-btn {
+  padding: 10px 16px;
+  background-color: #f1f5f9;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.file-upload-btn:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.certificate-preview-small {
+  cursor: pointer;
+}
+
+.certificate-preview-small img {
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style cho icon trong label */
+.input-label-icon {
+  margin-right: 6px;
+  color: var(--primary-color);
+}
+
+/* Style cho icon trong radio button */
+.radio-label svg {
+  margin-right: 4px;
+}
+
+/* Cập nhật style cho file-upload-btn */
+.file-upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-upload-btn svg {
+  font-size: 1rem;
+}
+
+/* Đã có các style khác, chỉ thêm style cho nút đăng ký nhập học */
+
+.enroll-child-btn {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success-color);
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--anim-duration-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.enroll-child-btn:hover {
+  background-color: var(--success-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.enroll-child-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: color var(--anim-duration-fast);
+}
+
+.enroll-child-btn:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+/* Required field */
+.required-field::after {
+  content: '*';
+  color: var(--danger-color);
+  margin-left: 4px;
+}
+
+/* Error styles */
+.input-error {
+  border-color: var(--danger-color) !important;
+}
+
+.form-error-message {
+  color: var(--danger-color);
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+}
+
+.form-error-message::before {
+  margin-right: 4px;
+  font-size: 0.85rem;
+}
+
+/* Form note */
+.form-note {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: rgba(var(--info-rgb), 0.1);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.form-note svg {
+  color: var(--info-color);
+  margin-right: 6px;
+}
+
+/* Thêm style cho file upload khi có lỗi */
+.input-error-border {
+  border-color: var(--danger-color) !important;
 }

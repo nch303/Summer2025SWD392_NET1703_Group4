@@ -101,7 +101,7 @@
   animation: bounce 1s ease infinite;
 }
 
-.error-message {
+.error-message-not-found {
   font-size: 1.5rem;
   color: #4A4A4A;
   margin-bottom: 2rem;
