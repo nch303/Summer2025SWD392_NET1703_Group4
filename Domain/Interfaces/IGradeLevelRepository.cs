@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IGradeLevelRepository
     {
         Task<List<GradeLevel>> GetAllGradeLevelsAsync();
+        Task<GradeLevel?> GetGradeLevelByIdAsync(int id);
     }
 }

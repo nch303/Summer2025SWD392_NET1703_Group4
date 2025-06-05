@@ -19,9 +19,11 @@ namespace WebAPI.Controllers
         private readonly IChildrenService _childrenService;
         private readonly IInvoiceDetailService _invoiceDetailService;
         private readonly IEnrichProgramService _enrichProgramService;
+        private readonly ITuitionFeeService _tuitionFeeService;
 
         public InvoiceController(IInvoiceService invoiceService, IMapper mapper, IAccountService accountService
-            , IChildrenService childrenService, IInvoiceDetailService invoiceDetailService, IEnrichProgramService enrichProgramService)
+            , IChildrenService childrenService, IInvoiceDetailService invoiceDetailService, IEnrichProgramService enrichProgramService
+            , ITuitionFeeService tuitionFeeService)
         {
             _invoiceService = invoiceService;
             _mapper = mapper;
@@ -29,6 +31,7 @@ namespace WebAPI.Controllers
             _childrenService = childrenService;
             _invoiceDetailService = invoiceDetailService;
             _enrichProgramService = enrichProgramService;
+            _tuitionFeeService = tuitionFeeService;
         }
 
         [HttpGet("byAccountId")]
@@ -90,8 +93,17 @@ namespace WebAPI.Controllers
                     var child = await _childrenService.GetChildByIdAsync(invoiceDetails[i].ChildrenID);
                     detail.ChildrenName = child!.Name;
 
-                    var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
-                    detail.ProgramName = program.Name;
+                    if(invoiceDetails[i].ProgramID != null)
+                    {
+                        var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
+                        detail.ProgramName = program.Name;
+                    }
+                    else
+                    {
+                        var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
+                        detail.tuitionFeeName = tuition!.Name;
+                    }
+                    
                 }
                 invoicePDFResponse.InvoiceDetails = invoiceDetailResponses;
 

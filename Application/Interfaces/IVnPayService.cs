@@ -13,6 +13,8 @@ namespace Application.Interfaces
     {
         Task<string> CreatePaymentUrl(VnPayRequest request, HttpContext context);
         Task<VnPayResponse> PaymentExecute(IQueryCollection collections);
+        Task<string> CreatePaymentUrlForTuitionFee(VnPayTuitionFeeRequest request, HttpContext context);
+        Task<string> CreatePaymentUrlForEnrollment(VnPayEnrollmentRequest request, HttpContext context);
 
     }
 }

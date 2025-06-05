@@ -11,10 +11,11 @@ namespace Application.DTOs.Response
     {
         public Guid InvoiceID { get; set; }
 
-        public String? ProgramName { get; set; }
+        public string? ProgramName { get; set; }
 
         public decimal Price { get; set; }
 
-        public String? ChildrenName { get; set; }
+        public string? ChildrenName { get; set; }
+        public string? tuitionFeeName { get; set; }
     }
 }

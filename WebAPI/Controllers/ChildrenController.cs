@@ -16,14 +16,16 @@ namespace WebAPI.Controllers
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
         private readonly ICloudinaryService _cloudinaryService;
+        private readonly IChildrenGradeService _childrenGradeService;
 
         public ChildrenController(IChildrenService childrenService, IMapper mapper, IAccountService accountService
-            , ICloudinaryService cloudinaryService)
+            , ICloudinaryService cloudinaryService, IChildrenGradeService childrenGradeService)
         {
             _childrenService = childrenService;
             _mapper = mapper;
             _accountService = accountService;
             _cloudinaryService = cloudinaryService;
+            _childrenGradeService = childrenGradeService;
         }
 
         [HttpPost]
@@ -56,8 +58,20 @@ namespace WebAPI.Controllers
                 var child = _mapper.Map<Children>(childRequest);
                 child.Avatar = avatarUrl;
                 child.BirthCertificate = birthCertificateUrl;
+                child.EnrollDate = DateTime.Now;
                 var createdChild = await _childrenService.CreateChildAsync(child);
                 var createdChildResponse = _mapper.Map<ChildrenResponse>(createdChild);
+
+                //Create ChildrenGrade for the newly created child
+                var childrenGrade = new ChildrenGrade
+                {
+                    ChildrenID = createdChild.ID,
+                    AcademicYear = childRequest.AcedemicYear,
+                    GradeLevelID = childRequest.GradeLevelID, // Default value, can be updated later
+                    Status = "Temporary" // Default value, can be updated later
+                };
+                await _childrenGradeService.CreateChildrenGradeAsync(childrenGrade);
+
                 return Ok(createdChildResponse);
             }
             catch (Exception ex)

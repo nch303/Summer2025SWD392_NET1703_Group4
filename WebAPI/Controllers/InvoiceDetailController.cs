@@ -15,14 +15,17 @@ namespace WebAPI.Controllers
         private readonly IAccountService _accountService;
         private readonly IChildrenService _childrenService;
         private readonly IEnrichProgramService _enrichProgramService;
+        private readonly ITuitionFeeService _tuitionFeeService;
         public InvoiceDetailController(IInvoiceDetailService invoiceDetailService, IMapper mapper,
-            IAccountService accountService, IChildrenService childrenService, IEnrichProgramService enrichProgramService)
+            IAccountService accountService, IChildrenService childrenService, IEnrichProgramService enrichProgramService
+            , ITuitionFeeService tuitionFeeService)
         {
             _invoiceDetailService = invoiceDetailService;
             _mapper = mapper;
             _accountService = accountService;
             _childrenService = childrenService;
             _enrichProgramService = enrichProgramService;
+            _tuitionFeeService = tuitionFeeService;
         }
 
         [HttpGet]
@@ -40,8 +43,16 @@ namespace WebAPI.Controllers
                     var child = await _childrenService.GetChildByIdAsync(invoiceDetails[i].ChildrenID);
                     detail.ChildrenName = child!.Name;
 
-                    var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
-                    detail.ProgramName = program.Name;
+                    if (invoiceDetails[i].ProgramID != null)
+                    {
+                        var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
+                        detail.ProgramName = program.Name;
+                    }
+                    else
+                    {
+                        var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
+                        detail.tuitionFeeName = tuition!.Name;
+                    }
                 }
 
                 return Ok(invoiceDetailResponses);

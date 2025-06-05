@@ -10,5 +10,6 @@ namespace Application.Interfaces
     public interface IGradeLevelService
     {
         Task<List<GradeLevel>> GetAllGradeLevelsAsync();
+        Task<GradeLevel?> GetGradeLevelByIdAsync(int id);
     }
 }

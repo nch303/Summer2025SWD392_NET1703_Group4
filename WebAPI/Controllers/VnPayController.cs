@@ -24,10 +24,11 @@ namespace WebAPI.Controllers
         private readonly IInvoiceDetailService _invoiceDetailService;
         private readonly IEnrichProgramService _enrichProgramService;
         private readonly IEmailService _emailService;
+        private readonly ITuitionFeeService _tuitionFeeService;
 
         public VNPayController(IVnPayService vnPayService, IInvoiceService invoiceService, IMapper mapper
             , IAccountService accountService, IChildrenService childrenService, IInvoiceDetailService invoiceDetailService
-            , IEnrichProgramService enrichProgramService, IEmailService emailService)
+            , IEnrichProgramService enrichProgramService, IEmailService emailService, ITuitionFeeService tuitionFeeService)
         {
             _vnPayService = vnPayService;
             _invoiceService = invoiceService;
@@ -37,6 +38,7 @@ namespace WebAPI.Controllers
             _invoiceDetailService = invoiceDetailService;
             _enrichProgramService = enrichProgramService;
             _emailService = emailService;
+            _tuitionFeeService = tuitionFeeService;
         }
 
         [HttpPost("create-payment-url")]
@@ -82,8 +84,18 @@ namespace WebAPI.Controllers
                     var child = await _childrenService.GetChildByIdAsync(invoiceDetails[i].ChildrenID);
                     detail.ChildrenName = child!.Name;
 
-                    var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
-                    detail.ProgramName = program.Name;
+
+                    if (invoiceDetails[i].ProgramID != null)
+                    {
+                        var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
+                        detail.ProgramName = program.Name;
+                    }
+                    else
+                    {
+                        var tuitionFee = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
+                        detail.tuitionFeeName = tuitionFee?.Name;
+                    }
+
                 }
                 invoicePDFResponse.InvoiceDetails = invoiceDetailResponses;
 
@@ -96,6 +108,11 @@ namespace WebAPI.Controllers
                     "<p>Kính gửi quý phụ huynh,</p><p>Vui lòng xem hóa đơn thanh toán đính kèm.</p><p>Trân trọng,</p><p>Trường Mầm Non Little Stars</p>",
                     pdfBytes, "invoice.pdf"
                 );
+
+                //Update status children
+                var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
+                children!.Status = "Active";
+                await _childrenService.UpdateChildAsync(children);
             }
             else
             {
@@ -105,5 +122,19 @@ namespace WebAPI.Controllers
             return Ok(response);
         }
 
+        [HttpPost("create-payment-url-for-tuitionFee")]
+        public async Task<IActionResult> CreatePaymentUrlVnpayForTuitionFee(VnPayTuitionFeeRequest request)
+        {
+            var url = await _vnPayService.CreatePaymentUrlForTuitionFee(request, HttpContext);
+
+            return Ok(new { Url = url });
+        }
+
+        [HttpPost("create-payment-url-for-enrollment")]
+        public async Task<IActionResult> CreatePaymentUrlVnpayForEnrollment(VnPayEnrollmentRequest request)
+        {
+            var url = await _vnPayService.CreatePaymentUrlForEnrollment(request, HttpContext);
+            return Ok(new { Url = url });
+        }
     }
 }

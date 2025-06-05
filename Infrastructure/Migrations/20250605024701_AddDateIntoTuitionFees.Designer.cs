@@ -4,6 +4,7 @@ using Infrastructure.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250605024701_AddDateIntoTuitionFees")]
+    partial class AddDateIntoTuitionFees
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,7 +410,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProgramID");
 
-                    b.HasIndex("TuitionFeeID");
+                    b.HasIndex("TuitionFeeID")
+                        .IsUnique()
+                        .HasFilter("[TuitionFeeID] IS NOT NULL");
 
                     b.ToTable("InvoiceDetails");
                 });
@@ -779,9 +784,8 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Domain.Entities.TuitionFee", "TuitionFees")
-                        .WithMany("InvoiceDetails")
-                        .HasForeignKey("TuitionFeeID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .WithOne("InvoiceDetails")
+                        .HasForeignKey("Domain.Entities.InvoiceDetail", "TuitionFeeID");
 
                     b.Navigation("Childrens");
 
