@@ -19,5 +19,9 @@ namespace Application.DTOs.Response
         public string? BirthCertificate { get; set; }
         public string? Status { get; set; }
         public DateTime EnrollDate  { get; set; }
+
+        public string? GradeLevelName { get; set; }
+        public double GradeLevelFee { get; set; }
+        public bool GradeLevelIsDelete { get; set; }
     }
 }
