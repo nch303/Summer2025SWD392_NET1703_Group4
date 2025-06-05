@@ -27,7 +27,7 @@ namespace Application.Services
             var account = await _accountService.GetCurrentAccount();
             child.ParentID = account.Id;
             child.ID = Guid.NewGuid();
-            child.Status = "Not Enrolled";
+            child.Status = "Temporary";
             return await _childrenRepository.CreateChildAsync(child);
         }
 

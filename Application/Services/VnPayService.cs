@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,19 +20,26 @@ namespace Application.Services
     {
         private readonly IConfiguration _configuration;
         private readonly IInvoiceService _invoiceService;
-        private readonly IInvoiceDetailService  _invoiceDetailService;
+        private readonly IInvoiceDetailService _invoiceDetailService;
         private readonly IAccountService _accountService;
         private readonly IEnrichProgramService _enrichProgramService;
+        private readonly ITuitionFeeService _tuitionFeeService;
+        private readonly IGradeLevelService _gradeLevelService;
+        private readonly IChildrenGradeService _childrenGradeService;
 
 
         public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
-            , IAccountService accountService, IEnrichProgramService enrichProgramService)
+            , IAccountService accountService, IEnrichProgramService enrichProgramService, ITuitionFeeService tuitionFeeService
+            , IGradeLevelService gradeLevelService, IChildrenGradeService childrenGradeService)
         {
             _configuration = configuration;
             _invoiceService = invoiceService;
             _invoiceDetailService = invoiceDetailService;
             _accountService = accountService;
             _enrichProgramService = enrichProgramService;
+            _tuitionFeeService = tuitionFeeService;
+            _gradeLevelService = gradeLevelService;
+            _childrenGradeService = childrenGradeService;
         }
 
 
@@ -86,7 +94,7 @@ namespace Application.Services
                     ID = Guid.NewGuid(),
                     InvoiceID = invoice.ID,
                     ProgramID = enrichmentProgramId,
-                    Price = program.Fee, 
+                    Price = program.Fee,
                     ChildrenID = request.ChildrenID
                 };
                 await _invoiceDetailService.CreateAsync(invoiceDetail);
@@ -104,6 +112,134 @@ namespace Application.Services
             return response;
         }
 
+        public async Task<string> CreatePaymentUrlForTuitionFee(VnPayTuitionFeeRequest request, HttpContext context)
+        {
+            var invoiceId = Guid.NewGuid(); // Generate a new invoice ID for the payment 
+
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+            var tick = DateTime.Now.Ticks.ToString();
+            var pay = new VnPayLibrary();
+            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
+
+            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
+            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
+            pay.AddRequestData("vnp_Amount", ((int)request.Amount * 100).ToString());
+            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
+            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
+            pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
+            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
+            pay.AddRequestData("vnp_OrderInfo", $"{request.Name}|{request.OrderDescription}|{request.Amount}|invoiceID:{invoiceId}");
+            pay.AddRequestData("vnp_OrderType", request.OrderType);
+            pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
+            pay.AddRequestData("vnp_TxnRef", tick);
+
+            var paymentUrl =
+                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
+            // Get current account
+            var currentAccount = _accountService.GetCurrentAccount();
+
+            // Save invoice and invoice details
+            var invoice = new Invoice
+            {
+                ID = invoiceId,
+                Amount = request.Amount,
+                ChildrenID = request.ChildrenID,
+                Date = DateTime.Now,
+                AccountID = currentAccount.Result.Id,
+                Status = "Pending",
+                PaymentLink = paymentUrl,
+                Name = request.Name
+            };
+            await _invoiceService.CreateAsync(invoice);
+
+            foreach (var tuitionFeeId in request.TuitionFeeIds)
+            {
+                var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(tuitionFeeId);
+                var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition!.GradeLevelID);
+                decimal price;
+                var invoiceDetail = new InvoiceDetail
+                {
+                    ID = Guid.NewGuid(),
+                    InvoiceID = invoice.ID,
+                    TuitionFeeID = tuitionFeeId,
+                    Price = (decimal)gradeLevel!.Fee,
+                    ChildrenID = request.ChildrenID
+                };
+                await _invoiceDetailService.CreateAsync(invoiceDetail);
+            }
+
+
+            return paymentUrl;
+        }
+
+        public async Task<string> CreatePaymentUrlForEnrollment(VnPayEnrollmentRequest request, HttpContext context)
+        {
+            var invoiceId = Guid.NewGuid(); // Generate a new invoice ID for the payment 
+
+            var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(request.ChildrenID);
+            var tuitionName = "09/" + childrenGrade.AcademicYear!.Split('-')[0];
+            var tuition = await _tuitionFeeService.GetTuitionFeeByNameAsync(tuitionName);
+            var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition!.GradeLevelID);
+            var amount = (decimal)gradeLevel!.Fee;
+
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+            var tick = DateTime.Now.Ticks.ToString();
+            var pay = new VnPayLibrary();
+            var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
+
+            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
+            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
+            pay.AddRequestData("vnp_Amount", ((int)amount * 100).ToString());
+            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
+            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
+            pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
+            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
+            pay.AddRequestData("vnp_OrderInfo", $"{request.Name}|{request.OrderDescription}|{amount}|invoiceID:{invoiceId}");
+            pay.AddRequestData("vnp_OrderType", request.OrderType);
+            pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
+            pay.AddRequestData("vnp_TxnRef", tick);
+
+            var paymentUrl =
+                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
+            // Get current account
+            var currentAccount = _accountService.GetCurrentAccount();
+
+            // Save invoice and invoice details
+            var invoice = new Invoice
+            {
+                ID = invoiceId,
+                Amount = amount,
+                ChildrenID = request.ChildrenID,
+                Date = DateTime.Now,
+                AccountID = currentAccount.Result.Id,
+                Status = "Pending",
+                PaymentLink = paymentUrl,
+                Name = request.Name
+            };
+            await _invoiceService.CreateAsync(invoice);
+
+            
+            decimal price;
+            var invoiceDetail = new InvoiceDetail
+            {
+                ID = Guid.NewGuid(),
+                InvoiceID = invoice.ID,
+                TuitionFeeID = tuition.ID,
+                Price = (decimal)gradeLevel!.Fee,
+                ChildrenID = request.ChildrenID
+            };
+            await _invoiceDetailService.CreateAsync(invoiceDetail);
+
+
+
+            return paymentUrl;
+        }
 
     }
 }

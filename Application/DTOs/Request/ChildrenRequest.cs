@@ -15,5 +15,7 @@ namespace Application.DTOs.Request
         public IFormFile? Avatar { get; set; }
         public string? City { get; set; }
         public IFormFile? BirthCertificate { get; set; }
+        public string? AcedemicYear { get; set; }
+        public int GradeLevelID { get; set; }
     }
 }

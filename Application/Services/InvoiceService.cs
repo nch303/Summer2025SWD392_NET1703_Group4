@@ -153,10 +153,21 @@ namespace Application.Services
                                       bool isEvenRow = false;
                                       foreach (var detail in invoice.InvoiceDetails)
                                       {
-                                          table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ProgramName ?? "");
-                                          table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ChildrenName ?? "");
-                                          table.Cell().Element(container => CellStyleBody(container, isEvenRow)).AlignRight()
-                                        .Text(detail.Price.ToString("C0", vietnamCulture));
+                                          if(detail.ProgramName == null || detail.ProgramName == "")
+                                          {
+                                              table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.tuitionFeeName ?? "");
+                                              table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ChildrenName ?? "");
+                                              table.Cell().Element(container => CellStyleBody(container, isEvenRow)).AlignRight()
+                                              .Text(detail.Price.ToString("C0", vietnamCulture));
+                                          }
+                                          else 
+                                          {
+                                              table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ProgramName ?? "");
+                                              table.Cell().Element(container => CellStyleBody(container, isEvenRow)).Text(detail.ChildrenName ?? "");
+                                              table.Cell().Element(container => CellStyleBody(container, isEvenRow)).AlignRight()
+                                              .Text(detail.Price.ToString("C0", vietnamCulture));
+                                          }
+                                              
 
                                           isEvenRow = !isEvenRow;
                                       }
