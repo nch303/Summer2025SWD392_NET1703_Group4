@@ -96,6 +96,12 @@ namespace Infrastructure.EntitiesConfigurations
                 .HasForeignKey(id => id.ProgramID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<InvoiceDetail>()
+                .HasOne(id => id.TuitionFees)
+                .WithMany(p => p.InvoiceDetails)
+                .HasForeignKey(id => id.TuitionFeeID)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<ClassChildren>()
                 .HasOne(cc => cc.Classes)
                 .WithMany(cl => cl.ClassChildrens)

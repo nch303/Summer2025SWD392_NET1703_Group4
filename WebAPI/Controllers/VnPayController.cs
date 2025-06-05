@@ -108,6 +108,11 @@ namespace WebAPI.Controllers
                     "<p>Kính gửi quý phụ huynh,</p><p>Vui lòng xem hóa đơn thanh toán đính kèm.</p><p>Trân trọng,</p><p>Trường Mầm Non Little Stars</p>",
                     pdfBytes, "invoice.pdf"
                 );
+
+                //Update status children
+                var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
+                children!.Status = "Active";
+                await _childrenService.UpdateChildAsync(children);
             }
             else
             {

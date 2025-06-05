@@ -19,6 +19,6 @@ namespace Domain.Entities
         public int GradeLevelID { get; set; }
         [ForeignKey("GradeLevelID")]
         public GradeLevel? GradeLevels { get; set; }
-        public InvoiceDetail? InvoiceDetails { get; set; }
+        public List<InvoiceDetail>? InvoiceDetails { get; set; }
     }
 }

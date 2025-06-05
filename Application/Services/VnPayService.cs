@@ -226,7 +226,7 @@ namespace Application.Services
 
             
             decimal price;
-            var invoiceDetail = new InvoiceDetail
+                var invoiceDetail = new InvoiceDetail
             {
                 ID = Guid.NewGuid(),
                 InvoiceID = invoice.ID,
@@ -236,7 +236,7 @@ namespace Application.Services
             };
             await _invoiceDetailService.CreateAsync(invoiceDetail);
 
-
+            //
 
             return paymentUrl;
         }

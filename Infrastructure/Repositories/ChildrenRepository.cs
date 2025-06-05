@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
         public async Task<Children> UpdateChildAsync(Children child)
         {
             var existingChild = _context.Childrens.FirstOrDefault(c => c.ID == child.ID);
-            existingChild.Name = child.Name;
+            existingChild!.Name = child.Name;
             existingChild.Birthday = child.Birthday;
             existingChild.Gender = child.Gender;
             existingChild.City = child.City;
