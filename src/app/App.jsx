@@ -7,6 +7,7 @@ import { ProcessingSpinnerProvider } from '../components/spinner/ProcessingSpinn
 // Layout
 import MainLayout from '../layouts/MainLayout';
 import StaffLayout from '../layouts/StaffLayout';
+import AdminLayout from '../layouts/AdminLayout';
 
 // Pages
 import HomePage from '../pages/home/HomePage';
@@ -20,11 +21,14 @@ import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
 import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
 import AboutUsPage from '../pages/about-us/AboutUsPage';
 import ContactPage from '../pages/contact/ContactPage';
+import AdminPage from '../pages/admin/AdminPage';
+
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
+
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -131,6 +135,21 @@ function App() {
             <Route path="dashboard" element={<StaffDashboard />} />
             <Route path="students" element={<ChildrenManagement />} />
           </Route>
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={
+            <ProtectedRoute allowedRoles={['Admin']}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<AdminPage />} />
+            <Route path="students" element={<div>Students Management</div>} />
+            <Route path="teachers" element={<div>Teachers Management</div>} />
+            <Route path="courses" element={<div>Courses Management</div>} />
+            <Route path="classes" element={<div>Classes Management</div>} />
+            <Route path="settings" element={<div>Settings</div>} />
+          </Route>
+          
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
