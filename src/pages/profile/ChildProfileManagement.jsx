@@ -3,6 +3,7 @@ import { getChildrenByParentId, addChild, updateChild, deleteChild } from './Chi
 import { useUser } from '../../contexts/UserContext';
 import './ProfilePage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 const ChildProfileManagement = () => {
   const [children, setChildren] = useState([]);
@@ -25,6 +26,9 @@ const ChildProfileManagement = () => {
 
   const [avatarFile, setAvatarFile] = useState(null);
   const [birthCertificateFile, setBirthCertificateFile] = useState(null);
+
+  // Thêm state để quản lý lỗi form
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     fetchChildren();
@@ -72,6 +76,14 @@ const ChildProfileManagement = () => {
       ...prev,
       [name]: value,
     }));
+    
+    // Xóa lỗi cho trường đang được nhập
+    if (formErrors[name]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
   };
 
   const resetForm = () => {
@@ -132,8 +144,58 @@ const ChildProfileManagement = () => {
     }, 300); // Wait for animation to complete
   };
 
+  // Thêm hàm validateForm trước khi submit
+  const validateForm = () => {
+    const errors = {};
+    
+    // Kiểm tra tên trẻ
+    if (!childFormData.name || childFormData.name.trim() === '') {
+      errors.name = 'Vui lòng nhập họ và tên của bé';
+    }
+    
+    // Kiểm tra ngày sinh
+    if (!childFormData.birthday) {
+      errors.birthday = 'Vui lòng chọn ngày sinh của bé';
+    } else {
+      const birthDate = new Date(childFormData.birthday);
+      const today = new Date();
+      
+      // Kiểm tra ngày sinh không được trong tương lai
+      if (birthDate > today) {
+        errors.birthday = 'Ngày sinh không thể là ngày trong tương lai';
+      }
+      
+      // Kiểm tra tuổi phù hợp (ví dụ: từ 2-6 tuổi)
+      const ageInYears = (today - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
+      if (ageInYears > 5) {
+        errors.birthday = 'Độ tuổi của bé phải nhỏ hơn hoặc bằng 5 tuổi';
+      }
+    }
+    
+    // Kiểm tra giới tính
+    if (!childFormData.gender) {
+      errors.gender = 'Vui lòng chọn giới tính của bé';
+    }
+    
+    // Kiểm tra giấy khai sinh
+    if (!childFormData.birthCertificate && !birthCertificateFile) {
+      errors.birthCertificate = 'Vui lòng tải lên ảnh giấy khai sinh';
+    }
+    
+    return errors;
+  };
+
+  // Cập nhật hàm handleSubmitForm để kiểm tra form trước khi submit
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    
+    // Kiểm tra form trước khi submit
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return; // Ngăn form submit nếu có lỗi
+    }
+    
     setFormSubmitting(true);
     
     try {
@@ -318,6 +380,14 @@ const ChildProfileManagement = () => {
                   >
                     <FontAwesomeIcon icon="trash" />
                   </button>
+                  <Link
+                    to={`/enrollment-application/${child.id}`}
+                    className="enroll-child-btn"
+                    title="Nhập học"
+                    aria-label="Nhập học"
+                  >
+                    <FontAwesomeIcon icon="graduation-cap" />
+                  </Link>
                 </div>
               </div>
             ))}
@@ -395,7 +465,7 @@ const ChildProfileManagement = () => {
                 
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="name">
+                    <label htmlFor="name" className="required-field">
                        Họ và tên của bé *
                     </label>
                     <div className="input-with-icon">
@@ -406,14 +476,15 @@ const ChildProfileManagement = () => {
                         name="name"
                         value={childFormData.name}
                         onChange={handleInputChange}
-                        required
                         placeholder="Nhập họ và tên của bé"
+                        className={formErrors.name ? "input-error" : ""}
                       />
                     </div>
+                    {formErrors.name && <div className="form-error-message">{formErrors.name}</div>}
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="birthday">
+                    <label htmlFor="birthday" className="required-field">
                       Ngày sinh *
                     </label>
                     <div className="input-with-icon">
@@ -424,16 +495,17 @@ const ChildProfileManagement = () => {
                         name="birthday"
                         value={childFormData.birthday}
                         onChange={handleInputChange}
-                        required
+                        className={formErrors.birthday ? "input-error" : ""}
                       />
                     </div>
+                    {formErrors.birthday && <div className="form-error-message">{formErrors.birthday}</div>}
                   </div>
                 </div>
 
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="gender">
-                      <FontAwesomeIcon icon="venus-mars" className="input-label-icon" /> Giới tính
+                    <label htmlFor="gender" className="required-field">
+                      <FontAwesomeIcon icon="venus-mars" className="input-label-icon" /> Giới tính *
                     </label>
                     <div className="radio-group">
                       <label className={`radio-label ${childFormData.gender === 'Male' ? 'active' : ''}`}>
@@ -457,6 +529,7 @@ const ChildProfileManagement = () => {
                         <FontAwesomeIcon icon="venus" /> <span>Nữ</span>
                       </label>
                     </div>
+                    {formErrors.gender && <div className="form-error-message">{formErrors.gender}</div>}
                   </div>
 
                   <div className="form-group">
@@ -478,8 +551,8 @@ const ChildProfileManagement = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="birthCertificate">
-                    <FontAwesomeIcon icon="file-certificate" className="input-label-icon" /> Giấy khai sinh
+                  <label htmlFor="birthCertificate" className="required-field">
+                    <FontAwesomeIcon icon="file-certificate" className="input-label-icon" /> Giấy khai sinh *
                   </label>
                   <div className="file-upload-container">
                     <input
@@ -488,9 +561,9 @@ const ChildProfileManagement = () => {
                       name="birthCertificate"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, 'birthCertificate')}
-                      className="file-input"
+                      className={`file-input ${formErrors.birthCertificate ? "input-error" : ""}`}
                     />
-                    <label htmlFor="birthCertificate" className="file-upload-btn">
+                    <label htmlFor="birthCertificate" className={`file-upload-btn ${formErrors.birthCertificate ? "input-error-border" : ""}`}>
                       <FontAwesomeIcon icon="file-upload" /> Chọn ảnh giấy khai sinh
                     </label>
                     <span className="file-name">
@@ -509,6 +582,8 @@ const ChildProfileManagement = () => {
                       </div>
                     </div>
                   )}
+                  
+                  {formErrors.birthCertificate && <div className="form-error-message">{formErrors.birthCertificate}</div>}
                 </div>
 
                 <div className="modal-footer">

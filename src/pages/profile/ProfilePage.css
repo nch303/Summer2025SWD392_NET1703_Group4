@@ -2030,3 +2030,95 @@ textarea {
 .file-upload-btn svg {
   font-size: 1rem;
 }
+
+/* Đã có các style khác, chỉ thêm style cho nút đăng ký nhập học */
+
+.enroll-child-btn {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success-color);
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--anim-duration-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.enroll-child-btn:hover {
+  background-color: var(--success-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.enroll-child-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: color var(--anim-duration-fast);
+}
+
+.enroll-child-btn:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+/* Required field */
+.required-field::after {
+  content: '*';
+  color: var(--danger-color);
+  margin-left: 4px;
+}
+
+/* Error styles */
+.input-error {
+  border-color: var(--danger-color) !important;
+}
+
+.form-error-message {
+  color: var(--danger-color);
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+}
+
+.form-error-message::before {
+  margin-right: 4px;
+  font-size: 0.85rem;
+}
+
+/* Form note */
+.form-note {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: rgba(var(--info-rgb), 0.1);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.form-note svg {
+  color: var(--info-color);
+  margin-right: 6px;
+}
+
+/* Thêm style cho file upload khi có lỗi */
+.input-error-border {
+  border-color: var(--danger-color) !important;
+}

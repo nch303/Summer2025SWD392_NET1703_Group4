@@ -107,7 +107,7 @@ library.add(
   faFilter,
   faUndo,
   faCreditCard,
-  faFileAlt
+  faFileAlt,
 );
 
 // Không cần export vì đã đăng ký vào library 
