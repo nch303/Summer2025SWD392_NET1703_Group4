@@ -14,7 +14,6 @@ namespace Domain.Entities
         public string? Content { get; set; }
         public string? Title { get; set; }
         public bool IsRead { get; set; }
-        public string? Type { get; set; }
 
         [ForeignKey("AccountID")]
         public Account? Accounts { get; set; }

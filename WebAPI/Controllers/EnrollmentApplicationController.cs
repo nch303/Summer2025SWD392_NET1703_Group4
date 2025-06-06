@@ -73,5 +73,33 @@ namespace WebAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("approve-application")]
+        public async Task<IActionResult> ApproveApplication(Guid eAId)
+        {
+            try
+            {
+                var updated = await _eAService.ApproveByStaff(eAId);
+                return Ok("Approved!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("reject-application")]
+        public async Task<IActionResult> RejectApplication(Guid eAId)
+        {
+            try
+            {
+                var updated = await _eAService.RejectByStaff(eAId);
+                return Ok("Rejected!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

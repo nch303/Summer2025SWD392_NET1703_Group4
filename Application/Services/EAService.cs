@@ -13,10 +13,12 @@ namespace Application.Services
     public class EAService : IEAService
     {
         private readonly IEARepository _eARepository;
+        private readonly IAccountService _accountService;
 
-        public EAService(IEARepository eARepository)
+        public EAService(IEARepository eARepository, IAccountService accountService)
         {
             _eARepository = eARepository;
+            _accountService = accountService;
         }
 
         public async Task<EnrollmentApplication> CreateEnrollmentApplicationAsync(EnrollmentApplicationRequest request, Guid parentID, Guid childID)
@@ -43,6 +45,19 @@ namespace Application.Services
         public async Task<EnrollmentApplication> ViewApplicationDetail(Guid eAId)
         {
             return await _eARepository.ViewApplicationDetail(eAId);
+        }
+
+        public async Task<EnrollmentApplication> ApproveByStaff(Guid eAId)
+        {
+            var staff = await _accountService.GetCurrentAccount();
+            var updated = await _eARepository.ApproveByStaff(eAId, staff.Id);
+            return updated;
+        }
+        public async Task<EnrollmentApplication> RejectByStaff(Guid eAId)
+        {
+            var staff = await _accountService.GetCurrentAccount();
+            var updated = await _eARepository.RejectByStaff(eAId, staff.Id);
+            return updated;
         }
     }
 }

@@ -55,6 +55,16 @@ namespace Application.Mappings
 
             CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
+
+            CreateMap<CreateClassRequest, Class>();
+            CreateMap<Class, ClassResponse>()
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+            CreateMap<Class, ClassDetailResponse>()
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+            CreateMap<Class, SortResponse>()
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
         }
     }
 }

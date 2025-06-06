@@ -51,5 +51,35 @@ namespace Infrastructure.Repositories
 
             return application!;
         }
+
+        public async Task<EnrollmentApplication> ApproveByStaff(Guid eAId, Guid staffID)
+        {
+            var application = await _context.EnrollmentApplications.FirstOrDefaultAsync(ea=>ea.ID == eAId);
+            if (application == null)
+            {
+                throw new Exception("Cannot found application");
+            }
+            application!.Status = "Approved";
+            application.StaffID = staffID;
+            application.ApprovalDate = DateTime.Now;
+            _context.EnrollmentApplications.Update(application);
+            await _context.SaveChangesAsync();
+            return application!;
+        }
+
+        public async Task<EnrollmentApplication> RejectByStaff(Guid eAId, Guid staffID)
+        {
+            var application = await _context.EnrollmentApplications.FirstOrDefaultAsync(ea => ea.ID == eAId);
+            if (application == null)
+            {
+                throw new Exception("Cannot found application");
+            }
+            application!.Status = "Rejected";
+            application.StaffID = staffID;
+            application.ApprovalDate = DateTime.Now;
+            _context.EnrollmentApplications.Update(application);
+            await _context.SaveChangesAsync();
+            return application!;
+        }
     }
 }

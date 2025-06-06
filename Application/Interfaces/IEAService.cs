@@ -13,5 +13,7 @@ namespace Application.Interfaces
         Task<EnrollmentApplication> CreateEnrollmentApplicationAsync(EnrollmentApplicationRequest request, Guid parentID, Guid childID);
         Task<List<EnrollmentApplication>> ViewListApplicationAsync(Guid parentID);
         Task<EnrollmentApplication> ViewApplicationDetail(Guid eAId);
+        Task<EnrollmentApplication> ApproveByStaff(Guid eAId);
+        Task<EnrollmentApplication> RejectByStaff(Guid eAId);
     }
 }
