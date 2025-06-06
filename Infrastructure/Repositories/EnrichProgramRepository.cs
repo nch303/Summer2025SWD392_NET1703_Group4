@@ -23,5 +23,13 @@ namespace Infrastructure.Repositories
             var program = await _context.EnrichmentPrograms.FindAsync(programId);
             return program!;
         }
+
+        public async Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsAsync()
+        {
+            var list = await _context.EnrichmentPrograms
+                .Include(ep => ep.TypePrograms)
+                .ToListAsync();
+            return list;
+        }
     }
 }
