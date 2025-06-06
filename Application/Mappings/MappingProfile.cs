@@ -53,6 +53,8 @@ namespace Application.Mappings
 
             CreateMap<GradeLevel, GradeLevelResponse>();
 
+            CreateMap<TuitionFee, TuitionWithChildResponse>();
+
         }
     }
 }
