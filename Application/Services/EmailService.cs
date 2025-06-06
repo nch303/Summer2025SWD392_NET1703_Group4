@@ -96,7 +96,7 @@ namespace Application.Services
 <body>
     <div class='container'>
         <div class='header'>
-            <h2>Xác thực tài khoản HBKQ Cinema</h2>
+            <h2>Xác thực tài khoản</h2>
         </div>
         <div class='content'>
             <p>Xin chào <strong>{fullname}</strong>,</p>
@@ -108,7 +108,7 @@ namespace Application.Services
             <p style='word-break: break-all;'><a href='{resetLink}'>{resetLink}</a></p>
             <p>Liên kết này sẽ hết hạn sau 5 phút.</p>
             <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
-            <p>Trân trọng,<br>Đội ngũ HBKQ Cinema</p>
+            <p>Trân trọng,<br>Đội ngũ Little Stars</p>
         </div>
         <div class='footer'>
             <p>Đây là email tự động, vui lòng không trả lời email này.</p>

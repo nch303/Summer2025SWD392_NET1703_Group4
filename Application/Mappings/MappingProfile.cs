@@ -52,6 +52,9 @@ namespace Application.Mappings
             CreateMap<InvoiceDetail, InvoiceDetailResponse>();
 
             CreateMap<GradeLevel, GradeLevelResponse>();
+            CreateMap<Notification, NotificationResponse>();
+
+            CreateMap<TuitionFee, TuitionWithChildResponse>();
 
             CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
@@ -65,6 +68,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
             CreateMap<Class, SortResponse>()
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
+                
+            CreateMap<Role, RoleResponse>();
         }
     }
 }

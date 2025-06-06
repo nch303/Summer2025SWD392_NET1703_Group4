@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.EntitiesConfigurations;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,12 @@ namespace Infrastructure.Repositories
         {
             var role = await _context.Roles.FindAsync(id);
             return role!;
+        }
+
+        public async Task<List<Role>> GetAllAsync()
+        {
+            var roles =  await _context.Roles.ToListAsync();
+            return roles;
         }
     }
 }

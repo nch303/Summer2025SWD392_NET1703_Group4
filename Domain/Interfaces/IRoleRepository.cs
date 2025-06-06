@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IRoleRepository
     {
         Task<Role> GetById(int id);
+        Task<List<Role>> GetAllAsync();
     }
 }

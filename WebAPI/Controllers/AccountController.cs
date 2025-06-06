@@ -68,6 +68,7 @@ namespace WebAPI.Controllers
             try
             {
                 var account = _mapper.Map<Account>(request);
+                account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
                 var createdAccount = await _accountService.CreateAccountAsync(account);
                 var response = _mapper.Map<AccountResponse>(createdAccount);
                 var role = await _roleService.GetById(createdAccount.RoleId);
@@ -76,7 +77,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { ex.Message });
             }
         }
 
