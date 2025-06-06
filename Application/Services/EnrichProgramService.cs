@@ -26,6 +26,12 @@ namespace Application.Services
             }
             return program;
         }
+
+        public async Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsAsync()
+        {
+            var list = await _enrichProgramRepository.GetAllEnrichmentProgramsAsync();
+            return list;
+        }
     }
    
 }

@@ -55,6 +55,8 @@ namespace Application.Mappings
 
             CreateMap<TuitionFee, TuitionWithChildResponse>();
 
+            CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
         }
     }
 }
