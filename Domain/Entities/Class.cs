@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -16,6 +17,7 @@ namespace Domain.Entities
         public int GradeLevelID { get; set; }
 
         public int Quantity { get; set; }
+        public int MaxChildren {  get; set; }
         public string? Status { get; set; }
 
         public ICollection<ClassChildren>? ClassChildrens { get; set; }

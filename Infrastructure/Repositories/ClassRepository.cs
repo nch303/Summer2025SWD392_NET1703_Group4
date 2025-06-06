@@ -1,0 +1,118 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Domain.Entities;
+using Domain.Interfaces;
+using Infrastructure.EntitiesConfigurations;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Repositories
+{
+    public class ClassRepository : IClassRepository
+    {
+        private readonly AppDbContext _context;
+
+        public ClassRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Class> CreatClass(Class room)
+        {
+            room.Quantity = 0;
+            room.Status = "Available";
+            await _context.Classes.AddAsync(room);
+            await _context.SaveChangesAsync();
+
+            await _context.Entry(room)
+            .Reference(r => r.Syllabi)
+            .LoadAsync();
+
+            await _context.Entry(room)
+            .Reference(r => r.GradeLevels)
+            .LoadAsync();
+
+            return room;
+        }
+
+        public async Task<Class> DeleteClass(int classID)
+        {
+            var room = await _context.Classes.Where(a => a.Status == "Available").FirstOrDefaultAsync(a => a.ID == classID);
+            if (room == null)
+            {
+                throw new Exception("Class not found!!!");
+            }
+            room!.Status = "Unavailable";
+            await _context.SaveChangesAsync();
+            return room;
+        }
+
+        public async Task<Class> GetClass(int classID)
+        {
+            var room = await _context.Classes.FirstOrDefaultAsync(a => a.ID == classID);
+            return room!;
+        }
+
+        public async Task<List<Class>> GetAllClass()
+        {
+            var rooms = await _context.Classes.Where(a => a.Status == "Available").ToListAsync();
+            return rooms;
+        }
+
+        public async Task<List<Class>> GetClassByName(string name)
+        {
+            var rooms = await _context.Classes
+                .FromSqlRaw("SELECT * FROM Classes WHERE Name COLLATE Latin1_General_CI_AI LIKE N'%'+ @p0 +'%'", name)
+                .ToListAsync();
+
+            return rooms;
+        }
+
+        public async Task<List<Class>> GetAllSortedClass(string type, string trend)
+        {
+            var query = _context.Classes
+                .Where(c => c.Status == "Available")
+                .Include(c => c.GradeLevels)  // include related entity
+                .Include (c => c.ClassTeachers!)
+                    .ThenInclude(a => a.Teachers)
+                .AsQueryable();
+
+            bool descending = trend?.ToLower() == "desc";
+
+            switch (type?.ToLower())
+            {
+                case "name":
+                    query = descending ? query.OrderByDescending(c => c.Name)
+                                       : query.OrderBy(c => c.Name);
+                    break;
+
+                case "gradelevel":
+                    query = descending ? query.OrderByDescending(c => c.GradeLevels!.Name)
+                                       : query.OrderBy(c => c.GradeLevels!.Name);
+                    break;
+
+                case "quantity":
+                    query = descending ? query.OrderByDescending(c => c.Quantity)
+                                       : query.OrderBy(c => c.Quantity);
+                    break;
+
+                case "teacher":
+                    query = descending
+                        ? query.OrderByDescending(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault())
+                        : query.OrderBy(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault());
+                    break;
+
+                default:
+                    // Default sort by Name
+                    query = descending ? query.OrderByDescending(c => c.Name)
+                                       : query.OrderBy(c => c.Name);
+                    break;
+            }
+
+            return await query.ToListAsync();
+        }
+
+    }
+}
