@@ -26,5 +26,15 @@ namespace Application.Services
             }
             return role;
         }
+
+        public async Task<List<Role>> GetAllAsync()
+        {
+            var roles = await _roleRepository.GetAllAsync();
+            if (roles == null)
+            {
+                throw new KeyNotFoundException("No roles found.");
+            }
+            return roles;
+        }
     }
 }

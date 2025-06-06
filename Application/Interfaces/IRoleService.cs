@@ -10,6 +10,7 @@ namespace Application.Interfaces
     public interface IRoleService
     {
         Task<Role> GetById(int id);
+        Task<List<Role>> GetAllAsync();
 
     }
 }
