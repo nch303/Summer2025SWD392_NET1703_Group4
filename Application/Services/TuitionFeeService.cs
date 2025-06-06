@@ -1,4 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Response;
+using Application.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using System;
@@ -17,10 +19,13 @@ namespace Application.Services
         private readonly IInvoiceDetailService _invoiceDetailService;
         private readonly IChildrenService _childService;
         private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IMapper _mapper;
+        private readonly IGradeLevelService _gradeLevelService;
 
         public TuitionFeeService(ITuitionFeeRepositiry tuitionFeeRepository, IAccountService accountService
             , IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
-            , IChildrenService childrenService, IChildrenGradeService childrenGradeService)
+            , IChildrenService childrenService, IChildrenGradeService childrenGradeService
+            , IMapper mapper, IGradeLevelService gradeLevelService)
         {
             _tuitionFeeRepository = tuitionFeeRepository;
             _accountService = accountService;
@@ -28,16 +33,42 @@ namespace Application.Services
             _invoiceDetailService = invoiceDetailService;
             _childService = childrenService;
             _childrenGradeService = childrenGradeService;
+            _mapper = mapper;
+            _gradeLevelService = gradeLevelService;
         }
 
-        public async Task<List<TuitionFee>> GetTuitionFeeByCurrentAccount()
+        public async Task<List<TuitionWithChildResponse>> GetTuitionFeeByCurrentAccount()
         {
             var tuitions = await _tuitionFeeRepository.GetTuitionFeeByCurrentAccount();
-            var tuitionTemp = tuitions.ToList();
 
             var currentAccount = await _accountService.GetCurrentAccount();
 
             var childrenGrade = await _childrenGradeService.GetChildrenGradesByAccountIdAsync(currentAccount.Id);
+
+            //TuitionWithChildResponse
+            var tuitionWithChildResponses = new List<TuitionWithChildResponse>();
+
+            //Add tuitions in to list based on amount of children
+            var totalTuitions = new List<TuitionFee>();
+            foreach (var child in childrenGrade)
+            {
+                foreach (var tuition in tuitions)
+                {
+                    totalTuitions.Add(tuition);
+                    var tuitionWithChild = _mapper.Map<TuitionWithChildResponse>(tuition);
+                    tuitionWithChild.ID = tuition.ID;
+                    tuitionWithChild.ChildID = child.ChildrenID;
+                    tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
+                    tuitionWithChild.GradeLevelID = child.GradeLevelID;
+
+                    var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
+                    tuitionWithChild.GradeLevelName = gradeLevel!.Name;
+                    tuitionWithChildResponses.Add(tuitionWithChild);
+                }
+            }
+
+            var tuitionTemp = tuitionWithChildResponses.ToList();
+
 
             var invoices = _invoiceService.GetByAccountIdAsync(currentAccount.Id).Result.Where(i => i.Status == "Success");
 
@@ -48,9 +79,10 @@ namespace Application.Services
                 {
                     for (int i = 0; i < tuitionTemp.Count; i++)
                     {
-                        if (tuitionTemp[i].ID == invoiceDetail.TuitionFeeID)
+                        //Remove tuition fees that are already paid
+                        if (tuitionTemp[i].ID == invoiceDetail.TuitionFeeID && tuitionTemp[i].ChildID == invoiceDetail.ChildrenID)
                         {
-                            tuitions.Remove(tuitionTemp[i]);
+                            tuitionWithChildResponses.Remove(tuitionTemp[i]);
                         }
 
                         foreach (var child in childrenGrade)
@@ -62,12 +94,21 @@ namespace Application.Services
                             {
                                 var startDate = new DateTime(startYear, 9, 1);     // 01/09/startYear
                                 var endDate = new DateTime(endYear, 8, 31);
+                                var nextMonth = DateTime.Now.AddMonths(1);
+                                var dateOnly = new DateOnly(nextMonth.Year, nextMonth.Month, 20);
 
+                                var tuitionDate20th = new DateTime(tuitionTemp[i].Date!.Value.Year, tuitionTemp[i].Date!.Value.Month, 20);
+                                var tuitionDate20thLastMonth = tuitionDate20th.AddMonths(-1);
+
+
+                                // Remove tuition fees that do not match the child's grade level or date range
                                 if (tuitionTemp[i].GradeLevelID != child.GradeLevelID ||
                                     tuitionTemp[i].Date < DateOnly.FromDateTime(startDate) ||
-                                    tuitionTemp[i].Date > DateOnly.FromDateTime(endDate))
+                                    tuitionTemp[i].Date > DateOnly.FromDateTime(endDate) ||
+                                    tuitionTemp[i].Date >= dateOnly ||
+                                    DateTime.Now < tuitionDate20thLastMonth)
                                 {
-                                    tuitions.Remove(tuitionTemp[i]);
+                                    tuitionWithChildResponses.Remove(tuitionTemp[i]);
                                 }
                             }
                         }
@@ -75,7 +116,7 @@ namespace Application.Services
                 }
 
             }
-            return tuitions;
+            return tuitionWithChildResponses;
         }
 
         public async Task<TuitionFee?> GetTuitionFeeByIdAsync(int? id)
