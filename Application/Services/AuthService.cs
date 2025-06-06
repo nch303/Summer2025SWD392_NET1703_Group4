@@ -488,7 +488,7 @@ namespace Application.Services.AuthService
         {
             var email = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrEmpty(email))
-                throw new Exception("Không tìm thấy người dùng từ token.");
+                throw new Exception("Không tìm thấy người dùng.");
 
             return await _accountRepository.GetAccountByEmailAsync(email);
         }

@@ -52,6 +52,7 @@ namespace Application.Mappings
             CreateMap<InvoiceDetail, InvoiceDetailResponse>();
 
             CreateMap<GradeLevel, GradeLevelResponse>();
+            CreateMap<Notification, NotificationResponse>();
 
             CreateMap<TuitionFee, TuitionWithChildResponse>();
 

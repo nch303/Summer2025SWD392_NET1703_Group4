@@ -81,10 +81,32 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{Id}")]
-        public async Task<IActionResult> UpdateChildAsync(Guid Id, [FromBody] ChildrenRequest childRequest)
+        public async Task<IActionResult> UpdateChildAsync(Guid Id, [FromForm] ChildrenRequest childRequest)
         {
             try
             {
+                string? avatarUrl = null;
+                string? birthCertificateUrl = null;
+
+                try
+                {
+                    if (childRequest.Avatar != null && childRequest.Avatar.Length > 0)
+                    {
+                        using var stream = childRequest.Avatar.OpenReadStream();
+                        avatarUrl = await _cloudinaryService.UploadImageAsync(stream, childRequest.Avatar.FileName);
+                    }
+
+                    if (childRequest.BirthCertificate != null && childRequest.BirthCertificate.Length > 0)
+                    {
+                        using var stream = childRequest.BirthCertificate.OpenReadStream();
+                        birthCertificateUrl = await _cloudinaryService.UploadImageAsync(stream, childRequest.BirthCertificate.FileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"File upload failed: {ex.Message}");
+                }
+
                 var existingChild = await _childrenService.GetChildByIdAsync(Id);
                 if (existingChild == null)
                 {
@@ -92,6 +114,8 @@ namespace WebAPI.Controllers
                 }
                 existingChild = _mapper.Map<Children>(childRequest);
                 existingChild.ID = Id;
+                existingChild.Avatar = avatarUrl ?? existingChild.Avatar; 
+                existingChild.BirthCertificate = birthCertificateUrl ?? existingChild.BirthCertificate;
                 var updatedChild = await _childrenService.UpdateChildAsync(existingChild);
                 var updatedChildResponse = _mapper.Map<ChildrenResponse>(updatedChild);
                 return Ok(updatedChildResponse);
