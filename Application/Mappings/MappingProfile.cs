@@ -57,6 +57,8 @@ namespace Application.Mappings
 
             CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
+
+            CreateMap<Role, RoleResponse>();
         }
     }
 }
