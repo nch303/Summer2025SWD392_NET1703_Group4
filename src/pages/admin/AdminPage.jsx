@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Card, Row, Col, Statistic, Button, Table, Calendar, Badge, 
   Input, Select, Tabs, Modal, Form, DatePicker, Upload, message,
-  Space, Tag, Tooltip, Popconfirm
+  Space, Tag, Tooltip, Popconfirm, Spin
 } from 'antd';
 import { 
   UserOutlined, TeamOutlined, BookOutlined, CalendarOutlined, 
@@ -13,6 +13,7 @@ import {
 import { Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend, ArcElement } from 'chart.js';
 import './AdminPage.css';
+import dayjs from 'dayjs';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, ArcElement);
 
@@ -64,6 +65,38 @@ const AdminPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [form] = Form.useForm();
+  const [children, setChildren] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  // Fetch children data
+  const fetchChildren = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('https://localhost:7216/api/Children');
+      if (!response.ok) {
+        throw new Error('Failed to fetch children data');
+      }
+      const data = await response.json();
+      setChildren(data);
+    } catch (error) {
+      message.error('Failed to load children data: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'students') {
+      fetchChildren();
+    }
+  }, [activeTab]);
+
+  // Filter children based on search text
+  const filteredChildren = children.filter(child => 
+    child.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+    child.parentName?.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   // Dashboard Section
   const DashboardSection = () => (
@@ -134,35 +167,85 @@ const AdminPage = () => {
     <div>
       <Card>
         <Space style={{ marginBottom: 16 }}>
-          <Input.Search placeholder="Search students..." style={{ width: 300 }} />
+          <Input.Search 
+            placeholder="Search students..." 
+            style={{ width: 300 }} 
+            onChange={(e) => setSearchText(e.target.value)}
+            allowClear
+          />
           <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal('add-student')}>
             Add Student
           </Button>
         </Space>
-        <Table 
-          dataSource={students}
-          columns={[
-            { title: 'Name', dataIndex: 'name' },
-            { title: 'Class', dataIndex: 'class' },
-            { title: 'Age', dataIndex: 'age' },
-            { title: 'Parent', dataIndex: 'parentName' },
-            { title: 'Phone', dataIndex: 'phone' },
-            {
-              title: 'Actions',
-              render: (_, record) => (
-                <Space>
-                  <Button icon={<EditOutlined />} onClick={() => showModal('edit-student', record)} />
-                  <Popconfirm
-                    title="Are you sure you want to delete this student?"
-                    onConfirm={() => handleDelete('student', record.id)}
+        <Spin spinning={loading}>
+          <Table 
+            dataSource={filteredChildren}
+            columns={[
+              {
+                title: 'Avatar',
+                dataIndex: 'avatar',
+                render: (url) => url ? <img src={url} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%' }} /> : null,
+              },
+              { title: 'Name', dataIndex: 'name' },
+              {
+                title: 'Birthday',
+                dataIndex: 'birthday',
+                render: (date) => date ? new Date(date).toLocaleDateString() : '',
+              },
+              { title: 'Gender', dataIndex: 'gender' },
+              { title: 'City', dataIndex: 'city' },
+              { title: 'Parent', dataIndex: 'parentName' },
+              { title: 'Phone', dataIndex: 'phoneNumber' },
+              {
+                title: 'Birth Certificate',
+                dataIndex: 'birthCertificate',
+                render: (url) => url ? (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      background: 'linear-gradient(90deg, #c3aed6 0%, #f5d0fe 100%)',
+                      color: '#7c3aed',
+                      padding: '2px 12px',
+                      borderRadius: '8px',
+                      textDecoration: 'underline',
+                      fontWeight: 500,
+                      boxShadow: '0 1px 4px 0 rgba(195,174,214,0.10)',
+                      transition: 'background 0.3s, color 0.3s',
+                      display: 'inline-block',
+                    }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.background = 'linear-gradient(90deg, #b39ddb 0%, #e0c3fc 100%)';
+                      e.currentTarget.style.color = '#5b21b6';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.background = 'linear-gradient(90deg, #c3aed6 0%, #f5d0fe 100%)';
+                      e.currentTarget.style.color = '#7c3aed';
+                    }}
                   >
-                    <Button icon={<DeleteOutlined />} danger />
-                  </Popconfirm>
-                </Space>
-              ),
-            },
-          ]}
-        />
+                    View
+                  </a>
+                ) : '',
+              },
+              {
+                title: 'Actions',
+                render: (_, record) => (
+                  <Space>
+                    <Button icon={<EditOutlined />} onClick={() => showModal('edit-student', record)} />
+                    <Popconfirm
+                      title="Are you sure you want to delete this student?"
+                      onConfirm={() => handleDelete('student', record.id)}
+                    >
+                      <Button icon={<DeleteOutlined />} danger />
+                    </Popconfirm>
+                  </Space>
+                ),
+              },
+            ]}
+            rowKey="id"
+          />
+        </Spin>
       </Card>
     </div>
   );
@@ -360,26 +443,82 @@ const AdminPage = () => {
   const showModal = (type, record = null) => {
     setModalType(type);
     setIsModalVisible(true);
+  
     if (record) {
-      form.setFieldsValue(record);
+      const { birthday, ...rest } = record;
+      form.setFieldsValue({
+        ...rest,
+        birthday: birthday ? dayjs(birthday) : null,
+        id: record.id || null, // đảm bảo ID luôn được truyền vào form
+      });
     } else {
       form.resetFields();
     }
   };
+  
 
-  const handleModalOk = () => {
-    form.validateFields().then(values => {
-      // TODO: Handle form submission with API
-      console.log('Form values:', values);
+  const handleModalOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const isEdit = modalType.startsWith('edit');
+  
+      if (values.birthday && dayjs.isDayjs(values.birthday)) {
+        values.birthday = values.birthday.format('YYYY-MM-DD');
+      }
+  
+      const formData = new FormData();
+      formData.append('Name', values.name);
+      formData.append('Birthday', values.birthday);
+      formData.append('Gender', values.gender);
+      formData.append('City', values.city || '');
+      formData.append('ParentName', values.parentName || '');
+      formData.append('PhoneNumber', values.phoneNumber || '');
+  
+      // 🖼️ Nếu người dùng chọn file mới thì thêm vào
+      if (values.avatar instanceof File) {
+        formData.append('Avatar', values.avatar);
+      }
+  
+      if (values.birthCertificate instanceof File) {
+        formData.append('BirthCertificate', values.birthCertificate);
+      }
+  
+      const url = isEdit
+        ? `https://localhost:7216/api/Children/${values.id}`
+        : 'https://localhost:7216/api/Children';
+  
+      const response = await fetch(url, {
+        method: isEdit ? 'PUT' : 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save student data');
+      }
+  
       setIsModalVisible(false);
-      message.success('Operation successful!');
-    });
+      message.success(`Student ${isEdit ? 'updated' : 'added'} successfully!`);
+      fetchChildren();
+    } catch (error) {
+      message.error('Operation failed: ' + error.message);
+    }
   };
 
-  const handleDelete = (type, id) => {
-    // TODO: Handle deletion with API
-    console.log(`Deleting ${type} with id:`, id);
-    message.success('Deleted successfully!');
+  const handleDelete = async (type, id) => {
+    try {
+      const response = await fetch(`https://localhost:7216/api/Children/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete student');
+      }
+
+      message.success('Student deleted successfully!');
+      fetchChildren(); // Refresh the list
+    } catch (error) {
+      message.error('Failed to delete student: ' + error.message);
+    }
   };
 
   const renderModalContent = () => {
@@ -388,23 +527,59 @@ const AdminPage = () => {
       case 'edit-student':
         return (
           <Form form={form} layout="vertical">
-            <Form.Item name="name" label="Student Name" rules={[{ required: true }]}>
+            <Form.Item name="id" hidden>
               <Input />
             </Form.Item>
-            <Form.Item name="class" label="Class" rules={[{ required: true }]}>
+            <Form.Item name="name" label="Student Name" rules={[{ required: true }]}> 
+              <Input />
+            </Form.Item>
+            <Form.Item name="birthday" label="Birthday" rules={[{ required: true }]}> 
+              <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+            </Form.Item>
+            <Form.Item name="gender" label="Gender" rules={[{ required: true }]}> 
               <Select>
-                {classes.map(c => (
-                  <Select.Option key={c.id} value={c.name}>{c.name}</Select.Option>
-                ))}
+                <Select.Option value="Male">Male</Select.Option>
+                <Select.Option value="Female">Female</Select.Option>
+                <Select.Option value="Other">Other</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item name="age" label="Age" rules={[{ required: true }]}>
-              <Input type="number" />
+            <Form.Item
+              name="avatar"
+              label="Avatar"
+              valuePropName="file"
+              getValueFromEvent={(e) => e?.fileList?.[0]?.originFileObj}
+            >
+              <Upload
+                beforeUpload={() => false}
+                maxCount={1}
+                listType="picture"
+                accept="image/*"
+              >
+                <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+              </Upload>
             </Form.Item>
-            <Form.Item name="parentName" label="Parent Name" rules={[{ required: true }]}>
+            <Form.Item name="city" label="City"> 
               <Input />
             </Form.Item>
-            <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
+            <Form.Item
+              name="birthCertificate"
+              label="Birth Certificate"
+              valuePropName="file"
+              getValueFromEvent={(e) => e?.fileList?.[0]?.originFileObj}
+            >
+              <Upload
+                beforeUpload={() => false}
+                maxCount={1}
+                listType="picture"
+                accept="image/*"
+              >
+                <Button icon={<UploadOutlined />}>Upload Certificate</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item name="parentName" label="Parent Name"> 
+              <Input />
+            </Form.Item>
+            <Form.Item name="phoneNumber" label="Phone Number"> 
               <Input />
             </Form.Item>
           </Form>
