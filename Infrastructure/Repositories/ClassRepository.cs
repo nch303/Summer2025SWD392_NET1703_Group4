@@ -49,6 +49,18 @@ namespace Infrastructure.Repositories
             return room;
         }
 
+        public async Task<Class> RestoreClass(int classID)
+        {
+            var room = await _context.Classes.Where(a => a.Status == "Available").FirstOrDefaultAsync(a => a.ID == classID);
+            if (room == null)
+            {
+                throw new Exception("Class not found!!!");
+            }
+            room!.Status = "Available";
+            await _context.SaveChangesAsync();
+            return room;
+        }
+
         public async Task<Class> GetClass(int classID)
         {
             var room = await _context.Classes.FirstOrDefaultAsync(a => a.ID == classID);
@@ -114,5 +126,14 @@ namespace Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<Class> UpdateClass(int classID, Class newClass)
+        {
+            var room = await _context.Classes.Include(c => c.Syllabi).FirstOrDefaultAsync(a => a.ID == classID);
+            room!.Name = newClass.Name;
+            room.MaxChildren = newClass.MaxChildren;
+            room.SyllabusID = newClass.SyllabusID;
+            await _context.SaveChangesAsync();
+            return room;
+        }
     }
 }

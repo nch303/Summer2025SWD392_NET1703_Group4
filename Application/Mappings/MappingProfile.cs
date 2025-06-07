@@ -75,6 +75,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
 
             CreateMap<CreateClassRequest, Class>();
+            CreateMap<UpdateClassRequest, Class>();
             CreateMap<Class, ClassResponse>()
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
@@ -83,7 +84,9 @@ namespace Application.Mappings
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
             CreateMap<Class, SortResponse>()
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
-                
+            CreateMap<Class, UpdateClassResponse>()
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+
             CreateMap<Role, RoleResponse>();
         }
     }

@@ -11,6 +11,8 @@ namespace Application.Interfaces
     {
         Task<Class> CreatClass(Class room);
         Task<Class> DeleteClass(int classID);
+        Task<Class> RestoreClass(int classID);
+        Task<Class> UpdateClass(int classID, Class room);
         Task<Class> GetClass(int classID);
         Task<List<Class>> GetAllClass();
         Task<List<Class>> GetClassByName(string name);
