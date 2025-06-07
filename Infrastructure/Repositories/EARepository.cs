@@ -81,5 +81,16 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return application!;
         }
+
+        public async Task<List<EnrollmentApplication>> GetAllApplications()
+        {
+            var applications = await _context.EnrollmentApplications
+                .Include(ea => ea.Childrens)
+                .Include(ea => ea.Parent)
+                .Include(ea => ea.Staff)
+                .Include(ea => ea.GradeLevels)
+                .ToListAsync();
+            return applications;
+        }
     }
 }

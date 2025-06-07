@@ -59,5 +59,11 @@ namespace Application.Services
             var updated = await _eARepository.RejectByStaff(eAId, staff.Id);
             return updated;
         }
+
+        public async Task<List<EnrollmentApplication>> GetAllApplications()
+        {
+            var applications = await _eARepository.GetAllApplications();
+            return applications;
+        }
     }
 }

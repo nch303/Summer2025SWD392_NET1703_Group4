@@ -6,6 +6,7 @@ using AutoMapper;
 using Azure.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI.Controllers
 {
@@ -95,6 +96,21 @@ namespace WebAPI.Controllers
             {
                 var updated = await _eAService.RejectByStaff(eAId);
                 return Ok("Rejected!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("get-all-applications")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var applications = await _eAService.GetAllApplications();
+                var responses = _mapper.Map<List<AdminViewEAResponse>>(applications);
+                return Ok(responses);
             }
             catch (Exception ex)
             {
