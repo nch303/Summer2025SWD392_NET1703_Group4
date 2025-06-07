@@ -16,8 +16,8 @@
 }
 
 .navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1500px;
+  margin: 0 0 0 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -768,7 +768,7 @@
 .user-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
-  right: 0;
+  right: -7px;
   background-color: white;
   border-radius: 0.75rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);

@@ -233,7 +233,9 @@ const InvoiceDetailPage = () => {
                   {invoiceDetails.map((item, index) => (
                     <tr key={`${item.invoiceID}-${index}`}>
                       <td>{index + 1}</td>
-                      <td className="text-left">{item.programName}</td>
+                      <td className="text-left">
+                        {item.programName === null ? item.tuitionFeeName : item.programName}
+                      </td>
                       <td className="text-right">{formatCurrency(item.price)}</td>
                     </tr>
                   ))}

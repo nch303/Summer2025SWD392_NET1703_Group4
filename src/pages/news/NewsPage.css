@@ -202,7 +202,7 @@
     position: relative;
   }
   
-  .search-input {
+  input[type="text"].search-input {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.5rem;
     border: 2px solid #bbdefb;
