@@ -62,15 +62,15 @@ namespace WebAPI.Controllers
                 var createdChild = await _childrenService.CreateChildAsync(child);
                 var createdChildResponse = _mapper.Map<ChildrenResponse>(createdChild);
 
-                //Create ChildrenGrade for the newly created child
-                var childrenGrade = new ChildrenGrade
-                {
-                    ChildrenID = createdChild.ID,
-                    AcademicYear = childRequest.AcedemicYear,
-                    GradeLevelID = childRequest.GradeLevelID, // Default value, can be updated later
-                    Status = "Temporary" // Default value, can be updated later
-                };
-                await _childrenGradeService.CreateChildrenGradeAsync(childrenGrade);
+                ////Create ChildrenGrade for the newly created child
+                //var childrenGrade = new ChildrenGrade
+                //{
+                //    ChildrenID = createdChild.ID,
+                //    AcademicYear = childRequest.AcedemicYear,
+                //    GradeLevelID = childRequest.GradeLevelID, // Default value, can be updated later
+                //    Status = "Temporary" // Default value, can be updated later
+                //};
+                //await _childrenGradeService.CreateChildrenGradeAsync(childrenGrade);
 
                 return Ok(createdChildResponse);
             }
