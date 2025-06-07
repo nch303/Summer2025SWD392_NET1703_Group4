@@ -108,14 +108,18 @@ namespace WebAPI.Controllers
                 }
 
                 var existingChild = await _childrenService.GetChildByIdAsync(Id);
+                var oldAvatar = existingChild?.Avatar;
+                var oldBirthCertificate = existingChild?.BirthCertificate;
+
                 if (existingChild == null)
                 {
                     return NotFound($"Child with ID {Id} not found.");
                 }
                 existingChild = _mapper.Map<Children>(childRequest);
+
                 existingChild.ID = Id;
-                existingChild.Avatar = avatarUrl ?? existingChild.Avatar; 
-                existingChild.BirthCertificate = birthCertificateUrl ?? existingChild.BirthCertificate;
+                existingChild.Avatar = avatarUrl ?? oldAvatar; 
+                existingChild.BirthCertificate = birthCertificateUrl ?? oldBirthCertificate;
                 var updatedChild = await _childrenService.UpdateChildAsync(existingChild);
                 var updatedChildResponse = _mapper.Map<ChildrenResponse>(updatedChild);
                 return Ok(updatedChildResponse);
