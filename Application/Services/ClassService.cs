@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTOs.Request;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -30,6 +31,16 @@ namespace Application.Services
         public async Task<Class> DeleteClass(int classId)
         {
             return await _classRepository.DeleteClass(classId);
+        }
+
+        public async Task<Class> RestoreClass(int classId)
+        {
+            return await _classRepository.RestoreClass(classId);
+        }
+
+        public async Task<Class> UpdateClass(int classId, Class room)
+        {
+            return await _classRepository.UpdateClass(classId, room);
         }
 
         public async Task<Class> GetClass(int classId)

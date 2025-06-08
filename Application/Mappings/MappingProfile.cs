@@ -33,6 +33,7 @@ namespace Application.Mappings
             CreateMap<EnrollmentApplication, EADetailResponse>()
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent!.FullName))
                 .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Parent!.PhoneNumber))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Parent!.Address))
                 .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
                 .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Childrens!.Birthday))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Childrens!.Gender))
@@ -44,6 +45,21 @@ namespace Application.Mappings
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.ID))
                 .ForMember(dest => dest.GradeLevelFee, opt => opt.MapFrom(src => src.GradeLevels!.Fee))
                 .ForMember(dest => dest.GradeLevelIsDelete, opt => opt.MapFrom(src => src.GradeLevels!.IsDelete));
+            CreateMap<EnrollmentApplication, AdminViewEAResponse>()
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent!.FullName))
+                .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Parent!.PhoneNumber))
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
+                .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Childrens!.Birthday))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Childrens!.Gender))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Childrens!.Avatar))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Childrens!.City))
+                .ForMember(dest => dest.EnrollDate, opt => opt.MapFrom(src => src.Childrens!.EnrollDate))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Childrens!.Status))
+                .ForMember(dest => dest.BirthCertificate, opt => opt.MapFrom(src => src.Childrens!.BirthCertificate))
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.ID))
+                .ForMember(dest => dest.GradeLevelFee, opt => opt.MapFrom(src => src.GradeLevels!.Fee))
+                .ForMember(dest => dest.GradeLevelIsDelete, opt => opt.MapFrom(src => src.GradeLevels!.IsDelete))
+                .ForMember(dest => dest.StaffName, opt => opt.MapFrom(src => src.Staff!.FullName));
             CreateMap<EnrollmentApplicationRequest, EnrollmentApplication>();
 
             CreateMap<Invoice, InvoiceResponse>();
@@ -60,6 +76,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
 
             CreateMap<CreateClassRequest, Class>();
+            CreateMap<UpdateClassRequest, Class>();
             CreateMap<Class, ClassResponse>()
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
@@ -68,7 +85,9 @@ namespace Application.Mappings
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
             CreateMap<Class, SortResponse>()
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
-                
+            CreateMap<Class, UpdateClassResponse>()
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+
             CreateMap<Role, RoleResponse>();
         }
     }

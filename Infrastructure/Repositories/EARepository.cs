@@ -7,6 +7,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Infrastructure.Repositories
 {
@@ -31,6 +32,12 @@ namespace Infrastructure.Repositories
             {
                 throw new Exception("Database update failed: " + ex.InnerException?.Message, ex);
             }
+        }
+
+        public async Task<EnrollmentApplication> GetApplicatioinByChildID(Guid childId)
+        {
+                var application = await _context.EnrollmentApplications.Where(ea => ea.Status != "Rejected").FirstOrDefaultAsync(ea => ea.ChildrenID == childId);
+                return application!;
         }
 
         public async Task<List<EnrollmentApplication>> ViewListApplicationAsync(Guid parentID)
@@ -80,6 +87,17 @@ namespace Infrastructure.Repositories
             _context.EnrollmentApplications.Update(application);
             await _context.SaveChangesAsync();
             return application!;
+        }
+
+        public async Task<List<EnrollmentApplication>> GetAllApplications()
+        {
+            var applications = await _context.EnrollmentApplications
+                .Include(ea => ea.Childrens)
+                .Include(ea => ea.Parent)
+                .Include(ea => ea.Staff)
+                .Include(ea => ea.GradeLevels)
+                .ToListAsync();
+            return applications;
         }
     }
 }

@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Response
 {
-    public class EADetailResponse
+    public class AdminViewEAResponse
     {
+        public Guid ID { get; set; }
+
+        public Guid ParentID { get; set; }
         public string? ParentName { get; set; }
         public string? ParentPhone { get; set; }
-        public string? Address { get; set; }
 
+        public Guid ChildrenID { get; set; }
         public string? ChildrenName { get; set; }
         public DateTime Birthday { get; set; }
         public string? Gender { get; set; }
@@ -19,10 +22,13 @@ namespace Application.DTOs.Response
         public string? City { get; set; }
         public string? BirthCertificate { get; set; }
         public string? Status { get; set; }
-        public DateTime EnrollDate  { get; set; }
+        public DateTime EnrollDate { get; set; }
 
         public string? GradeLevelName { get; set; }
         public double GradeLevelFee { get; set; }
         public bool GradeLevelIsDelete { get; set; }
+
+        public Guid? StaffID { get; set; }
+        public string? StaffName { get; set; }
     }
 }

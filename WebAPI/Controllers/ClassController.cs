@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Request;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -87,6 +88,37 @@ namespace WebAPI.Controllers
             {
                 var deleted = await _classService.DeleteClass(id);
                 return Ok("Class is now unavailable");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("restore-class/{id}")]
+        public async Task<ActionResult> Restore(int id)
+        {
+            try
+            {
+                var deleted = await _classService.RestoreClass(id);
+                return Ok("Class is now available");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("update-class/{id}")]
+        public async Task<IActionResult> Update(int id, UpdateClassRequest request)
+        {
+            try
+            {
+                var room = await _classService.GetClass(id);
+                _mapper.Map(request, room);
+                var updatedClass = await _classService.UpdateClass(id, room);
+                var response = _mapper.Map<UpdateClassResponse>(updatedClass);
+                return Ok(response);
             }
             catch (Exception ex)
             {

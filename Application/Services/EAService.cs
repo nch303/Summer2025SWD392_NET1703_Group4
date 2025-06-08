@@ -23,6 +23,13 @@ namespace Application.Services
 
         public async Task<EnrollmentApplication> CreateEnrollmentApplicationAsync(EnrollmentApplicationRequest request, Guid parentID, Guid childID)
         {
+            var existingApplication = await _eARepository.GetApplicatioinByChildID(childID); // get pending and success applications
+
+            if (existingApplication != null)
+            {
+                throw new InvalidOperationException("An enrollment application with the same ID already exists.");
+            }
+
             var application = new EnrollmentApplication
             {
                 ParentID = parentID,
@@ -58,6 +65,12 @@ namespace Application.Services
             var staff = await _accountService.GetCurrentAccount();
             var updated = await _eARepository.RejectByStaff(eAId, staff.Id);
             return updated;
+        }
+
+        public async Task<List<EnrollmentApplication>> GetAllApplications()
+        {
+            var applications = await _eARepository.GetAllApplications();
+            return applications;
         }
     }
 }
