@@ -10,6 +10,7 @@ namespace Application.DTOs.Response
     {
         public string? ParentName { get; set; }
         public string? ParentPhone { get; set; }
+        public string? Address { get; set; }
 
         public string? ChildrenName { get; set; }
         public DateTime Birthday { get; set; }

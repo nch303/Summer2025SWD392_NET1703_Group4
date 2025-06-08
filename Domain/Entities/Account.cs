@@ -19,6 +19,7 @@ namespace Domain.Entities
         public string PhoneNumber { get; set; } = string.Empty;
         public string? Status { get; set; }
         public string? ConfirmationToken { get; set; }
+        public string? Address { get; set; }
 
         [Required]
         public int RoleId { get; set; }

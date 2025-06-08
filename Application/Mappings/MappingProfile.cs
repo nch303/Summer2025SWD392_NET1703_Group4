@@ -33,6 +33,7 @@ namespace Application.Mappings
             CreateMap<EnrollmentApplication, EADetailResponse>()
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent!.FullName))
                 .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Parent!.PhoneNumber))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Parent!.Address))
                 .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
                 .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Childrens!.Birthday))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Childrens!.Gender))
