@@ -28,7 +28,7 @@ import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
-
+import NotificationPage from '../pages/notification/NotificationPage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -118,6 +118,11 @@ function App() {
             <Route path="/enrollment-tracking" element={
               <ProtectedRoute>
                 <EnrollmentTrackingPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <NotificationPage />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />

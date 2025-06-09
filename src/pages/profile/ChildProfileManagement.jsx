@@ -167,7 +167,7 @@ const ChildProfileManagement = () => {
       
       // Kiểm tra tuổi phù hợp (ví dụ: từ 2-6 tuổi)
       const ageInYears = (today - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
-      if (ageInYears > 5) {
+      if (ageInYears > 6) {
         errors.birthday = 'Độ tuổi của bé phải nhỏ hơn hoặc bằng 5 tuổi';
       }
     }

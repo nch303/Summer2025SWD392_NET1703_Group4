@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
+import NotificationBell from '../../pages/notification/NotificationBell';
 import './navbar.css';
 
 const Navbar = () => {
@@ -89,70 +90,69 @@ const Navbar = () => {
           {/* User actions */}
           <div className="navbar-actions">
             {isLoggedIn ? (
-              <div className="user-dropdown-container" ref={dropdownRef}>
-                <button 
-                  className="user-dropdown-toggle"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  <div className="user-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
-                  <span className="user-name">{currentUser?.fullName || 'Admin'}</span>
-                  <svg 
-                    className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`} 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" 
-                    fill="currentColor"
-                  >
-                    <path d="M7 10l5 5 5-5H7z" />
-                  </svg>
-                </button>
+              <>
+                {/* Add notification bell */}
+                <NotificationBell />
                 
-                {isDropdownOpen && (
-                  <div className="user-dropdown">
-                    <div className="dropdown-user-details">
-                      <div className="dropdown-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
-                      <div className="dropdown-user-info">
-                        <div className="dropdown-user-name">{currentUser?.fullName || 'Admin User'}</div>
-                        <div className="dropdown-user-email">{currentUser?.email || 'admin@example.com'}</div>
+                <div className="user-dropdown-container" ref={dropdownRef}>
+                  <button 
+                    className="user-dropdown-toggle"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    <div className="user-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
+                    <span className="user-name">{currentUser?.fullName || 'Admin'}</span>
+                    <svg 
+                      className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`} 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor"
+                    >
+                      <path d="M7 10l5 5 5-5H7z" />
+                    </svg>
+                  </button>
+                  
+                  {isDropdownOpen && (
+                    <div className="user-dropdown">
+                      <div className="dropdown-user-details">
+                        <div className="dropdown-avatar">{currentUser?.fullName?.charAt(0) || 'A'}</div>
+                        <div className="dropdown-user-info">
+                          <div className="dropdown-user-name">{currentUser?.fullName || 'Admin User'}</div>
+                          <div className="dropdown-user-email">{currentUser?.email || 'admin@example.com'}</div>
+                        </div>
                       </div>
+                      <div className="dropdown-divider"></div>
+                      <Link to="/profile" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                        Profile
+                      </Link>
+                      {currentUser?.roleName === 'Parent' && (
+                        <>
+                          <Link to="/payment-history" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14c1.1 0 2 .9 2 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                            </svg>
+                            Payment History
+                          </Link>
+                          <Link to="/enrollment-tracking" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
+                            Enrollment Tracking
+                          </Link>
+                        </>
+                      )}
+                      <button onClick={() => { onLogout(); setIsDropdownOpen(false); }} className="dropdown-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                        </svg>
+                        Logout
+                      </button>
                     </div>
-                    <div className="dropdown-divider"></div>
-                    <Link to="/profile" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                      </svg>
-                      Profile
-                    </Link>
-                    {currentUser?.roleName === 'Parent' && (
-                      <>
-                        <Link to="/payment-history" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14c1.1 0 2 .9 2 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
-                          </svg>
-                          Payment History
-                        </Link>
-                        <Link to="/enrollment-tracking" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          Enrollment Tracking
-                        </Link>
-                      </>
-                    )}
-                    <Link to="/notifications" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
-                      </svg>
-                      Notifications
-                    </Link>
-                    <button onClick={() => { onLogout(); setIsDropdownOpen(false); }} className="dropdown-item">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
-                      </svg>
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </>
             ) : (
               <div className="auth-buttons">
                 <Link to="/login" className="btn btn-login">
@@ -281,6 +281,13 @@ const Navbar = () => {
                   Payment History
                 </Link>
               )}
+              <Link 
+                to="/notifications" 
+                className="mobile-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Notifications
+              </Link>
               <button 
                 className="mobile-link"
                 onClick={() => {

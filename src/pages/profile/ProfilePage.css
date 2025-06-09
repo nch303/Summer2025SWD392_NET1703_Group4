@@ -738,14 +738,42 @@ textarea {
   gap: 16px;
   margin-top: 24px;
   padding: 0 24px 24px;
+  max-height: 480px; /* Height for approximately 5 child cards */
+  overflow-y: auto; /* Add vertical scrollbar when needed */
+  
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #ffb74d #f5f5f5;
 }
 
+/* Add these custom scrollbar styles for WebKit browsers (Chrome, Safari) */
+.children-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.children-grid::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.children-grid::-webkit-scrollbar-thumb {
+  background: #ffcc80;
+  border-radius: 4px;
+}
+
+.children-grid::-webkit-scrollbar-thumb:hover {
+  background: #ffb74d;
+}
+
+/* Make sure each child card has consistent height */
 .child-card-row {
   display: flex;
   align-items: center;
   padding: 16px 24px;
   gap: 20px;
   width: 100%;
+  min-height: 92px; /* Set fixed height for consistent sizing */
+  box-sizing: border-box;
 }
 
 .child-card-row .child-avatar {

@@ -21,10 +21,11 @@
 }
 
 .enrollment-container {
-  background-color: #f0f2f5;
+  background-color: #f8f9fa;
   min-height: calc(100vh - 80px);
-  padding: 25px 20px;
+  padding: 20px 15px;
   box-sizing: border-box;
+  background-image: linear-gradient(to bottom, #fff 0%, #f8f9fa 100%);
 }
 
 .enrollment-paper {
@@ -36,6 +37,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .enrollment-header {
@@ -487,4 +489,561 @@
   .certificate-preview {
     flex: 0 0 auto;
   }
+}
+
+/* Compact Premium Paper Form */
+.paper-enrollment-form {
+  max-width: 800px;
+  margin: 0 auto 20px;
+  padding: 40px 40px 30px;
+  font-family: 'Times New Roman', Times, serif;
+  color: #000;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23f9f9f9' fill-opacity='0.4'/%3E%3C/svg%3E");
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  transform: scale(0.95);
+  transform-origin: top center;
+}
+
+.paper-enrollment-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(90deg, #ff7043 0%, #f4511e 100%);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 25px;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.form-header::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23ff7043' opacity='0.1'%3E%3Cpath d='M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.form-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, #ff7043 0%, #f4511e 100%);
+  border-radius: 2px;
+}
+
+.form-header h1 {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  color: #263238;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.05);
+  display: inline-block;
+}
+
+.form-header h1::before,
+.form-header h1::after {
+  content: '✦';
+  font-size: 18px;
+  color: rgba(255, 112, 67, 0.6);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.form-header h1::before {
+  left: -24px;
+}
+
+.form-header h1::after {
+  right: -24px;
+}
+
+.form-header h2 {
+  font-size: 18px;
+  margin-top: 6px;
+  font-weight: 600;
+  color: #455a64;
+}
+
+.form-recipient {
+  margin-bottom: 25px;
+  border-left: 3px solid #ff7043;
+  position: relative;
+  background-color: rgba(255, 112, 67, 0.03);
+  padding: 10px 15px;
+  border-radius: 0 6px 6px 0;
+}
+
+.form-recipient p {
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.traditional-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 18px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.form-section:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+.form-section.parent-info {
+  border: 1px dashed rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.form-section.parent-info::before {
+  content: 'Thông tin phụ huynh';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background-color: white;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #78909c;
+  border-radius: 4px;
+}
+
+.form-section.child-info {
+  background-color: rgba(255, 112, 67, 0.04);
+  border: 1px solid rgba(255, 112, 67, 0.15);
+  position: relative;
+}
+
+.form-section.child-info::before {
+  content: 'Thông tin học sinh';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background-color: white;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #ff7043;
+  border-radius: 4px;
+}
+
+.form-section.grade-selection {
+  background-color: rgba(92, 107, 192, 0.04);
+  border: 1px solid rgba(92, 107, 192, 0.15);
+  padding: 15px 18px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.form-field label {
+  min-width: 130px;
+  font-weight: 500;
+  color: #455a64;
+  font-size: 15px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.form-field label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff7043' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 11 12 14 22 4'%3E%3C/polyline%3E%3Cpath d='M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+}
+
+.form-field input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px dotted #78909c;
+  background: transparent;
+  padding: 8px 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 15px;
+  color: #263238;
+  transition: all 0.3s ease;
+}
+
+.form-field input:focus {
+  outline: none;
+  border-bottom: 2px solid #ff7043;
+  padding-bottom: 7px;
+}
+
+.readonly-value {
+  flex: 1;
+  border-bottom: 1px dotted #78909c;
+  padding: 8px 0;
+  min-height: 15px;
+  font-weight: 500;
+  color: #263238;
+  font-size: 15px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.grade-select {
+  flex: 1;
+  border: 1px solid #cfd8dc;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #263238;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23455a64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.application-text {
+  margin: 20px 0;
+  line-height: 1.6;
+  text-align: justify;
+  font-size: 15px;
+  color: #37474f;
+  padding: 18px 25px;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.application-text::before,
+.application-text::after {
+  content: '"';
+  font-size: 60px;
+  color: rgba(255, 112, 67, 0.15);
+  position: absolute;
+  line-height: 1;
+  font-family: Georgia, serif;
+}
+
+.application-text::before {
+  top: -15px;
+  left: 5px;
+}
+
+.application-text::after {
+  bottom: -40px;
+  right: 5px;
+  transform: rotate(180deg);
+}
+
+.application-text p {
+  margin: 0 0 10px;
+  position: relative;
+}
+
+.application-text p:last-child {
+  margin-bottom: 0;
+}
+
+.signature {
+  align-self: flex-end;
+  margin-top: 25px;
+  text-align: center;
+  width: 280px;
+  padding: 10px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.signature::after {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 50px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512' fill='%23ff7043' opacity='0.07'%3E%3Cpath d='M512 320s-64 92.65-64 128c0 35.35 28.66 64 64 64s64-28.65 64-64-64-128-64-128zm-9.37-102.94L294.94 9.37C288.69 3.12 280.5 0 272.31 0s-16.38 3.12-22.62 9.37l-81.58 81.58L81.93 4.76c-6.25-6.25-16.38-6.25-22.62 0L36.69 27.38c-6.24 6.25-6.24 16.38 0 22.62l86.19 86.18-94.76 94.76c-37.49 37.48-37.49 98.26 0 135.75l117.19 117.19c18.74 18.74 43.31 28.12 67.87 28.12 24.57 0 49.13-9.37 67.87-28.12l221.57-221.57c12.5-12.5 12.5-32.75.01-45.25zm-244.2 244.2c-12.48 12.48-32.78 12.48-45.26 0l-117.19-117.2c-12.48-12.48-12.48-32.77 0-45.25l94.76-94.76 162.45 162.44-94.76 94.77z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.date-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.date-section p {
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  color: #455a64;
+  position: relative;
+  z-index: 1;
+}
+
+.signature-label {
+  font-style: italic;
+  color: #607d8b;
+  position: relative;
+  z-index: 1;
+  padding: 3px 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 20px;
+  border-top: 1px solid #eceff1;
+  padding-top: 20px;
+}
+
+.btn-cancel, .btn-submit {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+}
+
+/* Watermark styling - smaller and lighter */
+.enrollment-paper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  width: 400px;
+  height: 400px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.02;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media print {
+  .enrollment-container {
+    background: white;
+  }
+  
+  .form-actions {
+    display: none;
+  }
+  
+  .paper-enrollment-form {
+    box-shadow: none;
+    border: none;
+  }
+  
+  .paper-enrollment-form::before {
+    display: none;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .paper-enrollment-form {
+    padding: 40px 25px;
+  }
+  
+  .form-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .form-field label {
+    min-width: auto;
+  }
+  
+  .signature {
+    width: 100%;
+  }
+  
+  .form-header h1::before,
+  .form-header h1::after {
+    display: none;
+  }
+}
+
+.grade-info {
+  font-size: 13px;
+  color: #607d8b;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px dashed rgba(92, 107, 192, 0.3);
+}
+
+.info-icon {
+  color: #5c6bc0;
+}
+
+/* Enhanced school stamp styling */
+.school-stamp {
+  position: absolute;
+  bottom: 60px;
+  left: 80px;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transform: rotate(-12deg);
+  pointer-events: none;
+  z-index: 5;
+  filter: blur(0.2px);
+}
+
+.stamp-circle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2.5px solid rgba(183, 28, 28, 0.85);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 12px rgba(183, 28, 28, 0.1);
+}
+
+.stamp-inner-circle {
+  position: absolute;
+  width: 78%;
+  height: 78%;
+  border: 1.5px solid rgba(183, 28, 28, 0.85);
+  border-radius: 50%;
+}
+
+.stamp-text-top {
+  position: absolute;
+  top: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(183, 28, 28, 0.9);
+  text-transform: uppercase;
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 0.5px;
+}
+
+.stamp-text-bottom {
+  position: absolute;
+  bottom: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(183, 28, 28, 0.9);
+  text-transform: uppercase;
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 0.5px;
+}
+
+.stamp-star {
+  position: absolute;
+  font-size: 24px;
+  color: #b71c1c;
+}
+
+.stamp-logo {
+  font-size: 36px;
+  color: #b71c1c;
+  font-weight: bold;
+  text-shadow: 0 0 1px #b71c1c;
+  font-family: 'Times New Roman', serif;
+  letter-spacing: -1px;
+}
+
+.stamp-approved {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: rgba(183, 28, 28, 0.95);
+  text-transform: uppercase;
+  font-family: 'Times New Roman', serif;
+  letter-spacing: 1px;
+}
+
+.stamp-approved svg {
+  filter: drop-shadow(0 0 1px rgba(183, 28, 28, 0.6));
+  width: 34px;
+  height: 34px;
+}
+
+/* Add inner decorative elements */
+
+
+/* Add date text at the bottom of the stamp */
+.stamp-date {
+  position: absolute;
+  bottom: 38px;
+  font-size: 8px;
+  font-weight: 600;
+  color: rgba(183, 28, 28, 0.8);
+  font-family: 'Times New Roman', serif;
 }
