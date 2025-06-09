@@ -155,13 +155,14 @@ namespace WebAPI.Controllers
             try
             {
                 var children = await _childrenService.GetAllChildrenAsync();
-                var childrenResponse = _mapper.Map<List<AllChildrenResponse>>(children);
-                for (int i = 0; i < children.Count(); i++)
-                {
-                    var parent = _accountService.GetAccountByIdAsync(children[i].ParentID);
-                    childrenResponse[i].ParentName = parent.Result.FullName;
-                    childrenResponse[i].PhoneNumber = parent.Result.PhoneNumber;
-                }
+                var childrenResponse = _mapper.Map<List<ChildrenResponse>>(children);
+                //for (int i = 0; i < children.Count(); i++)
+                //{
+                //    var parent = _accountService.GetAccountByIdAsync(children[i].ParentID);
+                //    childrenResponse[i].ParentName = parent.Result.FullName;
+                //    childrenResponse[i].PhoneNumber = parent.Result.PhoneNumber;
+                //}
+
                 return Ok(childrenResponse);
             }
             catch (Exception ex)
