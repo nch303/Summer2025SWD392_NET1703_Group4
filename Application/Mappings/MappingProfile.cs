@@ -23,8 +23,10 @@ namespace Application.Mappings
             CreateMap<Account, UpdateUserProfileResponse>();
 
             CreateMap<ChildrenRequest, Children>();
-            CreateMap<Children, ChildrenResponse>();
-            CreateMap<Children, AllChildrenResponse>();
+            CreateMap<Children, ChildrenResponse>()
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parents!.FullName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Parents!.PhoneNumber));
+
 
             CreateMap<EnrollmentApplication, EnrollmentApplicationListResponse>()
                 .ForMember(dest => dest.EAID, opt => opt.MapFrom(src => src.ID))

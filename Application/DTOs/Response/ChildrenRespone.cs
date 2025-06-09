@@ -8,11 +8,14 @@ namespace Application.DTOs.Response
 {
     public class ChildrenResponse
     {
+        public Guid ParentID { get; set; }
         public string? Name { get; set; }
         public DateTime Birthday { get; set; }
         public string? Gender { get; set; }
         public string? Avatar { get; set; }
         public string? City { get; set; }
         public string? BirthCertificate { get; set; }
+        public string ParentName { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }
