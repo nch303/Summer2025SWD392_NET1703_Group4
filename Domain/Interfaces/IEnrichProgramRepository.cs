@@ -11,5 +11,9 @@ namespace Domain.Interfaces
     {
         Task<EnrichmentProgram> GetProgramByIdAsync(int? programId);
         Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsAsync();
+        Task<EnrichmentProgram> CreateEnrichmentProgram(EnrichmentProgram enrichmentProgram);
+        Task<EnrichmentProgram> UpdateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
+        Task<bool> DeleteEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
+
     }
 }
