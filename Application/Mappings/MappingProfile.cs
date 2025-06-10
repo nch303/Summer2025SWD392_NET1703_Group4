@@ -36,6 +36,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.EAID, opt => opt.MapFrom(src => src.ID))
                 .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
+
             CreateMap<EnrollmentApplication, EADetailResponse>()
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent!.FullName))
                 .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Parent!.PhoneNumber))
@@ -48,9 +49,10 @@ namespace Application.Mappings
                 .ForMember(dest => dest.EnrollDate, opt => opt.MapFrom(src => src.Childrens!.EnrollDate))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Childrens!.Status))
                 .ForMember(dest => dest.BirthCertificate, opt => opt.MapFrom(src => src.Childrens!.BirthCertificate))
-                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.ID))
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
                 .ForMember(dest => dest.GradeLevelFee, opt => opt.MapFrom(src => src.GradeLevels!.Fee))
                 .ForMember(dest => dest.GradeLevelIsDelete, opt => opt.MapFrom(src => src.GradeLevels!.IsDelete));
+
             CreateMap<EnrollmentApplication, AdminViewEAResponse>()
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parent!.FullName))
                 .ForMember(dest => dest.ParentPhone, opt => opt.MapFrom(src => src.Parent!.PhoneNumber))
@@ -60,9 +62,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Childrens!.Avatar))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Childrens!.City))
                 .ForMember(dest => dest.EnrollDate, opt => opt.MapFrom(src => src.Childrens!.EnrollDate))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Childrens!.Status))
                 .ForMember(dest => dest.BirthCertificate, opt => opt.MapFrom(src => src.Childrens!.BirthCertificate))
-                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.ID))
+                .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
                 .ForMember(dest => dest.GradeLevelFee, opt => opt.MapFrom(src => src.GradeLevels!.Fee))
                 .ForMember(dest => dest.GradeLevelIsDelete, opt => opt.MapFrom(src => src.GradeLevels!.IsDelete))
                 .ForMember(dest => dest.StaffName, opt => opt.MapFrom(src => src.Staff!.FullName));

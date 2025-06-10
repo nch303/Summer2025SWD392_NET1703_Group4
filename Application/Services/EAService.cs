@@ -72,5 +72,10 @@ namespace Application.Services
             var applications = await _eARepository.GetAllApplications();
             return applications;
         }
+
+        public async Task<EnrollmentApplication> UpdateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication)
+        {
+            return await _eARepository.UpdateEnrollmentApplicationAsync(enrollmentApplication);
+        }
     }
 }

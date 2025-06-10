@@ -15,5 +15,6 @@ namespace Application.DTOs.Response
         public string PhoneNumber { get; set; } 
         public string RoleName { get; set; }
         public string Status { get; set; }
+        public string? Address { get; set; }
     }
 }

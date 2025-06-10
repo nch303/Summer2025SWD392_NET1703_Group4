@@ -5,6 +5,7 @@ using Application.Interfaces.IServices;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Interfaces;
 using Infrastructure.EntitiesConfigurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,13 @@ namespace WebAPI.Controllers
         private readonly IEnrichProgramService _enrichProgramService;
         private readonly IEmailService _emailService;
         private readonly ITuitionFeeService _tuitionFeeService;
+        private readonly IEARepository _eARepository;
+        private readonly IEAService _eaService;
 
         public VNPayController(IVnPayService vnPayService, IInvoiceService invoiceService, IMapper mapper
             , IAccountService accountService, IChildrenService childrenService, IInvoiceDetailService invoiceDetailService
-            , IEnrichProgramService enrichProgramService, IEmailService emailService, ITuitionFeeService tuitionFeeService)
+            , IEnrichProgramService enrichProgramService, IEmailService emailService, ITuitionFeeService tuitionFeeService
+            , IEARepository eARepository, IEAService eAService)
         {
             _vnPayService = vnPayService;
             _invoiceService = invoiceService;
@@ -39,6 +43,8 @@ namespace WebAPI.Controllers
             _enrichProgramService = enrichProgramService;
             _emailService = emailService;
             _tuitionFeeService = tuitionFeeService;
+            _eARepository = eARepository;
+            _eaService = eAService;
         }
 
         [HttpPost("create-payment-url")]
@@ -70,6 +76,11 @@ namespace WebAPI.Controllers
                 /// Gửi email hóa đơn   
                 var invoice = await _invoiceService.GetByIdAsync(invoiceId);
                 var invoicePDFResponse = _mapper.Map<InvoicePDFResponse>(invoice);
+
+                ///Update status enrollment application
+                var enrollmentApp = await _eARepository.GetApplicatioinByChildID(invoice!.ChildrenID);
+                enrollmentApp!.Status = "Paid";
+                await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApp);
 
                 var parentAccount = await _accountService.GetAccountByIdAsync(invoice!.AccountID);
                 invoicePDFResponse.ParentName = parentAccount.FullName;
@@ -138,5 +149,6 @@ namespace WebAPI.Controllers
             var url = await _vnPayService.CreatePaymentUrlForEnrollment(request, HttpContext);
             return Ok(new { Url = url });
         }
+
     }
 }

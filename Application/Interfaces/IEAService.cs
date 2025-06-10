@@ -16,5 +16,7 @@ namespace Application.Interfaces
         Task<EnrollmentApplication> ApproveByStaff(Guid eAId);
         Task<EnrollmentApplication> RejectByStaff(Guid eAId);
         Task<List<EnrollmentApplication>> GetAllApplications();
+        Task<EnrollmentApplication> UpdateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication);
+
     }
 }
