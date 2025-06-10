@@ -1,4 +1,7 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Response;
+using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -9,11 +12,13 @@ namespace WebAPI.Controllers
     {
         private readonly IStaffService _staffService;
         private readonly IChildrenService _childrenService;
+        private readonly IMapper _mapper;
 
-        public StaffController(IStaffService staffService, IChildrenService childrenService)
+        public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper)
         {
             _staffService = staffService;
             _childrenService = childrenService;
+            _mapper = mapper;
         }
 
         [HttpGet("GetNotEnrolledChildren")]
@@ -22,7 +27,8 @@ namespace WebAPI.Controllers
             try
             {
                 var children = await _staffService.GetNotEnrolledChildrenAsync();
-                return Ok(children);
+                var childrenResponse = _mapper.Map<List<ChildrenResponse>>(children);
+                return Ok(childrenResponse);
             }
             catch (Exception ex)
             {

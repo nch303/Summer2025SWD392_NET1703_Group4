@@ -23,6 +23,7 @@ namespace Infrastructure.Repositories
         {
             // Fetch all children who are not enrolled in any class
             var notEnrolledChildren = await _context.Childrens
+                .Include(c => c.Parents)
                 .Where(c => c.Status == "Not Enrolled")
                 .ToListAsync();
             return notEnrolledChildren;
