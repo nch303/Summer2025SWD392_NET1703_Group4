@@ -89,11 +89,13 @@ namespace WebAPI.Controllers
                     {
                         var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
                         detail.ProgramName = program.Name;
+                        detail.Description = program.Description;
                     }
                     else
                     {
                         var tuitionFee = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
                         detail.tuitionFeeName = tuitionFee?.Name;
+                        detail.Description = tuitionFee?.Description;
                     }
 
                 }

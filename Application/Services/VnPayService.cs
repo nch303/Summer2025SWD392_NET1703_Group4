@@ -179,9 +179,12 @@ namespace Application.Services
         {
             var invoiceId = Guid.NewGuid(); // Generate a new invoice ID for the payment 
 
+            // Get the tuition fee based on the children's grade
             var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(request.ChildrenID);
             var tuitionName = "09/" + childrenGrade.AcademicYear!.Split('-')[0];
             var tuition = await _tuitionFeeService.GetTuitionFeeByNameAsync(tuitionName);
+
+            //Get amount from grade level
             var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition!.GradeLevelID);
             var amount = (decimal)gradeLevel!.Fee;
 
