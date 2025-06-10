@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail } from './EnrollmentTrackingService';
+import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail, createPaymentUrlForEnrollment } from './EnrollmentTrackingService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import './EnrollmentTrackingPage.css';
@@ -194,6 +194,35 @@ const EnrollmentTrackingPage = () => {
       return 0;
     });
   }, [applications, filterStatus, searchQuery, sortOrder]);
+  
+  const handlePayment = async (childrenID) => {
+    try {
+      showSpinner('Đang tạo liên kết thanh toán...');
+      const response = await createPaymentUrlForEnrollment(childrenID);
+      
+      if (response && response.url) {
+        // Redirect to payment URL (using 'url' instead of 'paymentUrl')
+        window.open(response.url, '_blank');
+      } else {
+        console.error('Invalid response format:', response);
+        toast.error('Không thể tạo liên kết thanh toán. Định dạng phản hồi không hợp lệ.');
+      }
+    } catch (err) {
+      // Get more specific error message if available
+      let errorMessage = 'Đã xảy ra lỗi khi tạo liên kết thanh toán.';
+      
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = `Lỗi: ${err.response.data.message}`;
+      } else if (err.message) {
+        errorMessage = `Lỗi: ${err.message}`;
+      }
+      
+      toast.error(errorMessage);
+      console.error('Payment error details:', err);
+    } finally {
+      hideSpinner();
+    }
+  };
   
   return (
     <div className="tracking-container">
@@ -414,9 +443,30 @@ const EnrollmentTrackingPage = () => {
                   
                   <div className="tracking-application-actions">
                     {app.status === 'Approved' && (
-                      <button className="tracking-action-btn tracking-payment-btn tracking-pulse">
+                      <button 
+                        className="tracking-action-btn tracking-payment-btn tracking-pulse"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          
+                          // Log the entire application object to inspect
+                          console.log('Application object:', app);
+                          
+                          // Make sure childrenID is present and in the right format
+                          if (!app.childrenID) {
+                            toast.error('Không thể xác định ID của trẻ. Vui lòng thử lại sau.');
+                            console.error('Missing childrenID for application:', app);
+                            return;
+                          }
+                          
+                          // Explicitly log the value we're using
+                          console.log('Using childrenID for payment:', app.childrenID);
+                          
+                          // Make the payment request
+                          handlePayment(app.childrenID);
+                        }}
+                      >
                         <FontAwesomeIcon icon="credit-card" />
-                        Thanh toán ngay
+                        Thanh toán học phí
                       </button>
                     )}
                     <button 
@@ -531,8 +581,16 @@ const EnrollmentTrackingPage = () => {
                           </span>
                         </div>
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Thành phố:</span>
+                          <span className="tracking-detail-label">Nơi sinh:</span>
                           <span className="tracking-detail-value">{applicationDetail.city}</span>
+                        </div>
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Lớp đăng ký:</span>
+                          <span className="tracking-detail-value">{applicationDetail.gradeLevelName}</span>
+                        </div>
+                        <div className="tracking-detail-item">
+                          <span className="tracking-detail-label">Học phí:</span>
+                          <span className="tracking-detail-value">{applicationDetail.gradeLevelFee?.toLocaleString('vi-VN')} VNĐ</span>
                         </div>
                         {applicationDetail.status === 'Enrolled' && (
                           <div className="tracking-detail-item">
@@ -556,6 +614,10 @@ const EnrollmentTrackingPage = () => {
                         <div className="tracking-detail-item">
                           <span className="tracking-detail-label">Số điện thoại:</span>
                           <span className="tracking-detail-value">{applicationDetail.parentPhone}</span>
+                        </div>
+                        <div className="tracking-detail-item" style={{ gridColumn: "1 / -1" }}>
+                          <span className="tracking-detail-label">Địa chỉ:</span>
+                          <span className="tracking-detail-value">{applicationDetail.address}</span>
                         </div>
                       </div>
                     </div>
@@ -609,7 +671,12 @@ const EnrollmentTrackingPage = () => {
                 Đóng
               </button>
               {applicationDetail && applicationDetail.status === 'Approved' && (
-                <button className="tracking-btn-primary">
+                <button 
+                  className="tracking-btn-primary"
+                  onClick={() => {
+                    handlePayment(selectedApplication.childrenID);
+                  }}
+                >
                   <FontAwesomeIcon icon="credit-card" />
                   Thanh toán
                 </button>

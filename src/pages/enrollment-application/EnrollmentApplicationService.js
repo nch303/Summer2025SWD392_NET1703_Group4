@@ -11,6 +11,17 @@ export const getChildById = async (childId) => {
   }
 };
 
+// Fetch parent details by ID
+export const getParentById = async (parentId) => {
+  try {
+    const response = await api.get(`/api/Account/${parentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching parent details:', error);
+    throw error;
+  }
+};
+
 // Submit enrollment application
 export const submitEnrollmentApplication = async (childID, applicationData) => {
   try {

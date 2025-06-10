@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getChildById, submitEnrollmentApplication, getGradeLevels } from './EnrollmentApplicationService';
+import { getChildById, getParentById, submitEnrollmentApplication, getGradeLevels } from './EnrollmentApplicationService';
 import './EnrollmentApplicationPage.css';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 
 const EnrollmentApplicationPage = () => {
   const [child, setChild] = useState(null);
+  const [parent, setParent] = useState(null);
   const [gradeLevels, setGradeLevels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -74,6 +75,28 @@ const EnrollmentApplicationPage = () => {
         
         const childData = await getChildById(childId);
         setChild(childData);
+        
+        // Fetch parent data if parentID exists
+        if (childData.parentID) {
+          const parentData = await getParentById(childData.parentID);
+          setParent(parentData);
+          
+          // Pre-fill form with parent data
+          setFormData(prev => ({
+            ...prev,
+            parentName: parentData.fullName || childData.parentName || '',
+            currentAddress: parentData.address || '',
+            permanentAddress: parentData.address || '',
+            phoneNumber: parentData.phoneNumber || childData.phoneNumber || ''
+          }));
+        } else if (childData.parentName) {
+          // Use parent info from child data if available
+          setFormData(prev => ({
+            ...prev,
+            parentName: childData.parentName || '',
+            phoneNumber: childData.phoneNumber || ''
+          }));
+        }
         
         const levels = await getGradeLevels();
         
@@ -207,74 +230,22 @@ const EnrollmentApplicationPage = () => {
               <div className="form-section parent-info">
                 <div className="form-field">
                   <label htmlFor="parentName">Họ và tên</label>
-                  <input 
-                    type="text"
-                    id="parentName"
-                    name="parentName"
-                    value={formData.parentName}
-                    onChange={handleInputChange}
-                    placeholder="Họ và tên phụ huynh"
-                  />
-                </div>
-                
-                <div className="form-field">
-                  <label htmlFor="parentBirthday">Sinh năm</label>
-                  <input 
-                    type="text"
-                    id="parentBirthday"
-                    name="parentBirthday"
-                    value={formData.parentBirthday}
-                    onChange={handleInputChange}
-                    placeholder="Năm sinh"
-                  />
-                </div>
-                
-                <div className="form-field">
-                  <label htmlFor="parentOccupation">Nghề nghiệp</label>
-                  <input 
-                    type="text"
-                    id="parentOccupation"
-                    name="parentOccupation"
-                    value={formData.parentOccupation}
-                    onChange={handleInputChange}
-                    placeholder="Nghề nghiệp"
-                  />
+                  <div className="readonly-value">{formData.parentName}</div>
                 </div>
                 
                 <div className="form-field">
                   <label htmlFor="currentAddress">Chỗ ở hiện nay</label>
-                  <input 
-                    type="text"
-                    id="currentAddress"
-                    name="currentAddress"
-                    value={formData.currentAddress}
-                    onChange={handleInputChange}
-                    placeholder="Địa chỉ hiện tại (tổ, thôn, xã, tỉnh)"
-                  />
+                  <div className="readonly-value">{formData.currentAddress}</div>
                 </div>
                 
                 <div className="form-field">
                   <label htmlFor="permanentAddress">Hộ khẩu thường trú</label>
-                  <input 
-                    type="text"
-                    id="permanentAddress"
-                    name="permanentAddress"
-                    value={formData.permanentAddress}
-                    onChange={handleInputChange}
-                    placeholder="Hộ khẩu thường trú (tổ, thôn, xã, tỉnh)"
-                  />
+                  <div className="readonly-value">{formData.permanentAddress}</div>
                 </div>
                 
                 <div className="form-field">
                   <label htmlFor="phoneNumber">Điện thoại</label>
-                  <input 
-                    type="text"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    placeholder="Số điện thoại liên hệ"
-                  />
+                  <div className="readonly-value">{formData.phoneNumber}</div>
                 </div>
               </div>
               

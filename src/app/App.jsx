@@ -33,6 +33,7 @@ import NotificationPage from '../pages/notification/NotificationPage';
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
+import EnrollmentApplicationManagement from '../pages/staff-dashboard/EnrollmentApplicationManagement';
 
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
@@ -139,6 +140,7 @@ function App() {
             <Route index element={<Navigate to="/staff/dashboard" replace />} />
             <Route path="dashboard" element={<StaffDashboard />} />
             <Route path="students" element={<ChildrenManagement />} />
+            <Route path="enrollment-applications" element={<EnrollmentApplicationManagement />} />
           </Route>
 
           {/* Admin Routes */}
