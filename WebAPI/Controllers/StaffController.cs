@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Response;
+﻿using Application.DTOs.Request;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -13,12 +14,17 @@ namespace WebAPI.Controllers
         private readonly IStaffService _staffService;
         private readonly IChildrenService _childrenService;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
+        private readonly IClassService _classService; 
 
-        public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper)
+        public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
+            , INotificationService notificationService, IClassService classService)
         {
             _staffService = staffService;
             _childrenService = childrenService;
             _mapper = mapper;
+            _notificationService = notificationService;
+            _classService = classService;
         }
 
         [HttpGet("GetNotEnrolledChildren")]
@@ -43,7 +49,8 @@ namespace WebAPI.Controllers
             {
                 var result = await _staffService.AssignChildrenListToClassAsync(classId, childrenIds);
 
-                foreach(var childId in childrenIds)
+                // Update the status of each child to "Active"
+                foreach (var childId in childrenIds)
                 {
                     var child = await _childrenService.GetChildByIdAsync(childId);
                     if (child == null)
@@ -53,6 +60,36 @@ namespace WebAPI.Controllers
                     child.Status = "Active";
                     await _childrenService.UpdateChildAsync(child);
                 }
+
+                //Send notification to parents
+                var notificationMessage = "Your child has been successfully assigned to a class.";
+
+                foreach (var childId in childrenIds)
+                {
+                    var child = await _childrenService.GetChildByIdAsync(childId);
+                    var classInfo = await _classService.GetClass(classId);
+
+                    //Update quantity of children in class
+                    if (classInfo != null)
+                    {
+                        classInfo.Quantity += 1;
+                        await _classService.UpdateClass(classId, classInfo);
+                    }
+
+                    if (child?.Parents != null && classInfo != null)
+                    {
+                        var notification = new NotificationRequest
+                        {
+                            AccountID = child.ParentID,
+                            Title = notificationMessage,
+                            Content = $"Dear {child.Parents.FullName},\n\nWe are pleased to inform you that your child, {child.Name}, has been successfully assigned to the class \"{classInfo.Name}\".\n\nThank you for your trust and support.\n\n- The School Administration"
+                        };
+
+                        await _notificationService.CreateNotificationAsync(notification);
+                    }
+                }
+
+
                 return Ok("Assign successfully!");
             }
             catch (Exception ex)
