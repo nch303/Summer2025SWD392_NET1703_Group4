@@ -16,5 +16,6 @@ namespace Domain.Interfaces
         Task<EnrollmentApplication> RejectByStaff(Guid eAId, Guid staffID);
         Task<List<EnrollmentApplication>> GetAllApplications();
         Task<EnrollmentApplication> GetApplicatioinByChildID(Guid childId);
+        Task<EnrollmentApplication> UpdateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication);
     }
 }

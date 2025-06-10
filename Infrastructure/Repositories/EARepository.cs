@@ -36,8 +36,8 @@ namespace Infrastructure.Repositories
 
         public async Task<EnrollmentApplication> GetApplicatioinByChildID(Guid childId)
         {
-                var application = await _context.EnrollmentApplications.Where(ea => ea.Status != "Rejected").FirstOrDefaultAsync(ea => ea.ChildrenID == childId);
-                return application!;
+            var application = await _context.EnrollmentApplications.Where(ea => ea.Status != "Rejected").FirstOrDefaultAsync(ea => ea.ChildrenID == childId);
+            return application!;
         }
 
         public async Task<List<EnrollmentApplication>> ViewListApplicationAsync(Guid parentID)
@@ -54,6 +54,7 @@ namespace Infrastructure.Repositories
             var application = await _context.EnrollmentApplications
                .Include(ea => ea.Childrens)
                .Include(ea => ea.Parent)
+               .Include(ea => ea.GradeLevels)
                .FirstOrDefaultAsync(ea => ea.ID == eAId);
 
             return application!;
@@ -61,7 +62,7 @@ namespace Infrastructure.Repositories
 
         public async Task<EnrollmentApplication> ApproveByStaff(Guid eAId, Guid staffID)
         {
-            var application = await _context.EnrollmentApplications.FirstOrDefaultAsync(ea=>ea.ID == eAId);
+            var application = await _context.EnrollmentApplications.FirstOrDefaultAsync(ea => ea.ID == eAId);
             if (application == null)
             {
                 throw new Exception("Cannot found application");
@@ -98,6 +99,20 @@ namespace Infrastructure.Repositories
                 .Include(ea => ea.GradeLevels)
                 .ToListAsync();
             return applications;
+        }
+
+        public async Task<EnrollmentApplication> UpdateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication)
+        {
+            var existingApplication = await _context.EnrollmentApplications.FindAsync(enrollmentApplication.ID);
+            existingApplication!.AcademicYear = enrollmentApplication.AcademicYear;
+            existingApplication.GradeLevelID = enrollmentApplication.GradeLevelID;
+            existingApplication.ChildrenID = enrollmentApplication.ChildrenID;
+            existingApplication.Status = enrollmentApplication.Status;
+            existingApplication.ApprovalDate = enrollmentApplication.ApprovalDate;
+            existingApplication.StaffID = enrollmentApplication.StaffID;
+            _context.EnrollmentApplications.Update(existingApplication);
+            await _context.SaveChangesAsync();
+            return existingApplication;
         }
     }
 }
