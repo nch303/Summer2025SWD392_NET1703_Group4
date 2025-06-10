@@ -110,5 +110,14 @@ namespace Infrastructure.Repositories
             var account = await _context.Accounts.FindAsync(id);
             return account!;
         }
+
+        public async Task<List<Account>> GetListOfTeachers()
+        {
+            var teachers = await _context.Accounts
+                .Include(a => a.Role)
+                .Where(a => a.Role!.Name == "Teacher")
+                .ToListAsync();
+            return teachers;
+        }
     }
 }

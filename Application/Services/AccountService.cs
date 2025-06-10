@@ -236,5 +236,11 @@ namespace Application.Services
             }
             return account;
         }
+
+        public async Task<List<Account>> GetListOfTeachers()
+        {
+            var teachers = await _accountRepository.GetListOfTeachers();
+            return teachers;
+        }
     }
 }

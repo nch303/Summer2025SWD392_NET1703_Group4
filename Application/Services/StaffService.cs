@@ -89,5 +89,25 @@ namespace Application.Services
             var result = await _staffRepository.ReassignChildToNewClassAsync(childId, newClassId);
             return result;
         }
+
+        public async Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId)
+        {
+            //Check if the class exists
+            var classToAssign = await _classService.GetClass(classId);
+            if (classToAssign == null)
+            {
+                throw new Exception("Class not found");
+            }
+
+            // ✅ Check if the teacher is already assigned to any class
+            var isAlreadyAssigned = await _staffRepository.IsTeacherAssignedToClassAsync(classId, teacherId);
+            if (isAlreadyAssigned)
+            {
+                throw new InvalidOperationException("This teacher is already assigned to a class.");
+            }
+
+            var result = await _staffRepository.AssignTeacherToClassAsync(classId, teacherId);
+            return result;
+        }
     }
 }

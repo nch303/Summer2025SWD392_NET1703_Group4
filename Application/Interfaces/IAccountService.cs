@@ -22,5 +22,6 @@ namespace Application.Interfaces
         Task<Account> UpdateAccountByAdminAsync(Account account);
         Task<Account> BanAccountAsync(Guid id);
         Task<Account> GetByIdAsync(Guid id);
+        Task<List<Account>> GetListOfTeachers();
     }
 }

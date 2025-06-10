@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class StaffRepository: IStaffRepository
+    public class StaffRepository : IStaffRepository
     {
         private readonly AppDbContext _context;
 
@@ -71,6 +71,30 @@ namespace Infrastructure.Repositories
             await transaction.CommitAsync();
 
             return true;
+        }
+
+        public async Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId)
+        {
+            var classTeacher =  new ClassTeacher
+            {
+                ClassID = classId,
+                TeacherID = teacherId
+            };
+
+            _context.ClassTeachers.Add(classTeacher);
+            await _context.SaveChangesAsync();
+
+            // Load related Class and Teacher for later use
+            await _context.Entry(classTeacher).Reference(ct => ct.Classes).LoadAsync();
+            await _context.Entry(classTeacher).Reference(ct => ct.Teachers).LoadAsync();
+
+            return classTeacher;
+        }
+
+        public async Task<bool> IsTeacherAssignedToClassAsync(int classId, Guid teacherId)
+        {
+            return await _context.ClassTeachers
+                .AnyAsync(ct => ct.TeacherID == teacherId && ct.ClassID == classId);
         }
     }
 }

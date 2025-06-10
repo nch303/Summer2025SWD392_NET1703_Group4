@@ -161,5 +161,20 @@ namespace WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("get-list-of-teachers")]
+        public async Task<IActionResult> GetListOfTeachers()
+        {
+            try
+            {
+                var teachers = await _accountService.GetListOfTeachers();
+                var responses = _mapper.Map<List<TeacherResponse>>(teachers);
+                return Ok(responses);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
