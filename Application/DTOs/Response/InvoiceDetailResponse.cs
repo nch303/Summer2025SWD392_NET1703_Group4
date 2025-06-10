@@ -17,5 +17,6 @@ namespace Application.DTOs.Response
 
         public string? ChildrenName { get; set; }
         public string? tuitionFeeName { get; set; }
+        public string? Description { get; set; }
     }
 }
