@@ -17,12 +17,17 @@ namespace WebAPI.Controllers
         private readonly IEAService _eAService;
         private readonly IMapper _mapper;
         private readonly IAccountService _accountService;
+        private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IChildrenService _childrenService;
 
-        public EnrollmentApplicationController(IEAService eAService, IMapper mapper, IAccountService accountService)
+        public EnrollmentApplicationController(IEAService eAService, IMapper mapper, IAccountService accountService
+            , IChildrenGradeService childrenGradeService, IChildrenService childrenService)
         {
             _eAService = eAService;
             _mapper = mapper;
             _accountService = accountService;
+            _childrenGradeService = childrenGradeService;
+            _childrenService = childrenService;
         }
 
         [HttpPost("submit-application")]
@@ -34,6 +39,12 @@ namespace WebAPI.Controllers
                 var app = await _eAService.CreateEnrollmentApplicationAsync(request, parent.Id, childID);
                 var response = new EnrollmentApplicationListResponse();
                 _mapper.Map(app, response);
+
+                //Update the status of the child to "Pending"
+                var child = await _childrenService.GetChildByIdAsync(childID);
+                child.Status = "Pending";
+                await _childrenService.UpdateChildAsync(child);
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -81,6 +92,17 @@ namespace WebAPI.Controllers
             try
             {
                 var updated = await _eAService.ApproveByStaff(eAId);
+
+                //Create ChildrenGrade for the newly created child
+                var childrenGrade = new ChildrenGrade
+                {
+                    ChildrenID = updated.ChildrenID,
+                    AcademicYear = updated.AcademicYear,
+                    GradeLevelID = updated.GradeLevelID, // Default value, can be updated later
+                    Status = "Not Enrolled" // Default value, can be updated later
+                };
+                await _childrenGradeService.CreateChildrenGradeAsync(childrenGrade);
+
                 return Ok("Approved!");
             }
             catch (Exception ex)
