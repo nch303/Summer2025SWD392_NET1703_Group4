@@ -15,14 +15,16 @@ namespace Application.Services
         private readonly IClassService _classService;
         private readonly IEARepository _eARepository;
         private readonly IChildrenService _childrenService;
+        private readonly IClassChildrenService _classChildrenService;
 
         public StaffService(IStaffRepository staffRepository, IClassService classService, IEARepository eARepository
-            , IChildrenService childrenService)
+            , IChildrenService childrenService, IClassChildrenService classChildrenService)
         {
             _staffRepository = staffRepository;
             _classService = classService;
             _eARepository = eARepository;
             _childrenService = childrenService;
+            _classChildrenService = classChildrenService;
         }
 
         public async Task<List<Children>> GetNotEnrolledChildrenAsync()
@@ -69,6 +71,23 @@ namespace Application.Services
             var children = await _staffRepository.AssignChildrenListToClassAsync(classId, childrenIds);
             return children;
 
+        }
+
+        public async Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId)
+        {
+            var assignment = await _classChildrenService.GetCurrentAssignment(childId);
+
+            var oldClass = await _classService.GetClass(assignment.ClassID);
+            var newClass = await _classService.GetClass(newClassId);
+
+            if (oldClass == null || newClass == null)
+                throw new Exception("One of the classes does not exist.");
+
+            if (oldClass.GradeLevelID != newClass.GradeLevelID)
+                throw new Exception("Classes must have the same GradeLevel.");
+
+            var result = await _staffRepository.ReassignChildToNewClassAsync(childId, newClassId);
+            return result;
         }
     }
 }

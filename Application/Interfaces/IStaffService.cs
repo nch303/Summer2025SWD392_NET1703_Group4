@@ -11,5 +11,6 @@ namespace Application.Interfaces
     {
         Task<List<Children>> GetNotEnrolledChildrenAsync();
         Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds);
+        Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId);
     }
 }

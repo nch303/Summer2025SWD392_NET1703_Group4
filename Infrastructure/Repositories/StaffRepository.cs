@@ -43,5 +43,34 @@ namespace Infrastructure.Repositories
             return classChildren;
         }
 
+        public async Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            // Get current class assignment
+            var currentAssignment = await _context.ClassChildrens
+                .Include(cc => cc.Classes)
+                .FirstOrDefaultAsync(cc => cc.ChildrenID == childId);
+
+            var oldClass = currentAssignment!.Classes;
+
+            // Get new class
+            var newClass = await _context.Classes.FindAsync(newClassId);
+
+            // Re-assign class
+            currentAssignment.ClassID = newClassId;
+            _context.ClassChildrens.Update(currentAssignment);
+
+            // Update class quantities
+            oldClass!.Quantity -= 1;
+            newClass!.Quantity += 1;
+
+            _context.Classes.UpdateRange(oldClass, newClass);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return true;
+        }
     }
 }
