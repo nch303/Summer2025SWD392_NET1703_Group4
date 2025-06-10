@@ -27,6 +27,10 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parents!.FullName))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Parents!.PhoneNumber));
 
+            CreateMap<EnrichmentProgramRequest, EnrichmentProgram>();
+            CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));
+
 
             CreateMap<EnrollmentApplication, EnrollmentApplicationListResponse>()
                 .ForMember(dest => dest.EAID, opt => opt.MapFrom(src => src.ID))

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs.Request;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,8 @@ namespace Application.Interfaces
     {
         Task<EnrichmentProgram> GetProgramByIdAsync(int? programId);
         Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsAsync();
+        Task<EnrichmentProgram> CreateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
+        Task<EnrichmentProgram> UpdateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
+        Task<bool> DeleteEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
     }
 }

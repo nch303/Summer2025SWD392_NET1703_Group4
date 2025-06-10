@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Request;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class EnrichProgramService: IEnrichProgramService
+    public class EnrichProgramService : IEnrichProgramService
     {
         private readonly IEnrichProgramRepository _enrichProgramRepository;
 
@@ -30,8 +31,24 @@ namespace Application.Services
         public async Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsAsync()
         {
             var list = await _enrichProgramRepository.GetAllEnrichmentProgramsAsync();
-            return list;
+            return list.Where(p => !p.IsDelete).ToList();
+        }
+
+        public async Task<EnrichmentProgram> CreateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram)
+        {
+            return await _enrichProgramRepository.CreateEnrichmentProgram(enrichmentProgram);
+        }
+
+        public async Task<EnrichmentProgram> UpdateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram)
+        {
+            return await _enrichProgramRepository.UpdateEnrichmentProgramAsync(enrichmentProgram);
+        }
+
+        public async Task<bool> DeleteEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram)
+        {
+            return await _enrichProgramRepository.DeleteEnrichmentProgramAsync(enrichmentProgram);
         }
     }
-   
 }
+   
+
