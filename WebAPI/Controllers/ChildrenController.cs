@@ -167,7 +167,7 @@ namespace WebAPI.Controllers
             try
             {
                 var children = await _childrenService.GetChildrenByParentIdAsync(parentId);
-                var childrenResponse = _mapper.Map<List<AllChildrenResponse>>(children);
+                var childrenResponse = _mapper.Map<List<ChildrenResponse>>(children);
                 for (int i = 0; i < children.Count(); i++)
                 {
                     var parent = await _accountService.GetAccountByIdAsync(children[i].ParentID);

@@ -59,6 +59,7 @@ namespace Infrastructure.Repositories
         public async Task<List<Children>> GetChildrenByParentIdAsync(Guid id)
         {
             return await _context.Childrens
+                .Include(c => c.Parents)
                 .Where(c => c.ParentID == id)
                 .ToListAsync();
         }
