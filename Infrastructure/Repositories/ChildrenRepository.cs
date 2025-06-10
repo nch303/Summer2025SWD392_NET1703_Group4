@@ -42,7 +42,10 @@ namespace Infrastructure.Repositories
 
         public async Task<Children> GetChildByIdAsync(Guid id)
         {
-            return await _context.Childrens.Include(a => a.Parents).FirstOrDefaultAsync(a => a.ID == id);
+            return await _context.Childrens
+                .Include(a => a.Parents)
+                .Include(a => a.ChildrenGrades)
+                .FirstOrDefaultAsync(a => a.ID == id);
         }
 
         public async Task<List<Children>> GetAllChildrenAsync()

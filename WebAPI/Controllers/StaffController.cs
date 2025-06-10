@@ -67,7 +67,7 @@ namespace WebAPI.Controllers
                 foreach (var childId in childrenIds)
                 {
                     var child = await _childrenService.GetChildByIdAsync(childId);
-                    var classInfo = await _classService.GetClass(classId);
+                    var classInfo = await _classService.GetClass(classId);   
 
                     //Update quantity of children in class
                     if (classInfo != null)
