@@ -16,5 +16,6 @@ namespace Application.Interfaces
         Task<List<Invoice>> GetByAccountIdAsync(Guid accountId);
         Task<List<Invoice>> GetAllInvoiceAsync();
         byte[] GenerateInvoicePDF(InvoicePDFResponse invoice);
+        Task<Invoice> UpdateInvoiceAsync(Invoice invoice);
     }
 }

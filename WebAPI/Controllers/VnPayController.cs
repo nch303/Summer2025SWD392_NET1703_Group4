@@ -130,6 +130,9 @@ namespace WebAPI.Controllers
             else
             {
                 await _invoiceService.UpdateStatusAsync(invoiceId, "Failed");
+                var invoice = await _invoiceService.GetByIdAsync(invoiceId);
+                invoice!.PaymentLink = null;
+                await _invoiceService.UpdateInvoiceAsync(invoice);
             }
 
             return Ok(response);

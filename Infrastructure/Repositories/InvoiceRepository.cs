@@ -51,5 +51,25 @@ namespace Infrastructure.Repositories
         {
             return await _context.Invoices.ToListAsync();
         }
+
+        public async Task<Invoice> UpdateInvoiceAsync(Invoice invoice)
+        {
+            var existingInvoice = await _context.Invoices.FindAsync(invoice.ID);
+            var updateInvoice = new Invoice
+            {
+                ID = invoice.ID,
+                AccountID = invoice.AccountID,
+                ChildrenID = invoice.ChildrenID,
+                Amount = invoice.Amount,
+                Date = invoice.Date,
+                Status = invoice.Status,
+                PaymentLink = invoice.PaymentLink,
+                Name = invoice.Name
+            };
+
+            _context.Invoices.Update(invoice);
+            await _context.SaveChangesAsync();
+            return invoice;
+        }
     }
 }
