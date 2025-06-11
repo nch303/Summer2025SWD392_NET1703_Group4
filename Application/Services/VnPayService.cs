@@ -3,6 +3,7 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Libraries;
 using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -26,11 +27,14 @@ namespace Application.Services
         private readonly ITuitionFeeService _tuitionFeeService;
         private readonly IGradeLevelService _gradeLevelService;
         private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IEARepository _eaRepository;
+        private readonly IEAService _eaService;
 
 
         public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
             , IAccountService accountService, IEnrichProgramService enrichProgramService, ITuitionFeeService tuitionFeeService
-            , IGradeLevelService gradeLevelService, IChildrenGradeService childrenGradeService)
+            , IGradeLevelService gradeLevelService, IChildrenGradeService childrenGradeService
+            , IEARepository eARepository, IEAService eaService)
         {
             _configuration = configuration;
             _invoiceService = invoiceService;
@@ -40,6 +44,8 @@ namespace Application.Services
             _tuitionFeeService = tuitionFeeService;
             _gradeLevelService = gradeLevelService;
             _childrenGradeService = childrenGradeService;
+            _eaRepository = eARepository;
+            _eaService = eaService;
         }
 
 
@@ -239,7 +245,10 @@ namespace Application.Services
             };
             await _invoiceDetailService.CreateAsync(invoiceDetail);
 
-            //
+            // Add invoiceID to enrollment application
+            var enrollmentApplication = await _eaRepository.GetApplicatioinByChildID(request.ChildrenID);
+            enrollmentApplication.InvoiceID = invoiceId;
+            await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApplication);
 
             return paymentUrl;
         }
