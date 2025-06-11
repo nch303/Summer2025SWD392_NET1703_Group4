@@ -97,5 +97,38 @@ namespace WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("reassign-child")]
+        public async Task<IActionResult> ReAssignChildToNewClass(int newClassId, Guid childID)
+        {
+            try
+            {
+                var reassign = await _staffService.ReassignChildToNewClassAsync(childID, newClassId);
+                return Ok("Re-assign children successfully!!!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("assign-teacher")]
+        public async Task<IActionResult> AssignTeacherToClass(int classId, Guid teacherId)
+        {
+            try
+            {
+                var assign = await _staffService.AssignTeacherToClassAsync(classId, teacherId);
+                var dto = new AssignTeacherResponse
+                {
+                    ClassName = assign.Classes!.Name,
+                    TeacherName = assign.Teachers!.FullName
+                };
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

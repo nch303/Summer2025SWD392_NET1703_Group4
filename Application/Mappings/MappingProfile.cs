@@ -21,6 +21,8 @@ namespace Application.Mappings
             CreateMap<AccountRequest, Account>();
             CreateMap<UpdateUserProfileRequest, Account>();
             CreateMap<Account, UpdateUserProfileResponse>();
+            CreateMap<Account, TeacherResponse>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role!.Name));
 
             CreateMap<ChildrenRequest, Children>();
             CreateMap<Children, ChildrenResponse>()

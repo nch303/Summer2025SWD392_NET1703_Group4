@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class StaffRepository: IStaffRepository
+    public class StaffRepository : IStaffRepository
     {
         private readonly AppDbContext _context;
 
@@ -43,5 +43,58 @@ namespace Infrastructure.Repositories
             return classChildren;
         }
 
+        public async Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            // Get current class assignment
+            var currentAssignment = await _context.ClassChildrens
+                .Include(cc => cc.Classes)
+                .FirstOrDefaultAsync(cc => cc.ChildrenID == childId);
+
+            var oldClass = currentAssignment!.Classes;
+
+            // Get new class
+            var newClass = await _context.Classes.FindAsync(newClassId);
+
+            // Re-assign class
+            currentAssignment.ClassID = newClassId;
+            _context.ClassChildrens.Update(currentAssignment);
+
+            // Update class quantities
+            oldClass!.Quantity -= 1;
+            newClass!.Quantity += 1;
+
+            _context.Classes.UpdateRange(oldClass, newClass);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return true;
+        }
+
+        public async Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId)
+        {
+            var classTeacher =  new ClassTeacher
+            {
+                ClassID = classId,
+                TeacherID = teacherId
+            };
+
+            _context.ClassTeachers.Add(classTeacher);
+            await _context.SaveChangesAsync();
+
+            // Load related Class and Teacher for later use
+            await _context.Entry(classTeacher).Reference(ct => ct.Classes).LoadAsync();
+            await _context.Entry(classTeacher).Reference(ct => ct.Teachers).LoadAsync();
+
+            return classTeacher;
+        }
+
+        public async Task<bool> IsTeacherAssignedToClassAsync(int classId, Guid teacherId)
+        {
+            return await _context.ClassTeachers
+                .AnyAsync(ct => ct.TeacherID == teacherId && ct.ClassID == classId);
+        }
     }
 }
