@@ -156,7 +156,7 @@ const EnrollmentTrackingPage = () => {
       case 'Approved': return 'tracking-approved';
       case 'Paid': return 'tracking-paid';
       case 'Enrolled': return 'tracking-enrolled';
-      case 'Reject': return 'tracking-rejected';
+      case 'Rejected': return 'tracking-rejected';
       default: return 'tracking-pending';
     }
   };
@@ -167,7 +167,7 @@ const EnrollmentTrackingPage = () => {
       case 'Approved': return 'check-circle';
       case 'Paid': return 'money-check-alt';
       case 'Enrolled': return 'user-check';
-      case 'Reject': return 'times-circle';
+      case 'Rejected': return 'times-circle';
       default: return 'clock';
     }
   };
@@ -178,7 +178,7 @@ const EnrollmentTrackingPage = () => {
       case 'Approved': return 'Đã duyệt';
       case 'Paid': return 'Đã thanh toán';
       case 'Enrolled': return 'Đã nhập học';
-      case 'Reject': return 'Đã từ chối';
+      case 'Rejected': return 'Đã từ chối';
       default: return 'Đang xử lý';
     }
   };
@@ -258,6 +258,11 @@ const EnrollmentTrackingPage = () => {
   };
   
   const renderPaymentButton = (app) => {
+    // Nếu đơn bị từ chối, không hiển thị nút thanh toán
+    if (app.status === 'Rejected') {
+      return null;
+    }
+    
     // Nếu có invoice, kiểm tra trạng thái và hiển thị nút phù hợp
     if (app.invoiceID && invoices[app.invoiceID]) {
       const invoice = invoices[app.invoiceID];
@@ -419,8 +424,8 @@ const EnrollmentTrackingPage = () => {
               Đã nhập học
             </button>
             <button 
-              className={`tracking-tab-btn ${filterStatus === 'Reject' ? 'active' : ''}`}
-              onClick={() => setFilterStatus('Reject')}
+              className={`tracking-tab-btn ${filterStatus === 'Rejected' ? 'active' : ''}`}
+              onClick={() => setFilterStatus('Rejected')}
             >
               <span className="tracking-tab-icon tracking-rejected">
                 <FontAwesomeIcon icon="times-circle" />
@@ -433,7 +438,11 @@ const EnrollmentTrackingPage = () => {
           {filteredAndSortedApplications.length > 0 ? (
             <div className="tracking-applications-list">
               {filteredAndSortedApplications.map((app) => (
-                <div key={app.eaid} className="tracking-application-card">
+                <div 
+                  key={app.eaid} 
+                  className="tracking-application-card" 
+                  data-status={app.status}
+                >
                   <div className={`tracking-application-status ${getStatusColor(app.status)}`}>
                     <div className="tracking-status-icon">
                       <FontAwesomeIcon icon={getStatusIcon(app.status)} />
@@ -457,7 +466,7 @@ const EnrollmentTrackingPage = () => {
                   
                   <div className="tracking-application-timeline">
                     <div 
-                      className={`tracking-timeline-step ${app.status !== 'Reject' ? 'active' : ''}`} 
+                      className={`tracking-timeline-step ${app.status !== 'Rejected' ? 'active' : ''}`} 
                       data-status="Pending"
                     >
                       <div className="tracking-step-icon">

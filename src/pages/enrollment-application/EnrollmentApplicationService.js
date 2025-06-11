@@ -32,7 +32,7 @@ export const submitEnrollmentApplication = async (childID, applicationData) => {
         error.response.data && error.response.data.message === "An enrollment application with the same ID already exists.") {
       throw {
         statusCode: 400,
-        message: "Đã tồn tại đơn đăng ký cho học sinh này.",
+        message: "Trẻ đã có đơn đang chờ được duyệt. Không thể nộp thêm đơn!",
         isDuplicate: true
       };
     }

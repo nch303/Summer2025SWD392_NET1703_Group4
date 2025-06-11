@@ -320,23 +320,39 @@ const EnrollmentApplicationPage = () => {
                 </p>
               </div>
               
-              <div className="signature">
-                <div className="date-section">
-                  <p>........, ngày ........ tháng ........ năm {new Date().getFullYear()}</p>
-                  <p className="signature-label">(Phụ huynh ký và ghi rõ họ tên)</p>
+              <div className="signature-container">
+                <div className="signature parent-signature">
+                  <div className="date-section">
+                    <p>........, ngày ........ tháng ........ năm {new Date().getFullYear()}</p>
+                    <p className="signature-label">(Phụ huynh ký và ghi rõ họ tên)</p>
+                  </div>
                 </div>
                 
-                {/* School stamp */}
-                <div className="school-stamp">
-                  <div className="stamp-circle"></div>
-                  <div className="stamp-inner-circle"></div>
-                  <div className="stamp-text-top">TRƯỜNG MẦM NON</div>
-                  <div className="stamp-text-bottom">LITTLE STARS</div>
-                  <div className="stamp-date">{new Date().getFullYear()}</div>
-                  <div className="stamp-approved">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(183, 28, 28, 0.9)">
-                      <path d="M12 3L14.94 8.34L21 9.27L16.5 13.33L17.75 19.34L12 16.67L6.25 19.34L7.5 13.33L3 9.27L9.06 8.34L12 3Z"/>
-                    </svg>
+                <div className="signature principal-signature">
+                  <div className="date-section">
+                    <p>HIỆU TRƯỞNG</p>
+                    
+                    <div className="signature-text">
+                      TaKKhoan
+                      <div className="signature-line"></div>
+                    </div>
+                    <div>
+                      Tạ Khắc Khoan
+                    </div>
+                    
+                    {/* School stamp */}
+                    <div className="school-stamp">
+                      <div className="stamp-circle"></div>
+                      <div className="stamp-inner-circle"></div>
+                      <div className="stamp-text-top">TRƯỜNG MẦM NON</div>
+                      <div className="stamp-text-bottom">LITTLE STARS</div>
+                      <div className="stamp-date">{new Date().getFullYear()}</div>
+                      <div className="stamp-approved">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(183, 28, 28, 0.9)">
+                          <path d="M12 3L14.94 8.34L21 9.27L16.5 13.33L17.75 19.34L12 16.67L6.25 19.34L7.5 13.33L3 9.27L9.06 8.34L12 3Z"/>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

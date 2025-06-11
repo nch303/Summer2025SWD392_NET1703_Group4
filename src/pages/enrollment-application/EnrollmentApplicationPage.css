@@ -944,16 +944,16 @@
 /* Enhanced school stamp styling */
 .school-stamp {
   position: absolute;
-  bottom: 60px;
-  left: 80px;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-12deg);
   width: 130px;
   height: 130px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  opacity: 0.6;
-  transform: rotate(-12deg);
+  opacity: 0.3;
   pointer-events: none;
   z-index: 5;
   filter: blur(0.2px);
@@ -1046,4 +1046,79 @@
   font-weight: 600;
   color: rgba(183, 28, 28, 0.8);
   font-family: 'Times New Roman', serif;
+}
+
+/* Add new signature container styles */
+.signature-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+  width: 100%;
+}
+
+.signature {
+  text-align: center;
+  width: 280px;
+  padding: 10px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.parent-signature {
+  align-self: flex-start;
+}
+
+.principal-signature {
+  align-self: flex-end;
+}
+
+.principal-signature .date-section {
+  gap: 60px;
+}
+
+.principal-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #263238;
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .signature-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+  
+  .signature {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Signature styling */
+.signature-text {
+  font-family: 'Pacifico', 'Brush Script MT', cursive;
+  font-size: 28px;
+  color: rgba(0, 0, 50, 0.85);
+  transform: rotate(-5deg);
+  position: relative;
+  z-index: 9999;
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+}
+
+.signature-line {
+  position: absolute;
+  width: 100%;
+  height: 1.5px;
+  background: rgba(0, 0, 0, 0.4);
+  bottom: -2px;
+  left: 0;
+}
+
+.principal-signature .date-section {
+  gap: 30px;
 }
