@@ -103,6 +103,11 @@ namespace WebAPI.Controllers
                 };
                 await _childrenGradeService.CreateChildrenGradeAsync(childrenGrade);
 
+                //Update the status of the child to "Not Enrolled"
+                var child = await _childrenService.GetChildByIdAsync(updated.ChildrenID);
+                child!.Status = "Not Enrolled";
+                await _childrenService.UpdateChildAsync(child);
+
                 return Ok("Approved!");
             }
             catch (Exception ex)

@@ -27,10 +27,10 @@ namespace Application.Services
             _classChildrenService = classChildrenService;
         }
 
-        public async Task<List<Children>> GetNotEnrolledChildrenAsync()
+        public async Task<List<Children>> GetPaidChildrenAsync()
         {
             // Fetch all children who are not enrolled in any class
-            var notEnrolledChildren = await _staffRepository.GetNotEnrolledChildrenAsync();
+            var notEnrolledChildren = await _staffRepository.GetPaidChildrenAsync();
             if (notEnrolledChildren == null || notEnrolledChildren.Count == 0)
             {
                 throw new Exception("No children found who are not enrolled in any class.");
@@ -60,7 +60,6 @@ namespace Application.Services
                     throw new Exception($"Child {child!.Name} with ID {childId} does not match the grade level of the class {classInfo?.Name}.");
                 }
             }
-
 
             //Check the amount of children to be assigned
             if ((OldClass.MaxChildren - OldClass.Quantity) < childrenIds.Count)

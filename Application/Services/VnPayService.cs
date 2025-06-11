@@ -192,7 +192,7 @@ namespace Application.Services
 
             //Get amount from grade level
             var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition!.GradeLevelID);
-            var amount = (decimal)gradeLevel!.Fee;
+            var amount = (decimal)gradeLevel!.Fee + (decimal)tuition.Fee;
 
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);

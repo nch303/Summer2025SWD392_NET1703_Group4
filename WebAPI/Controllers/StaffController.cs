@@ -27,12 +27,12 @@ namespace WebAPI.Controllers
             _classService = classService;
         }
 
-        [HttpGet("GetNotEnrolledChildren")]
-        public async Task<IActionResult> GetNotEnrolledChildren()
+        [HttpGet("GetPaidChildren")]
+        public async Task<IActionResult> GetPaidChildren()
         {
             try
             {
-                var children = await _staffService.GetNotEnrolledChildrenAsync();
+                var children = await _staffService.GetPaidChildrenAsync();
                 var childrenResponse = _mapper.Map<List<ChildrenResponse>>(children);
                 return Ok(childrenResponse);
             }

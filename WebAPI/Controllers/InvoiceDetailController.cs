@@ -3,6 +3,8 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace WebAPI.Controllers
 {
@@ -16,9 +18,10 @@ namespace WebAPI.Controllers
         private readonly IChildrenService _childrenService;
         private readonly IEnrichProgramService _enrichProgramService;
         private readonly ITuitionFeeService _tuitionFeeService;
+        private readonly IGradeLevelService _gradeLevelService;
         public InvoiceDetailController(IInvoiceDetailService invoiceDetailService, IMapper mapper,
             IAccountService accountService, IChildrenService childrenService, IEnrichProgramService enrichProgramService
-            , ITuitionFeeService tuitionFeeService)
+            , ITuitionFeeService tuitionFeeService, IGradeLevelService gradeLevelService)
         {
             _invoiceDetailService = invoiceDetailService;
             _mapper = mapper;
@@ -26,6 +29,7 @@ namespace WebAPI.Controllers
             _childrenService = childrenService;
             _enrichProgramService = enrichProgramService;
             _tuitionFeeService = tuitionFeeService;
+            _gradeLevelService = gradeLevelService;
         }
 
         [HttpGet]
@@ -43,6 +47,8 @@ namespace WebAPI.Controllers
                     var child = await _childrenService.GetChildByIdAsync(invoiceDetails[i].ChildrenID);
                     detail.ChildrenName = child!.Name;
 
+
+
                     if (invoiceDetails[i].ProgramID != null)
                     {
                         var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
@@ -52,6 +58,47 @@ namespace WebAPI.Controllers
                     {
                         var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
                         detail.tuitionFeeName = tuition!.Name;
+
+                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition.GradeLevelID);
+                        var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
+                        var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevelFeeFormated + " đồng)";
+                        ;
+                        // Design Description cua hoa don
+                        // Tách các phần tử
+                        string designedDescription = "";
+                        if (tuition.Description!.Contains("+"))
+                        {
+                            string[] parts = tuition.Description!.Split(" + ");
+
+
+                            foreach (var part in parts)
+                            {
+                                // Tìm tên và số tiền bằng Regex
+                                var match = Regex.Match(part, @"^(.*)\((\d+)\)$");
+                                if (match.Success)
+                                {
+                                    string title = match.Groups[1].Value.Trim();
+                                    long amount = long.Parse(match.Groups[2].Value);
+                                    string formatted = string.Format(new CultureInfo("vi-VN"), "{0} ({1:N0} đồng)", title, amount);
+                                    designedDescription += "- " + formatted + "\n";
+                                }
+                            }
+                            designedDescription = "- " + gradeFeeName + "\n" + designedDescription.TrimEnd('\n');
+                        }
+                        else
+                        { 
+                            if (tuition.Description == null)
+                            {
+                                designedDescription = "- " + gradeFeeName;
+                            }
+                            else 
+                            {
+                                designedDescription = "- " + gradeFeeName + "\n" + tuition.Description!;
+                            }
+                            
+                        }
+
+                        detail.Description = designedDescription;
                     }
                 }
 

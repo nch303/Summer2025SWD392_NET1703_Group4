@@ -9,7 +9,7 @@ namespace Application.Interfaces
 {
     public interface IStaffService
     {
-        Task<List<Children>> GetNotEnrolledChildrenAsync();
+        Task<List<Children>> GetPaidChildrenAsync();
         Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds);
         Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId);
         Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId);
