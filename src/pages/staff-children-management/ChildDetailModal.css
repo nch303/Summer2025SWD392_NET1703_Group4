@@ -583,3 +583,19 @@
     font-size: 14px;
   }
 }
+
+/* Thêm style cho hiển thị ID */
+.staff-children-id-value {
+  font-size: 0.8rem;
+  font-family: monospace;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.staff-children-id-value:hover {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-all;
+}

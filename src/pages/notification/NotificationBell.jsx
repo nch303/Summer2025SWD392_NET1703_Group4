@@ -9,6 +9,7 @@ const NotificationBell = () => {
   const [activeTab, setActiveTab] = useState('all'); // 'all' or 'unread'
   const [refreshing, setRefreshing] = useState(false);
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
   const modalRef = useRef(null);
   const previousCountRef = useRef(0);
   
@@ -75,6 +76,7 @@ const NotificationBell = () => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         setIsOpen(false);
+        setSelectedNotification(null);
       }
     };
 
@@ -85,23 +87,26 @@ const NotificationBell = () => {
   }, []);
 
   // Handle notification click
-  const handleNotificationClick = async (notificationId) => {
-    try {
-      await markNotificationAsRead(notificationId);
-      // Update the notifications state to mark as read
-      setNotifications(
-        notifications.map(notification => 
-          notification.id === notificationId 
-            ? { ...notification, isRead: true } 
-            : notification
-        )
-      );
-      
-      // Update the unread count reference
-      previousCountRef.current = notifications.filter(n => n.id !== notificationId && !n.isRead).length;
-    } catch (error) {
-      console.error('Failed to mark notification as read:', error);
-    }
+  const handleNotificationClick = (notification) => {
+    // Immediately show notification details
+    setSelectedNotification(notification);
+    
+    // Mark as read in the background
+    markNotificationAsRead(notification.id)
+      .then(() => {
+        // Update state after successful API call
+        setNotifications(
+          notifications.map(n => 
+            n.id === notification.id ? { ...n, isRead: true } : n
+          )
+        );
+        
+        // Update unread count reference
+        previousCountRef.current = notifications.filter(n => n.id !== notification.id && !n.isRead).length;
+      })
+      .catch(error => {
+        console.error('Failed to mark notification as read:', error);
+      });
   };
 
   // Count unread notifications
@@ -156,36 +161,64 @@ const NotificationBell = () => {
             </button>
           </div>
           
-          <div className="notification-content">
-            {loading ? (
-              <div className="notification-loading">
-                <div className="spinner"></div>
-                <p>Loading notifications...</p>
+          {selectedNotification ? (
+            <div className="notification-detail">
+              <div className="notification-detail-header">
+                <button 
+                  className="notification-back-button"
+                  onClick={() => setSelectedNotification(null)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                  </svg>
+                </button>
+                <h4>{selectedNotification.title}</h4>
               </div>
-            ) : filteredNotifications.length > 0 ? (
-              <ul className="notification-list">
-                {filteredNotifications.map(notification => (
-                  <li 
-                    key={notification.id} 
-                    className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
-                    onClick={() => handleNotificationClick(notification.id)}
-                  >
-                    <div className="notification-item-content">
-                      <h4>{notification.title}</h4>
-                      <p>{notification.content}</p>
-                    </div>
-                    {!notification.isRead && <span className="notification-dot"></span>}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="notification-empty">
-                <p>{activeTab === 'all' ? 'No notifications yet' : 'No unread notifications'}</p>
+              <div className="notification-detail-content">
+                <p>{selectedNotification.content}</p>
+                {selectedNotification.dateCreated && (
+                  <div className="notification-date">
+                    {new Date(selectedNotification.dateCreated).toLocaleString()}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="notification-content">
+              {loading ? (
+                <div className="notification-loading">
+                  <div className="spinner"></div>
+                  <p>Loading notifications...</p>
+                </div>
+              ) : filteredNotifications.length > 0 ? (
+                <ul className="notification-list">
+                  {filteredNotifications.map(notification => (
+                    <li 
+                      key={notification.id} 
+                      className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
+                      onClick={() => handleNotificationClick(notification)}
+                    >
+                      <div className="notification-item-content">
+                        <h4>{notification.title}</h4>
+                        <p>{notification.content}</p>
+                      </div>
+                      {!notification.isRead && <span className="notification-dot"></span>}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="notification-empty">
+                  <p>{activeTab === 'all' ? 'No notifications yet' : 'No unread notifications'}</p>
+                </div>
+              )}
+            </div>
+          )}
+          
           <div className="notification-footer">
-            <button onClick={() => setIsOpen(false)}>Close</button>
+            <button onClick={() => {
+              setIsOpen(false);
+              setSelectedNotification(null);
+            }}>Close</button>
           </div>
         </div>
       )}

@@ -57,6 +57,8 @@ import {
   faBan,
   faFileContract,
   faClipboard,
+  faChevronUp,
+  faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -118,6 +120,8 @@ library.add(
   faBan,
   faFileContract,
   faClipboard,
+  faChevronUp,
+  faChevronDown,
 );
 
 // Không cần export vì đã đăng ký vào library 

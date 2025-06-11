@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail, createPaymentUrlForEnrollment } from './EnrollmentTrackingService';
+import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail, createPaymentUrlForEnrollment, getInvoiceDetails } from './EnrollmentTrackingService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import './EnrollmentTrackingPage.css';
@@ -19,6 +19,7 @@ const EnrollmentTrackingPage = () => {
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const modalOverlayRef = useRef(null);
+  const [invoices, setInvoices] = useState({});
   
   const { showSpinner, hideSpinner } = useProcessingSpinner();
   const toast = useCustomToast();
@@ -32,6 +33,29 @@ const EnrollmentTrackingPage = () => {
       showSpinner('Đang tải thông tin đăng ký...');
       const data = await getEnrollmentApplicationsProgress();
       setApplications(data || []);
+      
+      // Fetch invoice details for applications with invoiceID
+      const invoicePromises = data
+        .filter(app => app.invoiceID)
+        .map(app => getInvoiceDetails(app.invoiceID)
+          .then(invoiceData => ({ id: app.invoiceID, data: invoiceData }))
+          .catch(err => {
+            console.error(`Error fetching invoice ${app.invoiceID}:`, err);
+            return { id: app.invoiceID, error: true };
+          })
+        );
+      
+      if (invoicePromises.length > 0) {
+        const invoiceResults = await Promise.all(invoicePromises);
+        const invoiceMap = {};
+        invoiceResults.forEach(result => {
+          if (!result.error) {
+            invoiceMap[result.id] = result.data;
+          }
+        });
+        setInvoices(invoiceMap);
+      }
+      
       setError('');
     } catch (err) {
       setError('Không thể tải thông tin đăng ký. Vui lòng thử lại sau.');
@@ -195,20 +219,29 @@ const EnrollmentTrackingPage = () => {
     });
   }, [applications, filterStatus, searchQuery, sortOrder]);
   
-  const handlePayment = async (childrenID) => {
+  const handlePayment = async (application) => {
     try {
+      // Check if we already have an invoice with a payment link
+      if (application.invoiceID && invoices[application.invoiceID]) {
+        const invoice = invoices[application.invoiceID];
+        if (invoice.paymentLink) {
+          // Use existing payment link
+          window.open(invoice.paymentLink, '_blank');
+          return;
+        }
+      }
+      
+      // Otherwise, create a new payment URL
       showSpinner('Đang tạo liên kết thanh toán...');
-      const response = await createPaymentUrlForEnrollment(childrenID);
+      const response = await createPaymentUrlForEnrollment(application.childrenID);
       
       if (response && response.url) {
-        // Redirect to payment URL (using 'url' instead of 'paymentUrl')
         window.open(response.url, '_blank');
       } else {
         console.error('Invalid response format:', response);
         toast.error('Không thể tạo liên kết thanh toán. Định dạng phản hồi không hợp lệ.');
       }
     } catch (err) {
-      // Get more specific error message if available
       let errorMessage = 'Đã xảy ra lỗi khi tạo liên kết thanh toán.';
       
       if (err.response && err.response.data && err.response.data.message) {
@@ -223,6 +256,59 @@ const EnrollmentTrackingPage = () => {
       hideSpinner();
     }
   };
+  
+  const renderPaymentButton = (app) => {
+    // Nếu có invoice, kiểm tra trạng thái và hiển thị nút phù hợp
+    if (app.invoiceID && invoices[app.invoiceID]) {
+      const invoice = invoices[app.invoiceID];
+      
+      if (invoice.status === 'Failed') {
+        return (
+          <button 
+            className="tracking-action-btn tracking-payment-btn tracking-pulse"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(invoice.paymentLink, '_blank');
+            }}
+          >
+            <FontAwesomeIcon icon="sync" />
+            Thử thanh toán lại
+          </button>
+        );
+      } else if (invoice.status === 'Pending') {
+        return (
+          <button 
+            className="tracking-action-btn tracking-payment-btn tracking-pulse"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(invoice.paymentLink, '_blank');
+            }}
+          >
+            <FontAwesomeIcon icon="credit-card" />
+            Tiếp tục thanh toán
+          </button>
+        );
+      }
+    }
+    
+    // Trường hợp chưa có invoice hoặc cần tạo mới
+    if (app.status === 'Approved') {
+      return (
+        <button 
+          className="tracking-action-btn tracking-payment-btn tracking-pulse"
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePayment(app);
+          }}
+        >
+          <FontAwesomeIcon icon="credit-card" />
+          Thanh toán học phí
+        </button>
+      );
+    }
+    
+    return null;
+  }
   
   return (
     <div className="tracking-container">
@@ -442,33 +528,7 @@ const EnrollmentTrackingPage = () => {
                   </div>
                   
                   <div className="tracking-application-actions">
-                    {app.status === 'Approved' && (
-                      <button 
-                        className="tracking-action-btn tracking-payment-btn tracking-pulse"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          
-                          // Log the entire application object to inspect
-                          console.log('Application object:', app);
-                          
-                          // Make sure childrenID is present and in the right format
-                          if (!app.childrenID) {
-                            toast.error('Không thể xác định ID của trẻ. Vui lòng thử lại sau.');
-                            console.error('Missing childrenID for application:', app);
-                            return;
-                          }
-                          
-                          // Explicitly log the value we're using
-                          console.log('Using childrenID for payment:', app.childrenID);
-                          
-                          // Make the payment request
-                          handlePayment(app.childrenID);
-                        }}
-                      >
-                        <FontAwesomeIcon icon="credit-card" />
-                        Thanh toán học phí
-                      </button>
-                    )}
+                    {renderPaymentButton(app)}
                     <button 
                       className="tracking-action-btn tracking-detail-btn"
                       onClick={() => handleDetailClick(app)}
@@ -671,15 +731,27 @@ const EnrollmentTrackingPage = () => {
                 Đóng
               </button>
               {applicationDetail && applicationDetail.status === 'Approved' && (
-                <button 
-                  className="tracking-btn-primary"
-                  onClick={() => {
-                    handlePayment(selectedApplication.childrenID);
-                  }}
-                >
-                  <FontAwesomeIcon icon="credit-card" />
-                  Thanh toán
-                </button>
+                selectedApplication && selectedApplication.invoiceID && invoices[selectedApplication.invoiceID] ? (
+                  <button 
+                    className="tracking-btn-primary"
+                    onClick={() => {
+                      window.open(invoices[selectedApplication.invoiceID].paymentLink, '_blank');
+                    }}
+                  >
+                    <FontAwesomeIcon icon="credit-card" />
+                    {invoices[selectedApplication.invoiceID].status === 'Failed' ? 'Thử thanh toán lại' : 'Tiếp tục thanh toán'}
+                  </button>
+                ) : (
+                  <button 
+                    className="tracking-btn-primary"
+                    onClick={() => {
+                      handlePayment(selectedApplication);
+                    }}
+                  >
+                    <FontAwesomeIcon icon="credit-card" />
+                    Thanh toán
+                  </button>
+                )
               )}
             </div>
           </div>

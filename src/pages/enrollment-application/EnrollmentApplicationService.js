@@ -28,6 +28,14 @@ export const submitEnrollmentApplication = async (childID, applicationData) => {
     const response = await api.post(`/api/EnrollmentApplication/submit-application?childID=${childID}`, applicationData);
     return response.data;
   } catch (error) {
+    if (error.response && error.response.status === 400 && 
+        error.response.data && error.response.data.message === "An enrollment application with the same ID already exists.") {
+      throw {
+        statusCode: 400,
+        message: "Đã tồn tại đơn đăng ký cho học sinh này.",
+        isDuplicate: true
+      };
+    }
     console.error('Error submitting enrollment application:', error);
     throw error;
   }

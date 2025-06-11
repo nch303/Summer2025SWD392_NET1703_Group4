@@ -4,7 +4,7 @@ import {
   faSearch, faTimes, faEye, faCheck, faBan, faFileAlt, 
   faChild, faUser, faClipboardList, faCalendarAlt, faMapMarkerAlt,
   faVenusMars, faFileContract, faFilter, faPhone, faClock, faCheckCircle,
-  faBell, faPaperPlane
+  faBell, faPaperPlane, faMoneyBillWave, faUserGraduate, faChevronUp, faChevronDown
 } from '@fortawesome/free-solid-svg-icons';
 import { getAllApplications, getApplicationDetail, approveApplication, rejectApplication, createNotification } from './EnrollmentApplicationManagementService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
@@ -32,6 +32,9 @@ const EnrollmentApplicationManagement = () => {
   
   const { showSpinner, hideSpinner } = useProcessingSpinner();
   const toast = useCustomToast();
+  
+  // Thêm state mới để quản lý trạng thái thu gọn
+  const [statsCollapsed, setStatsCollapsed] = useState(false);
   
   useEffect(() => {
     fetchApplications();
@@ -181,11 +184,31 @@ const EnrollmentApplicationManagement = () => {
   const getStatusBadge = (status) => {
     switch (status.toLowerCase()) {
       case 'approved':
-        return <span className="status-badge approved">Đã duyệt</span>;
+        return <span className="status-badge approved">
+          <FontAwesomeIcon icon={faCheckCircle} />
+          Đã duyệt
+        </span>;
       case 'rejected':
-        return <span className="status-badge rejected">Từ chối</span>;
+      case 'reject':
+        return <span className="status-badge rejected">
+          <FontAwesomeIcon icon={faBan} />
+          Từ chối
+        </span>;
+      case 'paid':
+        return <span className="status-badge paid">
+          <FontAwesomeIcon icon={faMoneyBillWave} />
+          Đã thanh toán
+        </span>;
+      case 'enrolled':
+        return <span className="status-badge enrolled">
+          <FontAwesomeIcon icon={faUserGraduate} />
+          Đã nhập học
+        </span>;
       default:
-        return <span className="status-badge pending">Chờ duyệt</span>;
+        return <span className="status-badge pending">
+          <FontAwesomeIcon icon={faClock} />
+          Chờ duyệt
+        </span>;
     }
   };
   
@@ -200,6 +223,17 @@ const EnrollmentApplicationManagement = () => {
   
   const getRejectedApplications = () => 
     applications.filter(app => app.status.toLowerCase() === 'rejected').length;
+  
+  const getPaidApplications = () => 
+    applications.filter(app => app.status.toLowerCase() === 'paid').length;
+  
+  const getEnrolledApplications = () => 
+    applications.filter(app => app.status.toLowerCase() === 'enrolled').length;
+  
+  // Thêm hàm toggle cho dashboard-stats
+  const toggleStats = () => {
+    setStatsCollapsed(!statsCollapsed);
+  };
   
   return (
     <div className="enrollment-management">
@@ -219,49 +253,84 @@ const EnrollmentApplicationManagement = () => {
       </div>
       
       {!loading && !error && (
-        <div className="dashboard-stats">
-          <div className="stat-card total">
-            <div className="stat-card__header">
-              <h3 className="stat-card__title">Tổng đơn</h3>
-              <div className="stat-card__icon">
-                <FontAwesomeIcon icon={faFileAlt} />
-              </div>
-            </div>
-            <p className="stat-card__value">{getTotalApplications()}</p>
-            <p className="stat-card__description">Tổng số đơn nhập học</p>
+        <div className="dashboard-stats-container">
+          <div className="dashboard-stats-header">
+            <h3 className="dashboard-stats-title">Thống kê đơn nhập học</h3>
+            <button 
+              className="dashboard-stats-toggle" 
+              onClick={toggleStats}
+              title={statsCollapsed ? "Mở rộng" : "Thu gọn"}
+            >
+              <FontAwesomeIcon icon={statsCollapsed ? faChevronDown : faChevronUp} />
+            </button>
           </div>
           
-          <div className="stat-card pending">
-            <div className="stat-card__header">
-              <h3 className="stat-card__title">Chờ duyệt</h3>
-              <div className="stat-card__icon">
-                <FontAwesomeIcon icon={faClipboardList} />
+          <div className={`dashboard-stats ${statsCollapsed ? 'collapsed' : ''}`}>
+            <div className="stat-card total">
+              <div className="stat-card__header">
+                <h3 className="stat-card__title">Tổng đơn</h3>
+                <div className="stat-card__icon">
+                  <FontAwesomeIcon icon={faFileAlt} />
+                </div>
               </div>
+              <p className="stat-card__value">{getTotalApplications()}</p>
+              <p className="stat-card__description">Tổng số đơn nhập học</p>
             </div>
-            <p className="stat-card__value">{getPendingApplications()}</p>
-            <p className="stat-card__description">Đơn đang chờ xử lý</p>
-          </div>
-          
-          <div className="stat-card approved">
-            <div className="stat-card__header">
-              <h3 className="stat-card__title">Đã duyệt</h3>
-              <div className="stat-card__icon">
-                <FontAwesomeIcon icon={faCheck} />
+            
+            <div className="stat-card pending">
+              <div className="stat-card__header">
+                <h3 className="stat-card__title">Chờ duyệt</h3>
+                <div className="stat-card__icon">
+                  <FontAwesomeIcon icon={faClipboardList} />
+                </div>
               </div>
+              <p className="stat-card__value">{getPendingApplications()}</p>
+              <p className="stat-card__description">Đơn đang chờ xử lý</p>
             </div>
-            <p className="stat-card__value">{getApprovedApplications()}</p>
-            <p className="stat-card__description">Đơn đã được phê duyệt</p>
-          </div>
-          
-          <div className="stat-card rejected">
-            <div className="stat-card__header">
-              <h3 className="stat-card__title">Từ chối</h3>
-              <div className="stat-card__icon">
-                <FontAwesomeIcon icon={faBan} />
+            
+            <div className="stat-card approved">
+              <div className="stat-card__header">
+                <h3 className="stat-card__title">Đã duyệt</h3>
+                <div className="stat-card__icon">
+                  <FontAwesomeIcon icon={faCheck} />
+                </div>
               </div>
+              <p className="stat-card__value">{getApprovedApplications()}</p>
+              <p className="stat-card__description">Đơn đã được phê duyệt</p>
             </div>
-            <p className="stat-card__value">{getRejectedApplications()}</p>
-            <p className="stat-card__description">Đơn đã bị từ chối</p>
+            
+            <div className="stat-card rejected">
+              <div className="stat-card__header">
+                <h3 className="stat-card__title">Từ chối</h3>
+                <div className="stat-card__icon">
+                  <FontAwesomeIcon icon={faBan} />
+                </div>
+              </div>
+              <p className="stat-card__value">{getRejectedApplications()}</p>
+              <p className="stat-card__description">Đơn đã bị từ chối</p>
+            </div>
+            
+            <div className="stat-card paid">
+              <div className="stat-card__header">
+                <h3 className="stat-card__title">Đã thanh toán</h3>
+                <div className="stat-card__icon">
+                  <FontAwesomeIcon icon={faMoneyBillWave} />
+                </div>
+              </div>
+              <p className="stat-card__value">{getPaidApplications()}</p>
+              <p className="stat-card__description">Đơn đã thanh toán học phí</p>
+            </div>
+            
+            <div className="stat-card enrolled">
+              <div className="stat-card__header">
+                <h3 className="stat-card__title">Đã nhập học</h3>
+                <div className="stat-card__icon">
+                  <FontAwesomeIcon icon={faUserGraduate} />
+                </div>
+              </div>
+              <p className="stat-card__value">{getEnrolledApplications()}</p>
+              <p className="stat-card__description">Đơn đã hoàn tất nhập học</p>
+            </div>
           </div>
         </div>
       )}
@@ -289,6 +358,8 @@ const EnrollmentApplicationManagement = () => {
             <option value="pending">Chờ duyệt</option>
             <option value="approved">Đã duyệt</option>
             <option value="rejected">Từ chối</option>
+            <option value="paid">Đã thanh toán</option>
+            <option value="enrolled">Đã nhập học</option>
           </select>
         </div>
       )}
@@ -376,22 +447,7 @@ const EnrollmentApplicationManagement = () => {
                       </td>
                       
                       <td>
-                        {application.status.toLowerCase() === 'approved' ? (
-                          <span className="status-badge approved">
-                            <FontAwesomeIcon icon={faCheckCircle} />
-                            Đã duyệt
-                          </span>
-                        ) : application.status.toLowerCase() === 'rejected' ? (
-                          <span className="status-badge rejected">
-                            <FontAwesomeIcon icon={faBan} />
-                            Từ chối
-                          </span>
-                        ) : (
-                          <span className="status-badge pending">
-                            <FontAwesomeIcon icon={faClock} />
-                            Chờ duyệt
-                          </span>
-                        )}
+                        {getStatusBadge(application.status)}
                       </td>
                       
                       <td className="actions-cell" onClick={(e) => e.stopPropagation()}>
@@ -586,10 +642,20 @@ const EnrollmentApplicationManagement = () => {
                           <FontAwesomeIcon icon={faCheckCircle} />
                           Đã duyệt
                         </span>
-                      ) : applicationDetail.status.toLowerCase() === 'rejected' ? (
+                      ) : applicationDetail.status.toLowerCase() === 'rejected' || applicationDetail.status.toLowerCase() === 'reject' ? (
                         <span className="status-badge rejected">
                           <FontAwesomeIcon icon={faBan} />
                           Từ chối
+                        </span>
+                      ) : applicationDetail.status.toLowerCase() === 'paid' ? (
+                        <span className="status-badge paid">
+                          <FontAwesomeIcon icon={faMoneyBillWave} />
+                          Đã thanh toán
+                        </span>
+                      ) : applicationDetail.status.toLowerCase() === 'enrolled' ? (
+                        <span className="status-badge enrolled">
+                          <FontAwesomeIcon icon={faUserGraduate} />
+                          Đã nhập học
                         </span>
                       ) : (
                         <span className="status-badge pending">

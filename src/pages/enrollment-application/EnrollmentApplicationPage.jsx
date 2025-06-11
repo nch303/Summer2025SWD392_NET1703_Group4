@@ -166,10 +166,18 @@ const EnrollmentApplicationPage = () => {
       }, 2000);
       
     } catch (err) {
-      setError('Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.');
-      toast.error('Đã xảy ra lỗi trong quá trình đăng ký.', {
-        title: 'Lỗi đăng ký'
-      });
+      if (err.isDuplicate) {
+        setError(err.message);
+        toast.error(err.message, {
+          title: 'Đăng ký không thành công',
+          description: 'Vui lòng kiểm tra lại tình trạng đăng ký trong mục theo dõi đăng ký.'
+        });
+      } else {
+        setError('Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.');
+        toast.error('Đã xảy ra lỗi trong quá trình đăng ký.', {
+          title: 'Lỗi đăng ký'
+        });
+      }
       console.error('Error submitting application:', err);
     } finally {
       hideSpinner();

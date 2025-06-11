@@ -79,8 +79,20 @@ export const createPaymentUrlForEnrollment = async (childrenID) => {
   }
 };
 
+// Add this new function to fetch invoice details
+export const getInvoiceDetails = async (invoiceId) => {
+  try {
+    const response = await api.get(`/api/Invoice/${invoiceId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching invoice details:', error);
+    throw error;
+  }
+};
+
 export default {
   getEnrollmentApplicationsProgress,
   getEnrollmentApplicationDetail,
-  createPaymentUrlForEnrollment
+  createPaymentUrlForEnrollment,
+  getInvoiceDetails
 };
