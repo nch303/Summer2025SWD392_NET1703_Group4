@@ -49,7 +49,6 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Childrens!.Avatar))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Childrens!.City))
                 .ForMember(dest => dest.EnrollDate, opt => opt.MapFrom(src => src.Childrens!.EnrollDate))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Childrens!.Status))
                 .ForMember(dest => dest.BirthCertificate, opt => opt.MapFrom(src => src.Childrens!.BirthCertificate))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
                 .ForMember(dest => dest.GradeLevelFee, opt => opt.MapFrom(src => src.GradeLevels!.Fee))
