@@ -60,7 +60,8 @@ namespace WebAPI.Controllers
                         detail.tuitionFeeName = tuition!.Name;
 
                         var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition.GradeLevelID);
-                        var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevel.Fee + " đồng)";
+                        var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
+                        var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevelFeeFormated + " đồng)";
                         ;
                         // Design Description cua hoa don
                         // Tách các phần tử
