@@ -15,6 +15,7 @@ namespace Domain.Entities
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateOnly? Date { get; set; }
+        public double Fee { get; set; }
         [Required]
         public int GradeLevelID { get; set; }
         [ForeignKey("GradeLevelID")]

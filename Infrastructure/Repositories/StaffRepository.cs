@@ -19,12 +19,12 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Children>> GetNotEnrolledChildrenAsync()
+        public async Task<List<Children>> GetPaidChildrenAsync()
         {
             // Fetch all children who are not enrolled in any class
             var notEnrolledChildren = await _context.Childrens
                 .Include(c => c.Parents)
-                .Where(c => c.Status == "Not Enrolled")
+                .Where(c => c.Status == "Paid")
                 .ToListAsync();
             return notEnrolledChildren;
         }

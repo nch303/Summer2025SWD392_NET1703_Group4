@@ -28,11 +28,12 @@ namespace WebAPI.Controllers
         private readonly ITuitionFeeService _tuitionFeeService;
         private readonly IEARepository _eARepository;
         private readonly IEAService _eaService;
+        private readonly IConfiguration _configuration;
 
         public VNPayController(IVnPayService vnPayService, IInvoiceService invoiceService, IMapper mapper
             , IAccountService accountService, IChildrenService childrenService, IInvoiceDetailService invoiceDetailService
             , IEnrichProgramService enrichProgramService, IEmailService emailService, ITuitionFeeService tuitionFeeService
-            , IEARepository eARepository, IEAService eAService)
+            , IEARepository eARepository, IEAService eAService, IConfiguration configuration)
         {
             _vnPayService = vnPayService;
             _invoiceService = invoiceService;
@@ -45,6 +46,7 @@ namespace WebAPI.Controllers
             _tuitionFeeService = tuitionFeeService;
             _eARepository = eARepository;
             _eaService = eAService;
+            _configuration = configuration;
         }
 
         [HttpPost("create-payment-url")]
@@ -58,6 +60,7 @@ namespace WebAPI.Controllers
         [HttpGet("PaymentCallbackVnpay")]
         public async Task<IActionResult> PaymentCallbackVnpay()
         {
+            var redirectUrl = "";
             var response = _vnPayService.PaymentExecute(Request.Query).Result;
 
             // Lấy chuỗi OrderInfo từ request
@@ -124,8 +127,12 @@ namespace WebAPI.Controllers
 
                 //Update status children
                 var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
-                children!.Status = "Active";
+                children!.Status = "Paid";
                 await _childrenService.UpdateChildAsync(children);
+
+                // set success payment link
+                redirectUrl = _configuration["Vnpay:successUrl"] + $"/{invoiceId}"
+                ;
             }
             else
             {
@@ -133,9 +140,12 @@ namespace WebAPI.Controllers
                 var invoice = await _invoiceService.GetByIdAsync(invoiceId);
                 invoice!.PaymentLink = null;
                 await _invoiceService.UpdateInvoiceAsync(invoice);
+
+                // set failed payment link
+                redirectUrl = _configuration["Vnpay:failureUrl"] + $"/{invoiceId}";
             }
 
-            return Ok(response);
+            return Redirect(redirectUrl);
         }
 
         [HttpPost("create-payment-url-for-tuitionFee")]
