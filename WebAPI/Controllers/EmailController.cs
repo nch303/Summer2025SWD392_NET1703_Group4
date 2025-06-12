@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
                 }
                 invoicePDFResponse.InvoiceDetails = invoiceDetailResponses;
 
-                var pdfBytes = _invoiceService.GenerateInvoicePDF(invoicePDFResponse);
+                var pdfBytes = _invoiceService.GenerateInvoicePDF(invoicePDFResponse).Result;
 
                 /// Construct email details
                 await _emailService.SendInvoiceEmailAsync(

@@ -19,9 +19,11 @@ namespace WebAPI.Controllers
         private readonly IEnrichProgramService _enrichProgramService;
         private readonly ITuitionFeeService _tuitionFeeService;
         private readonly IGradeLevelService _gradeLevelService;
+        private readonly IChildrenGradeService _childrenGradeService;
         public InvoiceDetailController(IInvoiceDetailService invoiceDetailService, IMapper mapper,
             IAccountService accountService, IChildrenService childrenService, IEnrichProgramService enrichProgramService
-            , ITuitionFeeService tuitionFeeService, IGradeLevelService gradeLevelService)
+            , ITuitionFeeService tuitionFeeService, IGradeLevelService gradeLevelService
+            , IChildrenGradeService childrenGradeService)
         {
             _invoiceDetailService = invoiceDetailService;
             _mapper = mapper;
@@ -30,6 +32,7 @@ namespace WebAPI.Controllers
             _enrichProgramService = enrichProgramService;
             _tuitionFeeService = tuitionFeeService;
             _gradeLevelService = gradeLevelService;
+            _childrenGradeService = childrenGradeService;
         }
 
         [HttpGet]
@@ -59,10 +62,12 @@ namespace WebAPI.Controllers
                         var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
                         detail.tuitionFeeName = tuition!.Name;
 
-                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition.GradeLevelID);
+                        var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+
+                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(chidrenGrade.GradeLevelID);
                         var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
                         var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevelFeeFormated + " đồng)";
-                        ;
+                        
                         // Design Description cua hoa don
                         // Tách các phần tử
                         string designedDescription = "";
