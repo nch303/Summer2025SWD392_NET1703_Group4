@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("{Id}")]  
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetAccountById(Guid Id)
         {
             try
@@ -108,8 +108,17 @@ namespace WebAPI.Controllers
             try
             {
                 var account = await _accountService.GetAccountByIdAsync(Id);
+                var oldPass = account.Password;
                 account = _mapper.Map<Account>(request);
                 account.Id = Id;
+                if(request.Password != null)
+                {
+                    account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                }
+                else
+                {
+                    account.Password = oldPass; // Keep the existing password if not provided
+                }
                 var updatedAccount = await _accountService.UpdateAccountByAdminAsync(account);
                 var response = _mapper.Map<AccountResponse>(updatedAccount);
                 var role = await _roleService.GetById(updatedAccount.RoleId);
@@ -170,6 +179,85 @@ namespace WebAPI.Controllers
                 var teachers = await _accountService.GetListOfTeachers();
                 var responses = _mapper.Map<List<TeacherResponse>>(teachers);
                 return Ok(responses);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("restore-account/{Id}")]
+        public async Task<IActionResult> RestoreAccount(Guid Id)
+        {
+            try
+            {
+                var restoredAccount = await _accountService.RestoreAccountAsync(Id);
+                if (restoredAccount == null)
+                {
+                    return NotFound("Account not found.");
+                }
+                var response = _mapper.Map<AccountResponse>(restoredAccount);
+                var role = await _roleService.GetById(restoredAccount.RoleId);
+                response.RoleName = role.Name;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("AllAccounts")]
+        public async Task<IActionResult> GetAllAccounts(int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                var (accounts, totalCount) = await _accountService.GetPagedAsync(pageNumber, pageSize);
+
+                var accountResponses = _mapper.Map<List<AccountResponse>>(accounts);
+
+                for (int i = 0; i < accountResponses.Count; i++)
+                {
+                    var role = await _roleService.GetById(accounts[i].RoleId);
+                    accountResponses[i].RoleName = role.Name;
+                }
+
+                return Ok(new
+                {
+                    TotalCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    Data = accountResponses
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> SearchAccounts(string? keyword = "", int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                var (accounts, totalCount) = await _accountService.SearchAccountsAsync(keyword, pageNumber, pageSize);
+
+                var accountResponses = _mapper.Map<List<AccountResponse>>(accounts);
+
+                for (int i = 0; i < accountResponses.Count; i++)
+                {
+                    var role = await _roleService.GetById(accounts[i].RoleId);
+                    accountResponses[i].RoleName = role.Name;
+                }
+
+                return Ok(new
+                {
+                    TotalCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    Data = accountResponses
+                });
             }
             catch (Exception ex)
             {

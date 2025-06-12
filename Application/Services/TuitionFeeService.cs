@@ -60,9 +60,12 @@ namespace Application.Services
                     tuitionWithChild.ChildID = child.ChildrenID;
                     tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
                     tuitionWithChild.GradeLevelID = child.GradeLevelID;
-
+                    
                     var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
+                    tuitionWithChild.Fee = (decimal)tuition.Fee + (decimal)gradeLevel!.Fee;
                     tuitionWithChild.GradeLevelName = gradeLevel!.Name;
+                    tuitionWithChild.Description = "Học phí tháng " + tuition.Name + " (" + gradeLevel.Fee + ")" +
+                        (string.IsNullOrWhiteSpace(tuition.Description) ? "" : " + " + tuition.Description);
                     tuitionWithChildResponses.Add(tuitionWithChild);
                 }
             }
