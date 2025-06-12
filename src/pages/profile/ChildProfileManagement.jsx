@@ -418,7 +418,8 @@ const ChildProfileManagement = () => {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content child-detail-modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>{isEditingChild ? 'Cập nhật thông tin của bé' : 'Thêm hồ sơ mới của bé'}</h3>
+              
+              <h3><FontAwesomeIcon icon="child" /> {isEditingChild ? 'Cập nhật thông tin của bé' : 'Thêm hồ sơ mới của bé'}</h3>
               <button className="modal-close-btn" onClick={closeModal} aria-label="Đóng">
                 <FontAwesomeIcon icon="times" />
               </button>
@@ -427,11 +428,6 @@ const ChildProfileManagement = () => {
             <div className="modal-body">
               
               <form className="profile-form" onSubmit={handleSubmitForm}>
-                <h4 className="form-section-title">
-                  <FontAwesomeIcon icon="child" />
-                  {isEditingChild ? 'Cập nhật thông tin trẻ' : 'Thông tin cơ bản của trẻ'}
-                </h4>
-                
                 <div className="form-group">
                   <label htmlFor="avatar">
                     <FontAwesomeIcon icon="user-circle" className="input-label-icon" /> Ảnh đại diện

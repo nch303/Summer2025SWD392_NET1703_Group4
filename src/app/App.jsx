@@ -25,6 +25,7 @@ import AdminPage from '../pages/admin/AdminPage';
 
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
+import PaymentFailPage from '../pages/payment/PaymentFail';
 import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
@@ -124,6 +125,11 @@ function App() {
             <Route path="/notifications" element={
               <ProtectedRoute>
                 <NotificationPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/payment-fail/:invoiceId" element={
+              <ProtectedRoute>
+                <PaymentFailPage />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />

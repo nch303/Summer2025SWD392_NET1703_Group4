@@ -273,7 +273,7 @@ const EnrollmentTrackingPage = () => {
             className="tracking-action-btn tracking-payment-btn tracking-pulse"
             onClick={(e) => {
               e.stopPropagation();
-              window.open(invoice.paymentLink, '_blank');
+              handlePayment(app);
             }}
           >
             <FontAwesomeIcon icon="sync" />
@@ -656,10 +656,6 @@ const EnrollmentTrackingPage = () => {
                         <div className="tracking-detail-item">
                           <span className="tracking-detail-label">Lớp đăng ký:</span>
                           <span className="tracking-detail-value">{applicationDetail.gradeLevelName}</span>
-                        </div>
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Học phí:</span>
-                          <span className="tracking-detail-value">{applicationDetail.gradeLevelFee?.toLocaleString('vi-VN')} VNĐ</span>
                         </div>
                         {applicationDetail.status === 'Enrolled' && (
                           <div className="tracking-detail-item">
