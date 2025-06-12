@@ -91,6 +91,8 @@ namespace Infrastructure.Repositories
             existingAccount.PhoneNumber = account.PhoneNumber;
             existingAccount.Email = account.Email;
             existingAccount.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
+            existingAccount.RoleId = account.RoleId;
+            existingAccount.Address = account.Address;
 
             _context.Accounts.Update(existingAccount);
             await _context.SaveChangesAsync();
@@ -119,5 +121,47 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             return teachers;
         }
+
+        public async Task<Account> RestoreAccountAsync(Guid id)
+        {
+            var account = await _context.Accounts.FindAsync(id);
+            _context.Accounts.Update(account!);
+            await _context.SaveChangesAsync();
+            return account!;
+        }
+
+        public async Task<IQueryable<Account>> GetAllQueryableAsync()
+        {
+            return _context.Accounts.AsQueryable();
+        }
+
+        public async Task<(List<Account> Items, int TotalCount)> SearchAccountsAsync(string keyword, int pageNumber, int pageSize)
+        {
+            var query = _context.Accounts
+                .Include(a => a.Role)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(a =>
+                    a.FullName.Contains(keyword) ||
+                    a.Email.Contains(keyword) ||
+                    a.Address.Contains(keyword) ||
+                    a.Role.Name.Contains(keyword) ||
+                    a.PhoneNumber.Contains(keyword) ||
+                    a.Status.Contains(keyword));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(a => a.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
+
     }
 }

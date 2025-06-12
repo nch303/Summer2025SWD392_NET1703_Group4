@@ -185,14 +185,14 @@ namespace Application.Services
 
             //Check existing account by email
             var existingEmailAccount = await _accountRepository.GetAccountByEmailAsync(account.Email);
-            if (existingEmailAccount != null)
+            if (existingEmailAccount != null && existingEmailAccount.Id != account.Id)
             {
                 throw new Exception("This email already exists.");
             }
 
             //Check existing account by phone number
             var existingPhoneAccount = await _accountRepository.GetAccountByPhoneNumberAsync(account.PhoneNumber);
-            if (existingPhoneAccount != null)
+            if (existingPhoneAccount != null && existingPhoneAccount.Id != account.Id)
             {
                 throw new Exception("This phone number already exists.");
             }
@@ -241,6 +241,40 @@ namespace Application.Services
         {
             var teachers = await _accountRepository.GetListOfTeachers();
             return teachers;
+        }
+
+        public async Task<Account> RestoreAccountAsync(Guid id)
+        {
+            var account = await _accountRepository.GetAccountByIdAsync(id);
+            if (account == null)
+            {
+                throw new Exception("Account not found.");
+            }
+            account.Status = "Active"; // Update the status to "Active"
+            var updatedAccount = await _accountRepository.BanAccountAsync(id);
+            if (updatedAccount == null)
+            {
+                throw new Exception("Failed to ban account.");
+            }
+            return updatedAccount;
+        }
+
+        public async Task<(List<Account> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var allAccounts = await _accountRepository.GetAllQueryableAsync(); // hoặc dùng IQueryable ngay từ đầu
+            var totalCount = allAccounts.Count();
+
+            var pagedAccounts = allAccounts
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return (pagedAccounts, totalCount);
+        }
+
+        public async Task<(List<Account> Items, int TotalCount)> SearchAccountsAsync(string keyword, int pageNumber, int pageSize)
+        {
+            return await _accountRepository.SearchAccountsAsync(keyword, pageNumber, pageSize);
         }
     }
 }

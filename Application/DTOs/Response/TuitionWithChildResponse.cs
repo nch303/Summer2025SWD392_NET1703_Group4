@@ -17,6 +17,7 @@ namespace Application.DTOs.Response
         public string? GradeLevelName { get; set; }
         public Guid ChildID { get; set; }
         public string? ChildName { get; set; }
-        
+        public decimal Fee { get; set; }
+
     }
 }
