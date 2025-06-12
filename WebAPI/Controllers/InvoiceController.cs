@@ -108,8 +108,9 @@ namespace WebAPI.Controllers
                     
                 }
                 invoicePDFResponse.InvoiceDetails = invoiceDetailResponses;
+                invoicePDFResponse.InvoiceID = invoiceId;
 
-                var pdfBytes = _invoiceService.GenerateInvoicePDF(invoicePDFResponse);
+                var pdfBytes = _invoiceService.GenerateInvoicePDF(invoicePDFResponse).Result;
 
                 return File(pdfBytes, "application/pdf", $"Invoice_{invoiceId}.pdf");
             }

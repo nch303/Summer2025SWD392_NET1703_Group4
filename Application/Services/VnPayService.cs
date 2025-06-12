@@ -191,7 +191,7 @@ namespace Application.Services
             var tuition = await _tuitionFeeService.GetTuitionFeeByNameAsync(tuitionName);
 
             //Get amount from grade level
-            var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition!.GradeLevelID);
+            var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(childrenGrade!.GradeLevelID);
             var amount = (decimal)gradeLevel!.Fee + (decimal)tuition.Fee;
 
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
@@ -240,7 +240,7 @@ namespace Application.Services
                 ID = Guid.NewGuid(),
                 InvoiceID = invoice.ID,
                 TuitionFeeID = tuition.ID,
-                Price = (decimal)gradeLevel!.Fee,
+                Price = amount,
                 ChildrenID = request.ChildrenID
             };
             await _invoiceDetailService.CreateAsync(invoiceDetail);

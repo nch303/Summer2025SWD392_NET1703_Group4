@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Response;
 using Application.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using QuestPDF.Fluent;
@@ -21,9 +22,26 @@ namespace Application.Services
     public class InvoiceService : IInvoiceService
     {
         private readonly IInvoiceRepository _invoiceRepository;
-        public InvoiceService(IInvoiceRepository invoiceRepository)
+        private readonly IInvoiceDetailService _invoiceDetailService;
+        private readonly IChildrenService _childrenService;
+        private readonly IEnrichProgramService _enrichProgramService;
+        private readonly ITuitionFeeRepositiry _tuitionFeeRepositiry;
+        private readonly IGradeLevelService _gradeLevelService;
+        private readonly IMapper _mapper;
+        private readonly IChildrenGradeService _childrenGradeService;
+        public InvoiceService(IInvoiceRepository invoiceRepository, IInvoiceDetailService invoiceDetailService
+            , IChildrenService childrenService, IEnrichProgramService enrichProgramService
+            , ITuitionFeeRepositiry tuitionFeeRepositiry, IGradeLevelService gradeLevelService, IMapper mapper
+            , IChildrenGradeService childrenGradeService)
         {
             _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
+            _invoiceDetailService = invoiceDetailService;
+            _childrenService = childrenService;
+            _enrichProgramService = enrichProgramService;
+            _tuitionFeeRepositiry = tuitionFeeRepositiry;
+            _gradeLevelService = gradeLevelService;
+            _mapper = mapper;
+            _childrenGradeService = childrenGradeService;
         }
         public async Task<Invoice> CreateAsync(Invoice invoice)
         {
@@ -56,7 +74,7 @@ namespace Application.Services
             return await _invoiceRepository.GetAllInvoiceAsync();
         }
 
-        public byte[] GenerateInvoicePDF(InvoicePDFResponse invoice)
+        public async Task<byte[]> GenerateInvoicePDF(InvoicePDFResponse invoice)
         {
             var vietnamCulture = new CultureInfo("vi-VN");
             // Bảng màu mới - màu chủ đạo cho trường mẫu giáo
@@ -66,31 +84,71 @@ namespace Application.Services
             var borderColor = Colors.Pink.Lighten3; // Màu hồng nhạt cho viền
             var textColor = Colors.Grey.Darken3;
 
-            // Design Description cua hoa don
-            // Tách các phần tử
             string designedDescription = "";
-            if (invoice.InvoiceDetails[0].Description!.Contains("+"))
+
+            var invoiceDetails = await _invoiceDetailService.GetByInvoiceIdAsync(invoice.InvoiceID);
+            var invoiceDetailResponses = _mapper.Map<List<InvoiceDetailResponse>>(invoiceDetails);
+
+            for (int i = 0; i < invoiceDetails.Count; i++)
             {
-                string[] parts = invoice.InvoiceDetails[0].Description!.Split(" + ");
+                var detail = invoiceDetailResponses[i];
 
+                var child = await _childrenService.GetChildByIdAsync(invoiceDetails[i].ChildrenID);
+                detail.ChildrenName = child!.Name;
 
-                foreach (var part in parts)
+                if (invoiceDetails[i].ProgramID != null)
                 {
-                    // Tìm tên và số tiền bằng Regex
-                    var match = Regex.Match(part, @"^(.*)\((\d+)\)$");
-                    if (match.Success)
-                    {
-                        string title = match.Groups[1].Value.Trim();
-                        long amount = long.Parse(match.Groups[2].Value);
-                        string formatted = string.Format(new CultureInfo("vi-VN"), "{0} ({1:N0} đồng)", title, amount);
-                        designedDescription += "- " + formatted + "\n";
-                    }
+                    var program = await _enrichProgramService.GetProgramByIdAsync(invoiceDetails[i].ProgramID);
+                    detail.ProgramName = program.Name;
                 }
-                designedDescription = designedDescription.TrimEnd('\n');
-            }
-            else
-            {
-                designedDescription = invoice.InvoiceDetails[0].Description!;
+                else
+                {
+                    var tuition = await _tuitionFeeRepositiry.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
+                    detail.tuitionFeeName = tuition!.Name;
+
+                    var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+
+                    var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(chidrenGrade.GradeLevelID);
+                    var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
+                    var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevelFeeFormated + " đồng)";
+
+                    // Design Description cua hoa don
+                    // Tách các phần tử
+                    
+                    if (tuition.Description!.Contains("+"))
+                    {
+                        string[] parts = tuition.Description!.Split(" + ");
+
+
+                        foreach (var part in parts)
+                        {
+                            // Tìm tên và số tiền bằng Regex
+                            var match = Regex.Match(part, @"^(.*)\((\d+)\)$");
+                            if (match.Success)
+                            {
+                                string title = match.Groups[1].Value.Trim();
+                                long amount = long.Parse(match.Groups[2].Value);
+                                string formatted = string.Format(new CultureInfo("vi-VN"), "{0} ({1:N0} đồng)", title, amount);
+                                designedDescription += "- " + formatted + "\n";
+                            }
+                        }
+                        designedDescription = "- " + gradeFeeName + "\n" + designedDescription.TrimEnd('\n');
+                    }
+                    else
+                    {
+                        if (tuition.Description == null)
+                        {
+                            designedDescription = "- " + gradeFeeName;
+                        }
+                        else
+                        {
+                            designedDescription = "- " + gradeFeeName + "\n" + tuition.Description!;
+                        }
+
+                    }
+
+                    detail.Description = designedDescription;
+                }
             }
 
             var document = Document.Create(container =>
