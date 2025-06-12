@@ -63,5 +63,37 @@ namespace Infrastructure.Repositories
                 .Where(c => c.ParentID == id)
                 .ToListAsync();
         }
+
+        public async Task<List<Children>> SearchChildrenAsync(string searchTerm, int page, int pageSize)
+        {
+            searchTerm = searchTerm?.ToLower() ?? "";
+
+            return await _context.Childrens
+                .Where(c =>
+                    (c.Name != null && c.Name.ToLower().Contains(searchTerm)) ||
+                    (c.City != null && c.City.ToLower().Contains(searchTerm))
+                )
+                .Include(c => c.Parents)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<List<Children>> SearchChildrenInClassAsync(int classId, string searchTerm)
+        {
+            searchTerm = searchTerm?.ToLower() ?? "";
+
+            return await _context.ClassChildrens
+                .Where(cc => cc.ClassID == classId &&
+                    (cc.Childrens.Name!.ToLower().Contains(searchTerm) ||
+                     cc.Childrens.City!.ToLower().Contains(searchTerm)))
+                .Include(cc => cc.Childrens)
+                    .ThenInclude(c => c.Parents)
+                .Select(cc => cc.Childrens)
+                .ToListAsync();
+        }
+
+
+
     }
 }

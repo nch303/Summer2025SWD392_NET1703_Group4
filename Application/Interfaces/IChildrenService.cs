@@ -14,5 +14,8 @@ namespace Application.Interfaces
         Task<Children?> GetChildByIdAsync(Guid id);
         Task<List<Children>> GetAllChildrenAsync();
         Task<List<Children>> GetChildrenByParentIdAsync(Guid id);
+        Task<List<Children>> SearchChildrenAsync(string searchTerm, int page, int pageSize);
+        Task<List<Children>> SearchChildrenInClassAsync(int classId, string searchTerm);
+
     }
 }

@@ -61,5 +61,16 @@ namespace Application.Services
             }
             return children;
         }
+
+        public async Task<List<Children>> SearchChildrenAsync(string searchTerm, int page, int pageSize)
+        {
+            return await _childrenRepository.SearchChildrenAsync(searchTerm, page, pageSize);
+        }
+
+        public async Task<List<Children>> SearchChildrenInClassAsync(int classId, string searchTerm)
+        {
+            return await _childrenRepository.SearchChildrenInClassAsync(classId, searchTerm);
+        }
+
     }
 }
