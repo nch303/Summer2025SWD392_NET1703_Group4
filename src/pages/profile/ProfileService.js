@@ -65,4 +65,40 @@ export const changePassword = async (passwordData) => {
   }
 };
 
+/**
+ * Update user profile
+ * @param {Object} profileData - Object containing profile data to update
+ * @param {string} profileData.fullName - User's full name
+ * @param {string} profileData.phoneNumber - User's phone number
+ * @returns {Promise} - Promise resolving to API response
+ */
+export const updateUserProfile = async (profileData) => {
+  try {
+    const response = await api.put('/api/Account/update-user-profile', {
+      fullName: profileData.fullName,
+      phoneNumber: profileData.phoneNumber
+    });
+    
+    console.log('Profile update response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    
+    // Handling specific error responses
+    if (error.response) {
+      if (error.response.status === 401) {
+        throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+      }
+      if (error.response.status === 403) {
+        throw new Error('Bạn không có quyền truy cập tài nguyên này.');
+      }
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      }
+    }
+    
+    throw new Error('Không thể cập nhật hồ sơ. Vui lòng thử lại sau.');
+  }
+};
+
 

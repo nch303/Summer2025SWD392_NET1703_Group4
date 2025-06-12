@@ -74,7 +74,7 @@
   }
 }
 
-/* Message notifications */
+/* Message notifications - Enhanced */
 .profile-message {
   position: relative;
   display: flex;
@@ -82,8 +82,10 @@
   padding: 1rem 3rem 1rem 1.5rem;
   margin: 1.5rem 0;
   border-radius: 8px;
-  font-size: 0.95rem;
-  animation: slideDown 0.4s ease-out;
+  font-size: 1rem;
+  animation: slideDown 0.5s ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 @keyframes slideDown {
@@ -98,22 +100,56 @@
 }
 
 .profile-message.success {
-  background-color: #edfaf0;
-  border-left: 4px solid #48bb78;
-  color: #276749;
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  color: #2e7d32;
+  animation: successMessage 0.5s ease-out;
+}
+
+@keyframes successMessage {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .profile-message.error {
-  background-color: #fee8e7;
-  border-left: 4px solid #f56565;
-  color: #c53030;
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  color: #c62828;
 }
 
 .message-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 15px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-icon svg {
   width: 24px;
   height: 24px;
-  margin-right: 12px;
-  flex-shrink: 0;
+}
+
+.profile-message.success .message-icon {
+  color: #4caf50;
+}
+
+.profile-message.error .message-icon {
+  color: #f44336;
 }
 
 .message-close {
@@ -141,6 +177,20 @@
 .message-close svg {
   width: 16px;
   height: 16px;
+}
+
+/* Highlight animation for updated fields */
+@keyframes highlightSuccess {
+  0% {
+    background-color: rgba(76, 175, 80, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.field-updated {
+  animation: highlightSuccess 2s ease-out;
 }
 
 /* Header Banner */
@@ -2149,4 +2199,136 @@ textarea {
 /* Thêm style cho file upload khi có lỗi */
 .input-error-border {
   border-color: var(--danger-color) !important;
+}
+
+/* Enhanced Toast Message Style */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 350px;
+  width: 100%;
+}
+
+.toast-message {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  animation: toastIn 0.5s ease forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.toast-message.exiting {
+  animation: toastOut 0.5s ease forwards;
+}
+
+.toast-message.success {
+  border-left: 4px solid #4caf50;
+}
+
+.toast-message.success::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #4caf50;
+  animation: progressBar 5s linear forwards;
+}
+
+.toast-message.error {
+  border-left: 4px solid #f44336;
+}
+
+.toast-message.error::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #f44336;
+  animation: progressBar 5s linear forwards;
+}
+
+.toast-icon {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.toast-icon.success {
+  color: #4caf50;
+}
+
+.toast-icon.error {
+  color: #f44336;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #333;
+}
+
+.toast-message p {
+  margin: 0;
+  color: #666;
+}
+
+.toast-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes toastIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes progressBar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }

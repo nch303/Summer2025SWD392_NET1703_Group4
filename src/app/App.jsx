@@ -34,6 +34,9 @@ import NotificationPage from '../pages/notification/NotificationPage';
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
 
+// Admin Pages
+import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
+
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
 import AuthRoute from '../components/route-guard/AuthRoute';
@@ -153,6 +156,7 @@ function App() {
             <Route path="courses" element={<div>Courses Management</div>} />
             <Route path="classes" element={<div>Classes Management</div>} />
             <Route path="settings" element={<div>Settings</div>} />
+            <Route path="users/list" element={<AccountListPage />} />
           </Route>
           
 
