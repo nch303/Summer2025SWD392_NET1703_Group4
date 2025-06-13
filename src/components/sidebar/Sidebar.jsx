@@ -40,22 +40,25 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className="sidebar-text">Dashboard</span>
         </Link>
-        <Link to="/staff/list" className={`sidebar-link ${isActive('/staff/list') ? 'active' : ''}`}>
+        
+        <Link to={ROUTES.STAFF_STUDENTS} className={`sidebar-link ${isActive(ROUTES.STAFF_STUDENTS) ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
             </svg>
           </div>
-          <span className="sidebar-text">Staff List</span>
+          <span className="sidebar-text">Students</span>
         </Link>
-        <Link to="/staff/add" className={`sidebar-link ${isActive('/staff/add') ? 'active' : ''}`}>
+
+        <Link to="/staff/enrollment-applications" className={`sidebar-link ${isActive('/staff/enrollment-applications') ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
             </svg>
           </div>
-          <span className="sidebar-text">Add Staff</span>
+          <span className="sidebar-text">Enrollment Applications</span>
         </Link>
+        
         <Link to="/staff/attendance" className={`sidebar-link ${isActive('/staff/attendance') ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -64,6 +67,7 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className="sidebar-text">Attendance</span>
         </Link>
+        
         <Link to="/staff/schedule" className={`sidebar-link ${isActive('/staff/schedule') ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -72,14 +76,7 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className="sidebar-text">Schedule</span>
         </Link>
-        <Link to="/staff/payroll" className={`sidebar-link ${isActive('/staff/payroll') ? 'active' : ''}`}>
-          <div className="sidebar-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
-            </svg>
-          </div>
-          <span className="sidebar-text">Payroll</span>
-        </Link>
+        
         <Link to="/staff/performance" className={`sidebar-link ${isActive('/staff/performance') ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -88,6 +85,7 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className="sidebar-text">Performance</span>
         </Link>
+        
         <Link to="/staff/training" className={`sidebar-link ${isActive('/staff/training') ? 'active' : ''}`}>
           <div className="sidebar-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -95,12 +93,6 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
             </svg>
           </div>
           <span className="sidebar-text">Training</span>
-        </Link>
-        <Link to={ROUTES.STAFF_STUDENTS} className={`sidebar-link ${isActive(ROUTES.STAFF_STUDENTS) ? 'active' : ''}`}>
-          <div className="sidebar-icon">
-            <i className="fas fa-child"></i>
-          </div>
-          <span className="sidebar-text">Students</span>
         </Link>
       </nav>
     </aside>

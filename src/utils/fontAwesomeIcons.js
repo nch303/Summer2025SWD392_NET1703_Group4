@@ -54,6 +54,16 @@ import {
   faFileAlt,
   faPaperPlane,
   faArrowLeft,
+  faBan,
+  faFileContract,
+  faClipboard,
+  faChevronUp,
+  faChevronDown,
+  faMoneyBillWave,
+  faCalendarDay,
+  faExclamationCircle,
+  faCalendarCheck,
+  faCalendar,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -112,6 +122,16 @@ library.add(
   faFileAlt,
   faPaperPlane,
   faArrowLeft,
+  faBan,
+  faFileContract,
+  faClipboard,
+  faChevronUp,
+  faChevronDown,
+  faMoneyBillWave,
+  faCalendarDay,
+  faExclamationCircle,
+  faCalendarCheck,
+  faCalendar,
 );
 
 // Không cần export vì đã đăng ký vào library 

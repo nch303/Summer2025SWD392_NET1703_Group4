@@ -129,6 +129,12 @@ const Navbar = () => {
                       </Link>
                       {currentUser?.roleName === 'Parent' && (
                         <>
+                          <Link to="/tuition-fee" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                            </svg>
+                            Tuition Fee
+                          </Link>
                           <Link to="/payment-history" className="dropdown-item" onClick={() => setIsDropdownOpen(false)}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14c1.1 0 2 .9 2 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
@@ -237,6 +243,13 @@ const Navbar = () => {
           {currentUser?.roleName === 'Parent' && (
             <>
               <Link 
+                to="/tuition-fee" 
+                className="mobile-link"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Học phí
+              </Link>
+              <Link 
                 to="/payment-history" 
                 className="mobile-link"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -274,11 +287,11 @@ const Navbar = () => {
               </Link>
               {currentUser?.roleName === 'Parent' && (
                 <Link 
-                  to="/payment-history" 
+                  to="/tuition-fee" 
                   className="mobile-link"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Payment History
+                  Học phí
                 </Link>
               )}
               <Link 

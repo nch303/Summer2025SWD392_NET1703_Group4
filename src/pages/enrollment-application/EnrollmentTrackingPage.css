@@ -1026,10 +1026,10 @@ input[type="text"].tracking-search-input {
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(8px);
     will-change: opacity;
     opacity: 0;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.35s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .tracking-modal-overlay.visible {
@@ -1037,125 +1037,137 @@ input[type="text"].tracking-search-input {
 }
 
 .tracking-modal-content {
-    background-color: white;
-    width: 90%;
-    max-width: 800px;
-    max-height: 90vh;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
     overflow: hidden;
-    transform: translateY(20px);
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: transform;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+    transform: translateY(30px) scale(0.98);
+    transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    max-width: 850px;
 }
 
 .tracking-modal-overlay.visible .tracking-modal-content {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
 .tracking-modal-header {
-    padding: 20px 24px;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
-    color: white;
+    padding: 24px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    z-index: 10;
+}
+
+.tracking-modal-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: -1;
 }
 
 .tracking-modal-header h2 {
     margin: 0;
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tracking-modal-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .tracking-modal-close-btn:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
 }
 
 .tracking-modal-body {
     padding: 0;
-    overflow-y: auto;
     max-height: calc(90vh - 140px);
+    overflow-y: auto;
     scrollbar-width: thin;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    will-change: scroll-position;
+    scrollbar-color: #ddd transparent;
 }
 
-.tracking-modal-footer {
-    padding: 16px 24px;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+.tracking-modal-body::-webkit-scrollbar {
+    width: 6px;
 }
 
-.tracking-modal-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
+.tracking-modal-body::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-/* Detail content styling */
+.tracking-modal-body::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 6px;
+}
+
 .tracking-detail-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
 }
 
 .tracking-detail-header {
     display: flex;
-    gap: 24px;
     align-items: center;
-    padding: 32px 24px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    padding-bottom: 24px;
+    padding: 32px 28px;
+    gap: 28px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .tracking-detail-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
     overflow: hidden;
-    border: 3px solid var(--primary-color-light);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
+    border: 4px solid #fff;
+    background-color: var(--primary-color-light);
 }
 
 .tracking-detail-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.tracking-detail-avatar:hover img {
+    transform: scale(1.05);
 }
 
 .tracking-detail-avatar-placeholder {
     width: 100%;
     height: 100%;
-    background-color: var(--primary-color-light);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
-    color: var(--primary-color);
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(135deg, var(--primary-color-light) 0%, var(--primary-color) 100%);
 }
 
 .tracking-detail-main-info {
@@ -1167,6 +1179,7 @@ input[type="text"].tracking-search-input {
 .tracking-detail-main-info h3 {
     margin: 0;
     font-size: 1.8rem;
+    font-weight: 700;
     color: var(--text-color-dark);
 }
 
@@ -1175,122 +1188,116 @@ input[type="text"].tracking-search-input {
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 14px;
+    border-radius: 30px;
     font-weight: 600;
+    font-size: 0.9rem;
     width: fit-content;
-}
-
-.tracking-detail-status.tracking-pending {
-    background-color: var(--pending-color-light);
-    color: #e65100;
-}
-
-.tracking-detail-status.tracking-approved {
-    background-color: var(--approved-color-light);
-    color: #2e7d32;
-}
-
-.tracking-detail-status.tracking-paid {
-    background-color: var(--paid-color-light);
-    color: #0d47a1;
-}
-
-.tracking-detail-status.tracking-enrolled {
-    background-color: var(--enrolled-color-light);
-    color: #6a1b9a;
-}
-
-.tracking-detail-status.tracking-rejected {
-    background-color: var(--rejected-color-light);
-    color: #b71c1c;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .tracking-detail-sections {
-    padding: 0 24px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
 }
 
 .tracking-detail-section {
-    background-color: #f9fafb;
-    border-radius: 12px;
-    padding: 20px;
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tracking-detail-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 .tracking-detail-section h4 {
-    margin: 0 0 16px;
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text-color-dark);
-    font-size: 1rem;
-    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .tracking-detail-section h4 svg {
     color: var(--primary-color);
+    font-size: 1.2rem;
 }
 
 .tracking-detail-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
 }
 
 .tracking-detail-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    animation: fadeInUp 0.5s;
 }
 
 .tracking-detail-label {
     color: var(--text-color-muted);
-    font-size: 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .tracking-detail-value {
     color: var(--text-color-dark);
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Documents section spans full width */
+.tracking-detail-section:nth-child(3) {
+    grid-column: 1 / -1;
 }
 
 .tracking-detail-documents {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 24px;
 }
 
 .tracking-detail-document {
-    width: 180px;
+    width: 220px;
 }
 
 .tracking-detail-document p {
-    margin: 0 0 10px;
-    font-weight: 500;
+    margin: 0 0 12px;
+    font-weight: 600;
+    color: var(--text-color-dark);
+    font-size: 1rem;
 }
 
 .tracking-detail-document-preview {
     position: relative;
-    height: 140px;
-    border-radius: 8px;
+    height: 180px;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s ease;
-    background-color: #f0f0f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.03);
 }
 
-.tracking-detail-document-preview::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #f0f0f0 0%, #f8f8f8 50%, #f0f0f0 100%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    z-index: 1;
+.tracking-detail-document-preview:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .tracking-detail-document-preview img {
@@ -1299,14 +1306,11 @@ input[type="text"].tracking-search-input {
     object-fit: cover;
     position: relative;
     z-index: 2;
+    transition: all 0.5s ease;
 }
 
-.tracking-detail-document-preview img.loaded ~ .tracking-detail-document-preview::before {
-    display: none;
-}
-
-.tracking-detail-document-preview img.loaded ~ .tracking-detail-document-overlay {
-    z-index: 3;
+.tracking-detail-document-preview:hover img {
+    transform: scale(1.1);
 }
 
 .tracking-detail-document-overlay {
@@ -1315,7 +1319,9 @@ input[type="text"].tracking-search-input {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 0) 0%, 
+        rgba(0, 0, 0, 0.6) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1323,6 +1329,7 @@ input[type="text"].tracking-search-input {
     font-size: 24px;
     opacity: 0;
     transition: opacity 0.3s;
+    z-index: 3;
 }
 
 .tracking-detail-document-preview:hover .tracking-detail-document-overlay {
@@ -1330,64 +1337,168 @@ input[type="text"].tracking-search-input {
 }
 
 .tracking-detail-document-missing {
-    height: 140px;
-    border-radius: 8px;
-    background-color: #f1f1f1;
+    height: 180px;
+    border-radius: 12px;
+    background-color: #f5f5f5;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 16px;
     color: var(--text-color-muted);
+    border: 2px dashed rgba(0, 0, 0, 0.1);
 }
 
 .tracking-detail-document-missing svg {
-    font-size: 36px;
+    font-size: 48px;
+    opacity: 0.6;
 }
 
-.tracking-detail-error {
+.tracking-modal-footer {
+    padding: 20px 28px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    background-color: rgba(0, 0, 0, 0.01);
+}
+
+.tracking-btn-secondary,
+.tracking-btn-primary {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.tracking-btn-secondary {
+    background-color: #f5f5f5;
+    color: var(--text-color-dark);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tracking-btn-secondary:hover {
+    background-color: #e5e5e5;
+    transform: translateY(-2px);
+}
+
+.tracking-btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2);
+}
+
+.tracking-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
+}
+
+/* Loading animation in modal */
+.tracking-modal-loading {
+    padding: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px;
-    color: var(--danger-color);
+}
+
+.tracking-loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(var(--primary-rgb), 0.1);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.tracking-modal-loading p {
+    color: var(--text-color-muted);
+    font-size: 1rem;
     text-align: center;
-    gap: 16px;
 }
 
-.tracking-detail-error svg {
-    font-size: 48px;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
+@media (max-width: 768px) {
+    .tracking-detail-sections {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 20px;
     }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@media (max-width: 600px) {
+    
     .tracking-detail-header {
         flex-direction: column;
-        align-items: center;
         text-align: center;
-        gap: 16px;
+        padding: 24px 20px;
+    }
+    
+    .tracking-detail-main-info {
+        align-items: center;
+    }
+    
+    .tracking-detail-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .tracking-modal-header {
+        padding: 16px 20px;
+    }
+    
+    .tracking-modal-header h2 {
+        font-size: 1.3rem;
     }
     
     .tracking-modal-footer {
-        flex-direction: column;
+        padding: 16px 20px;
+        flex-direction: column-reverse;
     }
     
-    .tracking-modal-footer button {
+    .tracking-btn-secondary,
+    .tracking-btn-primary {
         width: 100%;
+        justify-content: center;
     }
-    
-    .tracking-detail-grid {
-        grid-template-columns: 1fr;
-    }
+}
+
+/* Thêm style cho đơn bị từ chối */
+.tracking-application-card[data-status="Rejected"] {
+  opacity: 0.7;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+}
+
+.tracking-application-card[data-status="Rejected"]:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.tracking-application-card[data-status="Rejected"] .tracking-application-info h3,
+.tracking-application-card[data-status="Rejected"] .tracking-application-details p {
+  color: #9e9e9e;
+}
+
+.tracking-application-card[data-status="Rejected"] .tracking-application-details svg {
+  color: #9e9e9e;
+}
+
+/* Add after existing button styles - around line 490 */
+.tracking-action-btn.tracking-processing,
+.tracking-btn-primary.tracking-processing {
+  opacity: 0.8;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.tracking-action-btn.tracking-processing:hover,
+.tracking-btn-primary.tracking-processing:hover {
+  transform: none !important;
+  box-shadow: none;
 }

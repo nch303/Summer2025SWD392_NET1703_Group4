@@ -414,22 +414,10 @@ input[type="text"].payment-search-input {
   border: none;
 }
 
-.payment-status-completed::before {
-  content: '\f058';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-}
-
 .payment-status-pending {
   background-color: #fff8e1;
   color: #f57f17;
   border: none;
-}
-
-.payment-status-pending::before {
-  content: '\f017';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
 }
 
 .payment-status-cancelled {
@@ -438,22 +426,10 @@ input[type="text"].payment-search-input {
   border: none;
 }
 
-.payment-status-cancelled::before {
-  content: '\f057';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-}
-
 .payment-status-failed {
   background-color: #ffebee;
   color: #c62828;
   border: none;
-}
-
-.payment-status-failed::before {
-  content: '\f057';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
 }
 
 .payment-detail-link {

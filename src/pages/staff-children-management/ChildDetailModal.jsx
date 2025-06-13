@@ -111,6 +111,13 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                       <span className="staff-children-badge-value">{child.city || 'Chưa cập nhật'}</span>
                     </div>
                   </div>
+                  <div className="staff-children-info-badge">
+                    <i className="fas fa-id-badge"></i>
+                    <div className="staff-children-info-badge-text">
+                      <span className="staff-children-badge-label">ID</span>
+                      <span className="staff-children-badge-value staff-children-id-value">{child.id}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -119,14 +126,6 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
               <div className="staff-children-tab active">
                 <i className="fas fa-info-circle"></i>
                 <span>Thông tin chi tiết</span>
-              </div>
-              <div className="staff-children-tab">
-                <i className="fas fa-chart-line"></i>
-                <span>Tiến độ học tập</span>
-              </div>
-              <div className="staff-children-tab">
-                <i className="fas fa-calendar-alt"></i>
-                <span>Lịch học</span>
               </div>
             </div>
             
@@ -153,11 +152,11 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                 </div>
                 <div className="staff-children-info-card">
                   <div className="staff-children-info-card-icon">
-                    <i className="fas fa-envelope"></i>
+                    <i className="fas fa-id-card"></i>
                   </div>
                   <div className="staff-children-info-card-content">
-                    <div className="staff-children-info-card-label">Email</div>
-                    <div className="staff-children-info-card-value">Chưa cập nhật</div>
+                    <div className="staff-children-info-card-label">ID Phụ huynh</div>
+                    <div className="staff-children-info-card-value">{child.parentID || 'Chưa cập nhật'}</div>
                   </div>
                 </div>
                 <div className="staff-children-info-card">
@@ -166,7 +165,7 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                   </div>
                   <div className="staff-children-info-card-content">
                     <div className="staff-children-info-card-label">Địa chỉ</div>
-                    <div className="staff-children-info-card-value">Chưa cập nhật</div>
+                    <div className="staff-children-info-card-value">{child.city || 'Chưa cập nhật'}</div>
                   </div>
                 </div>
               </div>

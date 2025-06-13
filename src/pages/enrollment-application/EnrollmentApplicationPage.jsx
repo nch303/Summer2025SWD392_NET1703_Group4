@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getChildById, submitEnrollmentApplication, getGradeLevels } from './EnrollmentApplicationService';
+import { getChildById, getParentById, submitEnrollmentApplication, getGradeLevels } from './EnrollmentApplicationService';
 import './EnrollmentApplicationPage.css';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 
 const EnrollmentApplicationPage = () => {
   const [child, setChild] = useState(null);
+  const [parent, setParent] = useState(null);
   const [gradeLevels, setGradeLevels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -74,6 +75,28 @@ const EnrollmentApplicationPage = () => {
         
         const childData = await getChildById(childId);
         setChild(childData);
+        
+        // Fetch parent data if parentID exists
+        if (childData.parentID) {
+          const parentData = await getParentById(childData.parentID);
+          setParent(parentData);
+          
+          // Pre-fill form with parent data
+          setFormData(prev => ({
+            ...prev,
+            parentName: parentData.fullName || childData.parentName || '',
+            currentAddress: parentData.address || '',
+            permanentAddress: parentData.address || '',
+            phoneNumber: parentData.phoneNumber || childData.phoneNumber || ''
+          }));
+        } else if (childData.parentName) {
+          // Use parent info from child data if available
+          setFormData(prev => ({
+            ...prev,
+            parentName: childData.parentName || '',
+            phoneNumber: childData.phoneNumber || ''
+          }));
+        }
         
         const levels = await getGradeLevels();
         
@@ -143,10 +166,18 @@ const EnrollmentApplicationPage = () => {
       }, 2000);
       
     } catch (err) {
-      setError('Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.');
-      toast.error('Đã xảy ra lỗi trong quá trình đăng ký.', {
-        title: 'Lỗi đăng ký'
-      });
+      if (err.isDuplicate) {
+        setError(err.message);
+        toast.error(err.message, {
+          title: 'Đăng ký không thành công',
+          description: 'Vui lòng kiểm tra lại tình trạng đăng ký trong mục theo dõi đăng ký.'
+        });
+      } else {
+        setError('Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.');
+        toast.error('Đã xảy ra lỗi trong quá trình đăng ký.', {
+          title: 'Lỗi đăng ký'
+        });
+      }
       console.error('Error submitting application:', err);
     } finally {
       hideSpinner();
@@ -207,74 +238,22 @@ const EnrollmentApplicationPage = () => {
               <div className="form-section parent-info">
                 <div className="form-field">
                   <label htmlFor="parentName">Họ và tên</label>
-                  <input 
-                    type="text"
-                    id="parentName"
-                    name="parentName"
-                    value={formData.parentName}
-                    onChange={handleInputChange}
-                    placeholder="Họ và tên phụ huynh"
-                  />
-                </div>
-                
-                <div className="form-field">
-                  <label htmlFor="parentBirthday">Sinh năm</label>
-                  <input 
-                    type="text"
-                    id="parentBirthday"
-                    name="parentBirthday"
-                    value={formData.parentBirthday}
-                    onChange={handleInputChange}
-                    placeholder="Năm sinh"
-                  />
-                </div>
-                
-                <div className="form-field">
-                  <label htmlFor="parentOccupation">Nghề nghiệp</label>
-                  <input 
-                    type="text"
-                    id="parentOccupation"
-                    name="parentOccupation"
-                    value={formData.parentOccupation}
-                    onChange={handleInputChange}
-                    placeholder="Nghề nghiệp"
-                  />
+                  <div className="readonly-value">{formData.parentName}</div>
                 </div>
                 
                 <div className="form-field">
                   <label htmlFor="currentAddress">Chỗ ở hiện nay</label>
-                  <input 
-                    type="text"
-                    id="currentAddress"
-                    name="currentAddress"
-                    value={formData.currentAddress}
-                    onChange={handleInputChange}
-                    placeholder="Địa chỉ hiện tại (tổ, thôn, xã, tỉnh)"
-                  />
+                  <div className="readonly-value">{formData.currentAddress}</div>
                 </div>
                 
                 <div className="form-field">
                   <label htmlFor="permanentAddress">Hộ khẩu thường trú</label>
-                  <input 
-                    type="text"
-                    id="permanentAddress"
-                    name="permanentAddress"
-                    value={formData.permanentAddress}
-                    onChange={handleInputChange}
-                    placeholder="Hộ khẩu thường trú (tổ, thôn, xã, tỉnh)"
-                  />
+                  <div className="readonly-value">{formData.permanentAddress}</div>
                 </div>
                 
                 <div className="form-field">
                   <label htmlFor="phoneNumber">Điện thoại</label>
-                  <input 
-                    type="text"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    placeholder="Số điện thoại liên hệ"
-                  />
+                  <div className="readonly-value">{formData.phoneNumber}</div>
                 </div>
               </div>
               
@@ -341,23 +320,39 @@ const EnrollmentApplicationPage = () => {
                 </p>
               </div>
               
-              <div className="signature">
-                <div className="date-section">
-                  <p>........, ngày ........ tháng ........ năm {new Date().getFullYear()}</p>
-                  <p className="signature-label">(Phụ huynh ký và ghi rõ họ tên)</p>
+              <div className="signature-container">
+                <div className="signature parent-signature">
+                  <div className="date-section">
+                    <p>........, ngày ........ tháng ........ năm {new Date().getFullYear()}</p>
+                    <p className="signature-label">(Phụ huynh ký và ghi rõ họ tên)</p>
+                  </div>
                 </div>
                 
-                {/* School stamp */}
-                <div className="school-stamp">
-                  <div className="stamp-circle"></div>
-                  <div className="stamp-inner-circle"></div>
-                  <div className="stamp-text-top">TRƯỜNG MẦM NON</div>
-                  <div className="stamp-text-bottom">LITTLE STARS</div>
-                  <div className="stamp-date">{new Date().getFullYear()}</div>
-                  <div className="stamp-approved">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(183, 28, 28, 0.9)">
-                      <path d="M12 3L14.94 8.34L21 9.27L16.5 13.33L17.75 19.34L12 16.67L6.25 19.34L7.5 13.33L3 9.27L9.06 8.34L12 3Z"/>
-                    </svg>
+                <div className="signature principal-signature">
+                  <div className="date-section">
+                    <p>HIỆU TRƯỞNG</p>
+                    
+                    <div className="signature-text">
+                      TaKKhoan
+                      <div className="signature-line"></div>
+                    </div>
+                    <div>
+                      Tạ Khắc Khoan
+                    </div>
+                    
+                    {/* School stamp */}
+                    <div className="school-stamp">
+                      <div className="stamp-circle"></div>
+                      <div className="stamp-inner-circle"></div>
+                      <div className="stamp-text-top">TRƯỜNG MẦM NON</div>
+                      <div className="stamp-text-bottom">LITTLE STARS</div>
+                      <div className="stamp-date">{new Date().getFullYear()}</div>
+                      <div className="stamp-approved">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(183, 28, 28, 0.9)">
+                          <path d="M12 3L14.94 8.34L21 9.27L16.5 13.33L17.75 19.34L12 16.67L6.25 19.34L7.5 13.33L3 9.27L9.06 8.34L12 3Z"/>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

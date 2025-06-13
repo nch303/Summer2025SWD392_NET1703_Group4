@@ -25,14 +25,17 @@ import AdminPage from '../pages/admin/AdminPage';
 
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
+import PaymentFailPage from '../pages/payment/PaymentFail';
 import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 import NotificationPage from '../pages/notification/NotificationPage';
+import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
+import EnrollmentApplicationManagement from '../pages/staff-dashboard/EnrollmentApplicationManagement';
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
@@ -128,6 +131,16 @@ function App() {
                 <NotificationPage />
               </ProtectedRoute>
             } />
+            <Route path="/payment-fail/:invoiceId" element={
+              <ProtectedRoute>
+                <PaymentFailPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/tuition-fee" element={
+              <ProtectedRoute>
+                <TuitionFeePage />
+              </ProtectedRoute>
+            } />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
@@ -142,6 +155,7 @@ function App() {
             <Route index element={<Navigate to="/staff/dashboard" replace />} />
             <Route path="dashboard" element={<StaffDashboard />} />
             <Route path="students" element={<ChildrenManagement />} />
+            <Route path="enrollment-applications" element={<EnrollmentApplicationManagement />} />
           </Route>
 
           {/* Admin Routes */}
