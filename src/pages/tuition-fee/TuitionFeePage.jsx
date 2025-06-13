@@ -1,0 +1,423 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getTuitionFeesByCurrentAccount, createPaymentUrlForTuitionFee } from './TuitionFeeService';
+import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
+import { useCustomToast } from '../../components/toast/CustomToast';
+import './TuitionFee.css';
+
+const TuitionFeePage = () => {
+  const [tuitionFees, setTuitionFees] = useState([]);
+  const [error, setError] = useState('');
+  const [selectedFeeId, setSelectedFeeId] = useState(null);
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [activeBillingTab, setActiveBillingTab] = useState('upcoming');
+  
+  const { showSpinner, hideSpinner } = useProcessingSpinner();
+  const toast = useCustomToast();
+  
+  useEffect(() => {
+    fetchTuitionFees();
+  }, []);
+  
+  const fetchTuitionFees = async () => {
+    try {
+      showSpinner('Đang tải thông tin học phí...');
+      const data = await getTuitionFeesByCurrentAccount();
+      setTuitionFees(data || []);
+      setError('');
+    } catch (err) {
+      setError('Không thể tải thông tin học phí. Vui lòng thử lại sau.');
+      toast.error('Không thể tải thông tin học phí.');
+      console.error('Error fetching tuition fees:', err);
+    } finally {
+      hideSpinner();
+    }
+  };
+
+  // Format currency (VND)
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  };
+  
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+  };
+  
+  // Get current date for comparison
+  const currentDate = useMemo(() => new Date(), []);
+  currentDate.setHours(0, 0, 0, 0);
+  
+  // Categorize fees by due date and payment status
+  const categorizedFees = useMemo(() => {
+    const past = [];
+    const upcoming = [];
+    const future = [];
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    tuitionFees.forEach(fee => {
+      const feeDate = new Date(fee.date);
+      feeDate.setHours(0, 0, 0, 0);
+      
+      // Compare exact dates - if today is after the fee's due date, it's past due
+      if (today > feeDate) {
+        past.push({...fee, isPastDue: true});
+      } else if (today.getMonth() === feeDate.getMonth() && today.getFullYear() === feeDate.getFullYear()) {
+        // Same month, but due date is today or in future
+        upcoming.push({...fee, isCurrentMonth: true});
+      } else {
+        future.push(fee);
+      }
+    });
+    
+    return { past, upcoming, future };
+  }, [tuitionFees]);
+
+  // Update total amount calculation based on single selection
+  const totalSelectedAmount = useMemo(() => {
+    const selectedFee = tuitionFees.find(fee => fee.id === selectedFeeId);
+    return selectedFee ? selectedFee.fee : 0;
+  }, [tuitionFees, selectedFeeId]);
+  
+  // Check if a fee is selected
+  const hasSelectedFee = selectedFeeId !== null;
+  
+  // Update the selection handler
+  const handleSelectFee = (feeId) => {
+    setSelectedFeeId(feeId === selectedFeeId ? null : feeId);
+  };
+  
+  // Update clear selection
+  const handleClearSelection = () => {
+    setSelectedFeeId(null);
+  };
+  
+  // Update the payment info retrieval
+  const getPaymentInfo = () => {
+    const selectedFee = tuitionFees.find(fee => fee.id === selectedFeeId);
+    if (!selectedFee) return { selectedFeeIds: [], childID: null };
+    
+    return { 
+      selectedFeeIds: [selectedFee.id], 
+      childID: selectedFee.childID 
+    };
+  };
+  
+  // Remove category selection functions or modify them to select just one item
+  // For example, select the first fee in a category:
+  const handleSelectFirstInCategory = (category) => {
+    if (category.length > 0) {
+      setSelectedFeeId(category[0].id);
+    }
+  };
+  
+  // Handle payment process
+  const handlePayment = async () => {
+    try {
+      const { selectedFeeIds, childID } = getPaymentInfo();
+      
+      if (!selectedFeeIds.length || !childID) {
+        toast.error('Vui lòng chọn ít nhất một khoản học phí để thanh toán.');
+        return;
+      }
+      
+      setProcessingPayment(true);
+      showSpinner('Đang tạo liên kết thanh toán...');
+      
+      const response = await createPaymentUrlForTuitionFee(
+        childID, 
+        selectedFeeIds, 
+        totalSelectedAmount
+      );
+      
+      if (response && response.url) {
+        const paymentWindow = window.open(response.url, '_blank');
+        
+        // Set up window close monitoring
+        const checkWindowClosed = setInterval(() => {
+          if (paymentWindow && paymentWindow.closed) {
+            clearInterval(checkWindowClosed);
+            hideSpinner();
+            setProcessingPayment(false);
+            
+            // Refresh data when payment window closes
+            fetchTuitionFees();
+            toast.info('Đang cập nhật trạng thái thanh toán...');
+          }
+        }, 300);
+        
+        // Safety timeout
+        setTimeout(() => {
+          if (paymentWindow && !paymentWindow.closed) {
+            hideSpinner();
+            setProcessingPayment(false);
+          }
+          clearInterval(checkWindowClosed);
+        }, 300000); // 5 minutes
+      } else {
+        console.error('Invalid response format:', response);
+        toast.error('Không thể tạo liên kết thanh toán.');
+        hideSpinner();
+        setProcessingPayment(false);
+      }
+    } catch (err) {
+      let errorMessage = 'Đã xảy ra lỗi khi tạo liên kết thanh toán.';
+      
+      if (err.response && err.response.data && err.response.data.message) {
+        errorMessage = `Lỗi: ${err.response.data.message}`;
+      } else if (err.message) {
+        errorMessage = `Lỗi: ${err.message}`;
+      }
+      
+      toast.error(errorMessage);
+      console.error('Payment error details:', err);
+      hideSpinner();
+      setProcessingPayment(false);
+    }
+  };
+  
+  // Render fee card
+  const renderFeeCard = (fee, isPastDue = false) => {
+    const isSelected = fee.id === selectedFeeId;
+    
+    // Split the description at "+" character to create bullet points
+    const descriptionItems = fee.description
+      .split('+')
+      .map(item => {
+        // Format: Remove parentheses and add currency format
+        // Match anything like "Text (1234567)" and format as "Text: 1.234.567 ₫"
+        const trimmedItem = item.trim();
+        const match = trimmedItem.match(/^(.*?)\s*\((\d+)\)$/);
+        
+        if (match) {
+          const [, text, amount] = match;
+          const formattedAmount = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+          }).format(parseInt(amount, 10));
+          return `${text}: ${formattedAmount}`;
+        }
+        
+        return trimmedItem;
+      })
+      .filter(item => item.length > 0);
+
+    return (
+      <div 
+        key={fee.id} 
+        className={`tuition-fee-card ${isPastDue ? 'past-due' : ''} ${isSelected ? 'selected' : ''}`}
+        onClick={() => handleSelectFee(fee.id)}
+      >
+        <div className="tuition-fee-checkbox">
+          <input 
+            type="radio" 
+            checked={isSelected}
+            onChange={() => {}} 
+            onClick={(e) => e.stopPropagation()}
+          />
+          <span className="checkmark"></span>
+        </div>
+        
+        <div className="tuition-fee-details">
+          <div className="tuition-fee-header">
+            <h3 style={{fontSize: '1.2rem', fontWeight: 'bold', color: '#FFF'}}>{fee.childName} - {fee.name}</h3>
+            <span className={`tuition-fee-badge ${isPastDue ? 'past-due' : 'upcoming'}`}>
+              {isPastDue ? 'Nợ phí' : 'Chưa thanh toán'}
+            </span>
+          </div>
+          
+          <div className="tuition-fee-description">
+            <ul className="tuition-fee-description-list">
+              {descriptionItems.map((item, index) => (
+                <li key={index} className="tuition-fee-description-item">{item}</li>
+              ))}
+            </ul>
+          </div>
+          
+          <div className="tuition-fee-footer">
+            <div className="tuition-fee-grade">
+              <FontAwesomeIcon icon="graduation-cap" />
+              <span>{fee.gradeLevelName}</span>
+            </div>
+            <div className="tuition-fee-date">
+              <FontAwesomeIcon icon="calendar-alt" />
+              <span>Hạn nộp: {formatDate(fee.date)}</span>
+            </div>
+            <div className="tuition-fee-amount">
+              <FontAwesomeIcon icon="money-bill-wave" />
+              <span>{formatCurrency(fee.fee)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="tuition-fee-container">
+      <toast.ToastContainer position="top-right" />
+      
+      <div className="tuition-fee-paper">
+        <div className="tuition-fee-header">
+          <div className="tuition-fee-header-content">
+            <FontAwesomeIcon icon="money-check-alt" className="tuition-fee-header-icon" />
+            <h1>Quản lý học phí</h1>
+          </div>
+          
+          <button 
+            className="tuition-fee-refresh-button"
+            onClick={fetchTuitionFees}
+          >
+            <FontAwesomeIcon icon="sync" />
+            <span>Làm mới</span>
+          </button>
+        </div>
+        
+        {error && (
+          <div className="tuition-fee-message tuition-fee-error-message">
+            <div className="tuition-fee-message-icon">
+              <FontAwesomeIcon icon="times-circle" />
+            </div>
+            <span>{error}</span>
+          </div>
+        )}
+        
+        <div className="tuition-fee-content">
+          {/* Billing information */}
+          <div className="tuition-fee-billing-summary">
+            <div className="tuition-fee-billing-card">
+              <div className="tuition-fee-billing-left">
+                <h3>Tổng số phí phải thanh toán</h3>
+                <div className="tuition-fee-price">
+                  {formatCurrency(totalSelectedAmount)}
+                </div>
+                <div className="tuition-fee-selection-info">
+                  {hasSelectedFee ? (
+                    <span>Đã chọn 1 khoản phí</span>
+                  ) : (
+                    <span>Chưa chọn khoản phí nào</span>
+                  )}
+                </div>
+              </div>
+              <div className="tuition-fee-billing-actions">
+                <button 
+                  className="tuition-fee-clear-btn"
+                  onClick={handleClearSelection}
+                  disabled={!hasSelectedFee || processingPayment}
+                >
+                  <FontAwesomeIcon icon="times" />
+                  <span>Bỏ chọn</span>
+                </button>
+                <button 
+                  className={`tuition-fee-payment-btn ${processingPayment ? 'processing' : ''}`}
+                  onClick={handlePayment}
+                  disabled={!hasSelectedFee || processingPayment}
+                >
+                  <FontAwesomeIcon icon={processingPayment ? "spinner" : "credit-card"} spin={processingPayment} />
+                  {processingPayment ? 'Đang xử lý...' : 'Thanh toán ngay'}
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Billing tabs */}
+          <div className="tuition-fee-tabs">
+            <button 
+              className={`tuition-fee-tab ${activeBillingTab === 'upcoming' ? 'active' : ''}`}
+              onClick={() => setActiveBillingTab('upcoming')}
+            >
+              <FontAwesomeIcon icon="calendar-day" />
+              <span>Sắp đến hạn ({categorizedFees.upcoming.length})</span>
+            </button>
+            <button 
+              className={`tuition-fee-tab ${activeBillingTab === 'overdue' ? 'active' : ''}`}
+              onClick={() => setActiveBillingTab('overdue')}
+            >
+              <FontAwesomeIcon icon="exclamation-circle" />
+              <span>Quá hạn ({categorizedFees.past.length})</span>
+            </button>
+            <button 
+              className={`tuition-fee-tab ${activeBillingTab === 'future' ? 'active' : ''}`}
+              onClick={() => setActiveBillingTab('future')}
+            >
+              <FontAwesomeIcon icon="clock" />
+              <span>Tương lai ({categorizedFees.future.length})</span>
+            </button>
+          </div>
+          
+          {/* Billing content based on active tab */}
+          <div className="tuition-fee-tab-content">
+            {activeBillingTab === 'upcoming' && (
+              <>
+                {categorizedFees.upcoming.length > 0 ? (
+                  <div className="tuition-fee-section">
+                    <div className="tuition-fee-section-header">
+                      <h2>Học phí trong tháng này</h2>
+                    </div>
+                    <div className="tuition-fee-list">
+                      {categorizedFees.upcoming.map(fee => renderFeeCard(fee))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="tuition-fee-empty-state">
+                    <FontAwesomeIcon icon="calendar-check" />
+                    <h3>Không có khoản phí nào trong tháng này</h3>
+                    <p>Bạn không có khoản học phí nào cần thanh toán trong tháng này.</p>
+                  </div>
+                )}
+              </>
+            )}
+            
+            {activeBillingTab === 'overdue' && (
+              <>
+                {categorizedFees.past.length > 0 ? (
+                  <div className="tuition-fee-section">
+                    <div className="tuition-fee-section-header">
+                      <h2>Học phí quá hạn</h2>
+                    </div>
+                    <div className="tuition-fee-list">
+                      {categorizedFees.past.map(fee => renderFeeCard(fee, true))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="tuition-fee-empty-state">
+                    <FontAwesomeIcon icon="check-circle" />
+                    <h3>Không có khoản phí quá hạn</h3>
+                    <p>Bạn không có khoản học phí nào bị quá hạn thanh toán. Rất tốt!</p>
+                  </div>
+                )}
+              </>
+            )}
+            
+            {activeBillingTab === 'future' && (
+              <>
+                {categorizedFees.future.length > 0 ? (
+                  <div className="tuition-fee-section">
+                    <div className="tuition-fee-section-header">
+                      <h2>Học phí sắp tới</h2>
+                    </div>
+                    <div className="tuition-fee-list">
+                      {categorizedFees.future.map(fee => renderFeeCard(fee))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="tuition-fee-empty-state">
+                    <FontAwesomeIcon icon="calendar" />
+                    <h3>Không có khoản phí trong tương lai</h3>
+                    <p>Hiện tại chưa có thông tin về các khoản học phí sắp tới.</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TuitionFeePage;

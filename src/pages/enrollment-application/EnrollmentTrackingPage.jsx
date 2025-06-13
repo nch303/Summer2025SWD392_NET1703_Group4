@@ -20,6 +20,7 @@ const EnrollmentTrackingPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const modalOverlayRef = useRef(null);
   const [invoices, setInvoices] = useState({});
+  const [processingPayment, setProcessingPayment] = useState({});
   
   const { showSpinner, hideSpinner } = useProcessingSpinner();
   const toast = useCustomToast();
@@ -221,12 +222,41 @@ const EnrollmentTrackingPage = () => {
   
   const handlePayment = async (application) => {
     try {
+      // Set this application's payment as processing
+      setProcessingPayment(prev => ({ ...prev, [application.eaid]: true }));
+      
+      let paymentWindow = null;
+      
       // Check if we already have an invoice with a payment link
       if (application.invoiceID && invoices[application.invoiceID]) {
         const invoice = invoices[application.invoiceID];
         if (invoice.paymentLink) {
           // Use existing payment link
-          window.open(invoice.paymentLink, '_blank');
+          showSpinner('Đang chuyển đến trang thanh toán...');
+          paymentWindow = window.open(invoice.paymentLink, '_blank');
+          
+          // Set up window close monitoring with faster checking (300ms interval)
+          const checkWindowClosed = setInterval(() => {
+            if (paymentWindow && paymentWindow.closed) {
+              clearInterval(checkWindowClosed);
+              hideSpinner();
+              setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+              
+              // Refresh data immediately after payment window closes
+              fetchApplications();
+              toast.info('Đang cập nhật trạng thái thanh toán...');
+            }
+          }, 300);
+          
+          // Safety timeout to reset state after 5 minutes
+          setTimeout(() => {
+            if (!paymentWindow.closed) {
+              hideSpinner();
+              setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+            }
+            clearInterval(checkWindowClosed);
+          }, 300000);
+          
           return;
         }
       }
@@ -236,10 +266,35 @@ const EnrollmentTrackingPage = () => {
       const response = await createPaymentUrlForEnrollment(application.childrenID);
       
       if (response && response.url) {
-        window.open(response.url, '_blank');
+        paymentWindow = window.open(response.url, '_blank');
+        
+        // Set up window close monitoring with faster checking (300ms interval)
+        const checkWindowClosed = setInterval(() => {
+          if (paymentWindow && paymentWindow.closed) {
+            clearInterval(checkWindowClosed);
+            hideSpinner();
+            setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+            
+            // Refresh data immediately after payment window closes
+            fetchApplications();
+            toast.info('Đang cập nhật trạng thái thanh toán...');
+          }
+        }, 300);
+        
+        // Safety timeout to reset state after 5 minutes
+        setTimeout(() => {
+          if (paymentWindow && !paymentWindow.closed) {
+            hideSpinner();
+            setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+          }
+          clearInterval(checkWindowClosed);
+        }, 300000);
+        
       } else {
         console.error('Invalid response format:', response);
         toast.error('Không thể tạo liên kết thanh toán. Định dạng phản hồi không hợp lệ.');
+        hideSpinner();
+        setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
       }
     } catch (err) {
       let errorMessage = 'Đã xảy ra lỗi khi tạo liên kết thanh toán.';
@@ -252,8 +307,8 @@ const EnrollmentTrackingPage = () => {
       
       toast.error(errorMessage);
       console.error('Payment error details:', err);
-    } finally {
       hideSpinner();
+      setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
     }
   };
   
@@ -263,6 +318,9 @@ const EnrollmentTrackingPage = () => {
       return null;
     }
     
+    // Check if payment is processing for this application
+    const isProcessing = processingPayment[app.eaid];
+    
     // Nếu có invoice, kiểm tra trạng thái và hiển thị nút phù hợp
     if (app.invoiceID && invoices[app.invoiceID]) {
       const invoice = invoices[app.invoiceID];
@@ -270,27 +328,29 @@ const EnrollmentTrackingPage = () => {
       if (invoice.status === 'Failed') {
         return (
           <button 
-            className="tracking-action-btn tracking-payment-btn tracking-pulse"
+            className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
             onClick={(e) => {
               e.stopPropagation();
-              handlePayment(app);
+              if (!isProcessing) handlePayment(app);
             }}
+            disabled={isProcessing}
           >
-            <FontAwesomeIcon icon="sync" />
-            Thử thanh toán lại
+            <FontAwesomeIcon icon={isProcessing ? "spinner" : "sync"} spin={isProcessing} />
+            {isProcessing ? 'Đang xử lý...' : 'Thử thanh toán lại'}
           </button>
         );
       } else if (invoice.status === 'Pending') {
         return (
           <button 
-            className="tracking-action-btn tracking-payment-btn tracking-pulse"
+            className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
             onClick={(e) => {
               e.stopPropagation();
-              window.open(invoice.paymentLink, '_blank');
+              if (!isProcessing) handlePayment(app);
             }}
+            disabled={isProcessing}
           >
-            <FontAwesomeIcon icon="credit-card" />
-            Tiếp tục thanh toán
+            <FontAwesomeIcon icon={isProcessing ? "spinner" : "credit-card"} spin={isProcessing} />
+            {isProcessing ? 'Đang xử lý...' : 'Tiếp tục thanh toán'}
           </button>
         );
       }
@@ -300,14 +360,15 @@ const EnrollmentTrackingPage = () => {
     if (app.status === 'Approved') {
       return (
         <button 
-          className="tracking-action-btn tracking-payment-btn tracking-pulse"
+          className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
           onClick={(e) => {
             e.stopPropagation();
-            handlePayment(app);
+            if (!isProcessing) handlePayment(app);
           }}
+          disabled={isProcessing}
         >
-          <FontAwesomeIcon icon="credit-card" />
-          Thanh toán học phí
+          <FontAwesomeIcon icon={isProcessing ? "spinner" : "credit-card"} spin={isProcessing} />
+          {isProcessing ? 'Đang xử lý...' : 'Thanh toán học phí'}
         </button>
       );
     }
@@ -738,23 +799,35 @@ const EnrollmentTrackingPage = () => {
               {applicationDetail && applicationDetail.status === 'Approved' && (
                 selectedApplication && selectedApplication.invoiceID && invoices[selectedApplication.invoiceID] ? (
                   <button 
-                    className="tracking-btn-primary"
+                    className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
                     onClick={() => {
-                      window.open(invoices[selectedApplication.invoiceID].paymentLink, '_blank');
+                      if (!processingPayment[selectedApplication.eaid]) {
+                        handlePayment(selectedApplication);
+                      }
                     }}
+                    disabled={processingPayment[selectedApplication.eaid]}
                   >
-                    <FontAwesomeIcon icon="credit-card" />
-                    {invoices[selectedApplication.invoiceID].status === 'Failed' ? 'Thử thanh toán lại' : 'Tiếp tục thanh toán'}
+                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
+                                     spin={processingPayment[selectedApplication.eaid]} />
+                    {processingPayment[selectedApplication.eaid] 
+                      ? 'Đang xử lý...' 
+                      : (invoices[selectedApplication.invoiceID].status === 'Failed' 
+                          ? 'Thử thanh toán lại' 
+                          : 'Tiếp tục thanh toán')}
                   </button>
                 ) : (
                   <button 
-                    className="tracking-btn-primary"
+                    className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
                     onClick={() => {
+                      if (!processingPayment[selectedApplication.eaid]) {
                       handlePayment(selectedApplication);
+                      }
                     }}
+                    disabled={processingPayment[selectedApplication.eaid]}
                   >
-                    <FontAwesomeIcon icon="credit-card" />
-                    Thanh toán
+                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
+                                     spin={processingPayment[selectedApplication.eaid]} />
+                    {processingPayment[selectedApplication.eaid] ? 'Đang xử lý...' : 'Thanh toán'}
                   </button>
                 )
               )}

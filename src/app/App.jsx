@@ -30,6 +30,7 @@ import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 import NotificationPage from '../pages/notification/NotificationPage';
+import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -130,6 +131,11 @@ function App() {
             <Route path="/payment-fail/:invoiceId" element={
               <ProtectedRoute>
                 <PaymentFailPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/tuition-fee" element={
+              <ProtectedRoute>
+                <TuitionFeePage />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />

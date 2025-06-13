@@ -437,23 +437,12 @@ const PaymentHistoryPage = () => {
                     </td>
                     <td>{getStatusLabel(payment.status)}</td>
                     <td>
-                      {payment.status.toLowerCase() === 'pending' && payment.paymentLink ? (
-                        <a 
-                          href={payment.paymentLink} 
-                          className="payment-pay-link"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <i className="fas fa-credit-card"></i> Thanh toán
-                        </a>
-                      ) : (
                         <Link 
                           to={`/invoice-detail/${payment.id}`} 
                           className="payment-detail-link"
                         >
                           <i className="fas fa-file-invoice"></i> Chi tiết
                         </Link>
-                      )}
                     </td>
                   </tr>
                 ))}

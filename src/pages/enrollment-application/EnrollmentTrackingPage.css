@@ -1487,3 +1487,18 @@ input[type="text"].tracking-search-input {
 .tracking-application-card[data-status="Rejected"] .tracking-application-details svg {
   color: #9e9e9e;
 }
+
+/* Add after existing button styles - around line 490 */
+.tracking-action-btn.tracking-processing,
+.tracking-btn-primary.tracking-processing {
+  opacity: 0.8;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.tracking-action-btn.tracking-processing:hover,
+.tracking-btn-primary.tracking-processing:hover {
+  transform: none !important;
+  box-shadow: none;
+}
