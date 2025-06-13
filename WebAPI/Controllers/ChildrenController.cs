@@ -181,5 +181,40 @@ namespace WebAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("searchAllChildren")]
+        public async Task<IActionResult> SearchChildren(
+    [FromQuery] string keyword,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 15)
+        {
+            try
+            {
+                var children = await _childrenService.SearchChildrenAsync(keyword, page, pageSize);
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("searchInClass")]
+        public async Task<IActionResult> SearchChildrenInClass(
+    [FromQuery] int classId,
+    [FromQuery] string keyword)
+        {
+            try
+            {
+                var children = await _childrenService.SearchChildrenInClassAsync(classId, keyword);
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
