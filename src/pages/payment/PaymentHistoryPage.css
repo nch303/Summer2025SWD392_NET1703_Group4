@@ -412,6 +412,7 @@ input[type="text"].payment-search-input {
   background-color: #e8f5e9;
   color: #2e7d32;
   border: none;
+  text-align: center;
 }
 
 .payment-status-pending {

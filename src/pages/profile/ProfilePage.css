@@ -1412,11 +1412,11 @@ textarea {
 
 .modal-content {
   background-color: white;
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: var(--shadow-lg);
   animation: slideUp 0.3s ease-out;
 }
@@ -1427,13 +1427,14 @@ textarea {
   justify-content: space-between;
   padding: 1.2rem 1.5rem;
   border-bottom: 1px solid var(--card-border-color);
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.1) 0%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(to right, #ffecd2, #fcb69f);
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 1.3rem;
-  color: var(--text-color-dark);
+  text-shadow: 1px 1px 0 #fff;
+  color: #e64a19;
   font-weight: 600;
 }
 
@@ -1462,6 +1463,8 @@ textarea {
 
 .modal-body {
   padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 50px);
 }
 
 .modal-footer {

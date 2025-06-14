@@ -548,7 +548,7 @@ const ChildProfileManagement = () => {
 
                 <div className="form-group">
                   <label htmlFor="birthCertificate" className="required-field">
-                    <FontAwesomeIcon icon="file-certificate" className="input-label-icon" /> Giấy khai sinh *
+                    <FontAwesomeIcon icon="certificate" className="input-label-icon" /> Giấy khai sinh *
                   </label>
                   <div className="file-upload-container">
                     <input

@@ -64,6 +64,9 @@ import {
   faExclamationCircle,
   faCalendarCheck,
   faCalendar,
+  faThLarge,
+  faClipboardCheck,
+  faCertificate,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -132,6 +135,9 @@ library.add(
   faExclamationCircle,
   faCalendarCheck,
   faCalendar,
+  faThLarge,
+  faClipboardCheck,
+  faCertificate
 );
 
 // Không cần export vì đã đăng ký vào library 

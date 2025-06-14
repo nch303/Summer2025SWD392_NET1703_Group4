@@ -135,29 +135,34 @@ const TuitionFeePage = () => {
       );
       
       if (response && response.url) {
-        const paymentWindow = window.open(response.url, '_blank');
+        // Hide spinner first
+        hideSpinner();
         
-        // Set up window close monitoring
-        const checkWindowClosed = setInterval(() => {
-          if (paymentWindow && paymentWindow.closed) {
-            clearInterval(checkWindowClosed);
-            hideSpinner();
-            setProcessingPayment(false);
-            
-            // Refresh data when payment window closes
-            fetchTuitionFees();
-            toast.info('Đang cập nhật trạng thái thanh toán...');
-          }
-        }, 300);
+        // Create a link element and simulate a click instead of using window.location
+        const link = document.createElement('a');
+        link.href = response.url;
+        link.setAttribute('data-no-prompt', 'true');
         
-        // Safety timeout
+        // For most aggressive approach, add these properties
+        window.onbeforeunload = null;
+        window.removeEventListener('beforeunload', () => {});
+        
+        // Prevent any other event listeners from executing
+        const clickEvent = new MouseEvent('click', {
+          bubbles: false,
+          cancelable: false,
+          view: window
+        });
+        
+        // Dispatch click event to navigate without warning
+        link.dispatchEvent(clickEvent);
+        
+        // As a fallback, also try regular navigation after a short delay
         setTimeout(() => {
-          if (paymentWindow && !paymentWindow.closed) {
-            hideSpinner();
-            setProcessingPayment(false);
-          }
-          clearInterval(checkWindowClosed);
-        }, 300000); // 5 minutes
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }, 100);
       } else {
         console.error('Invalid response format:', response);
         toast.error('Không thể tạo liên kết thanh toán.');
