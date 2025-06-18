@@ -182,6 +182,10 @@ namespace WebAPI.Controllers
                     var parent = await _accountService.GetAccountByIdAsync(children[i].ParentID);
                     childrenResponse[i].ParentName = parent.FullName;
                     childrenResponse[i].PhoneNumber = parent.PhoneNumber;
+
+                    //Gan ApplicationID cho ChildResponse
+                    var application = await _eaService.GetApplicatioinByChildID(childrenResponse[i].ID);
+                    childrenResponse[i].ApplicationID = application?.ID ?? Guid.Empty;
                 }
                 return Ok(childrenResponse);
             }
