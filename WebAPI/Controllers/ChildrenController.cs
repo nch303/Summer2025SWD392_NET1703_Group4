@@ -17,15 +17,18 @@ namespace WebAPI.Controllers
         private readonly IAccountService _accountService;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IEAService _eaService;
 
         public ChildrenController(IChildrenService childrenService, IMapper mapper, IAccountService accountService
-            , ICloudinaryService cloudinaryService, IChildrenGradeService childrenGradeService)
+            , ICloudinaryService cloudinaryService, IChildrenGradeService childrenGradeService
+            , IEAService eAService)
         {
             _childrenService = childrenService;
             _mapper = mapper;
             _accountService = accountService;
             _cloudinaryService = cloudinaryService;
             _childrenGradeService = childrenGradeService;
+            _eaService = eAService;
         }
 
         [HttpPost]
@@ -130,7 +133,13 @@ namespace WebAPI.Controllers
                 {
                     return NotFound($"Child with ID {Id} not found.");
                 }
+
                 var childResponse = _mapper.Map<ChildrenResponse>(child);
+
+                //Gan ApplicationID cho ChildResponse
+                var application = await _eaService.GetApplicatioinByChildID(Id);
+                childResponse.ApplicationID = application?.ID ?? Guid.Empty;
+
                 return Ok(childResponse);
             }
             catch (Exception ex)

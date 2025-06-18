@@ -73,6 +73,11 @@ namespace Application.Services
             return applications;
         }
 
+        public async Task<EnrollmentApplication> GetApplicatioinByChildID(Guid childId)
+        {
+            return await _eARepository.GetApplicatioinByChildID(childId);
+        }
+
         public async Task<EnrollmentApplication> UpdateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication)
         {
             return await _eARepository.UpdateEnrollmentApplicationAsync(enrollmentApplication);

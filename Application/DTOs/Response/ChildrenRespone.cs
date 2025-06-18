@@ -18,5 +18,6 @@ namespace Application.DTOs.Response
         public string? BirthCertificate { get; set; }
         public string ParentName { get; set; }
         public string PhoneNumber { get; set; }
+        public Guid? ApplicationID { get; set; }
     }
 }
