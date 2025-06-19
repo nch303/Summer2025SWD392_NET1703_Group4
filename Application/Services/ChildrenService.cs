@@ -72,5 +72,10 @@ namespace Application.Services
             return await _childrenRepository.SearchChildrenInClassAsync(classId, searchTerm);
         }
 
+        public async Task<List<Children>> GetPaidChildrenAsync()
+        {
+            return await _childrenRepository.GetPaidChildrenAsync();
+
+        }
     }
 }

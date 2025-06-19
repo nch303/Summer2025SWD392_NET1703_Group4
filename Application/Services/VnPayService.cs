@@ -28,7 +28,7 @@ namespace Application.Services
         private readonly IGradeLevelService _gradeLevelService;
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IEARepository _eaRepository;
-        private readonly IEAService _eaService; 
+        private readonly IEAService _eaService;
 
         public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
             , IAccountService accountService, IEnrichProgramService enrichProgramService, ITuitionFeeService tuitionFeeService
@@ -249,19 +249,58 @@ namespace Application.Services
             // If it does, return the existing payment URL
             var applicationOfChild = await _eaService.GetApplicatioinByChildID(request.ChildrenID);
             var existingInvoice = await _invoiceService.GetByIdAsync(applicationOfChild.InvoiceID);
-
-            if(existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+            if (existingInvoice != null)
             {
-                return existingInvoice.PaymentLink;
+                if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+                {
+                    return existingInvoice.PaymentLink;
+                }
+                else
+                {
+                    // Update the existing invoice with the status "Failed" if it exists
+                    if (existingInvoice != null)
+                    {
+                        await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+                    }
+
+                    // Get current account
+                    var currentAccount = _accountService.GetCurrentAccount();
+
+                    // Save invoice and invoice details
+                    var invoice = new Invoice
+                    {
+                        ID = invoiceId,
+                        Amount = amount,
+                        ChildrenID = request.ChildrenID,
+                        Date = DateTime.Now,
+                        AccountID = currentAccount.Result.Id,
+                        Status = "Pending",
+                        PaymentLink = paymentUrl,
+                        Name = request.Name
+                    };
+                    await _invoiceService.CreateAsync(invoice);
+
+                    decimal price;
+                    var invoiceDetail = new InvoiceDetail
+                    {
+                        ID = Guid.NewGuid(),
+                        InvoiceID = invoice.ID,
+                        TuitionFeeID = tuition.ID,
+                        Price = amount,
+                        ChildrenID = request.ChildrenID
+                    };
+                    await _invoiceDetailService.CreateAsync(invoiceDetail);
+
+                    // Add invoiceID to enrollment application
+                    var enrollmentApplication = await _eaRepository.GetApplicatioinByChildID(request.ChildrenID);
+                    enrollmentApplication.InvoiceID = invoiceId;
+                    await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApplication);
+
+                    return paymentUrl;
+                }
             }
             else
             {
-                // Update the existing invoice with the status "Failed" if it exists
-                if (existingInvoice != null)
-                {
-                    await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
-                }
-
                 // Get current account
                 var currentAccount = _accountService.GetCurrentAccount();
 
@@ -278,7 +317,6 @@ namespace Application.Services
                     Name = request.Name
                 };
                 await _invoiceService.CreateAsync(invoice);
-
 
                 decimal price;
                 var invoiceDetail = new InvoiceDetail
@@ -298,8 +336,6 @@ namespace Application.Services
 
                 return paymentUrl;
             }
-                
         }
-
     }
 }

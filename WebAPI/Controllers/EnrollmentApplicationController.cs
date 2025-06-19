@@ -61,6 +61,7 @@ namespace WebAPI.Controllers
                 var parent = await _accountService.GetCurrentAccount();
                 var applications = await _eAService.ViewListApplicationAsync(parent.Id);
                 var responseList = _mapper.Map<List<EnrollmentApplicationListResponse>>(applications);
+                responseList.Reverse();
 
                 return Ok(responseList);
             }
