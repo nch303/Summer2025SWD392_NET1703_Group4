@@ -1247,25 +1247,6 @@
   }
 }
 
-/* Active indicator for selected radio button */
-.grade-radio-label.active::before {
-  content: "✓";
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #ff5722;
-  border: 2px solid white;
-  color: white;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
 
 /* When both recommended and active */
 .grade-radio-label.active.recommended::after {

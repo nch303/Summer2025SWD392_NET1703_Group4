@@ -1278,3 +1278,26 @@ input[type="text"].tracking-search-input {
 .tracking-btn-primary svg {
     font-size: 16px;
 }
+
+/* Fee information styles */
+.tracking-detail-fee-info {
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.tracking-detail-fee-line {
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: var(--text-color-dark);
+}
+
+.tracking-detail-fee-total {
+  margin-top: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--primary-color-dark);
+  border-top: 1px dashed rgba(var(--primary-rgb), 0.3);
+  padding-top: 8px;
+}
