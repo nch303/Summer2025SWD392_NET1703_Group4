@@ -34,6 +34,18 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        
+        public async Task<List<InvoiceDetail>> GetByTuitionIdAsync(int tuitionId)
+        {
+            return await _context.InvoiceDetails
+                .Where(id => id.TuitionFeeID == tuitionId)
+                .ToListAsync();
+        }
+
+        public async Task<List<InvoiceDetail>> GetByProgramIdAsync(int programId)
+        {
+            return await _context.InvoiceDetails
+                .Where(id => id.ProgramID == programId)
+                .ToListAsync();
+        }
     }
 }

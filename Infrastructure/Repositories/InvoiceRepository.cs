@@ -27,7 +27,7 @@ namespace Infrastructure.Repositories
             return invoice;
         }
 
-        public async Task<Invoice> GetByIdAsync(Guid id)
+        public async Task<Invoice> GetByIdAsync(Guid? id)
         {
             if (id == Guid.Empty) ;
             return await _context.Invoices.FindAsync(id);

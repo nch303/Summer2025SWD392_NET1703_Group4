@@ -18,6 +18,7 @@ namespace Application.Interfaces
         Task<List<EnrollmentApplication>> GetAllApplications();
         Task<EnrollmentApplication> GetApplicatioinByChildID(Guid childId);
         Task<EnrollmentApplication> UpdateEnrollmentApplicationAsync(EnrollmentApplication enrollmentApplication);
+        Task<string> GetApplicationDescriptionAsync(Guid childId);
 
     }
 }

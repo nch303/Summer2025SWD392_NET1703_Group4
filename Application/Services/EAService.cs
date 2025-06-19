@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs.Request;
+﻿using Application.DTOs.Request;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -14,11 +17,18 @@ namespace Application.Services
     {
         private readonly IEARepository _eARepository;
         private readonly IAccountService _accountService;
+        private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IGradeLevelService _gradeLevelService;
+        private readonly ITuitionFeeService _tuitionService;
 
-        public EAService(IEARepository eARepository, IAccountService accountService)
+        public EAService(IEARepository eARepository, IAccountService accountService, IChildrenGradeService childrenGradeService
+            , IGradeLevelService gradeLevelService, ITuitionFeeService tuitionService)
         {
             _eARepository = eARepository;
             _accountService = accountService;
+            _childrenGradeService = childrenGradeService;
+            _gradeLevelService = gradeLevelService;
+            _tuitionService = tuitionService;
         }
 
         public async Task<EnrollmentApplication> CreateEnrollmentApplicationAsync(EnrollmentApplicationRequest request, Guid parentID, Guid childID)
@@ -82,5 +92,52 @@ namespace Application.Services
         {
             return await _eARepository.UpdateEnrollmentApplicationAsync(enrollmentApplication);
         }
+
+
+        public async Task<string> GetApplicationDescriptionAsync(Guid childId)
+        {
+            var culture = CultureInfo.GetCultureInfo("vi-VN");
+
+            var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(childId);
+            var tuitionName = "09/" + childrenGrade.AcademicYear!.Split('-')[0];
+            var tuition = await _tuitionService.GetTuitionFeeByNameAsync(tuitionName);
+            var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(childrenGrade.GradeLevelID);
+
+            var lines = new List<string>();
+            decimal totalAmount = 0;
+
+            // Hàm phụ để format tiền
+            string FormatMoney(decimal amount) => amount.ToString("#,##0", culture) + " đồng";
+
+            // Dòng học phí tháng
+            totalAmount += (decimal)gradeLevel.Fee;
+            lines.Add($"- Học phí tháng {tuition.Name} ({FormatMoney((decimal)gradeLevel.Fee)})");
+
+            // Các mô tả khác (nếu có)
+            if (!string.IsNullOrWhiteSpace(tuition.Description))
+            {
+                var extras = tuition.Description.Split(" + ", StringSplitOptions.RemoveEmptyEntries);
+                foreach (var extra in extras)
+                {
+                    var formattedExtra = Regex.Replace(
+                        extra.Trim(),
+                        @"\((\d+)\)",
+                        match =>
+                        {
+                            decimal value = decimal.Parse(match.Groups[1].Value);
+                            totalAmount += value;
+                            return "(" + FormatMoney(value) + ")";
+                        });
+
+                    lines.Add($"- {formattedExtra}");
+                }
+            }
+
+            // Dòng tổng cộng
+            lines.Add($"\nTổng cộng: {FormatMoney(totalAmount)}");
+
+            return string.Join("\n", lines);
+        }
+
     }
 }

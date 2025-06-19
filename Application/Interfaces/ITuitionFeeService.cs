@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task<List<TuitionWithChildResponse>> GetTuitionFeeByCurrentAccount();
         Task<TuitionFee?> GetTuitionFeeByIdAsync(int? id);
         Task<TuitionFee> GetTuitionFeeByNameAsync(string name);
+        Task<TuitionFee> GetByGradeLevelIdAsync(int gradeLevelId);
     }
 }

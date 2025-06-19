@@ -60,7 +60,7 @@ namespace Application.Services
                     tuitionWithChild.ChildID = child.ChildrenID;
                     tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
                     tuitionWithChild.GradeLevelID = child.GradeLevelID;
-                    
+
                     var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
                     tuitionWithChild.Fee = (decimal)tuition.Fee + (decimal)gradeLevel!.Fee;
                     tuitionWithChild.GradeLevelName = gradeLevel!.Name;
@@ -138,6 +138,16 @@ namespace Application.Services
             if (tuition == null)
             {
                 throw new Exception("Tuition fee not found");
+            }
+            return tuition;
+        }
+
+        public async Task<TuitionFee> GetByGradeLevelIdAsync(int gradeLevelId)
+        {
+            var tuition = await _tuitionFeeRepository.GetByGradeLevelIdAsync(gradeLevelId);
+            if (tuition == null)
+            {
+                throw new Exception("Tuition fee not found for the specified grade level");
             }
             return tuition;
         }
