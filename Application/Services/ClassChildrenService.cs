@@ -23,5 +23,11 @@ namespace Application.Services
             var currentAssignment = await _repository.GetCurrentAssignment(childID);
             return currentAssignment;
         }
+
+        public async Task<List<ClassChildren>> GetChildrenByClassIdAsync(int classId)
+        {
+            var children = await _repository.GetChilldrenByClassIdAsync(classId);
+            return children;
+        }
     }
 }

@@ -48,7 +48,11 @@ namespace Application.Services
         {
             return await _enrichProgramRepository.DeleteEnrichmentProgramAsync(enrichmentProgram);
         }
+
+        public async Task<List<EnrichmentProgram>> SearchEnrichmentProgramAsync(string keyword)
+        {
+            return await _enrichProgramRepository.SearchEnrichmentProgramAsync(keyword);
+        }
     }
 }
-   
 
