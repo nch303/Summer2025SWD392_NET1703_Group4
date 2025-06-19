@@ -98,5 +98,13 @@ namespace WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string keyword)
+        {
+            var enrichmentPrograms = await _enrichProgramService.SearchEnrichmentProgramAsync(keyword);
+            var response = _mapper.Map<List<EnrichmentProgramResponse>>(enrichmentPrograms);
+            return Ok(response);
+        }
     }
 }

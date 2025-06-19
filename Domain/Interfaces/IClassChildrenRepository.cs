@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IClassChildrenRepository
     {
         Task<ClassChildren> GetCurrentAssignment(Guid childID);
+        Task<List<ClassChildren>> GetChilldrenByClassIdAsync(int classId);
     }
 }

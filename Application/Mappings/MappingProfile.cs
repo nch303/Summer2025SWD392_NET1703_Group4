@@ -29,6 +29,22 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Parents!.FullName))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Parents!.PhoneNumber));
 
+            CreateMap<ClassChildren, ChildrenResponse>()
+                .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.Childrens.ID))
+                .ForMember(dest => dest.ParentID, opt => opt.MapFrom(src => src.Childrens.ParentID))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Childrens.Name))
+                .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src => src.Childrens.Birthday))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Childrens.Gender))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Childrens.Avatar))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Childrens.City))
+                .ForMember(dest => dest.BirthCertificate, opt => opt.MapFrom(src => src.Childrens.BirthCertificate))
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Childrens.Parents != null ? src.Childrens.Parents.FullName : null))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Childrens.Parents != null ? src.Childrens.Parents.PhoneNumber : null))
+
+                // 🚫 Không ánh xạ ApplicationID → giữ mặc định (null)
+                .ForMember(dest => dest.ApplicationID, opt => opt.Ignore());
+
+
             CreateMap<EnrichmentProgramRequest, EnrichmentProgram>();
             CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));

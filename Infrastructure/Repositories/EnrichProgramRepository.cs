@@ -54,5 +54,12 @@ namespace Infrastructure.Repositories
             return true;
         }
 
+        public async Task<List<EnrichmentProgram>> SearchEnrichmentProgramAsync(string keyword)
+        {
+            return await _context.EnrichmentPrograms
+                .Where(p => p.Name != null && p.Name.ToLower().Contains(keyword.ToLower()))
+                .ToListAsync();
+        }
+
     }
 }

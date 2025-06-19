@@ -23,5 +23,16 @@ namespace Infrastructure.Repositories
             var assignment = await _context.ClassChildrens.FirstOrDefaultAsync(cc => cc.ChildrenID == childID);
             return assignment!;
         }
+
+        public async Task<List<ClassChildren>> GetChilldrenByClassIdAsync(int classId)
+        {
+            var children = await _context.ClassChildrens
+                .Include(cc => cc.Childrens)
+                .Where(cc => cc.ClassID == classId)
+                .ToListAsync();
+
+            return children;
+        }
+
     }
 }

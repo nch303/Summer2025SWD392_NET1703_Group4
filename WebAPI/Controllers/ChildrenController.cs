@@ -18,10 +18,11 @@ namespace WebAPI.Controllers
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IEAService _eaService;
+        private readonly IClassChildrenService _classChildrenService;
 
         public ChildrenController(IChildrenService childrenService, IMapper mapper, IAccountService accountService
             , ICloudinaryService cloudinaryService, IChildrenGradeService childrenGradeService
-            , IEAService eAService)
+            , IEAService eAService, IClassChildrenService classChildrenService)
         {
             _childrenService = childrenService;
             _mapper = mapper;
@@ -29,6 +30,7 @@ namespace WebAPI.Controllers
             _cloudinaryService = cloudinaryService;
             _childrenGradeService = childrenGradeService;
             _eaService = eAService;
+            _classChildrenService = classChildrenService;
         }
 
         [HttpPost]
@@ -246,6 +248,21 @@ namespace WebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("getChildrenByClassId/{classId}")]
+        public async Task<IActionResult> GetChildrenByClassIdAsync(int classId)
+        {
+            try
+            {
+                var children = await _classChildrenService.GetChildrenByClassIdAsync(classId);
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

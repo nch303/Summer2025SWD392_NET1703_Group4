@@ -15,5 +15,6 @@ namespace Application.Interfaces
         Task<EnrichmentProgram> CreateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
         Task<EnrichmentProgram> UpdateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
         Task<bool> DeleteEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram);
+        Task<List<EnrichmentProgram>> SearchEnrichmentProgramAsync(string keyword);
     }
 }

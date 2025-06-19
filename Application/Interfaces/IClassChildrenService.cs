@@ -10,5 +10,6 @@ namespace Application.Interfaces
     public interface IClassChildrenService
     {
         Task<ClassChildren> GetCurrentAssignment(Guid childID);
+        Task<List<ClassChildren>> GetChildrenByClassIdAsync(int classId);
     }
 }
