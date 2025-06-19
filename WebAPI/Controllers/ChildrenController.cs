@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -111,7 +111,7 @@ namespace WebAPI.Controllers
                 existingChild = _mapper.Map<Children>(childRequest);
 
                 existingChild.ID = Id;
-                existingChild.Avatar = avatarUrl ?? oldAvatar; 
+                existingChild.Avatar = avatarUrl ?? oldAvatar;
                 existingChild.BirthCertificate = birthCertificateUrl ?? oldBirthCertificate;
                 var updatedChild = await _childrenService.UpdateChildAsync(existingChild);
                 var updatedChildResponse = _mapper.Map<ChildrenResponse>(updatedChild);
@@ -119,7 +119,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -144,7 +144,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -161,12 +161,13 @@ namespace WebAPI.Controllers
                 //    childrenResponse[i].ParentName = parent.Result.FullName;
                 //    childrenResponse[i].PhoneNumber = parent.Result.PhoneNumber;
                 //}
+                childrenResponse.OrderByDescending(c => c.EnrollDate);
 
                 return Ok(childrenResponse);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -187,11 +188,13 @@ namespace WebAPI.Controllers
                     var application = await _eaService.GetApplicatioinByChildID(childrenResponse[i].ID);
                     childrenResponse[i].ApplicationID = application?.ID ?? Guid.Empty;
                 }
+                childrenResponse.OrderByDescending(c => c.EnrollDate);
+
                 return Ok(childrenResponse);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -209,7 +212,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -226,7 +229,23 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("paidChildren")]
+        public async Task<IActionResult> GetPaidChildrenAsync()
+        {
+            try
+            {
+                var children = await _childrenService.GetPaidChildrenAsync();
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+                response = response.OrderByDescending(c => c.EnrollDate).ToList();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

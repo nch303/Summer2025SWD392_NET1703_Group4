@@ -51,7 +51,7 @@ namespace Infrastructure.Repositories
         public async Task<List<Children>> GetAllChildrenAsync()
         {
             return await _context.Childrens
-        .Include(c=>c.Parents)
+        .Include(c => c.Parents)
         .Where(c => c.Status == "Active")
         .ToListAsync();
         }
@@ -93,7 +93,12 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-
-
+        public async Task<List<Children>> GetPaidChildrenAsync()
+        {
+            return await _context.Childrens
+                .Include(c => c.Parents)
+                .Where(c => c.Status == "Paid")
+                .ToListAsync();
+        }
     }
 }
