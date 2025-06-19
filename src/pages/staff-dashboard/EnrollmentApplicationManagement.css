@@ -596,8 +596,7 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 950px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: 100vh;
   padding: 0;
   animation: slideUp 0.4s ease;
 }
@@ -649,6 +648,8 @@
 }
 
 .enrollment-detail-body {
+  overflow-y: auto;
+  max-height: 80vh;
   padding: 30px;
 }
 
@@ -1093,4 +1094,57 @@
   justify-content: flex-end;
   padding: 15px 25px 25px;
   gap: 12px;
+}
+
+/* Pagination styles */
+.enrollment-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.enrollment-pagination-button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  color: #666;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.enrollment-pagination-button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+.enrollment-pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.enrollment-pagination-info {
+  display: flex;
+  align-items: baseline;
+  margin: 0 12px;
+  font-size: 15px;
+}
+
+.enrollment-current-page {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-right: 4px;
+}
+
+.enrollment-total-pages {
+  color: #888;
 }

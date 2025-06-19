@@ -86,6 +86,11 @@
     will-change: transform, opacity;
   }
   
+  /* Staff-specific positioning */
+  .staff-user .notification-modal {
+    right: -190px;
+  }
+  
   @keyframes notification-appear {
     from {
       opacity: 0;

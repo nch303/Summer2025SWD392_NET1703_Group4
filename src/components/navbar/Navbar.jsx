@@ -85,6 +85,11 @@ const Navbar = () => {
             <Link to="/news" className={`navbar-link ${isActive('/news') ? 'active' : ''}`}>
               News
             </Link>
+            {currentUser?.roleName === 'Parent' && (
+              <Link to="/enrichment-program" className={`navbar-link ${isActive('/enrichment-program') ? 'active' : ''}`}>
+                Enrichment Program
+              </Link>
+            )}
           </div>
           
           {/* User actions */}
@@ -206,35 +211,28 @@ const Navbar = () => {
             Home
           </Link>
           <Link 
-            to="/dashboard" 
-            className={`mobile-link ${isActive('/dashboard') ? 'active' : ''}`}
+            to="/enrichment-program" 
+            className={`mobile-link ${isActive('/enrichment-program') ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Dashboard
+            Enrichment Program
           </Link>
           <Link 
-            to="/students" 
-            className={`mobile-link ${isActive('/students') ? 'active' : ''}`}
+            to="/contact" 
+            className={`mobile-link ${isActive('/contact') ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Students
+            Contact
           </Link>
           <Link 
-            to="/classes" 
-            className={`mobile-link ${isActive('/classes') ? 'active' : ''}`}
+            to="/about-us" 
+            className={`mobile-link ${isActive('/about-us') ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Classes
+            About Us
           </Link>
           <Link 
-            to="/enrollment" 
-            className={`mobile-link ${isActive('/enrollment') ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Enrollment
-          </Link>
-          <Link 
-            to="/activities" 
+            to="/news" 
             className={`mobile-link ${isActive('/activities') ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(false)}
           >

@@ -31,6 +31,7 @@ import EnrollmentApplicationPage from '../pages/enrollment-application/Enrollmen
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 import NotificationPage from '../pages/notification/NotificationPage';
 import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
+import EnrichmentProgram from '../pages/enrichment-program/EnrichmentProgram';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -139,6 +140,11 @@ function App() {
             <Route path="/tuition-fee" element={
               <ProtectedRoute>
                 <TuitionFeePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/enrichment-program" element={
+              <ProtectedRoute>
+                <EnrichmentProgram />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />

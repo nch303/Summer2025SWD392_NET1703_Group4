@@ -21,7 +21,7 @@ const PaymentHistoryPage = () => {
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const paymentsPerPage = 10;
+  const paymentsPerPage = 5;
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [showStats, setShowStats] = useState(true);
 

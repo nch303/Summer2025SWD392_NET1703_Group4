@@ -1,10 +1,10 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { 
-  faChildren, 
-  faUser, 
-  faCalendarDays, 
-  faPlus, 
-  faEdit, 
+import {
+  faChildren,
+  faUser,
+  faCalendarDays,
+  faPlus,
+  faEdit,
   faTrash,
   faTimes,
   faCheck,
@@ -67,6 +67,19 @@ import {
   faThLarge,
   faClipboardCheck,
   faCertificate,
+  faBrain,
+  faHandsHelping,
+  faLightbulb,
+  faAward,
+  faHandHoldingHeart,
+  faHandHoldingUsd,
+  faHandHoldingDollar,
+  faMusic,
+  faSwimmer,
+  faUsers,
+  faPlusCircle,
+  faArrowUp,
+  faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -137,7 +150,22 @@ library.add(
   faCalendar,
   faThLarge,
   faClipboardCheck,
-  faCertificate
+  faCertificate,
+  faBrain,
+  faHandsHelping,
+  faLightbulb,
+  faAward,
+  faHandHoldingHeart,
+  faHandHoldingUsd,
+  faHandHoldingDollar,
+  faMusic,
+  faSwimmer,
+  faUsers,
+  faPlusCircle,
+  faUsers,
+  faUserMinus,
+  faArrowUp,
+  faExclamationTriangle
 );
 
 // Không cần export vì đã đăng ký vào library 
