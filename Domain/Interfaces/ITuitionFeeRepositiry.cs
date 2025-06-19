@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Task<List<TuitionFee>> GetTuitionFeeByCurrentAccount();
         Task<TuitionFee?> GetTuitionFeeByIdAsync(int? id);
         Task<TuitionFee> GetTuitionFeeByNameAsync(string name);
+        Task<TuitionFee> GetByGradeLevelIdAsync(int gradeLevelId);
     }
 }

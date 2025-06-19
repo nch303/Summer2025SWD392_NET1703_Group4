@@ -28,8 +28,7 @@ namespace Application.Services
         private readonly IGradeLevelService _gradeLevelService;
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IEARepository _eaRepository;
-        private readonly IEAService _eaService;
-
+        private readonly IEAService _eaService; 
 
         public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
             , IAccountService accountService, IEnrichProgramService enrichProgramService, ITuitionFeeService tuitionFeeService
@@ -74,6 +73,22 @@ namespace Application.Services
 
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
+            // Check if the invoice already exists and has a non-exprired payment URL
+            // If it does, return the existing payment URL
+            var existingInvoiceDetail = await _invoiceDetailService.GetByProgramIdAsync(request.enrichmentPrograms[0]);
+            var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
+
+            if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+            {
+                return existingInvoice.PaymentLink;
+            }
+
+            // Update the existing invoice with the status "Failed" if it exists
+            if (existingInvoice != null)
+            {
+                await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+            }
 
             // Get current account
             var currentAccount = _accountService.GetCurrentAccount();
@@ -144,6 +159,21 @@ namespace Application.Services
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 
+            // Check if the invoice already exists and has a non-expired payment URL
+            // If it does, return the existing payment URL
+            var existingInvoiceDetail = await _invoiceDetailService.GetByTuitionIdAsync(request.TuitionFeeIds[0]);
+            var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
+            if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+            {
+                return existingInvoice.PaymentLink;
+            }
+
+            // Update the existing invoice with the status "Failed" if it exists
+            if (existingInvoice != null)
+            {
+                await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+            }
+
             // Get current account
             var currentAccount = _accountService.GetCurrentAccount();
 
@@ -176,7 +206,6 @@ namespace Application.Services
                 };
                 await _invoiceDetailService.CreateAsync(invoiceDetail);
             }
-
 
             return paymentUrl;
         }
@@ -216,41 +245,60 @@ namespace Application.Services
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 
-            // Get current account
-            var currentAccount = _accountService.GetCurrentAccount();
+            // Check if the invoice already exists and has a non-exprired payment URL
+            // If it does, return the existing payment URL
+            var applicationOfChild = await _eaService.GetApplicatioinByChildID(request.ChildrenID);
+            var existingInvoice = await _invoiceService.GetByIdAsync(applicationOfChild.InvoiceID);
 
-            // Save invoice and invoice details
-            var invoice = new Invoice
+            if(existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
             {
-                ID = invoiceId,
-                Amount = amount,
-                ChildrenID = request.ChildrenID,
-                Date = DateTime.Now,
-                AccountID = currentAccount.Result.Id,
-                Status = "Pending",
-                PaymentLink = paymentUrl,
-                Name = request.Name
-            };
-            await _invoiceService.CreateAsync(invoice);
+                return existingInvoice.PaymentLink;
+            }
+            else
+            {
+                // Update the existing invoice with the status "Failed" if it exists
+                if (existingInvoice != null)
+                {
+                    await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+                }
 
-            
-            decimal price;
+                // Get current account
+                var currentAccount = _accountService.GetCurrentAccount();
+
+                // Save invoice and invoice details
+                var invoice = new Invoice
+                {
+                    ID = invoiceId,
+                    Amount = amount,
+                    ChildrenID = request.ChildrenID,
+                    Date = DateTime.Now,
+                    AccountID = currentAccount.Result.Id,
+                    Status = "Pending",
+                    PaymentLink = paymentUrl,
+                    Name = request.Name
+                };
+                await _invoiceService.CreateAsync(invoice);
+
+
+                decimal price;
                 var invoiceDetail = new InvoiceDetail
-            {
-                ID = Guid.NewGuid(),
-                InvoiceID = invoice.ID,
-                TuitionFeeID = tuition.ID,
-                Price = amount,
-                ChildrenID = request.ChildrenID
-            };
-            await _invoiceDetailService.CreateAsync(invoiceDetail);
+                {
+                    ID = Guid.NewGuid(),
+                    InvoiceID = invoice.ID,
+                    TuitionFeeID = tuition.ID,
+                    Price = amount,
+                    ChildrenID = request.ChildrenID
+                };
+                await _invoiceDetailService.CreateAsync(invoiceDetail);
 
-            // Add invoiceID to enrollment application
-            var enrollmentApplication = await _eaRepository.GetApplicatioinByChildID(request.ChildrenID);
-            enrollmentApplication.InvoiceID = invoiceId;
-            await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApplication);
+                // Add invoiceID to enrollment application
+                var enrollmentApplication = await _eaRepository.GetApplicatioinByChildID(request.ChildrenID);
+                enrollmentApplication.InvoiceID = invoiceId;
+                await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApplication);
 
-            return paymentUrl;
+                return paymentUrl;
+            }
+                
         }
 
     }

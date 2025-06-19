@@ -49,7 +49,7 @@ namespace Application.Services
             return await _invoiceRepository.CreateAsync(invoice);
         }
 
-        public async Task<Invoice?> GetByIdAsync(Guid id)
+        public async Task<Invoice?> GetByIdAsync(Guid? id)
         {
             if (id == Guid.Empty) throw new ArgumentException("Invalid invoice ID", nameof(id));
             return await _invoiceRepository.GetByIdAsync(id);

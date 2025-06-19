@@ -144,5 +144,19 @@ namespace WebAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("get-application-description/{childId}")]
+        public async Task<IActionResult> GetApplicationDescription(Guid childId)
+        {
+            try
+            {
+                var description = await _eAService.GetApplicationDescriptionAsync(childId);
+                return Ok(new { description = description });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

@@ -33,5 +33,25 @@ namespace Application.Services
             }
             return invoiceDetails;
         }
+
+        public async Task<List<InvoiceDetail>> GetByTuitionIdAsync(int tuitionId)
+        {
+            var invoiceDetails = await _invoiceDetailRepository.GetByTuitionIdAsync(tuitionId);
+            if (invoiceDetails.Count == 0)
+            {
+                throw new KeyNotFoundException($"No invoice details found for Tuition ID: {tuitionId}");
+            }
+            return invoiceDetails;
+        }
+
+        public async Task<List<InvoiceDetail>> GetByProgramIdAsync(int programId)
+        {
+            var invoiceDetails = await _invoiceDetailRepository.GetByProgramIdAsync(programId);
+            if (invoiceDetails.Count == 0)
+            {
+                throw new KeyNotFoundException($"No invoice details found for Program ID: {programId}");
+            }
+            return invoiceDetails;
+        }
     }
 }

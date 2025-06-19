@@ -34,5 +34,11 @@ namespace Infrastructure.Repositories
             var tuition = await _context.TuitionFees.FirstOrDefaultAsync(t => t.Name!.Contains(name));
             return tuition!;
         }
+
+        public async Task<TuitionFee> GetByGradeLevelIdAsync(int gradeLevelId)
+        {
+            var tuition = await _context.TuitionFees.FirstOrDefaultAsync(t => t.GradeLevelID == gradeLevelId);
+            return tuition!;
+        }
     }
 }
