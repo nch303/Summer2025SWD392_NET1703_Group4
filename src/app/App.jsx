@@ -39,6 +39,7 @@ import EnrollmentApplicationManagement from '../pages/staff-dashboard/Enrollment
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
+import ClassManagement from '../pages/admin-classes-management/ClassManagement';
 
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
@@ -168,7 +169,7 @@ function App() {
             <Route path="students" element={<div>Students Management</div>} />
             <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
-            <Route path="classes" element={<div>Classes Management</div>} />
+            <Route path="classes/list" element={<ClassManagement />} />
             <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />
           </Route>
