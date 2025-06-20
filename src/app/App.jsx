@@ -39,6 +39,7 @@ import EnrollmentApplicationManagement from '../pages/staff-dashboard/Enrollment
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
+import ClassManagement from '../pages/admin-classes-management/ClassManagement';
 
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
@@ -174,6 +175,8 @@ function App() {
             <Route index element={<AdminPage />} />
             <Route path="students" element={<div>Students Management</div>} />
             <Route path="teachers" element={<div>Teachers Management</div>} />
+            <Route path="courses" element={<div>Courses Management</div>} />
+            <Route path="classes/list" element={<ClassManagement />} />
             <Route path="enrichment-activities" element={<EnrichmentActivityListPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
