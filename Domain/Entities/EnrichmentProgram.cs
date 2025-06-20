@@ -20,5 +20,6 @@ namespace Domain.Entities
         [ForeignKey("TypeProgramID")]
         public TypeProgram? TypePrograms { get; set; }
         public ICollection<InvoiceDetail>? InvoiceDetails { get; set; }
+        public ICollection<Class>? Classes { get; set; }
     }
 }

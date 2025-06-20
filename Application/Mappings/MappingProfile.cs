@@ -16,6 +16,16 @@ namespace Application.Mappings
     {
         public MappingProfile()
         {
+            CreateMap<SyllabusRequest, Syllabus>();
+            CreateMap<SyllabusDetailRequest, SyllabusDetail>();
+            CreateMap<Syllabus, GetAllSyllabiResponse>();
+            CreateMap<SyllabusDetail, SyllabusDetailResponse>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Syllabi!.Name));
+            CreateMap<Syllabus, SyllabusDetailResponse>()
+                .ForMember(dest => dest.Slot, opt => opt.MapFrom(src => src.SyllabusDetails!.Slot))
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.SyllabusDetails!.Content))
+                .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.SyllabusDetails!.Duration));
+
             CreateMap<RegisterRequest, Account>();
             CreateMap<Account, AccountResponse>();
             CreateMap<AccountRequest, Account>();
@@ -86,15 +96,27 @@ namespace Application.Mappings
             CreateMap<CreateClassRequest, Class>();
             CreateMap<UpdateClassRequest, Class>();
             CreateMap<Class, ClassResponse>()
+                .ForMember(dest => dest.EPName, opt => opt.MapFrom(src => src.EnrichmentPrograms!.Name))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
             CreateMap<Class, ClassDetailResponse>()
+                .ForMember(dest => dest.EPName, opt => opt.MapFrom(src => src.EnrichmentPrograms!.Name))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
-                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name))
+                .ForMember(dest => dest.ClassChildrens, opt => opt.MapFrom(src => src.ClassChildrens))
+                .ForMember(dest => dest.ClassTeachers, opt => opt.MapFrom(src => src.ClassTeachers));
             CreateMap<Class, SortResponse>()
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name));
             CreateMap<Class, UpdateClassResponse>()
                 .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+
+            CreateMap<ClassChildren, ClassChildrenResponse>()
+                .ForMember(dest => dest.ChildrenID, opt => opt.MapFrom(src => src.ChildrenID))
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name));
+
+            CreateMap<ClassTeacher, ClassTeacherResponse>()
+                .ForMember(dest => dest.TeacherID, opt => opt.MapFrom(src => src.TeacherID))
+                .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src => src.Teachers!.FullName));
 
             CreateMap<Role, RoleResponse>();
         }

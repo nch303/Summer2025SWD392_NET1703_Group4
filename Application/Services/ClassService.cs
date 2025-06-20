@@ -45,7 +45,10 @@ namespace Application.Services
 
         public async Task<Class> GetClass(int classId)
         {
-            return await _classRepository.GetClass(classId);
+            var room = await _classRepository.GetClass(classId);
+            if (room == null)
+                throw new Exception("Class not found.");
+            return room;
         }
 
         public async Task<List<Class>> GetAllClass()

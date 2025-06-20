@@ -4,6 +4,7 @@ using Infrastructure.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620035915_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +170,6 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("EnrichmentProgramId")
-                        .HasColumnType("int");
-
                     b.Property<int>("GradeLevelID")
                         .HasColumnType("int");
 
@@ -189,8 +189,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("EnrichmentProgramId");
 
                     b.HasIndex("GradeLevelID");
 
@@ -642,11 +640,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Class", b =>
                 {
-                    b.HasOne("Domain.Entities.EnrichmentProgram", "EnrichmentPrograms")
-                        .WithMany("Classes")
-                        .HasForeignKey("EnrichmentProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Domain.Entities.GradeLevel", "GradeLevels")
                         .WithMany("Classes")
                         .HasForeignKey("GradeLevelID")
@@ -658,8 +651,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("SyllabusID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("EnrichmentPrograms");
 
                     b.Navigation("GradeLevels");
 
@@ -881,8 +872,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.EnrichmentProgram", b =>
                 {
-                    b.Navigation("Classes");
-
                     b.Navigation("InvoiceDetails");
                 });
 

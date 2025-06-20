@@ -63,13 +63,25 @@ namespace Infrastructure.Repositories
 
         public async Task<Class> GetClass(int classID)
         {
-            var room = await _context.Classes.FirstOrDefaultAsync(a => a.ID == classID);
+            var room = await _context.Classes
+                .Include(a => a.EnrichmentPrograms)
+                .Include(a => a.GradeLevels)
+                .Include(a => a.Syllabi)
+                .Include(c => c.ClassChildrens!)
+                    .ThenInclude(cc => cc.Childrens)
+                .Include(c => c.ClassTeachers!)
+                    .ThenInclude(ct => ct.Teachers)
+                .FirstOrDefaultAsync(c => c.ID == classID);
             return room!;
         }
 
         public async Task<List<Class>> GetAllClass()
         {
-            var rooms = await _context.Classes.Where(a => a.Status == "Available").ToListAsync();
+            var rooms = await _context.Classes
+                .Include(a => a.GradeLevels)
+                .Include(a => a.Syllabi)
+                .Include(a => a.EnrichmentPrograms)
+                .Where(a => a.Status == "Available").ToListAsync();
             return rooms;
         }
 

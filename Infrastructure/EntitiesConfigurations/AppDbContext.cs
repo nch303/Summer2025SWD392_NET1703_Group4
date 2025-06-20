@@ -53,7 +53,6 @@ namespace Infrastructure.EntitiesConfigurations
                 .HasForeignKey(e => e.StaffID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<EnrollmentApplication>()
                 .HasOne(ea => ea.GradeLevels)
                 .WithMany(gl => gl.EnrollmentApplications)
@@ -144,10 +143,16 @@ namespace Infrastructure.EntitiesConfigurations
                 .HasForeignKey(cl => cl.GradeLevelID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Class>()
+                .HasOne(cl => cl.EnrichmentPrograms)
+                .WithMany(ep => ep.Classes)
+                .HasForeignKey(cl => cl.EnrichmentProgramId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<SyllabusDetail>()
                 .HasOne(sd => sd.Syllabi)
-                .WithMany(s => s.SyllabusDetails)
-                .HasForeignKey(sd => sd.SyllabusID)
+                .WithOne(s => s.SyllabusDetails)
+                .HasForeignKey<SyllabusDetail>(sd => sd.SyllabusID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EnrichmentProgram>()

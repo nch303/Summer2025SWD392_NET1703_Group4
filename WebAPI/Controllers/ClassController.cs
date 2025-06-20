@@ -26,7 +26,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult> GetAll()
         {
             var classes = await _classService.GetAllClass();
-            return Ok(classes);
+            var response = _mapper.Map<List<ClassResponse>>(classes);
+            return Ok(response);
         }
 
         // GET: api/class/{id}
