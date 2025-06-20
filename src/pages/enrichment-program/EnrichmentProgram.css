@@ -968,3 +968,614 @@
     padding: 20px;
   }
 }
+
+/* Registration Modal - Enhanced */
+.enrichment-program-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: enrichment-fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  perspective: 1000px;
+}
+
+@keyframes enrichment-fadeIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to { opacity: 1; backdrop-filter: blur(8px); }
+}
+
+.enrichment-program-modal {
+  width: 92%;
+  max-width: 750px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 40px rgba(123, 31, 162, 0.15);
+  animation: enrichment-modalSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background-color: #fcfcfc;
+  transform-origin: bottom;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes enrichment-modalSlide {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Header với gradient */
+.enrichment-program-modal-header {
+  padding: 20px 25px;
+  background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+  color: white;
+  position: relative;
+  border-bottom: none;
+  box-shadow: 0 4px 12px rgba(123, 31, 162, 0.2);
+}
+
+.enrichment-program-modal-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.enrichment-program-modal-header h3 svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Button close đẹp hơn */
+.enrichment-program-modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(2px);
+}
+
+.enrichment-program-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* Modal body với scroll mượt */
+.enrichment-program-modal-body {
+  padding: 0;
+  max-height: 75vh;
+  overflow-y: auto;
+  will-change: transform;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+/* Thông tin khóa học nâng cao */
+.enrichment-program-info-section {
+  background: #fff;
+  padding: 24px;
+  display: block;
+  border-bottom: none;
+  contain: content;
+  position: relative;
+}
+
+.enrichment-program-info-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(156, 39, 176, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.enrichment-program-info-header {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.enrichment-program-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.8rem;
+  box-shadow: 0 8px 16px -4px rgba(123, 31, 162, 0.3);
+}
+
+.program-title {
+  font-size: 1.4rem;
+  margin: 0 0 8px;
+  color: #333;
+  font-weight: 700;
+}
+
+.program-type {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: rgba(123, 31, 162, 0.1);
+  color: #7b1fa2;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Program Details List */
+.enrichment-program-details-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  background-color: rgba(123, 31, 162, 0.04);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.enrichment-program-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease;
+}
+
+.enrichment-program-detail-item:hover {
+  transform: translateY(-2px);
+}
+
+.enrichment-program-detail-item svg {
+  color: #7b1fa2;
+  font-size: 1.2rem;
+  width: 20px;
+}
+
+.enrichment-detail-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #777;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  color: #333;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.detail-value.fee {
+  color: #e53935;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* Phân cách */
+.enrichment-section-divider {
+  height: 8px;
+  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(123,31,162,0.1) 50%, rgba(0,0,0,0) 100%);
+  margin: 0;
+  border: none;
+}
+
+/* Children Selection Section */
+.enrichment-children-selection-section {
+  padding: 24px;
+  contain: content;
+  background-color: #fff;
+}
+
+.enrichment-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.enrichment-section-title svg {
+  color: #7b1fa2;
+}
+
+/* Select all checkbox */
+.enrichment-select-all-wrapper {
+  margin-bottom: 16px;
+  background-color: rgba(123, 31, 162, 0.04);
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+
+.enrichment-select-all-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.enrichment-select-all-option input {
+  width: 18px;
+  height: 18px;
+  accent-color: #7b1fa2;
+}
+
+/* Grid với animation */
+.enrichment-children-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  contain: layout style;
+}
+
+.enrichment-child-card {
+  position: relative;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.enrichment-child-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+.enrichment-child-card.selected {
+  border-color: #7b1fa2;
+  background-color: rgba(123, 31, 162, 0.03);
+  box-shadow: 0 5px 15px rgba(123, 31, 162, 0.1);
+}
+
+/* Checkbox mới cải tiến */
+.enrichment-child-checkbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.enrichment-child-checkbox:checked {
+  background-color: #7b1fa2;
+  border-color: #7b1fa2;
+}
+
+.enrichment-child-checkbox::after {
+  content: '';
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+  position: absolute;
+  top: 3px;
+}
+
+.enrichment-child-checkbox:checked::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+/* Avatar images with ripple effect */
+.enrichment-child-avatar-container {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 10px;
+}
+
+.enrichment-child-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  background-color: #f0f4f8;
+}
+
+.enrichment-child-card.selected .enrichment-child-avatar {
+  border-color: #7b1fa2;
+}
+
+.enrichment-child-card.selected .enrichment-child-avatar-container::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 20px;
+  border: 2px solid #7b1fa2;
+  opacity: 0;
+  animation: ripple 1.5s infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+.enrichment-child-name {
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 5px;
+  color: #444;
+}
+
+.enrichment-child-age {
+  font-size: 0.75rem;
+  color: #777;
+  background-color: rgba(0, 0, 0, 0.03);
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* Pagination */
+.enrichment-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+  padding: 8px;
+  background-color: rgba(123, 31, 162, 0.03);
+  border-radius: 50px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.enrichment-pagination-btn {
+  border: none;
+  background: white;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  color: #555;
+  transition: all 0.2s ease;
+}
+
+.enrichment-pagination-btn:hover:not(:disabled) {
+  background-color: #7b1fa2;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.enrichment-pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.enrichment-pagination-info {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Fee Summary */
+.enrichment-fee-summary {
+  background-color: #fff;
+  margin-top: 0;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.enrichment-fee-summary::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 0;
+  height: 1px;
+  background: radial-gradient(circle, rgba(123, 31, 162, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+.enrichment-fee-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+.enrichment-fee-total {
+  color: #e53935;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.enrichment-fee-total svg {
+  font-size: 1rem;
+}
+
+/* Footer với shadow */
+.enrichment-program-modal-footer {
+  padding: 18px 24px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.enrichment-program-cancel-btn {
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: #555;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.enrichment-program-cancel-btn:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.enrichment-program-confirm-btn {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(123, 31, 162, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.enrichment-program-confirm-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.enrichment-program-confirm-btn:hover::before {
+  left: 100%;
+}
+
+.enrichment-program-confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(123, 31, 162, 0.3);
+}
+
+.enrichment-program-confirm-btn:active {
+  transform: translateY(0);
+}
+
+.enrichment-program-confirm-btn:disabled {
+  background: linear-gradient(135deg, #b39ddb 0%, #ce93d8 100%);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Thêm style cho header section và nút refresh */
+.enrichment-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.enrichment-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 600;
+  margin: 0;
+}
+
+.enrichment-refresh-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(123, 31, 162, 0.05);
+  color: #7b1fa2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.enrichment-refresh-btn:hover {
+  background: rgba(123, 31, 162, 0.1);
+  transform: rotate(30deg);
+}
+
+.enrichment-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
