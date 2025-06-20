@@ -9,9 +9,8 @@ namespace Domain.Entities
         public int ID { get; set; }
 
         public string? Name { get; set; }
-        public int SlotAmount { get; set; }
 
         public ICollection<Class>? Classes { get; set; }
-        public ICollection<SyllabusDetail>? SyllabusDetails { get; set; }    
+        public SyllabusDetail? SyllabusDetails { get; set; }    
     }
 }

@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.DTOs.Response
+{
+    public class SyllabusDetailResponse
+    {
+        public string? Name { get; set; }
+        public int Slot { get; set; }
+        public string? Content { get; set; }
+        public int Duration { get; set; }
+    }
+}

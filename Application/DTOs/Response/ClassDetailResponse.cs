@@ -15,7 +15,8 @@ namespace Application.DTOs.Response
         public int MaxChildren { get; set; }
         public int Quantity { get; set; }
         public string? Status { get; set; }
-        public ICollection<ClassChildren>? ClassChildrens { get; set; }
-        public ICollection<ClassTeacher>? ClassTeachers { get; set; }
+        public string? EPName { get; set; }
+        public ICollection<ClassChildrenResponse>? ClassChildrens { get; set; }
+        public ICollection<ClassTeacherResponse>? ClassTeachers { get; set; }
     }
 }

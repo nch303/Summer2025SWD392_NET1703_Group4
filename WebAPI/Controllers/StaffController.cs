@@ -16,15 +16,17 @@ namespace WebAPI.Controllers
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
         private readonly IClassService _classService; 
+        private readonly IEAService _EAService;
 
         public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
-            , INotificationService notificationService, IClassService classService)
+            , INotificationService notificationService, IClassService classService, IEAService eAService)
         {
             _staffService = staffService;
             _childrenService = childrenService;
             _mapper = mapper;
             _notificationService = notificationService;
             _classService = classService;
+            _EAService = eAService;
         }
 
         [HttpGet("GetPaidChildren")]
@@ -52,6 +54,11 @@ namespace WebAPI.Controllers
                 // Update the status of each child to "Active"
                 foreach (var childId in childrenIds)
                 {
+
+                    var application = await _EAService.GetApplicatioinByChildID(childId);
+                    application.Status = "Enrolled";
+                    await _EAService.UpdateEnrollmentApplicationAsync(application);
+
                     var child = await _childrenService.GetChildByIdAsync(childId);
                     if (child == null)
                     {

@@ -4,6 +4,7 @@ using Infrastructure.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250619173427_RemoveSlotAmountInSyllabus")]
+    partial class RemoveSlotAmountInSyllabus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,7 +170,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int?>("EnrichmentProgramId")
+                    b.Property<int>("EnrichmentProgramId")
                         .HasColumnType("int");
 
                     b.Property<int>("GradeLevelID")
@@ -536,8 +539,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("SyllabusID")
-                        .IsUnique();
+                    b.HasIndex("SyllabusID");
 
                     b.ToTable("SyllabusDetails");
                 });
@@ -645,7 +647,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.EnrichmentProgram", "EnrichmentPrograms")
                         .WithMany("Classes")
                         .HasForeignKey("EnrichmentProgramId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.GradeLevel", "GradeLevels")
                         .WithMany("Classes")
@@ -822,8 +825,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.SyllabusDetail", b =>
                 {
                     b.HasOne("Domain.Entities.Syllabus", "Syllabi")
-                        .WithOne("SyllabusDetails")
-                        .HasForeignKey("Domain.Entities.SyllabusDetail", "SyllabusID")
+                        .WithMany("SyllabusDetails")
+                        .HasForeignKey("SyllabusID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

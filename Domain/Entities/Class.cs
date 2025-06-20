@@ -15,6 +15,7 @@ namespace Domain.Entities
         public int SyllabusID { get; set; }
         [Required]
         public int GradeLevelID { get; set; }
+        public int? EnrichmentProgramId { get; set; }
 
         public int Quantity { get; set; }
         public int MaxChildren {  get; set; }
@@ -26,6 +27,8 @@ namespace Domain.Entities
         public Syllabus? Syllabi { get; set; }
         [ForeignKey("GradeLevelID")]
         public GradeLevel? GradeLevels { get; set; }
+        [ForeignKey("EnrichmentProgramId")]
+        public EnrichmentProgram? EnrichmentPrograms { get; set; }
         public ICollection<ClassTeacher>? ClassTeachers { get; set; }    
     }
 }
