@@ -8,6 +8,7 @@ import { ProcessingSpinnerProvider } from '../components/spinner/ProcessingSpinn
 import MainLayout from '../layouts/MainLayout';
 import StaffLayout from '../layouts/StaffLayout';
 import AdminLayout from '../layouts/AdminLayout';
+import TeacherLayout from '../layouts/TeacherLayout';
 
 // Pages
 import HomePage from '../pages/home/HomePage';
@@ -40,6 +41,13 @@ import EnrollmentApplicationManagement from '../pages/staff-dashboard/Enrollment
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
+import AdminSyllabus from '../pages/admin/AdminSyllabus';
+
+// Teacher Pages
+import TeacherDashboard from '../pages/teacher/TeacherDashboard';
+import TeacherClass from '../pages/teacher/TeacherClass';
+import TeacherStudentClass from '../pages/teacher/TeacherStudentClass';
+import TeacherSyllabus from '../pages/teacher/TeacherSyllabus';
 
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
@@ -171,6 +179,7 @@ function App() {
             </ProtectedRoute>
           }>
             <Route index element={<AdminPage />} />
+            <Route path="syllabus" element={<AdminSyllabus />} />
             <Route path="students" element={<div>Students Management</div>} />
             <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
@@ -178,7 +187,23 @@ function App() {
             <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />
           </Route>
-          
+
+          {/* Teacher Routes */}
+          <Route path="/teacher" element={
+            <ProtectedRoute allowedRoles={['Teacher']}>
+              <TeacherLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<Navigate to="/teacher/dashboard" replace />} />
+            <Route path="dashboard" element={<TeacherDashboard />} />
+            <Route path="classes" element={<TeacherClass />} />
+            <Route path="classes/:classId" element={<TeacherStudentClass />} />
+            <Route path="syllabus" element={<TeacherSyllabus />} />
+            <Route path="schedule" element={<div>Schedule</div>} />
+            <Route path="assignments" element={<div>Assignments</div>} />
+            <Route path="messages" element={<div>Messages</div>} />
+            <Route path="settings" element={<div>Settings</div>} />
+          </Route>
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

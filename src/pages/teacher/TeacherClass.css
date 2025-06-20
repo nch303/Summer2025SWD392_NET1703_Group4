@@ -1,0 +1,378 @@
+.teacher-class-container {
+  padding: 24px 0;
+}
+
+.class-header {
+  margin-bottom: 32px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.header-left h2 {
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 28px;
+  background: linear-gradient(120deg, #1677ff, #39c0ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.search-filter {
+  display: flex;
+  gap: 12px;
+}
+
+.loading-container, .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  padding: 40px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.skeleton-container {
+  margin-top: 24px;
+}
+
+.class-dashboard {
+  margin-bottom: 32px;
+}
+
+.dashboard-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card-content {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.dashboard-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+.total-classes .dashboard-icon {
+  background-color: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+}
+
+.total-students .dashboard-icon {
+  background-color: rgba(82, 196, 26, 0.1);
+  color: #52c41a;
+}
+
+.active-classes .dashboard-icon {
+  background-color: rgba(250, 173, 20, 0.1);
+  color: #faad14;
+}
+
+.dashboard-info {
+  flex: 1;
+}
+
+.dashboard-value {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.dashboard-label {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.class-card {
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.class-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  border-color: #1890ff;
+}
+
+.class-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.class-avatar-container {
+  margin-bottom: 16px;
+}
+
+.class-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1890ff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(24, 144, 255, 0.2);
+}
+
+.class-main-info {
+  width: 100%;
+  text-align: center;
+}
+
+.class-name-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.class-name {
+  margin-bottom: 8px !important;
+  font-weight: 600;
+}
+
+.grade-tag {
+  font-size: 12px;
+}
+
+.class-curriculum {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.curriculum-name {
+  font-weight: 500;
+}
+
+.student-count {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.status-tag {
+  font-weight: 500;
+}
+
+.class-card .ant-card-actions {
+  background-color: #fafafa;
+}
+
+.class-card .ant-card-actions > li {
+  margin: 8px 0;
+}
+
+.card-link-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.class-card-header {
+  position: relative;
+  margin-bottom: 16px;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.class-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.class-title-section h4 {
+  margin-bottom: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.class-info {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.student-count-label {
+  color: #8c8c8c;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.class-list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.class-list-card {
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.class-list-card:hover {
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1890ff;
+}
+
+.list-card-content {
+  display: flex;
+  align-items: center;
+}
+
+.list-card-left {
+  margin-right: 16px;
+}
+
+.list-avatar {
+  background: linear-gradient(135deg, #1677ff, #39c0ed);
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.list-card-middle {
+  flex: 1;
+}
+
+.list-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.list-card-title h4 {
+  margin: 0;
+}
+
+.list-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.list-card-right {
+  margin-left: 16px;
+}
+
+.class-tabs {
+  margin-top: 24px;
+}
+
+.class-tabs .ant-tabs-nav {
+  margin-bottom: 24px;
+}
+
+.class-tabs .ant-tabs-tab {
+  padding: 12px 20px;
+}
+
+.class-tabs .ant-tabs-tab-active {
+  font-weight: 600;
+}
+
+@media (max-width: 992px) {
+  .header-top {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .header-right {
+    align-self: flex-start;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .search-filter {
+    width: 100%;
+  }
+  
+  .search-filter .ant-input-search {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .class-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .class-title-section {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .list-card-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .list-card-left,
+  .list-card-right {
+    margin: 0 0 16px;
+  }
+  
+  .list-card-title,
+  .list-card-details {
+    justify-content: center;
+  }
+}

@@ -90,6 +90,14 @@
   .staff-user .notification-modal {
     right: -190px;
   }
+
+  .teacher-user .notification-modal {
+    right: -165px;
+  }
+
+  .admin-user .notification-modal {
+    right: -165px;
+  }
   
   @keyframes notification-appear {
     from {
