@@ -27,5 +27,30 @@ namespace Application.Services
         {
             return await _newsRepository.ViewNewsDetail(id);
         }
+
+        public async Task<News> CreateNewsAsync(News news)
+        {
+            return await _newsRepository.CreateNewsAsynce(news);
+        }
+
+        public async Task<News> UpdateNewsAsync(News news)
+        {
+            return await _newsRepository.UpdateNewsAsynce(news);
+        }
+
+        public async Task<bool> DeleteNewsAsync(int id)
+        {
+            return await _newsRepository.DeleteNewsAsynce(id);
+        }
+
+        public async Task<List<News>> SearchNewsAsync(string keyword)
+        {
+            return await _newsRepository.SearchNewsAsync(keyword);
+        }
+
+        public async Task<News> GetByIdAsync(int id)
+        {
+            return await _newsRepository.ViewNewsDetail(id);
+        }
     }
 }

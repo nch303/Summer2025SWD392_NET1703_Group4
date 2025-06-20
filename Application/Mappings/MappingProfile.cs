@@ -25,6 +25,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Slot, opt => opt.MapFrom(src => src.SyllabusDetails!.Slot))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.SyllabusDetails!.Content))
                 .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.SyllabusDetails!.Duration));
+            CreateMap<NewsRequest, News>();
+            CreateMap<News, NewsResponse>();
 
             CreateMap<RegisterRequest, Account>();
             CreateMap<Account, AccountResponse>();

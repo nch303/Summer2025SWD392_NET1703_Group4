@@ -14,9 +14,9 @@ namespace Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
 
-        public NewsRepository(AppDbContext context) 
-        { 
-            _context = context; 
+        public NewsRepository(AppDbContext context)
+        {
+            _context = context;
         }
 
         public async Task<(List<News> Items, int TotalCount)> GetListOfNews(int page, int pageSize)
@@ -39,6 +39,47 @@ namespace Infrastructure.Repositories
         {
             var result = await _context.News.FirstOrDefaultAsync(a => a.ID == id);
             return result!;
+        }
+
+        public async Task<News> CreateNewsAsynce(News news)
+        {
+            _context.News.Add(news);
+            await _context.SaveChangesAsync();
+            return news;
+        }
+
+        public async Task<News> UpdateNewsAsynce(News news)
+        {
+            _context.News.Update(news);
+            await _context.SaveChangesAsync();
+            return news;
+        }
+
+        public async Task<bool> DeleteNewsAsynce(int id)
+        {
+            var news = await _context.News.FindAsync(id);
+            if (news == null)
+            {
+                return false;
+            }
+            _context.News.Remove(news);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<News>> SearchNewsAsync(string keyword)
+        {
+            var query = _context.News.AsQueryable();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(n => n.Title.Contains(keyword) || n.Content.Contains(keyword));
+            }
+            return await query.ToListAsync();
+        }
+
+        public async Task<News> GetByIdAsync(int id)
+        {
+            return await _context.News.FirstOrDefaultAsync(n => n.ID == id) ?? throw new KeyNotFoundException("News not found");
         }
     }
 }
