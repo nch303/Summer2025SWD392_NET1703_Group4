@@ -8,6 +8,7 @@ namespace Application.DTOs.Response
 {
     public class ClassResponse
     {
+        public int ID { get; set; }
         public string? Name { get; set; }
         public string? SyllabusName { get; set; }
         public string? GradeLevelName { get; set; }
