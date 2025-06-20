@@ -51,13 +51,16 @@ namespace Application.Services
             // Check if grade level is not matched
             var classInfo = await _classService.GetClass(classId);
 
-            foreach (var childId in childrenIds)
+            if (classInfo.EnrichmentProgramId == null)
             {
-                var child = await _childrenService.GetChildByIdAsync(childId);
-                var application = await _eARepository.GetApplicatioinByChildID(childId);
-                if ( application.GradeLevelID != classInfo?.GradeLevelID)
+                foreach (var childId in childrenIds)
                 {
-                    throw new Exception($"Child {child!.Name} with ID {childId} does not match the grade level of the class {classInfo?.Name}.");
+                    var child = await _childrenService.GetChildByIdAsync(childId);
+                    var application = await _eARepository.GetApplicatioinByChildID(childId);
+                    if (application.GradeLevelID != classInfo?.GradeLevelID)
+                    {
+                        throw new Exception($"Child {child!.Name} with ID {childId} does not match the grade level of the class {classInfo?.Name}.");
+                    }
                 }
             }
 
