@@ -4,7 +4,8 @@ import {
   faSearch, faTimes, faEye, faCheck, faBan, faFileAlt, 
   faChild, faUser, faClipboardList, faCalendarAlt, faMapMarkerAlt,
   faVenusMars, faFileContract, faFilter, faPhone, faClock, faCheckCircle,
-  faBell, faPaperPlane, faMoneyBillWave, faUserGraduate, faChevronUp, faChevronDown
+  faBell, faPaperPlane, faMoneyBillWave, faUserGraduate, faChevronUp, faChevronDown,
+  faAngleLeft, faAngleRight, faAngleDoubleLeft, faAngleDoubleRight
 } from '@fortawesome/free-solid-svg-icons';
 import { getAllApplications, getApplicationDetail, approveApplication, rejectApplication, createNotification } from './EnrollmentApplicationManagementService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
@@ -35,6 +36,10 @@ const EnrollmentApplicationManagement = () => {
   
   // Thêm state mới để quản lý trạng thái thu gọn
   const [statsCollapsed, setStatsCollapsed] = useState(false);
+  
+  // Add these state variables near the top with other useState declarations
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(7);
   
   useEffect(() => {
     fetchApplications();
@@ -235,6 +240,15 @@ const EnrollmentApplicationManagement = () => {
     setStatsCollapsed(!statsCollapsed);
   };
   
+  // Calculate current applications to display
+  const indexOfLastApplication = currentPage * itemsPerPage;
+  const indexOfFirstApplication = indexOfLastApplication - itemsPerPage;
+  const currentApplications = filteredApplications.slice(indexOfFirstApplication, indexOfLastApplication);
+  
+  // Add pagination function
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+  
   return (
     <div className="enrollment-management">
       <toast.ToastContainer position="top-right" />
@@ -398,7 +412,7 @@ const EnrollmentApplicationManagement = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredApplications.map((application) => (
+                  {currentApplications.map((application) => (
                     <tr 
                       key={application.id} 
                       className="application-row"
@@ -481,6 +495,49 @@ const EnrollmentApplicationManagement = () => {
             </div>
           )}
         </>
+      )}
+      
+      {filteredApplications.length > 0 && (
+        <div className="enrollment-pagination">
+          <button 
+            onClick={() => paginate(1)} 
+            disabled={currentPage === 1}
+            className="enrollment-pagination-button enrollment-first-page"
+            title="Trang đầu"
+          >
+            <FontAwesomeIcon icon={faAngleDoubleLeft} />
+          </button>
+          <button 
+            onClick={() => paginate(currentPage - 1)} 
+            disabled={currentPage === 1}
+            className="enrollment-pagination-button"
+            title="Trang trước"
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </button>
+          
+          <div className="enrollment-pagination-info">
+            <span className="enrollment-current-page">{currentPage}</span>
+            <span className="enrollment-total-pages">/ {totalPages}</span>
+          </div>
+          
+          <button 
+            onClick={() => paginate(currentPage + 1)} 
+            disabled={currentPage === totalPages}
+            className="enrollment-pagination-button"
+            title="Trang sau"
+          >
+            <FontAwesomeIcon icon={faAngleRight} />
+          </button>
+          <button 
+            onClick={() => paginate(totalPages)} 
+            disabled={currentPage === totalPages}
+            className="enrollment-pagination-button enrollment-last-page"
+            title="Trang cuối"
+          >
+            <FontAwesomeIcon icon={faAngleDoubleRight} />
+          </button>
+        </div>
       )}
       
       {isModalOpen && applicationDetail && (

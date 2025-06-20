@@ -108,11 +108,12 @@
 }
 
 .message {
-  margin: 15px 20px;
-  padding: 12px;
+  margin: 15px 0;
+  padding: 12px 16px;
   border-radius: 8px;
   display: flex;
   align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .success-message {
@@ -122,14 +123,21 @@
 }
 
 .error-message {
-  background-color: #ffeaea;
-  color: #cc0000;
-  border: 1px solid #ffd0d0;
+  background-color: #ffebee;
+  color: #d32f2f;
+  border-left: 4px solid #f44336;
+}
+
+.error-message .message-icon {
+  color: #f44336;
 }
 
 .message-icon {
   margin-right: 12px;
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .enrollment-step {
@@ -455,11 +463,17 @@
 }
 
 .loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
+  z-index: 1000;
 }
 
 .loading-spinner {
@@ -726,6 +740,15 @@
   background-color: rgba(255, 255, 255, 0.5);
 }
 
+.readonly-value.error-message {
+  border-bottom: none;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: #d32f2f;
+  font-weight: normal;
+}
+
 .grade-select {
   flex: 1;
   border: 1px solid #cfd8dc;
@@ -833,7 +856,7 @@
   position: relative;
   z-index: 1;
   padding: 3px 10px;
-  background-color: rgba(255, 255, 255, 0.8);
+  /* background-color: rgba(255, 255, 255, 0.8); */
   border-radius: 15px;
   font-size: 14px;
 }
@@ -1122,3 +1145,121 @@
 .principal-signature .date-section {
   gap: 30px;
 }
+
+.grade-field {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.grade-radio-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.grade-radio-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 12px 16px;
+  background-color: #f9fafc;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+  color: #455a64;
+  position: relative;
+  width: 120px;
+  height: 45px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.grade-radio-label:hover {
+  background-color: #f0f4f8;
+  border-color: #c0c8d0;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.grade-radio-label.active {
+  background-color: #ff7043;
+  border: 2px solid #ff5722;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(255, 112, 67, 0.25);
+  transform: translateY(-2px);
+}
+
+.grade-radio-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.grade-radio-label.recommended {
+  border: 2px dashed #4caf50;
+}
+
+.grade-radio-label.recommended::after {
+  content: "Phù hợp";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  background-color: #4caf50;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.grade-radio-text {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .grade-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .grade-radio-label {
+    width: calc(50% - 16px);
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .grade-radio-label {
+    width: 100%;
+  }
+}
+
+
+/* When both recommended and active */
+.grade-radio-label.active.recommended::after {
+  background-color: #ff5722;
+}
+
+/* Ensure these elements don't cause conflicts */
+.enrollment-container .traditional-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.enrollment-container .form-field {
+  margin-bottom: 15px;
+}
+

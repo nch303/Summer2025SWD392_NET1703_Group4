@@ -1,0 +1,230 @@
+.teacher-student-class-container {
+  padding: 24px 0;
+}
+
+.class-student-header {
+  margin-bottom: 24px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.header-left h2 {
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 28px;
+  background: linear-gradient(120deg, #1677ff, #39c0ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.search-filter {
+  display: flex;
+  gap: 12px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 16px;
+}
+
+/* Table styling */
+.students-table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.student-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-id {
+  font-size: 12px;
+}
+
+/* Grid view styling */
+.student-card {
+  transition: all 0.3s;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.student-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  border-color: #1890ff;
+}
+
+.student-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.student-avatar {
+  margin-bottom: 16px;
+  border: 2px solid #f0f0f0;
+}
+
+.student-details {
+  width: 100%;
+  text-align: center;
+}
+
+.student-name {
+  margin-bottom: 8px !important;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.student-city {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive styling */
+@media (max-width: 992px) {
+  .header-top {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .header-right {
+    align-self: flex-start;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .search-filter {
+    width: 100%;
+  }
+  
+  .search-filter .ant-input-search {
+    width: 100%;
+  }
+}
+
+/* Thêm CSS cho nút Back */
+.back-button {
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 14px;
+  color: #1890ff;
+  border-color: #1890ff;
+}
+
+.back-btn:hover {
+  color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.back-btn .anticon {
+  margin-right: 6px;
+}
+
+/* Thêm CSS cho modal chi tiết học sinh vào cuối file */
+.student-detail-modal .ant-modal-content {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.student-detail-modal .ant-modal-header {
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  gap: 16px;
+}
+
+.student-detail-content {
+  padding: 16px 0;
+}
+
+.student-profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.detail-avatar {
+  border: 2px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.student-profile-info h3 {
+  margin-bottom: 8px;
+}
+
+.profile-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.student-detail-descriptions {
+  margin-bottom: 24px;
+}
+
+.student-detail-descriptions .ant-descriptions-item-label {
+  width: 30%;
+  background-color: #fafafa;
+}
+
+.certificate-preview {
+  max-width: 100%;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}

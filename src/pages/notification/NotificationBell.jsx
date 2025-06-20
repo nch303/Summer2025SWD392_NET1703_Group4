@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getNotifications, markNotificationAsRead } from './NotificationService';
+import { useUser } from '../../contexts/UserContext';
 import './NotificationBell.css';
 
 const NotificationBell = () => {
@@ -12,6 +13,12 @@ const NotificationBell = () => {
   const [selectedNotification, setSelectedNotification] = useState(null);
   const modalRef = useRef(null);
   const previousCountRef = useRef(0);
+  const { currentUser } = useUser();
+  
+  // Check if user is staff
+  const isStaff = currentUser?.roleName === 'Staff';
+  const isTeacher = currentUser?.roleName === 'Teacher';
+  const isAdmin = currentUser?.roleName === 'Admin';
   
   // Fetch notifications - made into a callback so it can be referenced in effects
   const fetchNotifications = useCallback(async (showLoading = true) => {
@@ -118,7 +125,7 @@ const NotificationBell = () => {
     : notifications.filter(notification => !notification.isRead);
 
   return (
-    <div className="notification-bell-container" ref={modalRef}>
+    <div className={`notification-bell-container ${isStaff ? 'staff-user' : isTeacher ? 'teacher-user' : isAdmin ? 'admin-user' : ''}`} ref={modalRef}>
       <button 
         className={`notification-bell-button ${hasNewNotifications ? 'new-notification' : ''}`}
         onClick={() => setIsOpen(!isOpen)}

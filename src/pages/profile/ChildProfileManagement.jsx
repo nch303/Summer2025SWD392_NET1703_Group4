@@ -27,8 +27,11 @@ const ChildProfileManagement = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [birthCertificateFile, setBirthCertificateFile] = useState(null);
 
-  // Thêm state để quản lý lỗi form
+  // Thêm state để quản lý lỗi
   const [formErrors, setFormErrors] = useState({});
+
+  // Add this new state at the top of the component with other state declarations
+  const [enrollmentError, setEnrollmentError] = useState({ show: false, childName: '' });
 
   useEffect(() => {
     fetchChildren();
@@ -380,14 +383,20 @@ const ChildProfileManagement = () => {
                   >
                     <FontAwesomeIcon icon="trash" />
                   </button>
-                  <Link
-                    to={`/enrollment-application/${child.id}`}
+                  <button
                     className="enroll-child-btn"
+                    onClick={() => {
+                      if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
+                        setEnrollmentError({ show: true, childName: child.name });
+                      } else {
+                        window.location.href = `/enrollment-application/${child.id}`;
+                      }
+                    }}
                     title="Nhập học"
                     aria-label="Nhập học"
                   >
                     <FontAwesomeIcon icon="graduation-cap" />
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
@@ -611,6 +620,35 @@ const ChildProfileManagement = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enrollment Error Popup */}
+      {enrollmentError.show && (
+        <div className="modal-overlay" onClick={() => setEnrollmentError({ show: false, childName: '' })}>
+          <div className="modal-content error-popup" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3><FontAwesomeIcon icon="exclamation-triangle" /> Thông báo</h3>
+              <button 
+                className="modal-close-btn" 
+                onClick={() => setEnrollmentError({ show: false, childName: '' })}
+                aria-label="Đóng"
+              >
+                <FontAwesomeIcon icon="times" />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>Hiện tại bé {enrollmentError.childName} đang có một đơn đang trong quá trình đăng ký.</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="confirm-btn"
+                onClick={() => setEnrollmentError({ show: false, childName: '' })}
+              >
+                <FontAwesomeIcon icon="check" /> Đã hiểu
+              </button>
             </div>
           </div>
         </div>

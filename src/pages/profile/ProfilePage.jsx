@@ -507,15 +507,6 @@ const ProfilePage = () => {
                   <h2>Bảo mật tài khoản</h2>
                 </div>
                 <div className="security-settings">
-                  <div className="security-section-header">
-                    <h3>
-                      <FontAwesomeIcon icon="key" />
-                      Thay đổi mật khẩu
-                    </h3>
-                    <p className="security-description">
-                      Đổi mật khẩu thường xuyên để bảo vệ tài khoản của bạn tốt hơn.
-                    </p>
-                  </div>
                   <ChangePasswordForm />
                 </div>
               </div>

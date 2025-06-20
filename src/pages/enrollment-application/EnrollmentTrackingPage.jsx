@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail, createPaymentUrlForEnrollment, getInvoiceDetails } from './EnrollmentTrackingService';
+import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail, createPaymentUrlForEnrollment, getInvoiceDetails, getApplicationDescription } from './EnrollmentTrackingService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import './EnrollmentTrackingPage.css';
@@ -21,6 +21,7 @@ const EnrollmentTrackingPage = () => {
   const modalOverlayRef = useRef(null);
   const [invoices, setInvoices] = useState({});
   const [processingPayment, setProcessingPayment] = useState({});
+  const [feeDescription, setFeeDescription] = useState("");
   
   const { showSpinner, hideSpinner } = useProcessingSpinner();
   const toast = useCustomToast();
@@ -81,6 +82,16 @@ const EnrollmentTrackingPage = () => {
     }
   };
 
+  const fetchFeeDescription = async (childId) => {
+    try {
+      const data = await getApplicationDescription(childId);
+      setFeeDescription(data.description || "");
+    } catch (err) {
+      console.error("Error fetching fee description:", err);
+      setFeeDescription("");
+    }
+  };
+
   const handleDetailClick = (application) => {
     // Store the current scroll position
     const scrollY = window.scrollY;
@@ -93,6 +104,7 @@ const EnrollmentTrackingPage = () => {
     
     setSelectedApplication(application);
     fetchApplicationDetail(application.eaid);
+    fetchFeeDescription(application.childrenID);
     setShowDetailModal(true);
     
     setTimeout(() => {
@@ -222,66 +234,25 @@ const EnrollmentTrackingPage = () => {
   
   const handlePayment = async (application) => {
     try {
-      // Set this application's payment as processing
       setProcessingPayment(prev => ({ ...prev, [application.eaid]: true }));
-      
-      let paymentWindow = null;
-      
-      // Check if we already have an invoice with a payment link
-      if (application.invoiceID && invoices[application.invoiceID]) {
-        const invoice = invoices[application.invoiceID];
-        if (invoice.paymentLink) {
-          // Use existing payment link
-          showSpinner('Đang chuyển đến trang thanh toán...');
-          paymentWindow = window.open(invoice.paymentLink, '_blank');
-          
-          // Set up window close monitoring with faster checking (300ms interval)
-          const checkWindowClosed = setInterval(() => {
-            if (paymentWindow && paymentWindow.closed) {
-              clearInterval(checkWindowClosed);
-              hideSpinner();
-              setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
-              
-              // Refresh data immediately after payment window closes
-              fetchApplications();
-              toast.info('Đang cập nhật trạng thái thanh toán...');
-            }
-          }, 300);
-          
-          // Safety timeout to reset state after 5 minutes
-          setTimeout(() => {
-            if (!paymentWindow.closed) {
-              hideSpinner();
-              setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
-            }
-            clearInterval(checkWindowClosed);
-          }, 300000);
-          
-          return;
-        }
-      }
-      
-      // Otherwise, create a new payment URL
       showSpinner('Đang tạo liên kết thanh toán...');
+      
       const response = await createPaymentUrlForEnrollment(application.childrenID);
       
       if (response && response.url) {
-        paymentWindow = window.open(response.url, '_blank');
+        const paymentWindow = window.open(response.url, '_blank');
         
-        // Set up window close monitoring with faster checking (300ms interval)
         const checkWindowClosed = setInterval(() => {
           if (paymentWindow && paymentWindow.closed) {
             clearInterval(checkWindowClosed);
             hideSpinner();
             setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
             
-            // Refresh data immediately after payment window closes
             fetchApplications();
             toast.info('Đang cập nhật trạng thái thanh toán...');
           }
         }, 300);
         
-        // Safety timeout to reset state after 5 minutes
         setTimeout(() => {
           if (paymentWindow && !paymentWindow.closed) {
             hideSpinner();
@@ -313,50 +284,12 @@ const EnrollmentTrackingPage = () => {
   };
   
   const renderPaymentButton = (app) => {
-    // Nếu đơn bị từ chối, không hiển thị nút thanh toán
     if (app.status === 'Rejected') {
       return null;
     }
     
-    // Check if payment is processing for this application
     const isProcessing = processingPayment[app.eaid];
     
-    // Nếu có invoice, kiểm tra trạng thái và hiển thị nút phù hợp
-    if (app.invoiceID && invoices[app.invoiceID]) {
-      const invoice = invoices[app.invoiceID];
-      
-      if (invoice.status === 'Failed') {
-        return (
-          <button 
-            className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!isProcessing) handlePayment(app);
-            }}
-            disabled={isProcessing}
-          >
-            <FontAwesomeIcon icon={isProcessing ? "spinner" : "sync"} spin={isProcessing} />
-            {isProcessing ? 'Đang xử lý...' : 'Thử thanh toán lại'}
-          </button>
-        );
-      } else if (invoice.status === 'Pending') {
-        return (
-          <button 
-            className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!isProcessing) handlePayment(app);
-            }}
-            disabled={isProcessing}
-          >
-            <FontAwesomeIcon icon={isProcessing ? "spinner" : "credit-card"} spin={isProcessing} />
-            {isProcessing ? 'Đang xử lý...' : 'Tiếp tục thanh toán'}
-          </button>
-        );
-      }
-    }
-    
-    // Trường hợp chưa có invoice hoặc cần tạo mới
     if (app.status === 'Approved') {
       return (
         <button 
@@ -796,6 +729,33 @@ const EnrollmentTrackingPage = () => {
                       </div>
                     </div>
                   </div>
+                  
+                  {feeDescription && (
+                    <div className="tracking-detail-section">
+                      <h4>
+                        <FontAwesomeIcon icon="money-bill-wave" />
+                        Thông tin học phí
+                      </h4>
+                      <div className="tracking-detail-fee-info">
+                        {feeDescription.split('\n').map((line, index) => {
+                          // Format the fee line - replace parentheses with colon
+                          let formattedLine = line;
+                          if (line.includes('(') && line.includes(')') && !line.includes('Tổng cộng:')) {
+                            formattedLine = line.replace(/\((.*?)\)/, ': $1').replace(' đồng)', ' đồng');
+                          }
+                          
+                          return (
+                            <div 
+                              key={index} 
+                              className={`tracking-detail-fee-line ${line.includes('Tổng cộng:') ? 'tracking-detail-fee-total' : ''}`}
+                            >
+                              {formattedLine}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="tracking-detail-error">
@@ -811,39 +771,19 @@ const EnrollmentTrackingPage = () => {
                 Đóng
               </button>
               {applicationDetail && applicationDetail.status === 'Approved' && (
-                selectedApplication && selectedApplication.invoiceID && invoices[selectedApplication.invoiceID] ? (
-                  <button 
-                    className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
-                    onClick={() => {
-                      if (!processingPayment[selectedApplication.eaid]) {
-                        handlePayment(selectedApplication);
-                      }
-                    }}
-                    disabled={processingPayment[selectedApplication.eaid]}
-                  >
-                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
-                                     spin={processingPayment[selectedApplication.eaid]} />
-                    {processingPayment[selectedApplication.eaid] 
-                      ? 'Đang xử lý...' 
-                      : (invoices[selectedApplication.invoiceID].status === 'Failed' 
-                          ? 'Thử thanh toán lại' 
-                          : 'Tiếp tục thanh toán')}
-                  </button>
-                ) : (
-                  <button 
-                    className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
-                    onClick={() => {
-                      if (!processingPayment[selectedApplication.eaid]) {
+                <button 
+                  className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
+                  onClick={() => {
+                    if (!processingPayment[selectedApplication.eaid]) {
                       handlePayment(selectedApplication);
-                      }
-                    }}
-                    disabled={processingPayment[selectedApplication.eaid]}
-                  >
-                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
-                                     spin={processingPayment[selectedApplication.eaid]} />
-                    {processingPayment[selectedApplication.eaid] ? 'Đang xử lý...' : 'Thanh toán'}
-                  </button>
-                )
+                    }
+                  }}
+                  disabled={processingPayment[selectedApplication.eaid]}
+                >
+                  <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
+                                   spin={processingPayment[selectedApplication.eaid]} />
+                  {processingPayment[selectedApplication.eaid] ? 'Đang xử lý...' : 'Thanh toán học phí'}
+                </button>
               )}
             </div>
           </div>

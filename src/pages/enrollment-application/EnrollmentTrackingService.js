@@ -90,9 +90,25 @@ export const getInvoiceDetails = async (invoiceId) => {
   }
 };
 
+/**
+ * Get fee description for application
+ * @param {string} childId - The ID of the child
+ * @returns {Promise} A promise that resolves to the description data
+ */
+export const getApplicationDescription = async (childId) => {
+  try {
+    const response = await api.get(`/api/EnrollmentApplication/get-application-description/${childId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching application description:', error);
+    throw error;
+  }
+};
+
 export default {
   getEnrollmentApplicationsProgress,
   getEnrollmentApplicationDetail,
   createPaymentUrlForEnrollment,
-  getInvoiceDetails
+  getInvoiceDetails,
+  getApplicationDescription
 };

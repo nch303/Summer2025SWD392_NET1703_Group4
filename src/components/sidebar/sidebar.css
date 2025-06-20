@@ -1,4 +1,4 @@
-/* Sidebar styles */
+/* Rename all sidebar classes to be more specific */
 .staff-sidebar {
   width: 260px;
   min-width: 260px;
@@ -18,7 +18,7 @@
   flex-shrink: 0;
 }
 
-.sidebar-header {
+.staff-sidebar-header {
   padding: 20px;
   display: flex;
   align-items: center;
@@ -26,7 +26,7 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.sidebar-title {
+.staff-sidebar-title {
   font-size: 18px;
   font-weight: 600;
   color: #333;
@@ -37,7 +37,7 @@
   transition: opacity 0.2s ease;
 }
 
-.sidebar-toggle {
+.staff-sidebar-toggle {
   background: none;
   border: none;
   color: #666;
@@ -52,22 +52,22 @@
   min-height: 30px;
 }
 
-.sidebar-toggle:hover {
+.staff-sidebar-toggle:hover {
   background-color: #f0f0f0;
 }
 
-.sidebar-toggle svg {
+.staff-sidebar-toggle svg {
   width: 20px;
   height: 20px;
 }
 
-.sidebar-nav {
+.staff-sidebar-nav {
   padding: 10px 0;
   display: flex;
   flex-direction: column;
 }
 
-.sidebar-link {
+.staff-sidebar-link {
   display: flex;
   align-items: center;
   padding: 12px 20px;
@@ -78,7 +78,7 @@
   margin: 2px 0;
 }
 
-.sidebar-icon {
+.staff-sidebar-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,13 +88,13 @@
   transition: margin 0.3s ease;
 }
 
-.sidebar-icon svg {
+.staff-sidebar-icon svg {
   width: 20px;
   height: 20px;
   color: inherit;
 }
 
-.sidebar-text {
+.staff-sidebar-text {
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
@@ -103,12 +103,12 @@
   transition: opacity 0.2s ease;
 }
 
-.sidebar-link:hover {
+.staff-sidebar-link:hover {
   background-color: #f5f7fa;
   color: #4a6cf7;
 }
 
-.sidebar-link.active {
+.staff-sidebar-link.active {
   color: #4a6cf7;
   background-color: #eef1ff;
   border-left: 3px solid #4a6cf7;
@@ -122,33 +122,33 @@
   overflow: visible;
 }
 
-.sidebar-collapsed .sidebar-title {
+.sidebar-collapsed .staff-sidebar-title {
   opacity: 0;
   width: 0;
   margin: 0;
 }
 
-.sidebar-collapsed .sidebar-icon {
+.sidebar-collapsed .staff-sidebar-icon {
   margin-right: 0;
 }
 
-.sidebar-collapsed .sidebar-text {
+.sidebar-collapsed .staff-sidebar-text {
   opacity: 0;
   width: 0;
   margin: 0;
 }
 
-.sidebar-collapsed .sidebar-link {
+.sidebar-collapsed .staff-sidebar-link {
   justify-content: center;
   padding: 12px;
 }
 
 /* Tooltip for collapsed sidebar */
-.sidebar-collapsed .sidebar-link {
+.sidebar-collapsed .staff-sidebar-link {
   position: relative;
 }
 
-.sidebar-collapsed .sidebar-link:hover::after {
+.sidebar-collapsed .staff-sidebar-link:hover::after {
   content: attr(aria-label);
   position: absolute;
   left: 100%;

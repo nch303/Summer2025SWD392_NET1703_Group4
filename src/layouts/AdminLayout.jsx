@@ -15,6 +15,8 @@ import {
   FileTextOutlined,
   NotificationOutlined,
   BarChartOutlined,
+  ReadOutlined,
+  FileProtectOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../contexts/UserContext';
 import Navbar from '../components/navbar/Navbar';
@@ -45,9 +47,29 @@ const AdminLayout = () => {
       label: 'Teachers',
     },
     {
+      key: 'syllabus',
+      icon: <BookOutlined />,
+      label: 'Syllabus',
+    },
+    {
+      key: 'activities',
+      icon: <FileTextOutlined />,
+      label: 'Activities',
+      children: [
+        {
+          key: '/admin/activities/list',
+          label: 'View Activities',
+        },
+        {
+          key: '/admin/activities/create',
+          label: 'Create Activity',
+        },
+      ],
+    {
       key: '/admin/enrichment-activities',
       icon: <BookOutlined />,
       label: 'Enrichment Activities',
+
     },
     {
       key: '/admin/news',

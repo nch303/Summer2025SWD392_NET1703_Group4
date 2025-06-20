@@ -100,21 +100,30 @@ const EnrollmentApplicationPage = () => {
         
         const levels = await getGradeLevels();
         
-        const childAge = calculateAge(childData.birthday);
-        const filteredLevels = levels.filter(level => {
-          if (childAge <= 3 && level.name.includes("Mầm")) return true;
-          if (childAge === 4 && level.name.includes("Chồi")) return true;
-          if (childAge === 5 && level.name.includes("Lá")) return true;
-          return false;
-        });
+        setGradeLevels(levels || []);
         
-        setGradeLevels(filteredLevels || []);
-        
-        if (filteredLevels && filteredLevels.length > 0) {
-          setFormData(prev => ({
-            ...prev,
-            gradeLevelID: filteredLevels[0].id
-          }));
+        if (levels && levels.length > 0) {
+          // ALWAYS select the recommended grade level by default
+          const childAge = calculateAge(childData.birthday);
+          const recommendedLevel = levels.find(level => {
+            if (childAge <= 3 && level.name.includes("Mầm")) return true;
+            if (childAge === 4 && level.name.includes("Chồi")) return true;
+            if (childAge === 5 && level.name.includes("Lá")) return true;
+            return false;
+          });
+          
+          // Always use recommended level, no fallback to first level
+          if (recommendedLevel) {
+            setFormData(prev => ({
+              ...prev,
+              gradeLevelID: recommendedLevel.id.toString()
+            }));
+          } else {
+            setFormData(prev => ({
+              ...prev,
+              gradeLevelID: levels[0].id.toString()
+            }));
+          }
         }
         
         setError('');
@@ -275,23 +284,35 @@ const EnrollmentApplicationPage = () => {
               </div>
               
               <div className="form-section grade-selection">
-                <div className="form-field">
+                <div className="form-field grade-field">
                   <label htmlFor="gradeLevelID">Cấp lớp đăng ký</label>
                   {gradeLevels.length > 0 ? (
-                    <select
-                      id="gradeLevelID"
-                      name="gradeLevelID"
-                      value={formData.gradeLevelID}
-                      onChange={handleInputChange}
-                      required
-                      className="grade-select"
-                    >
-                      {gradeLevels.map((level) => (
-                        <option key={level.id} value={level.id}>
-                          {level.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="grade-radio-group">
+                      {gradeLevels.map((level) => {
+                        // Determine if this is the recommended level based on age
+                        const childAge = calculateAge(child.birthday);
+                        const isRecommended = 
+                          (childAge <= 3 && level.name.includes("Mầm")) ||
+                          (childAge === 4 && level.name.includes("Chồi")) ||
+                          (childAge === 5 && level.name.includes("Lá"));
+                        
+                        return (
+                          <label 
+                            key={level.id} 
+                            className={`grade-radio-label ${formData.gradeLevelID === level.id.toString() ? 'active' : ''} ${isRecommended ? 'recommended' : ''}`}
+                          >
+                            <input
+                              type="radio"
+                              name="gradeLevelID"
+                              value={level.id}
+                              checked={formData.gradeLevelID === level.id.toString()}
+                              onChange={handleInputChange}
+                            />
+                            <span className="grade-radio-text">{level.name}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
                   ) : (
                     <div className="readonly-value error-message">
                       Không có lớp học phù hợp với độ tuổi của trẻ
@@ -302,7 +323,7 @@ const EnrollmentApplicationPage = () => {
                   <div className="grade-info">
                     <FontAwesomeIcon icon="info-circle" className="info-icon" />
                     <span>
-                      Trẻ {calculateAge(child.birthday)} tuổi chỉ được đăng ký lớp 
+                      Trẻ {calculateAge(child.birthday)} tuổi nên đăng ký lớp 
                       {calculateAge(child.birthday) <= 3 ? " Mầm" : 
                        calculateAge(child.birthday) === 4 ? " Chồi" : " Lá"}
                     </span>
