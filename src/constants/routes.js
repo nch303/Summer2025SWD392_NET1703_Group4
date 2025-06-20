@@ -28,4 +28,5 @@ export const ROUTES = {
   STAFF_PAYROLL: '/staff/payroll',
   STAFF_PERFORMANCE: '/staff/performance',
   STAFF_TRAINING: '/staff/training',
+  STAFF_ASSIGN_STUDENTS: '/staff/assign-students',
 };
