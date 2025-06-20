@@ -34,7 +34,8 @@ namespace Infrastructure.Repositories
             var classChildren = childrenIds.Select(id => new ClassChildren
             {
                 ClassID = classId,
-                ChildrenID = id
+                ChildrenID = id, 
+                Status = "Active"
             }).ToList();
 
             _context.ClassChildrens.AddRange(classChildren);

@@ -62,7 +62,9 @@ namespace Infrastructure.Repositories
 
         public async Task<ChildrenGrade> GetChildrenGradesByChildrenIdAsync(Guid childrenId)
         {
-            var childrengrade =  await _context.ChildrenGrades.FirstOrDefaultAsync(cg => cg.ChildrenID == childrenId);
+            var childrengrade =  await _context.ChildrenGrades
+                .Include(cg => cg.GradeLevels)
+                .FirstOrDefaultAsync(cg => cg.ChildrenID == childrenId);
             return childrengrade!;
         }
 

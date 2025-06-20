@@ -248,6 +248,11 @@ namespace WebAPI.Controllers
                     //Gan ApplicationID cho ChildResponse
                     var application = await _eaService.GetApplicatioinByChildID(response[i].ID);
                     response[i].ApplicationID = application?.ID ?? Guid.Empty;
+
+                    //Gan GradeLevel cho ChildResponse
+                    var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
+                    response[i].GradeLevelID = grade?.GradeLevels!.ID ?? 0;
+                    response[i].GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
                 }
 
                 response = response.OrderByDescending(c => c.EnrollDate).ToList();
@@ -271,6 +276,21 @@ namespace WebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("getChildrenByEnrichmentId/{enrichmentId}")]
+        public async Task<IActionResult> GetChildrenByEnrichmentIdAsync(int enrichmentId)
+        {
+            try
+            {
+                var children = await _childrenService.GetChildrenByEnrichmentIdAsync(enrichmentId);
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
