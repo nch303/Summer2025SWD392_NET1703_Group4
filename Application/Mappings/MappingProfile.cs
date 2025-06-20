@@ -137,6 +137,10 @@ namespace Application.Mappings
                 .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src => src.Teachers!.FullName));
 
             CreateMap<Role, RoleResponse>();
+
+            CreateMap<Attendance, AttendanceResponse>()
+                 .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.ClassChildrens!.Childrens!.Name));
+            CreateMap<UpdateAttendanceRequest, Attendance>();
         }
     }
 }
