@@ -46,6 +46,12 @@ import ProtectedRoute from '../components/route-guard/ProtectedRoute';
 import AuthRoute from '../components/route-guard/AuthRoute';
 import { UserProvider } from '../contexts/UserContext';
 
+import EnrichmentActivityListPage from '../pages/enrichment-activities/EnrichmentActivityListPage';
+import SendAnnouncementPage from '../pages/announcement/SendAnnouncementPage';
+import ReportsPage from '../pages/reports/ReportsPage';
+import SyllabusListPage from '../pages/syllabus/SyllabusListPage';
+import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -157,6 +163,7 @@ function App() {
             <Route path="dashboard" element={<StaffDashboard />} />
             <Route path="students" element={<ChildrenManagement />} />
             <Route path="enrollment-applications" element={<EnrollmentApplicationManagement />} />
+            <Route path="assign-students" element={<StaffAssignStudentPage />} />
           </Route>
 
           {/* Admin Routes */}
@@ -170,6 +177,12 @@ function App() {
             <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
             <Route path="classes/list" element={<ClassManagement />} />
+            <Route path="enrichment-activities" element={<EnrichmentActivityListPage />} />
+            <Route path="news" element={<NewsPage />} />
+            <Route path="send-announcement" element={<SendAnnouncementPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="syllabus" element={<SyllabusListPage />} />
+            <Route path="classes" element={<div>Classes Management</div>} />
             <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />
           </Route>
