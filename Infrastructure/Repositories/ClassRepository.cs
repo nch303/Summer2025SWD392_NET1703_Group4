@@ -153,6 +153,8 @@ namespace Infrastructure.Repositories
         {
             var classes = await _context.Classes
                 .Where(c => c.EnrichmentProgramId == enrichmentId)
+                .Include(c => c.ClassChildrens!)
+                    .ThenInclude(cc => cc.Childrens)
                 .ToListAsync();
             return classes;
         }

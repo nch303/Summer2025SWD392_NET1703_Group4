@@ -13,10 +13,12 @@ namespace Application.Services
     {
         private readonly IChildrenRepository _childrenRepository;
         private readonly IAccountService _accountService;
-        public ChildrenService(IChildrenRepository childrenRepository, IAccountService accountService)
+        private readonly IClassService _classService;   
+        public ChildrenService(IChildrenRepository childrenRepository, IAccountService accountService, IClassService classService)
         {
             _accountService = accountService;
             _childrenRepository = childrenRepository;
+            _classService = classService;
         }
         public async Task<Children> CreateChildAsync(Children child)
         {
@@ -76,6 +78,13 @@ namespace Application.Services
         {
             return await _childrenRepository.GetPaidChildrenAsync();
 
+        }
+
+        public async Task<List<Children>> GetChildrenByEnrichmentIdAsync(int enrichmentId)
+        {
+            var classes = await _classService.GetByEnrichmentIdAsync(enrichmentId);
+            var children = classes.SelectMany(c => c.ClassChildrens!.Where(c => c.Status == "Active").Select(cc => cc.Childrens)).ToList();
+            return children!;
         }
     }
 }

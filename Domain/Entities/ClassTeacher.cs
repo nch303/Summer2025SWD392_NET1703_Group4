@@ -13,6 +13,7 @@ namespace Domain.Entities
 
         [Required]
         public int ClassID { get; set; }
+        public string? Status { get; set; }
 
         [ForeignKey("TeacherID")]
         public Account? Teachers { get; set; }
