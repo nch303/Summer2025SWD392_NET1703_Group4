@@ -17,5 +17,10 @@ namespace Application.Interfaces
         Task<List<Class>> GetAllClass();
         Task<List<Class>> GetClassByName(string name);
         Task<List<Class>> GetAllSortedClass(string type, string trend);
+        Task<List<ClassChildren>> AssignChildIntoEnrichmentClass(int classId, List<Guid> childrenId);
+        Task<List<Class>> GetByEnrichmentIdAsync(int enrichmentId);
+        Task<List<Class>> GetClassesByChildIdAsync(Guid childId);
+        Task<Class> OpenClass(int classID);
+        Task<List<Class>> GetClassesByTeacherIdAsync(Guid teacherId);
     }
 }

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Request
 {
-    public class CreateClassRequest
+    public class TuitionRequest
     {
         public string? Name { get; set; }
-        public int SyllabusID { get; set; }
+        public string? Description { get; set; }
+        public DateOnly? Date { get; set; }
+        public double Fee { get; set; }
         public int GradeLevelID { get; set; }
-        public int MaxChildren { get; set; }
-        public int? EnrichmentProgramId { get; set; }
     }
 }

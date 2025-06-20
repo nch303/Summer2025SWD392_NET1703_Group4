@@ -9,13 +9,13 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class StaffController: ControllerBase
+    public class StaffController : ControllerBase
     {
         private readonly IStaffService _staffService;
         private readonly IChildrenService _childrenService;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
-        private readonly IClassService _classService; 
+        private readonly IClassService _classService;
         private readonly IEAService _EAService;
 
         public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
                 foreach (var childId in childrenIds)
                 {
                     var child = await _childrenService.GetChildByIdAsync(childId);
-                    var classInfo = await _classService.GetClass(classId);   
+                    var classInfo = await _classService.GetClass(classId);
 
                     //Update quantity of children in class
                     if (classInfo != null)
@@ -101,7 +101,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -115,7 +115,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -134,7 +134,21 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("openClass)/{classId}")]
+        public async Task<IActionResult> OpenClass(int classId)
+        {
+            try
+            {
+                var openClass = await _classService.OpenClass(classId);
+                return Ok(new { message = "Class is now available" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

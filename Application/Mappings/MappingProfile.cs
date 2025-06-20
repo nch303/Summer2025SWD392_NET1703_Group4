@@ -104,7 +104,9 @@ namespace Application.Mappings
             CreateMap<GradeLevel, GradeLevelResponse>();
             CreateMap<Notification, NotificationResponse>();
 
+            CreateMap<TuitionRequest, TuitionFee>();
             CreateMap<TuitionFee, TuitionWithChildResponse>();
+            CreateMap<TuitionFee, TuitionResponse>();
 
             CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TypePrograms!.Name));

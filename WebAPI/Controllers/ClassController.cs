@@ -126,5 +126,49 @@ namespace WebAPI.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpPost("assign-children-to-enrichmentClass/{enrichmentId}")]
+        public async Task<ActionResult> AssignChildren(int enrichmentId, [FromBody] List<Guid> childrenIds)
+        {
+            try
+            {
+                var result = await _classService.AssignChildIntoEnrichmentClass(enrichmentId, childrenIds);
+                return Ok(new { message = "Assign successfully." });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("get-classes-by-childrenId/{childrenId}")]
+        public async Task<ActionResult> GetClassesByChildrenId(Guid childrenId)
+        {
+            try
+            {
+                var result = await _classService.GetClassesByChildIdAsync(childrenId);
+                var response = _mapper.Map<List<ClassResponse>>(result);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("get-classes-by-teacherId/{teacherId}")]
+        public async Task<ActionResult> GetClassesByTeacherId(Guid teacherId)
+        {
+            try
+            {
+                var result = await _classService.GetClassesByTeacherIdAsync(teacherId);
+                var response = _mapper.Map<List<ClassResponse>>(result);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

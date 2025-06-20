@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
@@ -99,7 +100,7 @@ namespace Infrastructure.Repositories
             var query = _context.Classes
                 .Where(c => c.Status == "Available")
                 .Include(c => c.GradeLevels)  // include related entity
-                .Include (c => c.ClassTeachers!)
+                .Include(c => c.ClassTeachers!)
                     .ThenInclude(a => a.Teachers)
                 .AsQueryable();
 
@@ -146,6 +147,53 @@ namespace Infrastructure.Repositories
             room.SyllabusID = newClass.SyllabusID;
             await _context.SaveChangesAsync();
             return room;
+        }
+
+        public async Task<List<Class>> GetByEnrichmentIdAsync(int enrichmentId)
+        {
+            var classes = await _context.Classes
+                .Where(c => c.EnrichmentProgramId == enrichmentId)
+                .ToListAsync();
+            return classes;
+        }
+
+        public async Task<List<Class>> GetClassesByChildIdAsync(Guid childId)
+        {
+            var classChildren = await _context.ClassChildrens
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls!.GradeLevels)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.Syllabi)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.EnrichmentPrograms)
+                .Where(cc => cc.ChildrenID == childId)
+                .Select(cc => cc.Classes)
+                .ToListAsync();
+            return classChildren!;
+        }
+
+        public async Task<Class> OpenClass(int classID)
+        {
+            var room = await _context.Classes.FirstOrDefaultAsync(a => a.ID == classID);
+            room.Status = "Available";
+            _context.Classes.Update(room);
+            await _context.SaveChangesAsync();
+            return room;
+        }
+
+        public async Task<List<Class>> GetClassesByTeacherIdAsync(Guid teacherId)
+        {
+            var classes = await _context.ClassTeachers
+                .Include(ct => ct.Classes)
+                    .ThenInclude(c => c.GradeLevels)
+                .Include(ct => ct.Classes)
+                    .ThenInclude(c => c.Syllabi)
+                .Include(ct => ct.Classes)
+                    .ThenInclude(c => c.EnrichmentPrograms)
+                .Where(ct => ct.TeacherID == teacherId)
+                .Select(ct => ct.Classes)
+                .ToListAsync();
+            return classes!;
         }
     }
 }
