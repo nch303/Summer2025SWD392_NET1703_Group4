@@ -21,7 +21,7 @@ const ChildrenManagement = () => {
     direction: 'asc'
   });
   
-  const childrenPerPage = 10;
+  const childrenPerPage = 5;
   const toast = useCustomToast();
   const [fetchTrigger, setFetchTrigger] = useState(0);
 

@@ -65,6 +65,7 @@ const AdminLayout = () => {
           label: 'Create Activity',
         },
       ],
+    },
     {
       key: '/admin/enrichment-activities',
       icon: <BookOutlined />,

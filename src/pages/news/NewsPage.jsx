@@ -137,8 +137,8 @@ const NewsPage = () => {
   };
 
   return (
-    <div className="admin-content news-page-container">
-      <Card>
+    <div className="news-page-container">
+
         {/* Decorative elements */}
         <div className="decoration-star star1"></div>
         <div className="decoration-star star2"></div>
@@ -261,8 +261,7 @@ const NewsPage = () => {
             </div>
           </div>
         </div>
-      </Card>
-      
+
       <div className="rainbow-footer"></div>
     </div>
   );

@@ -298,7 +298,7 @@ const StaffAssignStudentPage = () => {
         <Row gutter={[16, 16]}>
           {/* Left side - Classes */}
           <Col xs={24} lg={12}>
-            <Card title="Class List" bordered={false} className="list-card">
+            <Card title="Class List" variant="borderless" className="list-card">
               <Table 
                 dataSource={classList} 
                 columns={classColumns}
@@ -318,7 +318,7 @@ const StaffAssignStudentPage = () => {
                 `Paid Students List (${selectedGradeLevel} Grade Level)` : 
                 "Paid Students List"
               } 
-              bordered={false} 
+              variant="borderless" 
               className="list-card"
             >
               <Table 
@@ -341,7 +341,7 @@ const StaffAssignStudentPage = () => {
         <Divider />
         
         {/* Assignment section */}
-        <Card title="Assignment Information" bordered={false} className="assignment-card">
+        <Card title="Assignment Information" variant="borderless" className="assignment-card">
           <Row gutter={16}>
             <Col span={12}>
               <Text strong>Selected Class:</Text> {classList.find(c => c.id === selectedClassId)?.name || 'None'}
