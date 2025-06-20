@@ -242,6 +242,14 @@ namespace WebAPI.Controllers
             {
                 var children = await _childrenService.GetPaidChildrenAsync();
                 var response = _mapper.Map<List<ChildrenResponse>>(children);
+
+                for (int i = 0; i < response.Count(); i++)
+                {
+                    //Gan ApplicationID cho ChildResponse
+                    var application = await _eaService.GetApplicatioinByChildID(response[i].ID);
+                    response[i].ApplicationID = application?.ID ?? Guid.Empty;
+                }
+
                 response = response.OrderByDescending(c => c.EnrollDate).ToList();
                 return Ok(response);
             }

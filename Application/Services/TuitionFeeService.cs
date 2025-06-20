@@ -151,5 +151,35 @@ namespace Application.Services
             }
             return tuition;
         }
+
+        public async Task<TuitionFee> CreateAsync(TuitionFee tuitionFee)
+        {
+            if (tuitionFee == null)
+            {
+                throw new ArgumentNullException(nameof(tuitionFee), "Tuition fee cannot be null");
+            }
+            var createdTuitionFee = await _tuitionFeeRepository.CreateAsync(tuitionFee);
+            return createdTuitionFee;
+        }
+
+        public async Task<List<TuitionFee>> GetAllTuitionFeesAsync()
+        {
+            var tuitionFees = await _tuitionFeeRepository.GetAllTuitionFeesAsync();
+            if (tuitionFees == null || !tuitionFees.Any())
+            {
+                throw new Exception("No tuition fees found");
+            }
+            return tuitionFees;
+        }
+
+        public async Task<TuitionFee> UpdateAsync(TuitionFee tuitionFee)
+        {
+            if (tuitionFee == null)
+            {
+                throw new ArgumentNullException(nameof(tuitionFee), "Tuition fee cannot be null");
+            }
+            var updatedTuitionFee = await _tuitionFeeRepository.UpdateAsync(tuitionFee);
+            return updatedTuitionFee;
+        }
     }
 }

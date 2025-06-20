@@ -40,5 +40,31 @@ namespace Infrastructure.Repositories
             var tuition = await _context.TuitionFees.FirstOrDefaultAsync(t => t.GradeLevelID == gradeLevelId);
             return tuition!;
         }
+
+        public async Task<TuitionFee> CreateAsync(TuitionFee tuitionFee)
+        {
+            _context.TuitionFees.Add(tuitionFee);
+            await _context.SaveChangesAsync();
+            return tuitionFee;
+        }
+
+        public async Task<List<TuitionFee>> GetAllTuitionFeesAsync()
+        {
+            return await _context.TuitionFees.ToListAsync();
+        }
+
+        public async Task<TuitionFee> UpdateAsync(TuitionFee tuitionFee)
+        {
+            var existingTuitionFee = await _context.TuitionFees.FindAsync(tuitionFee.ID);
+            existingTuitionFee!.Name = tuitionFee.Name;
+            existingTuitionFee.Fee = tuitionFee.Fee;
+            existingTuitionFee.GradeLevelID = tuitionFee.GradeLevelID;
+            existingTuitionFee.Description = tuitionFee.Description;
+            existingTuitionFee.Date = tuitionFee.Date;
+
+            _context.TuitionFees.Update(existingTuitionFee);
+            await _context.SaveChangesAsync();
+            return tuitionFee;
+        }
     }
 }
