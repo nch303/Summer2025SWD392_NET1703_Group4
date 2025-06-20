@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './NewsPage.css';
+import { Card } from 'antd';
 
 const NewsPage = () => {
   // Mock news data - in real app, this would come from an API
@@ -136,129 +137,131 @@ const NewsPage = () => {
   };
 
   return (
-    <div className="news-page-container">
-      {/* Decorative elements */}
-      <div className="decoration-star star1"></div>
-      <div className="decoration-star star2"></div>
-      <div className="decoration-cloud cloud1"></div>
-      <div className="decoration-cloud cloud2"></div>
-      
-      <div className="header-container">
-        <div className="header-content">
-          <h1 className="main-title">
-            Little Stars News
-          </h1>
-          <div className="title-underline"></div>
-          <p className="intro-text">
-            Stay updated with the latest happenings, events, and announcements from our magical world!
-          </p>
-        </div>
-      </div>
-      
-      <div className="news-content-layout">
-        {/* Sidebar with filters */}
-        <div className="news-sidebar">
-          <div className="sidebar-content">
-            <div className="sidebar-section">
-              <h2 className="sidebar-title">News Finder</h2>
-              <div className="sidebar-search">
-                <div className="search-input-container">
-                  <input
-                    type="text"
-                    placeholder="Search for news..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    className="search-input"
-                  />
-                  <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="sidebar-section">
-              <h3 className="sidebar-subtitle">Categories</h3>
-              <div className="category-filters">
-                {categories.map(category => (
-                  <div key={category} className="category-checkbox">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={activeCategories[category] || false}
-                        onChange={() => handleCategoryChange(category)}
-                        className="category-input"
-                      />
-                      <span className="checkbox-custom">
-                        <svg className="checkbox-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                      </span>
-                      <span className="checkbox-text">{category}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="sidebar-section">
-              <h3 className="sidebar-subtitle">Filter Actions</h3>
-              <button className="clear-filters-button" onClick={clearFilters}>
-                <svg className="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-                Clear All Filters
-              </button>
-            </div>
-
-            <div className="sidebar-decoration">
-              <div className="sidebar-balloon balloon-1"></div>
-              <div className="sidebar-balloon balloon-2"></div>
-              <div className="sidebar-balloon balloon-3"></div>
-            </div>
+    <div className="admin-content news-page-container">
+      <Card>
+        {/* Decorative elements */}
+        <div className="decoration-star star1"></div>
+        <div className="decoration-star star2"></div>
+        <div className="decoration-cloud cloud1"></div>
+        <div className="decoration-cloud cloud2"></div>
+        
+        <div className="header-container">
+          <div className="header-content">
+            <h1 className="main-title">
+              Little Stars News
+            </h1>
+            <div className="title-underline"></div>
+            <p className="intro-text">
+              Stay updated with the latest happenings, events, and announcements from our magical world!
+            </p>
           </div>
         </div>
         
-        {/* Main content with news grid */}
-        <div className="news-main-content">
-          <div className="news-card-grid">
-            {filteredNewsItems.length > 0 ? (
-              filteredNewsItems.map(item => (
-                <div key={item.id} className={`news-card card-${item.color}`}>
-                  <div className="news-card-image-container">
-                    <img 
-                      src={`${item.image}?w=400&h=250&fit=crop&auto=format`} 
-                      alt={item.title} 
-                      className="news-card-image" 
+        <div className="news-content-layout">
+          {/* Sidebar with filters */}
+          <div className="news-sidebar">
+            <div className="sidebar-content">
+              <div className="sidebar-section">
+                <h2 className="sidebar-title">News Finder</h2>
+                <div className="sidebar-search">
+                  <div className="search-input-container">
+                    <input
+                      type="text"
+                      placeholder="Search for news..."
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      className="search-input"
                     />
-                    <div className="news-card-category">{item.category}</div>
-                  </div>
-                  <div className="news-card-content">
-                    <div className="news-card-date">{item.date}</div>
-                    <h2 className="news-card-title">{item.title}</h2>
-                    <p className="news-card-excerpt">{item.excerpt}</p>
-                    <button className={`news-card-button button-${item.color}`}>
-                      Read More
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="button-icon">
-                        <path d="M12.293 5.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L16.586 13H5a1 1 0 010-2h11.586l-4.293-4.293a1 1 0 010-1.414z" />
-                      </svg>
-                    </button>
+                    <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="no-results">
-                <svg className="no-results-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                </svg>
-                <h3>No news found</h3>
-                <p>Try adjusting your search or filter settings</p>
-                <button className="clear-filters-button" onClick={clearFilters}>Reset Filters</button>
               </div>
-            )}
+
+              <div className="sidebar-section">
+                <h3 className="sidebar-subtitle">Categories</h3>
+                <div className="category-filters">
+                  {categories.map(category => (
+                    <div key={category} className="category-checkbox">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={activeCategories[category] || false}
+                          onChange={() => handleCategoryChange(category)}
+                          className="category-input"
+                        />
+                        <span className="checkbox-custom">
+                          <svg className="checkbox-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </span>
+                        <span className="checkbox-text">{category}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sidebar-section">
+                <h3 className="sidebar-subtitle">Filter Actions</h3>
+                <button className="clear-filters-button" onClick={clearFilters}>
+                  <svg className="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                  </svg>
+                  Clear All Filters
+                </button>
+              </div>
+
+              <div className="sidebar-decoration">
+                <div className="sidebar-balloon balloon-1"></div>
+                <div className="sidebar-balloon balloon-2"></div>
+                <div className="sidebar-balloon balloon-3"></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Main content with news grid */}
+          <div className="news-main-content">
+            <div className="news-card-grid">
+              {filteredNewsItems.length > 0 ? (
+                filteredNewsItems.map(item => (
+                  <div key={item.id} className={`news-card card-${item.color}`}>
+                    <div className="news-card-image-container">
+                      <img 
+                        src={`${item.image}?w=400&h=250&fit=crop&auto=format`} 
+                        alt={item.title} 
+                        className="news-card-image" 
+                      />
+                      <div className="news-card-category">{item.category}</div>
+                    </div>
+                    <div className="news-card-content">
+                      <div className="news-card-date">{item.date}</div>
+                      <h2 className="news-card-title">{item.title}</h2>
+                      <p className="news-card-excerpt">{item.excerpt}</p>
+                      <button className={`news-card-button button-${item.color}`}>
+                        Read More
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="button-icon">
+                          <path d="M12.293 5.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L16.586 13H5a1 1 0 010-2h11.586l-4.293-4.293a1 1 0 010-1.414z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-results">
+                  <svg className="no-results-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                  </svg>
+                  <h3>No news found</h3>
+                  <p>Try adjusting your search or filter settings</p>
+                  <button className="clear-filters-button" onClick={clearFilters}>Reset Filters</button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </Card>
       
       <div className="rainbow-footer"></div>
     </div>

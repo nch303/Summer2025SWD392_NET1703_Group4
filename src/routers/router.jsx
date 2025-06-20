@@ -23,6 +23,7 @@ import { ROUTES } from '../constants/routes';
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
+import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to={ROUTES.STAFF_DASHBOARD} replace /> },
       { path: 'dashboard', element: <StaffDashboard /> },
       { path: 'students', element: <ChildrenManagement /> },
+      { path: 'assign-students', element: <StaffAssignStudentPage /> },
     ],
   },
 ]);
