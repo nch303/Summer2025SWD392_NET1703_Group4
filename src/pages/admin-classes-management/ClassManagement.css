@@ -1,0 +1,432 @@
+.class-management-container {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: 100%;
+}
+
+/* Improved page header with underline */
+.page-header {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.page-title {
+  color: #1a1a1a;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.header-underline {
+  height: 3px;
+  width: 80px;
+  background: linear-gradient(90deg, #1890ff 0%, #52c41a 100%);
+  border-radius: 3px;
+  margin-bottom: 16px;
+}
+
+/* Section title styling */
+.section-title {
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.section-underline {
+  height: 2px;
+  width: 40px;
+  background-color: #1890ff;
+  margin-top: 4px;
+}
+
+/* Stats cards */
+.stats-row {
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  padding: 8px;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.stat-title {
+  font-weight: 500;
+  font-size: 16px;
+  color: #595959;
+}
+
+/* Main card */
+.class-list-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px 0;
+}
+
+.card-header h4 {
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.add-button {
+  border-radius: 4px;
+  height: 40px;
+  font-weight: 500;
+}
+
+.header-divider {
+  margin: 16px 0;
+  height: 1px;
+  background-color: #f0f0f0;
+}
+
+/* Filter section */
+.filter-section {
+  padding: 0 24px 24px;
+  background-color: #fafafa;
+  border-radius: 4px;
+  margin: 0 24px 24px;
+}
+
+.search-input,
+.status-select,
+.refresh-button {
+  width: 100%;
+}
+
+/* Table styling */
+.table-container {
+  padding: 0 24px 24px;
+}
+
+.classes-table {
+  min-width: 100%;
+}
+
+/* Enhanced table header styling */
+.classes-table .ant-table-thead > tr > th {
+  background-color: #f0f7ff !important;
+  color: #262626;
+  font-weight: 600;
+  padding: 16px 16px;
+  border-bottom: 2px solid #1890ff;
+}
+
+.column-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #262626;
+}
+
+.table-row {
+  transition: all 0.3s;
+}
+
+.table-row:hover {
+  background-color: #f5f8ff !important;
+}
+
+.table-row td {
+  padding: 16px !important;
+}
+
+/* Better alternate row colors */
+.classes-table .ant-table-tbody > tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.classes-table .ant-table-tbody > tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.status-tag-table {
+  font-size: 14px;
+  padding: 4px 8px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.capacity-column {
+  width: 90%;
+  max-width: 180px;
+}
+
+.capacity-text {
+  margin-top: 4px;
+  display: block;
+  font-size: 12px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.expanded-row {
+  padding: 16px;
+  background-color: #f6f8fa;
+  border-radius: 4px;
+  margin: 8px;
+  border-left: 3px solid #1890ff;
+}
+
+/* Class Detail Modal Styles */
+.class-detail-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.class-detail-modal .ant-modal-header {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eaecef;
+  padding: 16px 24px;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.modal-icon {
+  margin-right: 12px;
+  font-size: 22px;
+  color: #1890ff;
+}
+
+.class-detail-content {
+  padding: 0;
+}
+
+.class-header {
+  padding: 16px 0 8px 0;
+  margin-bottom: 16px;
+}
+
+.class-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.class-name h3 {
+  margin: 0;
+}
+
+.status-tag {
+  font-size: 14px;
+  padding: 4px 12px;
+  height: auto;
+}
+
+.class-detail-tabs {
+  margin-top: 16px;
+}
+
+.class-detail-tabs .ant-tabs-nav {
+  margin-bottom: 20px;
+}
+
+.overview-section {
+  padding: 0 4px;
+}
+
+.info-card {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-card .ant-card-head {
+  background-color: #f6f8fa;
+}
+
+.info-item {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.capacity-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 0;
+}
+
+.capacity-text {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.capacity-text .ant-typography {
+  line-height: 1.8;
+}
+
+.list-section {
+  padding: 0 4px;
+}
+
+.teacher-list-item,
+.student-list-item {
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.teacher-list-item:hover,
+.student-list-item:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.teacher-avatar,
+.student-avatar {
+  background-color: #e6f7ff;
+}
+
+.teacher-details,
+.student-details {
+  margin-top: 4px;
+}
+
+.empty-data {
+  margin: 40px 0;
+}
+
+@media (max-width: 768px) {
+  .class-management-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .capacity-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .capacity-text {
+    margin-left: 0;
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  .action-buttons {
+    justify-content: center;
+  }
+}
+
+/* Edit Modal Styles */
+.edit-class-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.edit-class-modal .ant-modal-header {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eaecef;
+  padding: 16px 24px;
+}
+
+.edit-class-content {
+  padding: 16px 8px;
+}
+
+.edit-class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.edit-class-id {
+  font-size: 15px;
+}
+
+.edit-class-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-tag-modal {
+  margin: 0;
+  font-size: 14px;
+  padding: 2px 8px;
+}
+
+.edit-divider {
+  margin: 16px 0;
+}
+
+.edit-form {
+  margin-top: 24px;
+}
+
+.edit-form .ant-form-item-label {
+  font-weight: 500;
+}
+
+.edit-input {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.edit-input-number {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+  gap: 12px;
+}
+
+.cancel-button,
+.save-button {
+  min-width: 120px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.save-button {
+  font-weight: 500;
+}
+
+.ant-form-item-has-error {
+  margin-bottom: 24px;
+}
+
+/* Improved focus styles */
+.edit-input:focus,
+.edit-input-number:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* Animation for modal */
+.edit-class-modal .ant-modal {
+  animation-duration: 0.3s;
+}

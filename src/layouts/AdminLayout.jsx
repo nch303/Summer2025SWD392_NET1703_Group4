@@ -37,42 +37,14 @@ const AdminLayout = () => {
       label: 'Dashboard',
     },
     {
-      key: 'students',
+      key: '/admin/students',
       icon: <TeamOutlined />,
       label: 'Students',
-      children: [
-        {
-          key: '/admin/students/list',
-          label: 'View Students',
-        },
-        {
-          key: '/admin/students/assign-class',
-          label: 'Assign to Class',
-        },
-        {
-          key: '/admin/students/activities',
-          label: 'Enrichment Activities',
-        },
-      ],
     },
     {
-      key: 'classes',
-      icon: <CalendarOutlined />,
-      label: 'Classes',
-      children: [
-        {
-          key: '/admin/classes/list',
-          label: 'View Classes',
-        },
-        {
-          key: '/admin/classes/assign-teacher',
-          label: 'Assign Teacher',
-        },
-        {
-          key: '/admin/classes/syllabi',
-          label: 'Syllabi',
-        },
-      ],
+      key: '/admin/teachers',
+      icon: <UserOutlined />,
+      label: 'Teachers',
     },
     {
       key: 'syllabus',
@@ -93,41 +65,41 @@ const AdminLayout = () => {
           label: 'Create Activity',
         },
       ],
+    {
+      key: '/admin/enrichment-activities',
+      icon: <BookOutlined />,
+      label: 'Enrichment Activities',
+
     },
     {
-      key: 'news',
+      key: '/admin/news',
       icon: <NotificationOutlined />,
       label: 'News',
-      children: [
-        {
-          key: '/admin/news/list',
-          label: 'View News',
-        },
-        {
-          key: '/admin/news/create',
-          label: 'Create News',
-        },
-      ],
     },
     {
-      key: 'users',
-      icon: <UserOutlined />,
-      label: 'Users',
-      children: [
-        {
-          key: '/admin/users/list',
-          label: 'View Users',
-        },
-        {
-          key: '/admin/users/create',
-          label: 'Create User',
-        },
-      ],
+      key: '/admin/send-announcement',
+      icon: <BellOutlined />,
+      label: 'Send Announcement',
     },
     {
-      key: 'reports',
+      key: '/admin/reports',
       icon: <BarChartOutlined />,
       label: 'Reports',
+    },
+    {
+      key: '/admin/syllabus',
+      icon: <FileTextOutlined />,
+      label: 'Syllabus',
+    },
+    {
+      key: '/admin/classes',
+      icon: <CalendarOutlined />,
+      label: 'Classes',
+    },
+    {
+      key: '/admin/users/list',
+      icon: <UserOutlined />,
+      label: 'Users',
     },
     {
       key: '/admin/settings',
