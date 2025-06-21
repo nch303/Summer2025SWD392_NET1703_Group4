@@ -126,7 +126,7 @@
   }
   
   /* Refresh button */
-  .refresh-button {
+  .bell-refresh-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -140,11 +140,11 @@
     transition: all 0.3s;
   }
   
-  .refresh-button:hover {
+  .bell-refresh-button:hover {
     background-color: rgba(255, 138, 101, 0.1);
   }
   
-  .refresh-button svg {
+  .bell-refresh-button svg {
     width: 18px;
     height: 18px;
   }
@@ -154,7 +154,7 @@
     100% { transform: rotate(360deg); }
   }
   
-  .refresh-button.refreshing svg {
+  .bell-refresh-button.refreshing svg {
     animation: spin 1s linear infinite;
   }
   
