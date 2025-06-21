@@ -189,6 +189,11 @@ namespace WebAPI.Controllers
                     //Gan ApplicationID cho ChildResponse
                     var application = await _eaService.GetApplicatioinByChildID(childrenResponse[i].ID);
                     childrenResponse[i].ApplicationID = application?.ID ?? Guid.Empty;
+
+                    //Gan GradeLevel cho ChildResponse
+                    var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(childrenResponse[i].ID);
+                    childrenResponse[i].GradeLevelID = grade?.GradeLevels!.ID ?? 0;
+                    childrenResponse[i].GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
                 }
                 childrenResponse.OrderByDescending(c => c.EnrollDate);
 
