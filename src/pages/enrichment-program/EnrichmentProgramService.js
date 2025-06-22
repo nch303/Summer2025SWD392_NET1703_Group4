@@ -15,6 +15,20 @@ export const getAllEnrichmentPrograms = async () => {
 };
 
 /**
+ * Get all enrichment programs for parents
+ * @returns {Promise<Array>} List of enrichment programs for parents
+ */
+export const getAllEnrichmentProgramsForParent = async () => {
+  try {
+    const response = await api.get('/api/EnrichmentProgam/get-all-enrichment-program-for-parent');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching enrichment programs for parent:', error);
+    throw error;
+  }
+};
+
+/**
  * Get children by parent ID
  * @param {string} parentId - The ID of the parent
  * @returns {Promise<Array>} List of children

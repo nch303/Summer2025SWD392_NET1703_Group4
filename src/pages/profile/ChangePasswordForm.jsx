@@ -212,7 +212,7 @@ const ChangePasswordForm = () => {
             <div className="password-strength-container">
               <div className="password-strength-meter">
                 <div 
-                  className={`password-strength-bar ${
+                  className={`change-password-password-bar ${
                     passwordScore === 0 ? 'strength-none' :
                     passwordScore === 1 ? 'strength-weak' :
                     passwordScore === 2 ? 'strength-fair' :

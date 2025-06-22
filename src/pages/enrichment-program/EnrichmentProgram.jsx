@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getAllEnrichmentPrograms, registerForProgram, getChildrenByParentId } from './EnrichmentProgramService';
+import { getAllEnrichmentProgramsForParent, registerForProgram, getChildrenByParentId } from './EnrichmentProgramService';
 import { useUser } from '../../contexts/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { formatDate } from '../../utils/formatDate';
@@ -37,7 +37,7 @@ const EnrichmentProgram = () => {
     const fetchPrograms = async () => {
       try {
         setLoading(true);
-        const data = await getAllEnrichmentPrograms();
+        const data = await getAllEnrichmentProgramsForParent();
         setPrograms(data);
         setError(null);
       } catch (err) {
@@ -61,7 +61,9 @@ const EnrichmentProgram = () => {
     try {
       setChildrenLoading(true);
       const data = await getChildrenByParentId(currentUser.id);
-      setChildren(data);
+      // Filter out children with null gradeLevelName
+      const filteredData = data.filter(child => child.status === 'Active');
+      setChildren(filteredData);
       setChildrenFetched(true);
       setChildrenLastFetched(Date.now());
       console.log("👶 Prefetched children data");
@@ -771,7 +773,7 @@ const EnrichmentProgram = () => {
                   </>
                 ) : (
                   <div className="enrichment-no-children-message">
-                    <p>Chưa có thông tin con. Vui lòng thêm thông tin con trong trang Hồ sơ.</p>
+                    <p>Con của bạn chưa đăng ký nhập học hoặc đã có lớp học năng khiếu.</p>
                   </div>
                 )}
               </div>
