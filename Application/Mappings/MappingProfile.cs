@@ -56,6 +56,15 @@ namespace Application.Mappings
                 // 🚫 Không ánh xạ ApplicationID → giữ mặc định (null)
                 .ForMember(dest => dest.ApplicationID, opt => opt.Ignore());
 
+            CreateMap<ClassChildren, GetAllClassChildrenResponse>()
+                .ForMember(dest => dest.ChildrenResponse, opt => opt.MapFrom(src => src.Childrens))
+                .ForMember(dest => dest.ClassResponse, opt => opt.MapFrom(src => src.Classes))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
+                .ForMember(dest => dest.AttendanceResponses, opt => opt.MapFrom(src => src.Attendances));
+
+            CreateMap<Attendance,  AttendanceResponse>();
+
 
             CreateMap<EnrichmentProgramRequest, EnrichmentProgram>();
             CreateMap<EnrichmentProgram, EnrichmentProgramResponse>()

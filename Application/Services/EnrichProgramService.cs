@@ -31,7 +31,7 @@ namespace Application.Services
         public async Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsAsync()
         {
             var list = await _enrichProgramRepository.GetAllEnrichmentProgramsAsync();
-            return list.Where(p => !p.IsDelete).ToList();
+            return list.ToList();
         }
 
         public async Task<EnrichmentProgram> CreateEnrichmentProgramAsync(EnrichmentProgram enrichmentProgram)
@@ -52,6 +52,12 @@ namespace Application.Services
         public async Task<List<EnrichmentProgram>> SearchEnrichmentProgramAsync(string keyword)
         {
             return await _enrichProgramRepository.SearchEnrichmentProgramAsync(keyword);
+        }
+
+        public async Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsForParentAsync()
+        {
+            var list = await _enrichProgramRepository.GetAllEnrichmentProgramsForParentAsync();
+            return list.Where(p => !p.IsDelete).ToList();
         }
     }
 }
