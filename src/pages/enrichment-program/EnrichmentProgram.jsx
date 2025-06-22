@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getAllEnrichmentPrograms, registerForProgram, getChildrenByParentId } from './EnrichmentProgramService';
+import { getAllEnrichmentProgramsForParent, registerForProgram, getChildrenByParentId } from './EnrichmentProgramService';
 import { useUser } from '../../contexts/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { formatDate } from '../../utils/formatDate';
@@ -37,7 +37,7 @@ const EnrichmentProgram = () => {
     const fetchPrograms = async () => {
       try {
         setLoading(true);
-        const data = await getAllEnrichmentPrograms();
+        const data = await getAllEnrichmentProgramsForParent();
         setPrograms(data);
         setError(null);
       } catch (err) {
