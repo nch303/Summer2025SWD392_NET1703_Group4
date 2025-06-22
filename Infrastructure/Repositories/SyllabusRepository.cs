@@ -19,15 +19,11 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Syllabus> CreateAsync(Syllabus syllabus, SyllabusDetail detail)
+        public async Task<Syllabus> CreateSyllabus(Syllabus syllabus)
         {
             try
             {
                 _context.Syllabi.Add(syllabus);
-                await _context.SaveChangesAsync();
-
-                detail.SyllabusID = syllabus.ID;
-                _context.SyllabusDetails.Add(detail);
                 await _context.SaveChangesAsync();
                 return syllabus;
             }
@@ -37,17 +33,10 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task<List<Syllabus>> GetAllAsync()
+        public async Task<List<Syllabus>> GetAll()
         {
             return await _context.Syllabi
                 .ToListAsync();
-        }
-
-        public async Task<SyllabusDetail?> GetDetailByIdAsync(int id)
-        {
-            return await _context.SyllabusDetails
-                .Include(s => s.Syllabi)
-                .FirstOrDefaultAsync(s => s.SyllabusID == id);
         }
 
         public async Task<Syllabus?> GetSyllabusById(int id)
@@ -56,10 +45,9 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.ID == id);
         }
 
-        public async Task<Syllabus> UpdateAsync(Syllabus syllabus, SyllabusDetail detail)
+        public async Task<Syllabus> Update(Syllabus syllabus)
         {
             _context.Syllabi.Update(syllabus);
-            _context.SyllabusDetails.Update(detail);
             await _context.SaveChangesAsync();
             return syllabus;
         }

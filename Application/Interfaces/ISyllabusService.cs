@@ -9,9 +9,8 @@ namespace Application.Interfaces
 {
     public interface ISyllabusService
     {
-        Task<Syllabus> CreateAsync(Syllabus syllabus, SyllabusDetail detail);
-        Task<List<Syllabus>> GetAllAsync();
-        Task<SyllabusDetail?> GetDetailByIdAsync(int id);
-        Task<Syllabus> UpdateAsync(int id, Syllabus newSyllabus, SyllabusDetail newDetail);
+        Task<Syllabus> CreateSyllabus(Syllabus syllabus);
+        Task<List<Syllabus>> GetAll();
+        Task<Syllabus> Update(int id, Syllabus newSyllabus);
     }
 }

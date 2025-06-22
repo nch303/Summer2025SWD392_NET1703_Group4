@@ -8,7 +8,6 @@ namespace Application.DTOs.Request
 {
     public class SyllabusDetailRequest
     {
-        public int Slot { get; set; }
         public string? Content { get; set; }
         public int Duration { get; set; }
     }

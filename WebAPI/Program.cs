@@ -41,6 +41,7 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IClassChildrenService, ClassChildrenService>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<ISyllabusService, SyllabusService>();
+builder.Services.AddScoped<ISyllabusDetailService, SyllabusDetailService>();
 
 
 
@@ -62,6 +63,7 @@ builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IClassChildrenRepository, ClassChildrenRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<ISyllabusRepository, SyllabusRepository>();
+builder.Services.AddScoped<ISyllabusDetailRepository, SyllabusDetailRepository>();
 
 // Add VnPay settings
 builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));

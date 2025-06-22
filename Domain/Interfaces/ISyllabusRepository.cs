@@ -9,10 +9,9 @@ namespace Domain.Interfaces
 {
     public interface ISyllabusRepository
     {
-        Task<Syllabus> CreateAsync(Syllabus syllabus, SyllabusDetail detail);
-        Task<List<Syllabus>> GetAllAsync();
-        Task<SyllabusDetail?> GetDetailByIdAsync(int id);
+        Task<Syllabus> CreateSyllabus(Syllabus syllabus);
+        Task<List<Syllabus>> GetAll();
         Task<Syllabus?> GetSyllabusById(int id);
-        Task<Syllabus> UpdateAsync(Syllabus newSyllabus, SyllabusDetail newSyllabusDetail);
+        Task<Syllabus> Update(Syllabus newSyllabus);
     }
 }
