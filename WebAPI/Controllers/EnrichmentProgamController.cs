@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -105,6 +105,22 @@ namespace WebAPI.Controllers
             var enrichmentPrograms = await _enrichProgramService.SearchEnrichmentProgramAsync(keyword);
             var response = _mapper.Map<List<EnrichmentProgramResponse>>(enrichmentPrograms);
             return Ok(response);
+        }
+
+        [HttpGet("get-all-enrichment-program-for-parent")]
+        public async Task<IActionResult> GetAllEnrichmentProgramsForParentAsync()
+        {
+            try
+            {
+                var programs = await _enrichProgramService.GetAllEnrichmentProgramsForParentAsync();
+                var programResponses = new List<EnrichmentProgramResponse>();
+                _mapper.Map(programs, programResponses);
+                return Ok(programResponses);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

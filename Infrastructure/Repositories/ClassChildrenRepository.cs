@@ -34,5 +34,21 @@ namespace Infrastructure.Repositories
             return children;
         }
 
+        public async Task<List<ClassChildren>> GetAllAsync()
+        {
+            var allChildren = await _context.ClassChildrens
+                .Include(cc => cc.Childrens)
+                    .ThenInclude(c => c.Parents)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.Syllabi)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.GradeLevels)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.EnrichmentPrograms)
+                .Include(cc => cc.Attendances)
+                .ToListAsync();
+            return allChildren;
+
+        }
     }
 }
