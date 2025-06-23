@@ -10,6 +10,7 @@ namespace Application.Interfaces
     public interface IAttendanceService
     {
         Task<List<Attendance>> GetOrCreateTodayAttendanceByTeacherIdAsync(Guid teacherId, int classId);
+        Task<List<Attendance>> GetAllAttendanceByClassIdAsync(int classId);
         Task<bool> UpdateAttendanceAsync(List<Attendance> attendances);
     }
 }

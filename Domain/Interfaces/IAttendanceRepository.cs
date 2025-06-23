@@ -10,6 +10,7 @@ namespace Domain.Interfaces
     public interface IAttendanceRepository
     {
         Task<List<Attendance>> GetOrCreateTodayAttendanceByTeacherIdAsync(Guid teacherId, int classId);
+        Task<List<Attendance>> GetAllAttendanceByClassIdAsync(int classId);
         Task<bool> UpdateAttendanceAsync(List<Attendance> attendances);
     }
 }
