@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Card, Row, Col, Statistic, Button, Table, Calendar, Badge, 
   Input, Select, Tabs, Modal, Form, DatePicker, Upload, message,
-  Space, Tag, Tooltip, Popconfirm, Spin
+  Space, Tag, Tooltip, Popconfirm, Spin, Empty, Descriptions
 } from 'antd';
 import { 
   UserOutlined, TeamOutlined, BookOutlined, CalendarOutlined, 
@@ -14,14 +14,8 @@ import { Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip, Legend, ArcElement } from 'chart.js';
 import './AdminPage.css';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
-import {
-  getEnrichmentActivities
-} from '../enrichment-activities/EnrichmentActivityListService';
-import { createEnrichmentActivity } from '../enrichment-activities/EnrichmentActivityCreateService';
-import { updateEnrichmentActivity } from '../enrichment-activities/EnrichmentActivityEditService';
-import { deleteEnrichmentActivity } from '../enrichment-activities/EnrichmentActivityDeleteService';
-import { sendAnnouncement } from '../announcement/SendAnnouncementService';
+import api from '../../config/axiosConfig';
+import { getAllNews, getNewsById, createNews, updateNews, deleteNews } from '../news/NewsService';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, ArcElement);
 
@@ -68,16 +62,19 @@ const AdminPage = () => {
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [newsItems, setNewsItems] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [classList, setClassList] = useState([]);
+  const [classLoading, setClassLoading] = useState(false);
+  const [newsDetailVisible, setNewsDetailVisible] = useState(false);
+  const [selectedNews, setSelectedNews] = useState(null);
+  const [originalNewsImages, setOriginalNewsImages] = useState({ image: null, banner: null });
 
   const fetchChildren = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://localhost:7216/api/Children');
-      if (!response.ok) {
-        throw new Error('Failed to fetch children data');
-      }
-      const data = await response.json();
-      setChildren(data);
+      const response = await api.get('/api/Children');
+      setChildren(response.data);
     } catch (error) {
       message.error('Failed to load children data: ' + error.message);
     } finally {
@@ -87,12 +84,19 @@ const AdminPage = () => {
 
   useEffect(() => {
     if (activeTab === 'students') {
-      fetchChildren();
+      if (searchText.trim() === '') {
+        fetchChildren();
+      } else {
+        searchStudents(searchText);
+      }
     }
     if (activeTab === 'classes') {
-      fetchClassList()
+      fetchClassList();
     }
-  }, [activeTab]);
+    if (activeTab === 'news') {
+      fetchNews();
+    }
+  }, [activeTab, searchText]);
 
   // Filter children based on search text
   const filteredChildren = children.filter(child => 
@@ -103,21 +107,20 @@ const AdminPage = () => {
   // Fetch all classes for dropdown
   const fetchClassList = async () => {
     try {
-      const res = await fetch('https://localhost:7216/api/Class/get-all-classes');
-      if (!res.ok) throw new Error('Failed to fetch class list');
-      const data = await res.json();
-      setClassList(data);
+      setClassLoading(true);
+      const response = await api.get('/api/Class/get-all-classes');
+      setClassList(response.data);
     } catch (err) {
       message.error('Failed to load class list');
+    } finally {
+      setClassLoading(false);
     }
   };
   // Fetch all children for multi-select
   const fetchChildrenList = async () => {
     try {
-      const res = await fetch('https://localhost:7216/api/Children');
-      if (!res.ok) throw new Error('Failed to fetch children list');
-      const data = await res.json();
-      setChildrenList(data);
+      const response = await api.get('/api/Children');
+      setChildrenList(response.data);
     } catch (err) {
       message.error('Failed to load children list');
     }
@@ -136,12 +139,7 @@ const AdminPage = () => {
     }
     setAssignLoading(true);
     try {
-      const res = await fetch(`https://localhost:7216/api/Staff/AssignChildrenToClass/${selectedClassId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedChildren),
-      });
-      if (!res.ok) throw new Error('Failed to assign children to class');
+      await api.post(`/api/Staff/AssignChildrenToClass/${selectedClassId}`, selectedChildren);
       message.success('Children assigned to class successfully!');
       setAssignModalVisible(false);
       setSelectedChildren([]);
@@ -225,8 +223,9 @@ const AdminPage = () => {
           <Input.Search 
             placeholder="Search students..." 
             style={{ width: 300 }} 
-            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={(value) => setSearchText(value)}
             allowClear
+            enterButton
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal('add-student')}>
             Add Student
@@ -310,155 +309,209 @@ const AdminPage = () => {
     <div>
       <Card>
         <Space style={{ marginBottom: 16 }}>
-          <Input.Search placeholder="Search classes..." style={{ width: 300 }} />
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal('add-class')}>
+          <Input.Search
+            placeholder="Search classes..."
+            style={{ width: 300 }}
+            allowClear
+          />
+          <Button type="primary" icon={<PlusOutlined />}>
             Add Class
           </Button>
         </Space>
-        <Table 
-          dataSource={classList}
-          columns={[
-            { title: 'Class Name', dataIndex: 'name' },
-            { title: 'Teacher', dataIndex: 'teacher' },
-            { title: 'Students', dataIndex: 'students' },
-            { title: 'Schedule', dataIndex: 'schedule' },
-            {
-              title: 'Actions',
-              render: (_, record) => (
-                <Space>
-                  <Button icon={<EditOutlined />} onClick={() => showModal('edit-class', record)} />
-                  <Popconfirm
-                    title="Are you sure you want to delete this class?"
-                    onConfirm={() => handleDelete('class', record.id)}
-                  >
-                    <Button icon={<DeleteOutlined />} danger />
-                  </Popconfirm>
-                </Space>
-              ),
-            },
-          ]}
-        />
+        <Spin spinning={classLoading}>
+          <Table
+            dataSource={classList}
+            rowKey="id"
+            columns={[
+              { title: 'Class Name', dataIndex: 'name' },
+              { title: 'Syllabus', dataIndex: 'syllabusName' },
+              { title: 'Grade Level', dataIndex: 'gradeLevelName' },
+              { title: 'Max Children', dataIndex: 'maxChildren' },
+              { title: 'Current Quantity', dataIndex: 'quantity' },
+              { 
+                title: 'Status', 
+                dataIndex: 'status',
+                render: (status) => (
+                  <Tag color={status === 'Available' ? 'green' : 'red'}>
+                    {status}
+                  </Tag>
+                )
+              },
+              {
+                title: 'Actions',
+                render: (_, record) => (
+                  <Space>
+                    <Button icon={<EditOutlined />} />
+                    <Popconfirm
+                      title="Are you sure you want to delete this class?"
+                      onConfirm={() => message.info('Delete action not implemented')}
+                    >
+                      <Button icon={<DeleteOutlined />} danger />
+                    </Popconfirm>
+                  </Space>
+                ),
+              },
+            ]}
+          />
+        </Spin>
       </Card>
     </div>
   );
 
-  // Activities Section
-  const ActivitiesSection = () => (
-    <div>
-      <Card>
-        <Space style={{ marginBottom: 16 }}>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => openActivityModal()}>
-            Add Enrichment Activity
-          </Button>
-          <Button icon={<NotificationOutlined />} onClick={() => setAnnouncementModalVisible(true)}>
-            Send Announcement
-          </Button>
-        </Space>
-        <Table 
-          dataSource={activities}
-          loading={activitiesLoading}
-          rowKey={record => record.id || record.ID}
-          columns={[
-            { title: 'Activity Name', dataIndex: 'name', key: 'name' },
-            { title: '', dataIndex: 'description', key: 'description' },
-            {
-              title: 'Actions',
-              key: 'actions',
-              render: (_, record) => (
-                <Space>
-                  <Button icon={<EditOutlined />} onClick={() => openActivityModal(record)} />
-                  <Popconfirm
-                    title="Are you sure you want to delete this activity?"
-                    onConfirm={() => handleDeleteActivity(record.id || record.ID)}
-                  >
-                    <Button icon={<DeleteOutlined />} danger />
-                  </Popconfirm>
-                </Space>
-              ),
-            },
-          ]}
-        />
-      </Card>
-      <Modal
-        title={editingActivity ? 'Edit Enrichment Activity' : 'Add Enrichment Activity'}
-        open={activityModalVisible}
-        onCancel={() => { setActivityModalVisible(false); setEditingActivity(null); }}
-        onOk={() => {
-          form
-            .validateFields()
-            .then(values => {
-              handleActivitySubmit(values);
-            });
-        }}
-        okText={editingActivity ? 'Update' : 'Create'}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={editingActivity || { name: '', description: '' }}
-          key={editingActivity ? editingActivity.id || editingActivity.ID : 'new'}
-        >
-          <Form.Item name="name" label="Activity Name" rules={[{ required: true, message: 'Enter activity name' }]}> <Input /> </Form.Item>
-          <Form.Item name="description" label="Description" rules={[{ required: true, message: 'Enter description' }]}> <Input.TextArea /> </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
-        title="Send Announcement"
-        open={announcementModalVisible}
-        onCancel={() => setAnnouncementModalVisible(false)}
-        onOk={handleSendAnnouncement}
-        okText="Send"
-      >
-        <Form layout="vertical">
-          <Form.Item label="Title" required>
-            <Input
-              value={announcementForm.title}
-              onChange={e => setAnnouncementForm({ ...announcementForm, title: e.target.value })}
-            />
-          </Form.Item>
-          <Form.Item label="Content" required>
-            <Input.TextArea
-              value={announcementForm.content}
-              onChange={e => setAnnouncementForm({ ...announcementForm, content: e.target.value })}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
-  );
-
-  // News Section
+  // News Section with more complete properties
   const NewsSection = () => (
     <div>
       <Card>
         <Space style={{ marginBottom: 16 }}>
-          <Input.Search placeholder="Search news..." style={{ width: 300 }} />
+          <Input.Search 
+            placeholder="Search news..." 
+            style={{ width: 300 }}
+            allowClear 
+          />
           <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal('add-news')}>
             Add News
           </Button>
         </Space>
         <Table 
-          dataSource={news}
+          dataSource={newsItems}
+          loading={newsLoading}
+          rowKey={record => {
+            console.log("Table record:", record);
+            return record.id || record.newsId || record.ID || Math.random().toString(36).substr(2, 9);
+          }}
           columns={[
-            { title: 'Title', dataIndex: 'title' },
-            { title: 'Date', dataIndex: 'date' },
+            { title: 'Title', dataIndex: 'title', width: '20%' },
+            { 
+              title: 'Content', 
+              dataIndex: 'content',
+              width: '25%',
+              ellipsis: true,
+              render: content => (
+                <Tooltip placement="topLeft" title={content}>
+                  {content}
+                </Tooltip>
+              )
+            },
+            { 
+              title: 'Publish Date', 
+              dataIndex: 'publishDate', 
+              width: '15%',
+              render: (date) => new Date(date).toLocaleDateString() 
+            },
+            { 
+              title: 'Banner', 
+              dataIndex: 'banner',
+              width: '15%',
+              render: (url) => url ? (
+                <img 
+                  src={url} 
+                  alt="banner" 
+                  style={{ width: 80, height: 45, objectFit: 'cover', cursor: 'pointer' }} 
+                  onClick={() => window.open(url, '_blank')}
+                />
+              ) : 'No banner'
+            },
+            { 
+              title: 'Status', 
+              dataIndex: 'status',
+              width: '10%',
+              render: (status) => <Tag color="blue">{status}</Tag>
+            },
             {
               title: 'Actions',
-              render: (_, record) => (
-                <Space>
-                  <Button icon={<EditOutlined />} onClick={() => showModal('edit-news', record)} />
-                  <Popconfirm
-                    title="Are you sure you want to delete this news?"
-                    onConfirm={() => handleDelete('news', record.id)}
-                  >
-                    <Button icon={<DeleteOutlined />} danger />
-                  </Popconfirm>
-                </Space>
-              ),
+              width: '15%',
+              render: (_, record) => {
+                console.log("Action record:", record);
+                const newsId = record.id || record.newsId || record.ID;
+                return (
+                  <Space>
+                    <Button onClick={() => showNewsDetail(record)}>View</Button>
+                    <Button icon={<EditOutlined />} onClick={() => showModal('edit-news', record)} />
+                    <Popconfirm
+                      title="Are you sure you want to delete this news?"
+                      onConfirm={() => {
+                        console.log(`Deleting news with ID: ${newsId}`);
+                        handleDelete('news', newsId);
+                      }}
+                    >
+                      <Button icon={<DeleteOutlined />} danger />
+                    </Popconfirm>
+                  </Space>
+                );
+              },
             },
           ]}
         />
       </Card>
+      
+      {/* News Detail Modal */}
+      <Modal
+        title="News Details"
+        open={newsDetailVisible}
+        onCancel={() => setNewsDetailVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setNewsDetailVisible(false)}>
+            Close
+          </Button>
+        ]}
+        width={800}
+      >
+        {selectedNews && (
+          <div style={{ padding: '0 20px' }}>
+            <h2 style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '10px' }}>{selectedNews.title}</h2>
+            
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <div style={{ marginBottom: '20px' }}>
+                  <h3>Content</h3>
+                  <div style={{ whiteSpace: 'pre-wrap', background: '#f8f8f8', padding: '10px', borderRadius: '4px' }}>
+                    {selectedNews.content}
+                  </div>
+                </div>
+              </Col>
+              
+              <Col span={12}>
+                <Card title="Banner Image" bordered={false}>
+                  {selectedNews.banner ? (
+                    <img 
+                      src={selectedNews.banner} 
+                      alt="Banner" 
+                      style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} 
+                    />
+                  ) : (
+                    <Empty description="No banner" />
+                  )}
+                </Card>
+              </Col>
+              
+              <Col span={12}>
+                <Card title="Thumbnail Image" bordered={false}>
+                  {selectedNews.image ? (
+                    <img 
+                      src={selectedNews.image} 
+                      alt="Image" 
+                      style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} 
+                    />
+                  ) : (
+                    <Empty description="No image" />
+                  )}
+                </Card>
+              </Col>
+              
+              <Col span={12}>
+                <Descriptions column={1}>
+                  <Descriptions.Item label="Publish Date">
+                    {new Date(selectedNews.publishDate).toLocaleString()}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Status">
+                    <Tag color="blue">{selectedNews.status}</Tag>
+                  </Descriptions.Item>
+                </Descriptions>
+              </Col>
+            </Row>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 
@@ -546,16 +599,35 @@ const AdminPage = () => {
   const showModal = (type, record = null) => {
     setModalType(type);
     setIsModalVisible(true);
-  
+    form.resetFields();
+
     if (record) {
-      const { birthday, ...rest } = record;
-      form.setFieldsValue({
-        ...rest,
-        birthday: birthday ? dayjs(birthday) : null,
-        id: record.id || null, // đảm bảo ID luôn được truyền vào form
-      });
-    } else {
-      form.resetFields();
+      // For news items, make sure to properly set image and banner display info
+      if (type === 'edit-news') {
+        // First set all fields
+        form.setFieldsValue({
+          id: record.id,
+          title: record.title,
+          content: record.content,
+          status: record.status,
+          // Don't set image/banner files directly, they'll be handled by the Upload component
+        });
+        
+        // Store original image/banner URLs in component state for later reference
+        setOriginalNewsImages({
+          image: record.image,
+          banner: record.banner
+        });
+      } 
+      // For students, handle birthday conversion
+      else if (type === 'edit-student' && record.birthday) {
+        const recordCopy = { ...record };
+        recordCopy.birthday = dayjs(recordCopy.birthday);
+        form.setFieldsValue(recordCopy);
+      }
+      else {
+        form.setFieldsValue(record);
+      }
     }
   };
 
@@ -563,67 +635,134 @@ const AdminPage = () => {
     try {
       const values = await form.validateFields();
       const isEdit = modalType.startsWith('edit');
+      
+      // Make sure we have all the data we need for debugging
+      console.log('Form values:', values);
+      console.log('Is edit?', isEdit);
+      console.log('Modal type:', modalType);
+
+      // Handle different entity types
+      if (modalType.includes('student')) {
+        if (values.birthday && dayjs.isDayjs(values.birthday)) {
+          values.birthday = values.birthday.format('YYYY-MM-DD');
+        }
   
-      if (values.birthday && dayjs.isDayjs(values.birthday)) {
-        values.birthday = values.birthday.format('YYYY-MM-DD');
+        const formData = new FormData();
+        formData.append('Name', values.name);
+        formData.append('Birthday', values.birthday);
+        formData.append('Gender', values.gender);
+        formData.append('City', values.city || '');
+        formData.append('ParentName', values.parentName || '');
+        formData.append('PhoneNumber', values.phoneNumber || '');
+  
+        if (values.avatar instanceof File) {
+          formData.append('Avatar', values.avatar);
+        }
+  
+        if (values.birthCertificate instanceof File) {
+          formData.append('BirthCertificate', values.birthCertificate);
+        }
+  
+        try {
+          if (isEdit) {
+            await api.put(`/api/Children/${values.id}`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+          } else {
+            await api.post('/api/Children', formData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+          }
+          message.success(`Student ${isEdit ? 'updated' : 'added'} successfully!`);
+          fetchChildren();
+        } catch (error) {
+          throw new Error(`Failed to ${isEdit ? 'update' : 'create'} student: ${error.message}`);
+        }
       }
-  
-      const formData = new FormData();
-      formData.append('Name', values.name);
-      formData.append('Birthday', values.birthday);
-      formData.append('Gender', values.gender);
-      formData.append('City', values.city || '');
-      formData.append('ParentName', values.parentName || '');
-      formData.append('PhoneNumber', values.phoneNumber || '');
-  
-      // 🖼️ Nếu người dùng chọn file mới thì thêm vào
-      if (values.avatar instanceof File) {
-        formData.append('Avatar', values.avatar);
+      else if (modalType.includes('news')) {
+        const formData = new FormData();
+        formData.append('Title', values.title);
+        formData.append('Content', values.content);
+        formData.append('Status', values.status || 'Published');
+        
+        if (isEdit) {
+          // Make sure to include the ID in the form data
+          formData.append('Id', values.id);
+          console.log('Updating news with ID:', values.id);
+        }
+        
+        // Handle image file uploads
+        if (values.image instanceof File) {
+          formData.append('Image', values.image);
+        } else if (isEdit && originalNewsImages.image) {
+          // If no new image was selected but there was an original image
+          formData.append('ExistingImage', originalNewsImages.image);
+        }
+        
+        if (values.banner instanceof File) {
+          formData.append('Banner', values.banner);
+        } else if (isEdit && originalNewsImages.banner) {
+          // If no new banner was selected but there was an original banner
+          formData.append('ExistingBanner', originalNewsImages.banner);
+        }
+        
+        try {
+          if (isEdit) {
+            // Fix the API call to ensure ID is included
+            if (!values.id) {
+              throw new Error('Cannot update news: ID is missing');
+            }
+            await updateNews(values.id, formData);
+            message.success('News updated successfully!');
+          } else {
+            await createNews(formData);
+            message.success('News created successfully!');
+          }
+          fetchNews();
+        } catch (error) {
+          console.error('Error:', error);
+          throw new Error(`Failed to ${isEdit ? 'update' : 'create'} news: ${error.message}`);
+        }
       }
-  
-      if (values.birthCertificate instanceof File) {
-        formData.append('BirthCertificate', values.birthCertificate);
-      }
-  
-      const url = isEdit
-        ? `https://localhost:7216/api/Children/${values.id}`
-        : 'https://localhost:7216/api/Children';
-  
-      const response = await fetch(url, {
-        method: isEdit ? 'PUT' : 'POST',
-        body: formData,
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to save student data');
-      }
-  
+      
       setIsModalVisible(false);
-      message.success(`Student ${isEdit ? 'updated' : 'added'} successfully!`);
-      fetchChildren();
     } catch (error) {
       message.error('Operation failed: ' + error.message);
     }
   };
 
-
   const handleDelete = async (type, id) => {
     try {
-      const response = await fetch(`https://localhost:7216/api/Children/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete student');
+      console.log(`About to delete ${type} with ID: ${id}`);
+      
+      if (!id) {
+        message.error(`Cannot delete ${type}: ID is missing`);
+        return;
       }
-
-      message.success('Student deleted successfully!');
-      fetchChildren(); // Refresh the list
+      
+      if (type === 'student' || type === '') {
+        await api.delete(`/api/Children/${id}`);
+        message.success('Student deleted successfully!');
+        fetchChildren();
+      } 
+      else if (type === 'news') {
+        // Direct API call to ensure proper URL
+        try {
+          await api.delete(`/api/News/delete-news/${id}`);
+          message.success('News deleted successfully!');
+          fetchNews();
+        } catch (error) {
+          console.error("Delete error:", error);
+          message.error(`Failed to delete news: ${error.message}`);
+        }
+      }
+      else {
+        message.warning('Delete operation not implemented for this type');
+      }
     } catch (error) {
-      message.error('Failed to delete student: ' + error.message);
+      message.error(`Failed to delete ${type}: ` + error.message);
     }
   };
-
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -637,8 +776,22 @@ const AdminPage = () => {
             <Form.Item name="name" label="Student Name" rules={[{ required: true }]}> 
               <Input />
             </Form.Item>
-            <Form.Item name="birthday" label="Birthday" rules={[{ required: true }]}> 
-              <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+            <Form.Item name="birthday" label="Birthday" rules={[
+              { required: true, message: 'Please select birthday' },
+              {
+                validator: (_, value) => {
+                  if (value && dayjs(value).isAfter(dayjs())) {
+                    return Promise.reject('Birthday cannot be in the future');
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}> 
+              <DatePicker 
+                style={{ width: '100%' }} 
+                format="YYYY-MM-DD" 
+                disabledDate={current => current && current > dayjs().endOf('day')}
+              />
             </Form.Item>
             <Form.Item name="gender" label="Gender" rules={[{ required: true }]}> 
               <Select>
@@ -688,7 +841,79 @@ const AdminPage = () => {
             </Form.Item>
           </Form>
         );
-      // Add more form cases for other types...
+      case 'add-news':
+      case 'edit-news':
+        const isEditingNews = modalType === 'edit-news';
+        
+        return (
+          <Form form={form} layout="vertical">
+            <Form.Item name="id" hidden>
+              <Input />
+            </Form.Item>
+            <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter news title' }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item name="content" label="Content" rules={[{ required: true, message: 'Please enter news content' }]}>
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item
+              name="image"
+              label="Image"
+              valuePropName="file"
+              getValueFromEvent={(e) => e?.fileList?.[0]?.originFileObj}
+            >
+              <Upload
+                beforeUpload={() => false}
+                maxCount={1}
+                listType="picture"
+                accept="image/*"
+                fileList={isEditingNews && originalNewsImages?.image ? [
+                  {
+                    uid: '-1',
+                    name: 'Current Image',
+                    status: 'done',
+                    url: originalNewsImages.image,
+                  }
+                ] : []}
+              >
+                <Button icon={<UploadOutlined />}>
+                  {isEditingNews ? 'Change Image' : 'Upload Image'}
+                </Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              name="banner"
+              label="Banner Image"
+              valuePropName="file"
+              getValueFromEvent={(e) => e?.fileList?.[0]?.originFileObj}
+            >
+              <Upload
+                beforeUpload={() => false}
+                maxCount={1}
+                listType="picture"
+                accept="image/*"
+                fileList={isEditingNews && originalNewsImages?.banner ? [
+                  {
+                    uid: '-1',
+                    name: 'Current Banner',
+                    status: 'done',
+                    url: originalNewsImages.banner,
+                  }
+                ] : []}
+              >
+                <Button icon={<UploadOutlined />}>
+                  {isEditingNews ? 'Change Banner' : 'Upload Banner'}
+                </Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please select a status' }]}>
+              <Select>
+                <Select.Option value="Published">Published</Select.Option>
+                <Select.Option value="Draft">Draft</Select.Option>
+              </Select>
+            </Form.Item>
+          </Form>
+        );
       default:
         return null;
     }
@@ -698,10 +923,11 @@ const AdminPage = () => {
   const fetchActivities = async () => {
     setActivitiesLoading(true);
     try {
-      const data = await getEnrichmentActivities();
-      setActivities(data);
+      const response = await api.get('/api/EnrichmentProgram/get-all-enrichment-program');
+      setActivities(response.data);
     } catch (err) {
-      message.error('Error loading enrichment activities');
+      message.error('Error loading enrichment activities: ' + err.message);
+      console.error('Error fetching enrichment programs:', err);
     } finally {
       setActivitiesLoading(false);
     }
@@ -715,28 +941,30 @@ const AdminPage = () => {
   const handleActivitySubmit = async (values) => {
     try {
       if (editingActivity) {
-        await updateEnrichmentActivity(editingActivity.id || editingActivity.ID, values);
-        message.success('Update enrichment activity successfully!');
+        await api.put(`/api/EnrichmentProgram/${editingActivity.id || editingActivity.ID}`, values);
+        message.success('Update enrichment program successfully!');
       } else {
-        await createEnrichmentActivity(values);
-        message.success('Create enrichment activity successfully!');
+        await api.post('/api/EnrichmentProgram/create-enrichment-program', values);
+        message.success('Create enrichment program successfully!');
       }
       setActivityModalVisible(false);
       setEditingActivity(null);
       fetchActivities();
     } catch (err) {
-      message.error('Error saving enrichment activity!');
+      message.error('Error saving enrichment program: ' + err.message);
+      console.error('Error saving activity:', err);
     }
   };
 
   // Handle delete activity
   const handleDeleteActivity = async (id) => {
     try {
-      await deleteEnrichmentActivity(id);
-      message.success('Delete enrichment activity successfully!');
+      await api.delete(`/api/EnrichmentProgram/${id}`);
+      message.success('Delete enrichment program successfully!');
       fetchActivities();
     } catch (err) {
-      message.error('Error deleting enrichment activity!');
+      message.error('Error deleting enrichment program: ' + err.message);
+      console.error('Error deleting activity:', err);
     }
   };
 
@@ -749,13 +977,49 @@ const AdminPage = () => {
   // Handle send announcement
   const handleSendAnnouncement = async () => {
     try {
-      await sendAnnouncement(announcementForm);
+      await api.post('/api/Announcement/send', announcementForm);
       message.success('Send announcement successfully!');
       setAnnouncementModalVisible(false);
       setAnnouncementForm({ title: '', content: '' });
     } catch (err) {
       message.error('Error sending announcement!');
     }
+  };
+
+  // Replace searchStudents function with axios
+  const searchStudents = async (query) => {
+    try {
+      setLoading(true);
+      const response = await api.get(`/api/Children/search?query=${encodeURIComponent(query)}`);
+      setChildren(response.data);
+    } catch (error) {
+      message.error('Failed to search students: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch news function
+  const fetchNews = async () => {
+    try {
+      setNewsLoading(true);
+      const response = await getAllNews();
+      console.log("Raw news data received:", response);
+      const newsData = response.data || [];
+      console.log("News items to be displayed:", newsData);
+      setNewsItems(newsData);
+    } catch (error) {
+      console.error("News fetch error:", error);
+      message.error('Failed to load news');
+    } finally {
+      setNewsLoading(false);
+    }
+  };
+
+  // Add this function to show news details
+  const showNewsDetail = (news) => {
+    setSelectedNews(news);
+    setNewsDetailVisible(true);
   };
 
   return (
@@ -778,11 +1042,6 @@ const AdminPage = () => {
             key: 'classes',
             label: 'Classes',
             children: <ClassesSection />,
-          },
-          {
-            key: 'activities',
-            label: 'Activities',
-            children: <ActivitiesSection />,
           },
           {
             key: 'news',

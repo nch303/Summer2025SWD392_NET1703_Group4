@@ -25,6 +25,9 @@ import ChildrenManagement from '../pages/staff-children-management/ChildrenManag
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
 import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
 
+// Import AdminEnrichment component
+import AdminEnrichment from '../pages/admin/AdminEnrichment';
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -90,5 +93,9 @@ export const router = createBrowserRouter([
       { path: 'students', element: <ChildrenManagement /> },
       { path: 'assign-students', element: <StaffAssignStudentPage /> },
     ],
+  },
+  {
+    path: '/admin/enrichment',
+    element: <AdminEnrichment />
   },
 ]);

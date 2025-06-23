@@ -37,40 +37,14 @@ const AdminLayout = () => {
       label: 'Dashboard',
     },
     {
-      key: '/admin/students',
-      icon: <TeamOutlined />,
-      label: 'Students',
-    },
-    {
       key: '/admin/teachers',
       icon: <UserOutlined />,
       label: 'Teachers',
     },
     {
-      key: 'syllabus',
-      icon: <BookOutlined />,
-      label: 'Syllabus',
-    },
-    {
-      key: 'activities',
-      icon: <FileTextOutlined />,
-      label: 'Activities',
-      children: [
-        {
-          key: '/admin/activities/list',
-          label: 'View Activities',
-        },
-        {
-          key: '/admin/activities/create',
-          label: 'Create Activity',
-        },
-      ],
-    },
-    {
-      key: '/admin/enrichment-activities',
+      key: '/admin/enrichment',
       icon: <BookOutlined />,
       label: 'Enrichment Activities',
-
     },
     {
       key: '/admin/news',
