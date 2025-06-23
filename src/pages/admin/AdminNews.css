@@ -47,3 +47,15 @@
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
   border: none;
 }
+
+.news-detail-container {
+  padding: 0 16px;
+}
+
+.news-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}

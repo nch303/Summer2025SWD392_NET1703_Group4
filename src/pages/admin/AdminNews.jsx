@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Card, Button, Table, Input, Form, Upload, message,
-  Space, Tag, Tooltip, Popconfirm, Spin, Empty, Descriptions, Modal, Select
+  Space, Tag, Tooltip, Popconfirm, Spin, Empty, Descriptions, Modal, Select, Switch
 } from 'antd';
 import { 
-  PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined
+  PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, SearchOutlined,
+  UndoOutlined, EyeOutlined
 } from '@ant-design/icons';
 import './AdminNews.css';
-import { getAllNews, getNewsById, createNews, updateNews, deleteNews } from './AdminNewsService';
+import { getAllNews, getNewsById, createNews, updateNews, deleteNews, searchNews, updateNewsStatus } from './AdminNewsService';
 
 const AdminNews = () => {
   const [form] = Form.useForm();
@@ -18,20 +19,40 @@ const AdminNews = () => {
   const [newsDetailVisible, setNewsDetailVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
   const [originalNewsImages, setOriginalNewsImages] = useState({ image: null, banner: null });
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0
+  });
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
 
   useEffect(() => {
     fetchNews();
   }, []);
 
   // Fetch news function
-  const fetchNews = async () => {
+  const fetchNews = async (page = 1, pageSize = 10) => {
     try {
       setNewsLoading(true);
-      const response = await getAllNews();
-      console.log("Raw news data received:", response);
-      const newsData = response.data || [];
-      console.log("News items to be displayed:", newsData);
-      setNewsItems(newsData);
+      const response = await getAllNews(page, pageSize);
+      
+      // Extract data based on API response format
+      const { totalCount, pageNumber, pageSize: responsePageSize, data } = response;
+      
+      // Filter out deleted news unless showDeleted is true
+      const filteredData = showDeleted 
+        ? data || []
+        : (data || []).filter(item => item.status !== 'Deleted');
+      
+      setNewsItems(filteredData);
+      setPagination({
+        total: filteredData.length,
+        current: pageNumber,
+        pageSize: responsePageSize
+      });
+      setIsSearching(false);
     } catch (error) {
       console.error("News fetch error:", error);
       message.error('Failed to load news');
@@ -40,31 +61,89 @@ const AdminNews = () => {
     }
   };
 
-  // Show news details
-  const showNewsDetail = (news) => {
-    setSelectedNews(news);
-    setNewsDetailVisible(true);
+  // Search news function
+  const handleSearch = async (value) => {
+    if (!value) {
+      setSearchKeyword('');
+      setIsSearching(false);
+      return fetchNews();
+    }
+    
+    try {
+      setNewsLoading(true);
+      setSearchKeyword(value);
+      const response = await searchNews(value);
+      
+      if (response && response.data) {
+        // Filter out deleted news unless showDeleted is true
+        const filteredData = showDeleted
+          ? response.data
+          : response.data.filter(item => item.status !== 'Deleted');
+          
+        setNewsItems(filteredData);
+        setPagination({
+          ...pagination,
+          total: filteredData.length
+        });
+      } else {
+        setNewsItems([]);
+      }
+      setIsSearching(true);
+    } catch (error) {
+      console.error("Search error:", error);
+      message.error('Failed to search news');
+    } finally {
+      setNewsLoading(false);
+    }
   };
 
-  const showModal = (type, record = null) => {
+  // Show news details
+  const showNewsDetail = async (news) => {
+    try {
+      setNewsLoading(true);
+      // Fetch detailed news information using getNewsById
+      const newsDetail = await getNewsById(news.id);
+      setSelectedNews(newsDetail);
+      setNewsDetailVisible(true);
+    } catch (error) {
+      console.error("Error fetching news details:", error);
+      message.error('Failed to load news details');
+    } finally {
+      setNewsLoading(false);
+    }
+  };
+
+  const showModal = async (type, record = null) => {
     setModalType(type);
     setIsModalVisible(true);
     form.resetFields();
 
     if (record && type === 'edit-news') {
-      // First set all fields
-      form.setFieldsValue({
-        id: record.id,
-        title: record.title,
-        content: record.content,
-        status: record.status,
-      });
-      
-      // Store original image/banner URLs in component state for later reference
-      setOriginalNewsImages({
-        image: record.image,
-        banner: record.banner
-      });
+      try {
+        setNewsLoading(true);
+        // Fetch đầy đủ dữ liệu tin tức để hiển thị trong form edit
+        const newsDetail = await getNewsById(record.id);
+        
+        // Điền các trường dữ liệu vào form
+        form.setFieldsValue({
+          id: newsDetail.id,
+          title: newsDetail.title,
+          content: newsDetail.content,
+          status: newsDetail.status || 'Published',
+        });
+        
+        // Lưu URLs của ảnh và banner
+        setOriginalNewsImages({
+          image: newsDetail.image,
+          banner: newsDetail.banner
+        });
+        
+        setNewsLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch news details for editing:", error);
+        message.error("Không thể tải thông tin tin tức");
+        setNewsLoading(false);
+      }
     }
   };
 
@@ -73,66 +152,85 @@ const AdminNews = () => {
       const values = await form.validateFields();
       const isEdit = modalType === 'edit-news';
       
+      // Tạo FormData để xử lý tệp tin
       const formData = new FormData();
       formData.append('Title', values.title);
       formData.append('Content', values.content);
       formData.append('Status', values.status || 'Published');
       
+      // Luôn sử dụng ngày giờ hiện tại của Việt Nam (GMT+7) cho cả create và update
+      const now = new Date();
+      // Tính toán múi giờ Việt Nam (UTC+7)
+      const vietnamTime = new Date(now.getTime());
+      // Để đảm bảo múi giờ chính xác, sử dụng options khi chuyển đổi thành chuỗi
+      const formattedDate = vietnamTime.toISOString();
+      formData.append('PublishDate', formattedDate);
+      
       if (isEdit) {
-        // Make sure to include the ID in the form data
         formData.append('Id', values.id);
-        console.log('Updating news with ID:', values.id);
       }
       
-      // Handle image file uploads
-      if (values.image instanceof File) {
-        formData.append('Image', values.image);
+      // Xử lý upload hình ảnh thumbnail
+      const imageFile = values.image?.fileList?.[0]?.originFileObj;
+      if (imageFile) {
+        formData.append('Image', imageFile);
       } else if (isEdit && originalNewsImages.image) {
-        // If no new image was selected but there was an original image
+        // Giữ ảnh cũ, không gửi file mới
+        formData.append('Image', null);
         formData.append('ExistingImage', originalNewsImages.image);
       }
       
-      if (values.banner instanceof File) {
-        formData.append('Banner', values.banner);
+      // Xử lý upload banner
+      const bannerFile = values.banner?.fileList?.[0]?.originFileObj;
+      if (bannerFile) {
+        formData.append('Banner', bannerFile);
       } else if (isEdit && originalNewsImages.banner) {
-        // If no new banner was selected but there was an original banner
+        // Giữ banner cũ, không gửi file mới
+        formData.append('Banner', null);
         formData.append('ExistingBanner', originalNewsImages.banner);
       }
       
+      console.log('Form data entries:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + (pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]));
+      }
+      
       try {
+        setNewsLoading(true);
+        
         if (isEdit) {
-          // Fix the API call to ensure ID is included
           if (!values.id) {
             throw new Error('Cannot update news: ID is missing');
           }
           await updateNews(values.id, formData);
-          message.success('News updated successfully!');
+          message.success('Cập nhật tin tức thành công!');
         } else {
           await createNews(formData);
-          message.success('News created successfully!');
+          message.success('Thêm tin tức thành công!');
         }
+        
         fetchNews();
         setIsModalVisible(false);
       } catch (error) {
         console.error('Error:', error);
-        throw new Error(`Failed to ${isEdit ? 'update' : 'create'} news: ${error.message}`);
+        message.error(`${isEdit ? 'Cập nhật' : 'Thêm'} tin tức thất bại: ${error.message || 'Lỗi không xác định'}`);
+      } finally {
+        setNewsLoading(false);
       }
     } catch (error) {
-      message.error('Operation failed: ' + error.message);
+      message.error('Thao tác thất bại: ' + error.message);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleSoftDelete = async (id) => {
     try {
-      console.log(`About to delete news with ID: ${id}`);
-      
       if (!id) {
         message.error('Cannot delete news: ID is missing');
         return;
       }
       
-      await deleteNews(id);
-      message.success('News deleted successfully!');
+      await updateNewsStatus(id, 'Deleted');
+      message.success('News has been moved to trash');
       fetchNews();
     } catch (error) {
       console.error("Delete error:", error);
@@ -140,83 +238,162 @@ const AdminNews = () => {
     }
   };
 
+  const handleRestore = async (id) => {
+    try {
+      if (!id) {
+        message.error('Cannot restore news: ID is missing');
+        return;
+      }
+      
+      await updateNewsStatus(id, 'Published');
+      message.success('News has been restored successfully');
+      fetchNews();
+    } catch (error) {
+      console.error("Restore error:", error);
+      message.error(`Failed to restore news: ${error.message}`);
+    }
+  };
+
+  // Toggle showing deleted items
+  const toggleShowDeleted = (checked) => {
+    setShowDeleted(checked);
+    fetchNews();
+  };
+
+  // Reset search and return to normal list
+  const handleClearSearch = () => {
+    setSearchKeyword('');
+    setIsSearching(false);
+    fetchNews();
+  };
+
   return (
     <div className="admin-news">
       <Card>
         <Space style={{ marginBottom: 16 }}>
           <Input.Search 
-            placeholder="Search news..." 
+            placeholder="Tìm kiếm tin tức..." 
             style={{ width: 300 }}
             allowClear 
+            onSearch={handleSearch}
+            loading={newsLoading && isSearching}
+            enterButton={<Button icon={<SearchOutlined />}>Tìm kiếm</Button>}
           />
+          {isSearching && (
+            <Button onClick={handleClearSearch}>
+              Xóa tìm kiếm
+            </Button>
+          )}
           <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal('add-news')}>
-            Add News
+            Thêm tin tức
           </Button>
+          <Space>
+            <Switch
+              checked={showDeleted}
+              onChange={toggleShowDeleted}
+              checkedChildren="Hiện tin đã xóa"
+              unCheckedChildren="Ẩn tin đã xóa"
+            />
+          </Space>
         </Space>
         <Table 
           dataSource={newsItems}
           loading={newsLoading}
-          rowKey={record => {
-            return record.id || record.newsId || record.ID || Math.random().toString(36).substr(2, 9);
-          }}
+          rowKey="id"
           columns={[
-            { title: 'Title', dataIndex: 'title', width: '20%' },
             { 
-              title: 'Content', 
-              dataIndex: 'content',
-              width: '25%',
-              ellipsis: true,
-              render: content => (
-                <Tooltip placement="topLeft" title={content}>
-                  {content}
-                </Tooltip>
+              title: 'ID', 
+              dataIndex: 'id', 
+              width: '10%' 
+            },
+            { 
+              title: 'Title', 
+              dataIndex: 'title', 
+              width: '40%' 
+            },
+            { 
+              title: 'Status',
+              dataIndex: 'status',
+              width: '10%',
+              render: (status) => (
+                <Tag color={
+                  status === 'Published' ? 'green' : 
+                  status === 'Draft' ? 'orange' : 
+                  status === 'Deleted' ? 'red' : 'default'
+                }>
+                  {status || 'N/A'}
+                </Tag>
               )
             },
             { 
-              title: 'Publish Date', 
-              dataIndex: 'publishDate', 
-              width: '15%',
-              render: (date) => new Date(date).toLocaleDateString() 
-            },
-            { 
-              title: 'Banner', 
-              dataIndex: 'banner',
-              width: '15%',
+              title: 'Image', 
+              dataIndex: 'image',
+              width: '20%',
               render: (url) => url ? (
                 <img 
                   src={url} 
-                  alt="banner" 
+                  alt="thumbnail" 
                   style={{ width: 80, height: 45, objectFit: 'cover', cursor: 'pointer' }} 
                   onClick={() => window.open(url, '_blank')}
                 />
-              ) : 'No banner'
-            },
-            { 
-              title: 'Status', 
-              dataIndex: 'status',
-              width: '10%',
-              render: (status) => <Tag color="blue">{status}</Tag>
+              ) : 'No image'
             },
             {
               title: 'Actions',
-              width: '15%',
-              render: (_, record) => {
-                const newsId = record.id || record.newsId || record.ID;
-                return (
-                  <Space>
-                    <Button onClick={() => showNewsDetail(record)}>View</Button>
-                    <Button icon={<EditOutlined />} onClick={() => showModal('edit-news', record)} />
+              width: '20%',
+              render: (_, record) => (
+                <Space>
+                  <Button 
+                    icon={<EyeOutlined />}
+                    onClick={() => showNewsDetail(record)}
+                    size="small"
+                    title="View"
+                  />
+                  {record.status !== 'Deleted' ? (
+                    <>
+                      <Button 
+                        icon={<EditOutlined />} 
+                        onClick={() => showModal('edit-news', record)}
+                        size="small"
+                        title="Edit"
+                      />
+                      <Popconfirm
+                        title="Are you sure you want to delete this news?"
+                        onConfirm={() => handleSoftDelete(record.id)}
+                      >
+                        <Button 
+                          icon={<DeleteOutlined />} 
+                          danger 
+                          size="small"
+                          title="Delete"
+                        />
+                      </Popconfirm>
+                    </>
+                  ) : (
                     <Popconfirm
-                      title="Are you sure you want to delete this news?"
-                      onConfirm={() => handleDelete(newsId)}
+                      title="Are you sure you want to restore this news?"
+                      onConfirm={() => handleRestore(record.id)}
                     >
-                      <Button icon={<DeleteOutlined />} danger />
+                      <Button 
+                        icon={<UndoOutlined />} 
+                        type="primary"
+                        size="small"
+                        title="Restore"
+                      >
+                        Restore
+                      </Button>
                     </Popconfirm>
-                  </Space>
-                );
-              },
+                  )}
+                </Space>
+              ),
             },
           ]}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+            onChange: (page, pageSize) => fetchNews(page, pageSize)
+          }}
         />
       </Card>
       
@@ -233,52 +410,57 @@ const AdminNews = () => {
         width={800}
       >
         {selectedNews && (
-          <div style={{ padding: '0 20px' }}>
-            <h2 style={{ borderBottom: '1px solid #f0f0f0', paddingBottom: '10px' }}>{selectedNews.title}</h2>
+          <div className="news-detail-container">
+            <h2 className="news-title">{selectedNews.title}</h2>
             
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-              <div>
-                <h3>Content</h3>
-                <div style={{ whiteSpace: 'pre-wrap', background: '#f8f8f8', padding: '10px', borderRadius: '4px' }}>
+            <Descriptions bordered column={1}>
+              <Descriptions.Item label="ID">{selectedNews.id}</Descriptions.Item>
+              <Descriptions.Item label="Content">
+                <div style={{ whiteSpace: 'pre-wrap' }}>
                   {selectedNews.content}
                 </div>
+              </Descriptions.Item>
+              <Descriptions.Item label="Publish Date">
+                {selectedNews.publishDate ? new Date(selectedNews.publishDate).toLocaleString() : 'N/A'}
+              </Descriptions.Item>
+              <Descriptions.Item label="Status">
+                <Tag color={selectedNews.status === 'Published' ? 'green' : 'orange'}>
+                  {selectedNews.status || 'N/A'}
+                </Tag>
+              </Descriptions.Item>
+            </Descriptions>
+            
+            <div style={{ marginTop: '20px', display: 'flex', gap: '20px' }}>
+              <div style={{ flex: 1 }}>
+                <h3>Thumbnail Image</h3>
+                {selectedNews.image ? (
+                  <div style={{ border: '1px solid #f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                    <img 
+                      src={selectedNews.image} 
+                      alt="Thumbnail" 
+                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }} 
+                    />
+                  </div>
+                ) : (
+                  <Empty description="No thumbnail image" />
+                )}
               </div>
               
-              <Space size="large" align="start">
-                <Card title="Banner Image" bordered={false} style={{ width: 300 }}>
-                  {selectedNews.banner ? (
+              <div style={{ flex: 1 }}>
+                <h3>Banner Image</h3>
+                {selectedNews.banner ? (
+                  <div style={{ border: '1px solid #f0f0f0', padding: '8px', borderRadius: '4px' }}>
                     <img 
                       src={selectedNews.banner} 
                       alt="Banner" 
-                      style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} 
+                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }} 
                     />
-                  ) : (
-                    <Empty description="No banner" />
-                  )}
-                </Card>
-                
-                <Card title="Thumbnail Image" bordered={false} style={{ width: 300 }}>
-                  {selectedNews.image ? (
-                    <img 
-                      src={selectedNews.image} 
-                      alt="Image" 
-                      style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} 
-                    />
-                  ) : (
-                    <Empty description="No image" />
-                  )}
-                </Card>
-              </Space>
-              
-              <Descriptions column={2}>
-                <Descriptions.Item label="Publish Date">
-                  {new Date(selectedNews.publishDate).toLocaleString()}
-                </Descriptions.Item>
-                <Descriptions.Item label="Status">
-                  <Tag color="blue">{selectedNews.status}</Tag>
-                </Descriptions.Item>
-              </Descriptions>
-            </Space>
+                  </div>
+                ) : (
+                  <Empty description="No banner image" />
+                )}
+              </div>
+            </div>
           </div>
         )}
       </Modal>
@@ -304,8 +486,13 @@ const AdminNews = () => {
           <Form.Item
             name="image"
             label="Image"
-            valuePropName="file"
-            getValueFromEvent={(e) => e?.fileList?.[0]?.originFileObj}
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e && e.fileList;
+            }}
           >
             <Upload
               beforeUpload={() => false}
@@ -329,8 +516,13 @@ const AdminNews = () => {
           <Form.Item
             name="banner"
             label="Banner Image"
-            valuePropName="file"
-            getValueFromEvent={(e) => e?.fileList?.[0]?.originFileObj}
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e && e.fileList;
+            }}
           >
             <Upload
               beforeUpload={() => false}

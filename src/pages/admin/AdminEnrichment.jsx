@@ -33,7 +33,9 @@ const AdminEnrichment = () => {
       setLoading(true);
       const data = await getAllEnrichmentPrograms();
       console.log('Fetched programs:', data);
-      setPrograms(data || []);
+      // Filter out deleted items (isDelete === true)
+      const activePrograms = data ? data.filter(program => !program.isDelete) : [];
+      setPrograms(activePrograms);
     } catch (error) {
       message.error('Failed to fetch enrichment programs');
     } finally {
