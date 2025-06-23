@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
                 var attendancesToUpdate = requests.Select(r => new Attendance
                 {
                     ID = r.AttendanceID,
-                    Status = r.IsPresent ? "Attend" : "Absent", // Usually always "Attend" in this flow
+                    Status = r.Status,
                     Notes = r.Notes
                 }).ToList();
 
