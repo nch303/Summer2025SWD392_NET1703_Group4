@@ -32,6 +32,7 @@ import EnrollmentApplicationPage from '../pages/enrollment-application/Enrollmen
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 import NotificationPage from '../pages/notification/NotificationPage';
 import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
+import NewsDetailPage from '../pages/news/NewsDetailPage';
 import EnrichmentProgram from '../pages/enrichment-program/EnrichmentProgram';
 
 // Staff Pages
@@ -50,6 +51,8 @@ import TeacherDashboard from '../pages/teacher/TeacherDashboard';
 import TeacherClass from '../pages/teacher/TeacherClass';
 import TeacherStudentClass from '../pages/teacher/TeacherStudentClass';
 import TeacherSyllabus from '../pages/teacher/TeacherSyllabus';
+import TeacherCheckAttendance from '../pages/teacher/TeacherCheckAttendance';
+import TeacherAttendanceAll from '../pages/teacher/TeacherAttendanceAll';
 
 import ClassManagement from '../pages/admin-classes-management/ClassManagement';
 
@@ -167,6 +170,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/:id" element={<NewsDetailPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
@@ -218,6 +222,8 @@ function App() {
             <Route path="classes" element={<TeacherClass />} />
             <Route path="classes/:classId" element={<TeacherStudentClass />} />
             <Route path="syllabus" element={<TeacherSyllabus />} />
+            <Route path="classes/:classId/check-attendance" element={<TeacherCheckAttendance />} />
+            <Route path="classes/:classId/view-all-attendance" element={<TeacherAttendanceAll />} />
             <Route path="schedule" element={<div>Schedule</div>} />
             <Route path="assignments" element={<div>Assignments</div>} />
             <Route path="messages" element={<div>Messages</div>} />

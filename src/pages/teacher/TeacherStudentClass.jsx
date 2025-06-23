@@ -10,7 +10,8 @@ import {
   DownloadOutlined, EyeOutlined, MessageOutlined,
   CalendarOutlined, TeamOutlined, SortAscendingOutlined,
   UnorderedListOutlined, AppstoreOutlined, IdcardOutlined,
-  ArrowLeftOutlined, PhoneOutlined, HomeOutlined, MailOutlined
+  ArrowLeftOutlined, PhoneOutlined, HomeOutlined, MailOutlined,
+  FileTextOutlined, CloseOutlined
 } from '@ant-design/icons';
 import { getStudentsByClassId, calculateAge, formatBirthday, getStudentDetail } from './TeacherStudentClassService';
 import { getClassesByTeacherId } from './TeacherClassService';
@@ -228,71 +229,176 @@ const TeacherStudentClass = () => {
     </Row>
   );
 
-  // Thêm modal xem chi tiết học sinh
+  // Modal xem chi tiết học sinh
   const studentDetailModal = (
     <Modal
-      title="Thông tin chi tiết học sinh"
+      title={null}
       open={isModalVisible}
       onCancel={handleModalClose}
       footer={null}
-      width={700}
-      className="student-detail-modal"
+      width={850}
+      className="tsc-enhanced-modal"
+      centered
+      mask={false}
+      closeIcon={<CloseOutlined className="tsc-modal-close-icon" />}
     >
       {detailLoading ? (
-        <div className="modal-loading">
-          <Spin size="large" />
+        <div className="tsc-modal-loading">
+          <div className="tsc-loading-spinner">
+            <Spin size="large" />
+          </div>
           <Text>Đang tải thông tin...</Text>
         </div>
       ) : selectedStudent ? (
-        <div className="student-detail-content">
-          <div className="student-profile-header">
-            <Avatar 
-              src={selectedStudent.avatar} 
-              icon={!selectedStudent.avatar || selectedStudent.avatar === 'string' ? <UserOutlined /> : null}
-              size={100}
-              className="detail-avatar"
-            />
-            <div className="student-profile-info">
-              <Title level={3}>{selectedStudent.name}</Title>
-              <div className="profile-tags">
-                <Tag color={selectedStudent.gender === 'Male' ? 'blue' : selectedStudent.gender === 'Female' ? 'pink' : 'default'}>
-                  {selectedStudent.gender === 'Male' ? 'Nam' : selectedStudent.gender === 'Female' ? 'Nữ' : 'Khác'}
-                </Tag>
-                <Tag color="green">{calculateAge(selectedStudent.birthday)} tuổi</Tag>
-                {selectedStudent.city !== 'string' && <Tag color="orange">{selectedStudent.city}</Tag>}
+        <div className="tsc-modal-container">
+          <div className="tsc-modal-header">
+            <div className="tsc-modal-header-content">
+              <Avatar 
+                src={selectedStudent.avatar} 
+                icon={!selectedStudent.avatar || selectedStudent.avatar === 'string' ? <UserOutlined /> : null}
+                size={120}
+                className="tsc-student-avatar"
+              />
+              <div className="tsc-header-info">
+                <Title level={2} className="tsc-student-name">{selectedStudent.name}</Title>
+                <div className="tsc-student-tags">
+                  <Tag color={selectedStudent.gender === 'Male' ? 'blue' : selectedStudent.gender === 'Female' ? 'pink' : 'default'}>
+                    {selectedStudent.gender === 'Male' ? 'Nam' : selectedStudent.gender === 'Female' ? 'Nữ' : 'Khác'}
+                  </Tag>
+                  <Tag color="green">{calculateAge(selectedStudent.birthday)} tuổi</Tag>
+                  {selectedStudent.city !== 'string' && <Tag color="orange">{selectedStudent.city}</Tag>}
+                </div>
+                <Text className="tsc-student-id">ID: {selectedStudent.id.substring(0, 8)}</Text>
               </div>
             </div>
           </div>
           
-          <Descriptions 
-            bordered 
-            column={1} 
-            className="student-detail-descriptions"
-          >
-            <Descriptions.Item label="Ngày sinh">{formatBirthday(selectedStudent.birthday)}</Descriptions.Item>
-            <Descriptions.Item label="Phụ huynh">{selectedStudent.parentName || '—'}</Descriptions.Item>
-            <Descriptions.Item label="Số điện thoại liên hệ">{selectedStudent.phoneNumber || '—'}</Descriptions.Item>
-            <Descriptions.Item label="Thành phố">{selectedStudent.city !== 'string' ? selectedStudent.city : '—'}</Descriptions.Item>
-            <Descriptions.Item label="Ngày nhập học">
-              {selectedStudent.enrollDate && selectedStudent.enrollDate !== '0001-01-01T00:00:00' 
-                ? formatBirthday(selectedStudent.enrollDate) 
-                : '—'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Giấy khai sinh">
-              {selectedStudent.birthCertificate && selectedStudent.birthCertificate !== 'string' ? (
-                <div className="certificate-preview">
-                  <Image
-                    src={selectedStudent.birthCertificate}
-                    alt="Giấy khai sinh"
-                    width={200}
+          <div className="tsc-modal-body">
+            <Tabs defaultActiveKey="1" className="tsc-detail-tabs">
+              <TabPane tab={<span><IdcardOutlined /> Thông tin cá nhân</span>} key="1">
+                <div className="tab-content tsc-tab-statistics">
+                  <Row gutter={[24, 16]}>
+                    <Col span={12}>
+                      <Statistic 
+                        title="Ngày sinh" 
+                        value={formatBirthday(selectedStudent.birthday)} 
+                        prefix={<CalendarOutlined />} 
+                      />
+                    </Col>
+                    <Col span={12}>
+                      <Statistic 
+                        title="Tuổi" 
+                        value={`${calculateAge(selectedStudent.birthday)} tuổi`}
+                        prefix={<IdcardOutlined />} 
+                      />
+                    </Col>
+                    <Col span={12}>
+                      <Statistic 
+                        title="Giới tính" 
+                        value={selectedStudent.gender === 'Male' ? 'Nam' : selectedStudent.gender === 'Female' ? 'Nữ' : 'Khác'} 
+                        prefix={<TeamOutlined />} 
+                      />
+                    </Col>
+                    <Col span={12}>
+                      <Statistic 
+                        title="Ngày nhập học" 
+                        value={
+                          selectedStudent.enrollDate && selectedStudent.enrollDate !== '0001-01-01T00:00:00' 
+                          ? formatBirthday(selectedStudent.enrollDate) 
+                          : '—'
+                        } 
+                        prefix={<CalendarOutlined />} 
+                      />
+                    </Col>
+                    <Col span={24}>
+                      <Statistic 
+                        title="Thành phố" 
+                        value={selectedStudent.city !== 'string' ? selectedStudent.city : '—'} 
+                        prefix={<HomeOutlined />} 
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </TabPane>
+              <TabPane tab={<span><TeamOutlined /> Thông tin liên hệ</span>} key="2">
+                <div className="tab-content">
+                  <Row gutter={[24, 16]}>
+                    <Col span={24}>
+                      <Card className="tsc-contact-card">
+                        <div className="tsc-contact-info">
+                          <Avatar icon={<UserOutlined />} size={64} className="tsc-parent-avatar" />
+                          <div className="tsc-parent-details">
+                            <Title level={4}>{selectedStudent.parentName || 'Chưa cập nhật'}</Title>
+                            <Text type="secondary">Phụ huynh</Text>
+                            <Space direction="vertical" style={{ width: '100%', marginTop: '12px' }}>
+                              <div className="tsc-contact-detail">
+                                <PhoneOutlined /> 
+                                <Text>{selectedStudent.phoneNumber || 'Chưa cập nhật'}</Text>
+                              </div>
+                              <div className="tsc-contact-detail">
+                                <MailOutlined /> 
+                                <Text>{selectedStudent.email || 'Chưa cập nhật'}</Text>
+                              </div>
+                              <div className="tsc-contact-detail">
+                                <HomeOutlined /> 
+                                <Text>{selectedStudent.address || 'Chưa cập nhật'}</Text>
+                              </div>
+                            </Space>
+                          </div>
+                        </div>
+                      </Card>
+                    </Col>
+                  </Row>
+                </div>
+              </TabPane>
+              <TabPane tab={<span><FileTextOutlined /> Tài liệu</span>} key="3">
+                <div className="tab-content tsc-documents-tab">
+                  <List
+                    className="tsc-doc-list"
+                    itemLayout="horizontal"
+                    dataSource={[
+                      {
+                        title: 'Giấy khai sinh',
+                        image: selectedStudent.birthCertificate && selectedStudent.birthCertificate !== 'string'
+                          ? selectedStudent.birthCertificate
+                          : null
+                      },
+                      // Có thể thêm các loại tài liệu khác ở đây
+                    ]}
+                    renderItem={item => (
+                      <List.Item>
+                        <List.Item.Meta
+                          avatar={<FileTextOutlined className="tsc-doc-icon" />}
+                          title={item.title}
+                          description={item.image ? 'Đã cập nhật' : 'Chưa cập nhật'}
+                        />
+                        {item.image ? (
+                          <div className="tsc-doc-preview">
+                            <Image
+                              src={item.image}
+                              alt={item.title}
+                              height={80}
+                              className="tsc-doc-thumbnail"
+                            />
+                          </div>
+                        ) : (
+                          <Button type="default" size="small" disabled>
+                            Chưa có
+                          </Button>
+                        )}
+                      </List.Item>
+                    )}
                   />
                 </div>
-              ) : '—'}
-            </Descriptions.Item>
-          </Descriptions>
+              </TabPane>
+            </Tabs>
+          </div>
           
-          <div className="modal-actions">
-            <Button type="primary" icon={<MessageOutlined />}>
+          <div className="tsc-modal-footer">
+            <Button className="tsc-action-button-default" onClick={handleModalClose}>
+              Đóng
+            </Button>
+            <Button type="primary" icon={<MessageOutlined />} className="tsc-action-button-primary">
               Liên hệ phụ huynh
             </Button>
           </div>
@@ -322,9 +428,16 @@ const TeacherStudentClass = () => {
             )}
           </div>
           <div className="header-right">
-            <Button type="primary" icon={<DownloadOutlined />}>
-              Xuất danh sách
-            </Button>
+            <Space>
+              <Link to={`/teacher/classes/${classId}/view-all-attendance`}>
+                <Button type="primary" icon={<FileTextOutlined />} style={{ marginRight: '8px' }}>
+                  Xem điểm danh
+                </Button>
+              </Link>
+              <Button type="primary" icon={<DownloadOutlined />}>
+                Xuất danh sách
+              </Button>
+            </Space>
           </div>
         </div>
 
