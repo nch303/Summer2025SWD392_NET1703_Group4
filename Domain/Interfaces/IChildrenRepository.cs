@@ -17,6 +17,5 @@ namespace Domain.Interfaces
         Task<List<Children>> SearchChildrenAsync(string searchTerm, int page, int pageSize);
         Task<List<Children>> SearchChildrenInClassAsync(int classId, string searchTerm);
         Task<List<Children>> GetPaidChildrenAsync();
-
     }
 }

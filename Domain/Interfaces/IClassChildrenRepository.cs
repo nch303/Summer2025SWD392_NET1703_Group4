@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task<ClassChildren> GetCurrentAssignment(Guid childID);
         Task<List<ClassChildren>> GetChilldrenByClassIdAsync(int classId);
+        Task<List<ClassChildren>> GetAllAsync();
     }
 }

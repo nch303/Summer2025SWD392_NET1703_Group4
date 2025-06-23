@@ -25,6 +25,8 @@ namespace Application.Mappings
                 .ForMember(dest => dest.Slot, opt => opt.MapFrom(src => src.SyllabusDetails!.Slot))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.SyllabusDetails!.Content))
                 .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.SyllabusDetails!.Duration));
+            CreateMap<NewsRequest, News>();
+            CreateMap<News, NewsResponse>();
 
             CreateMap<RegisterRequest, Account>();
             CreateMap<Account, AccountResponse>();
@@ -53,6 +55,15 @@ namespace Application.Mappings
 
                 // 🚫 Không ánh xạ ApplicationID → giữ mặc định (null)
                 .ForMember(dest => dest.ApplicationID, opt => opt.Ignore());
+
+            CreateMap<ClassChildren, GetAllClassChildrenResponse>()
+                .ForMember(dest => dest.ChildrenResponse, opt => opt.MapFrom(src => src.Childrens))
+                .ForMember(dest => dest.ClassResponse, opt => opt.MapFrom(src => src.Classes))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
+                .ForMember(dest => dest.AttendanceResponses, opt => opt.MapFrom(src => src.Attendances));
+
+            CreateMap<Attendance,  AttendanceResponse>();
 
 
             CreateMap<EnrichmentProgramRequest, EnrichmentProgram>();

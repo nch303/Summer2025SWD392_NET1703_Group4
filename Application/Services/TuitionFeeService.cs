@@ -107,7 +107,7 @@ namespace Application.Services
                                 // Remove tuition fees that do not match the child's grade level or date range
                                 if (tuitionTemp[i].GradeLevelID != child.GradeLevelID ||
                                     tuitionTemp[i].Date < DateOnly.FromDateTime(startDate) ||
-                                    tuitionTemp[i].Date > DateOnly.FromDateTime(endDate) ||
+                                    //tuitionTemp[i].Date > DateOnly.FromDateTime(endDate) ||
                                     tuitionTemp[i].Date >= dateOnly ||
                                     DateTime.Now < tuitionDate20thLastMonth)
                                 {
@@ -135,10 +135,6 @@ namespace Application.Services
         public async Task<TuitionFee> GetTuitionFeeByNameAsync(string name)
         {
             var tuition = await _tuitionFeeRepository.GetTuitionFeeByNameAsync(name);
-            if (tuition == null)
-            {
-                throw new Exception("Tuition fee not found");
-            }
             return tuition;
         }
 

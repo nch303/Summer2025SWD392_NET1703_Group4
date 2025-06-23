@@ -12,6 +12,7 @@ namespace Application.DTOs.Response
         public int ID { get; set; }
         public DateTime Date { get; set; }
         public string? ChildrenName { get; set; }
+        public int ClassChildrenID { get; set; }
         public string? Status { get; set; }
         public string? Notes { get; set; }
     }

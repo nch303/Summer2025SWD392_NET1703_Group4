@@ -20,5 +20,8 @@ namespace Application.DTOs.Response
         public string PhoneNumber { get; set; }
         public DateTime EnrollDate { get; set; }
         public Guid? ApplicationID { get; set; }
+        public int GradeLevelID { get; set; }
+        public string? GradeLevelName { get; set; }
+        public string? Status { get; set; }
     }
 }

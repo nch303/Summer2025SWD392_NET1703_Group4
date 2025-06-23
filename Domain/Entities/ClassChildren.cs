@@ -12,6 +12,7 @@ namespace Domain.Entities
         public Guid ChildrenID { get; set; }
         [Required]
         public int ClassID { get; set; }
+        public string? Status { get; set; }
 
         [ForeignKey("ChildrenID")]
         public Children? Childrens { get; set; }
