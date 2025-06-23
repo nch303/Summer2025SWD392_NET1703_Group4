@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Card, Row, Col, Statistic, Button, Table, Calendar, Badge, 
-  Input, Select, DatePicker, message, Space
+  Card, Row, Col, Statistic, Table, Calendar, Badge
 } from 'antd';
 import { 
   UserOutlined, TeamOutlined, CalendarOutlined, 
   FileTextOutlined
 } from '@ant-design/icons';
 import './AdminPage.css';
-import dayjs from 'dayjs';
 import api from '../../config/axiosConfig';
 
 // Mock data for dashboard
@@ -18,20 +16,6 @@ const stats = {
   totalClasses: 8,
   totalActivities: 15
 };
-
-// Mock data for activities
-const activities = [
-  { id: 1, name: 'Art Class', teacher: 'Ms. Davis', participants: 15, schedule: 'Mon 2PM-3PM' },
-  { id: 2, name: 'Music Class', teacher: 'Mr. Wilson', participants: 12, schedule: 'Wed 2PM-3PM' },
-  // Add more mock activities...
-];
-
-// Mock data for news
-const news = [
-  { id: 1, title: 'Summer Program Registration', content: 'Registration for summer programs...', date: '2024-06-01' },
-  { id: 2, title: 'Parent-Teacher Meeting', content: 'Annual parent-teacher meeting...', date: '2024-06-15' },
-  // Add more mock news...
-];
 
 const AdminPage = () => {
   return (
@@ -64,33 +48,22 @@ const AdminPage = () => {
           <Col xs={24} lg={16}>
             <Card title="Recent Activities" className="activity-card">
               <Table 
-                dataSource={activities.slice(0, 5)} 
+                dataSource={[]} 
                 columns={[
                   { title: 'Activity', dataIndex: 'name' },
                   { title: 'Teacher', dataIndex: 'teacher' },
                   { title: 'Schedule', dataIndex: 'schedule' },
                 ]}
                 pagination={false}
+                locale={{ emptyText: 'No activities available' }}
               />
             </Card>
           </Col>
           <Col xs={24} lg={8}>
             <Card title="Upcoming Events" className="activity-card">
               <Calendar 
-                fullscreen={false} 
-                dateCellRender={(date) => {
-                  const dateStr = date.format('YYYY-MM-DD');
-                  const events = news.filter(n => n.date === dateStr);
-                  return (
-                    <ul className="events">
-                      {events.map(event => (
-                        <li key={event.id}>
-                          <Badge color="#ff914d" text={event.title} />
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                }}
+                fullscreen={false}
+                dateCellRender={() => null}
               />
             </Card>
           </Col>
