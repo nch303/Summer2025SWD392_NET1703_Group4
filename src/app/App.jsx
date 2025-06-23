@@ -63,6 +63,7 @@ import SendAnnouncementPage from '../pages/announcement/SendAnnouncementPage';
 import ReportsPage from '../pages/reports/ReportsPage';
 import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
 import AdminNews from '../pages/admin/AdminNews';
+import StaffAssignTeacherPage from '../pages/staff-assign-teacher/StaffAssignTeacherPage';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -181,6 +182,7 @@ function App() {
             <Route path="students" element={<ChildrenManagement />} />
             <Route path="enrollment-applications" element={<EnrollmentApplicationManagement />} />
             <Route path="assign-students" element={<StaffAssignStudentPage />} />
+            <Route path="assign-teachers" element={<StaffAssignTeacherPage />} />
           </Route>
 
           {/* Admin Routes */}
