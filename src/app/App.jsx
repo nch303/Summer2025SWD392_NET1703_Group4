@@ -42,7 +42,7 @@ import EnrollmentApplicationManagement from '../pages/staff-dashboard/Enrollment
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
-
+import StudentsManagement from '../pages/admin-students-management/StudentsManagement';
 import AdminSyllabus from '../pages/admin/AdminSyllabus';
 
 // Teacher Pages
@@ -62,6 +62,7 @@ import { UserProvider } from '../contexts/UserContext';
 import SendAnnouncementPage from '../pages/announcement/SendAnnouncementPage';
 import ReportsPage from '../pages/reports/ReportsPage';
 import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
+import AdminNews from '../pages/admin/AdminNews';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -164,7 +165,7 @@ function App() {
                 <EnrichmentProgram />
               </ProtectedRoute>
             } />
-            <Route path="/news" element={<NewsPage />} />
+            <Route path="/news" element={<AdminNews />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
@@ -190,17 +191,17 @@ function App() {
           }>
             <Route index element={<AdminPage />} />
             <Route path="syllabus" element={<AdminSyllabus />} />
-            <Route path="students" element={<div>Students Management</div>} />
             <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
             <Route path="classes/list" element={<ClassManagement />} />
-            <Route path="news" element={<NewsPage />} />
+            <Route path="news" element={<AdminNews />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="classes" element={<div>Classes Management</div>} />
             <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />
             <Route path="enrichment" element={<AdminEnrichment />} />
+            <Route path="students" element={<StudentsManagement />} />
           </Route>
 
           {/* Teacher Routes */}

@@ -37,6 +37,11 @@ const AdminLayout = () => {
       label: 'Dashboard',
     },
     {
+      key: '/admin/students',
+      icon: <TeamOutlined />,
+      label: 'Students',
+    },
+    {
       key: '/admin/teachers',
       icon: <UserOutlined />,
       label: 'Teachers',
