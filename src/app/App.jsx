@@ -194,7 +194,7 @@ function App() {
             <Route path="students" element={<div>Students Management</div>} />
             <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
-            <Route path="classes/list" element={<ClassManagement />} />
+            <Route path="classes" element={<ClassManagement />} />
             <Route path="enrichment-activities" element={<EnrichmentActivityListPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
