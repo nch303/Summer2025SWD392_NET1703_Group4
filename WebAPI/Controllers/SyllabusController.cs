@@ -22,13 +22,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("create-syllabus")]
-        public async Task<IActionResult> CreateSyllabus([FromBody] CreateSyllabusRequest request)
+        public async Task<IActionResult> CreateSyllabus([FromBody] SyllabusRequest request)
         {
             try
             {
-                var syllabus = _mapper.Map<Syllabus>(request.SyllabusRequest);
-                var detail = _mapper.Map<SyllabusDetail>(request.DetailRequest);
-                var result = await _syllabusService.CreateAsync(syllabus, detail);
+                var syllabus = _mapper.Map<Syllabus>(request);
+                var result = await _syllabusService.CreateSyllabus(syllabus);
                 return Ok($"Syllabus {result.Name} has been created successfully!!!");
             }
             catch (Exception ex)
@@ -42,21 +41,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var response = _mapper.Map<List<GetAllSyllabiResponse>>(await _syllabusService.GetAllAsync());
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{id}/get-syllabus-detail")]
-        public async Task<IActionResult> GetSyllabusDetailById(int id)
-        {
-            try
-            {
-                var response = _mapper.Map<SyllabusDetailResponse>(await _syllabusService.GetDetailByIdAsync(id));
+                var response = _mapper.Map<List<SyllabusResponse>>(await _syllabusService.GetAll());
                 return Ok(response);
             }
             catch (Exception ex)
@@ -66,14 +51,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}/update-syllabus")]
-        public async Task<IActionResult> UpdateSyllabus(int id, [FromBody] UpdateSyllabusRequest request)
+        public async Task<IActionResult> UpdateSyllabus(int id, [FromBody] SyllabusRequest request)
         {
             try
             {
-                var newSyllabus = _mapper.Map<Syllabus>(request.SyllabusRequest);
-                var newDetail = _mapper.Map<SyllabusDetail>(request.DetailRequest);
-                var updated = await _syllabusService.UpdateAsync(id, newSyllabus, newDetail);
-                var response = _mapper.Map<SyllabusDetailResponse>(updated);
+                var newSyllabus = _mapper.Map<Syllabus>(request);
+                var updated = await _syllabusService.Update(id, newSyllabus);
+                var response = _mapper.Map<SyllabusResponse>(updated);
                 return Ok(response);
             }
             catch (Exception ex)

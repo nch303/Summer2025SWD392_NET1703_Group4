@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             {
                 var (news, totalCount) = await _newsService.GetListOfNews(page, pageSize);
 
-                var newsResponses = _mapper.Map<List<NewsResponse>>(news);
+                var newsResponses = _mapper.Map<List<GetAllNewsResponse>>(news);
 
                 return Ok(new
                 {
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
             {
                 var detail = await _newsService.ViewNewsDetail(id);
 
-                var newsResponses = _mapper.Map<List<NewsResponse>>(detail);
+                var newsResponses = _mapper.Map<NewsResponse>(detail);
 
                 return Ok(newsResponses);
             }

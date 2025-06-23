@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Request
+namespace Application.DTOs.Response
 {
-    public class SyllabusRequest
+    public class SyllabusResponse
     {
+        public int ID { get; set; }
         public string? Name { get; set; }
         public int SlotAmount { get; set; }
     }
