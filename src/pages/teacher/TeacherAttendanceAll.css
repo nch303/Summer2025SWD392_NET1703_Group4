@@ -1,0 +1,140 @@
+.teacher-attendance-all-container {
+  padding: 24px 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.teacher-attendance-all-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+
+.teacher-attendance-all-header {
+  margin-bottom: 32px;
+}
+
+.teacher-attendance-all-title-section {
+  position: relative;
+}
+
+.teacher-attendance-all-title-section h2 {
+  margin: 16px 0 8px;
+  font-weight: 700;
+  font-size: 28px;
+  background: linear-gradient(120deg, #1677ff, #39c0ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.teacher-attendance-all-class-info {
+  color: #595959;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.teacher-attendance-all-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 300px;
+  padding: 40px 0;
+}
+
+.teacher-attendance-stats-summary {
+  margin-bottom: 24px;
+}
+
+.teacher-attendance-stat-card {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+}
+
+.teacher-attendance-stat-progress {
+  margin-top: 16px;
+}
+
+.teacher-attendance-table-card {
+  border-radius: 12px;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.teacher-attendance-table-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.teacher-attendance-all-table .ant-table-thead > tr > th {
+  background-color: #f0f7ff;
+  font-weight: 600;
+  text-align: center;
+}
+
+.teacher-attendance-date-column {
+  font-weight: 500;
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.teacher-attendance-present {
+  background-color: rgba(82, 196, 26, 0.15);
+  color: #52c41a;
+  font-weight: bold;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.teacher-attendance-absent {
+  background-color: rgba(255, 77, 79, 0.15);
+  color: #ff4d4f;
+  font-weight: bold;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.teacher-attendance-index-column {
+  background-color: #fafafa !important;
+}
+
+.teacher-attendance-student-column {
+  background-color: #fafafa !important;
+}
+
+.teacher-attendance-rate-column {
+  background-color: #fafafa !important;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .teacher-attendance-all-title-section {
+    padding-top: 40px;
+  }
+  
+  .teacher-attendance-all-title-section h2 {
+    font-size: 24px;
+  }
+}
+
+/* Add footer styles */
+.teacher-attendance-all-footer {
+  display: flex;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}

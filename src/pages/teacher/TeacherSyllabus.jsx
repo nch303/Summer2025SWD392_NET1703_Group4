@@ -10,7 +10,7 @@ import {
   SortAscendingOutlined, PlusOutlined, FilePdfOutlined,
   BookFilled, ReadOutlined, CheckCircleOutlined, ClockCircleOutlined
 } from '@ant-design/icons';
-import { getAllSyllabi } from './TeacherSyllabusService';
+import { getAllSyllabi, getSyllabusById } from './TeacherSyllabusService';
 import './TeacherSyllabus.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -77,6 +77,7 @@ const TeacherSyllabus = () => {
     author: "Ban Giáo dục Mầm non",
     publisher: "NXB Giáo dục",
     publishYear: 2023,
+    slotAmount: 10,
     units: [
       { name: "Đơn vị 1: Làm quen với chữ cái", status: "Hoàn thành", progress: 100 },
       { name: "Đơn vị 2: Học đếm số", status: "Đang dạy", progress: 80 },
@@ -104,6 +105,16 @@ const TeacherSyllabus = () => {
           <BookFilled style={{ color: '#1890ff' }} />
           <Text strong>{text}</Text>
         </Space>
+      ),
+    },
+    {
+      title: 'Số buổi học',
+      dataIndex: 'slotAmount',
+      key: 'slotAmount',
+      width: 150,
+      align: 'center',
+      render: (slotAmount) => (
+        <Tag color="blue">{slotAmount} buổi</Tag>
       ),
     },
     {
@@ -149,6 +160,18 @@ const TeacherSyllabus = () => {
       ),
     },
     {
+      title: 'Số buổi học',
+      dataIndex: 'slotAmount',
+      key: 'slotAmount',
+      width: 150,
+      align: 'center',
+      render: (slotAmount) => slotAmount ? (
+        <Tag color="blue">{slotAmount} buổi</Tag>
+      ) : (
+        <Tag color="default">Chưa cập nhật</Tag>
+      ),
+    },
+    {
       title: 'Lớp',
       dataIndex: 'className',
       key: 'className',
@@ -169,13 +192,15 @@ const TeacherSyllabus = () => {
       key: 'progress',
       render: (progress) => (
         <div className="progress-cell">
-          <div 
-            className="progress-bar" 
-            style={{ 
-              width: `${progress}%`,
-              backgroundColor: progress === 0 ? '#f5f5f5' : progress < 30 ? '#ff4d4f' : progress < 70 ? '#faad14' : '#52c41a'
-            }} 
-          />
+          <div className="progress-bar">
+            <div 
+              style={{ 
+                width: `${progress}%`,
+                height: '100%',
+                backgroundColor: progress === 0 ? '#f5f5f5' : progress < 30 ? '#ff4d4f' : progress < 70 ? '#faad14' : '#52c41a'
+              }} 
+            />
+          </div>
           <Text>{progress}%</Text>
         </div>
       ),
@@ -216,10 +241,9 @@ const TeacherSyllabus = () => {
             size={80} 
           />
           <div className="syllabus-title">
-            <Title level={3}>{detail.name}</Title>
+            <Title level={3}>{selectedSyllabus.name}</Title>
             <div className="syllabus-tags">
-              <Tag color="blue">{detail.ageGroup}</Tag>
-              <Tag color="purple">{detail.duration}</Tag>
+              <Tag color="blue">{selectedSyllabus.slotAmount || 0} buổi học</Tag>
             </div>
           </div>
         </div>
@@ -232,56 +256,58 @@ const TeacherSyllabus = () => {
           column={1}
           className="syllabus-descriptions"
         >
-          <Descriptions.Item label="Mô tả">{detail.description}</Descriptions.Item>
-          <Descriptions.Item label="Tác giả">{detail.author}</Descriptions.Item>
-          <Descriptions.Item label="Nhà xuất bản">{detail.publisher}</Descriptions.Item>
-          <Descriptions.Item label="Năm xuất bản">{detail.publishYear}</Descriptions.Item>
+          <Descriptions.Item label="ID giáo trình">{selectedSyllabus.id}</Descriptions.Item>
+          <Descriptions.Item label="Tên giáo trình">{selectedSyllabus.name}</Descriptions.Item>
+          <Descriptions.Item label="Số buổi học">{selectedSyllabus.slotAmount || 0}</Descriptions.Item>
         </Descriptions>
 
-        <Divider orientation="left">Nội dung giáo trình</Divider>
+        {detail.units && (
+          <>
+            <Divider orientation="left">Nội dung giáo trình</Divider>
+            <div className="syllabus-units">
+              {detail.units.map((unit, index) => (
+                <Card 
+                  key={index}
+                  className="unit-card"
+                  title={
+                    <Space>
+                      <Text strong>{unit.name}</Text>
+                      <Tag 
+                        color={
+                          unit.status === 'Hoàn thành' ? 'success' : 
+                          unit.status === 'Đang dạy' ? 'processing' : 
+                          'default'
+                        }
+                      >
+                        {unit.status}
+                      </Tag>
+                    </Space>
+                  }
+                  extra={
+                    <div className="unit-progress">
+                      <Text>{unit.progress}%</Text>
+                    </div>
+                  }
+                >
+                  <div className="unit-progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ 
+                        width: `${unit.progress}%`,
+                        backgroundColor: unit.progress === 0 ? '#f5f5f5' : unit.progress < 30 ? '#ff4d4f' : unit.progress < 70 ? '#faad14' : '#52c41a'
+                      }} 
+                    />
+                  </div>
 
-        <div className="syllabus-units">
-          {detail.units.map((unit, index) => (
-            <Card 
-              key={index}
-              className="unit-card"
-              title={
-                <Space>
-                  <Text strong>{unit.name}</Text>
-                  <Tag 
-                    color={
-                      unit.status === 'Hoàn thành' ? 'success' : 
-                      unit.status === 'Đang dạy' ? 'processing' : 
-                      'default'
-                    }
-                  >
-                    {unit.status}
-                  </Tag>
-                </Space>
-              }
-              extra={
-                <div className="unit-progress">
-                  <Text>{unit.progress}%</Text>
-                </div>
-              }
-            >
-              <div className="unit-progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ 
-                    width: `${unit.progress}%`,
-                    backgroundColor: unit.progress === 0 ? '#f5f5f5' : unit.progress < 30 ? '#ff4d4f' : unit.progress < 70 ? '#faad14' : '#52c41a'
-                  }} 
-                />
-              </div>
-
-              <div className="unit-actions">
-                <Button type="primary" icon={<EyeOutlined />}>Xem chi tiết</Button>
-                <Button icon={<DownloadOutlined />}>Tải tài liệu</Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+                  <div className="unit-actions">
+                    <Button type="primary" icon={<EyeOutlined />}>Xem chi tiết</Button>
+                    <Button icon={<DownloadOutlined />}>Tải tài liệu</Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     );
   };

@@ -59,26 +59,6 @@ const TeacherLayout = () => {
       label: <Link to="/teacher/syllabus">Syllabus</Link>,
     },
     {
-      key: 'schedule',
-      icon: <CalendarOutlined />,
-      label: <Link to="/teacher/schedule">Schedule</Link>,
-    },
-    {
-      key: 'assignments',
-      icon: <FileTextOutlined />,
-      label: <Link to="/teacher/assignments">Assignments</Link>,
-    },
-    {
-      key: 'messages',
-      icon: <MessageOutlined />,
-      label: (
-        <Link to="/teacher/messages">
-          Messages
-          <Badge count={5} style={{ marginLeft: '8px' }} />
-        </Link>
-      ),
-    },
-    {
       key: 'settings',
       icon: <SettingOutlined />,
       label: <Link to="/teacher/settings">Settings</Link>,

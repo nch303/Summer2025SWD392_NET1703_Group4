@@ -1,9 +1,9 @@
-import axios from '../../config/axiosConfig';
+import api from '../../config/axiosConfig';
 
 // Lấy danh sách lớp học theo ID của giảng viên
 export const getClassesByTeacherId = async (teacherId) => {
   try {
-    const response = await axios.get(`/api/Class/get-classes-by-teacherId/${teacherId}`);
+    const response = await api.get(`/api/Class/get-classes-by-teacherId/${teacherId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching teacher classes:', error);
