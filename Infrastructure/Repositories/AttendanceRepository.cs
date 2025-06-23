@@ -68,6 +68,26 @@ namespace Infrastructure.Repositories
             return existingAttendance;
         }
 
+        public async Task<List<Attendance>> GetAllAttendanceByClassIdAsync(int classId)
+        {
+            // 2. Get ClassChildren IDs for the class
+            var classChildren = await _context.ClassChildrens
+                .Include(cc => cc.Childrens)
+                .Where(cc => cc.ClassID == classId)
+                .ToListAsync();
+
+            var classChildrenIds = classChildren.Select(cc => cc.ID).ToList();
+
+            // 3. Get existing attendance for today
+            var existingAttendance = await _context.Attendances
+                .Include(a => a.ClassChildrens)
+                    .ThenInclude(cc => cc!.Childrens)
+                .Where(a => classChildrenIds.Contains(a.ClassChildrenID))
+                .ToListAsync();
+
+            return existingAttendance;
+        }
+
         public async Task<bool> UpdateAttendanceAsync(List<Attendance> attendances)
         {
             var ids = attendances.Select(a => a.ID).ToList();
