@@ -294,9 +294,9 @@ const RegisterPage = () => {
                 <>
                   {/* Password strength indicator */}
                   <div className="password-strength-container">
-                    <div className="password-strength-meter">
+                    <div className="register-password-strength-meter">
                       <div 
-                        className={`password-strength-bar ${
+                        className={`register-password-strength-bar ${
                           passwordScore === 0 ? 'strength-none' :
                           passwordScore === 1 ? 'strength-weak' :
                           passwordScore === 2 ? 'strength-fair' :

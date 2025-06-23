@@ -375,28 +375,30 @@ const ChildProfileManagement = () => {
                   >
                     <FontAwesomeIcon icon="edit" />
                   </button>
-                  <button
-                    className="delete-child-btn"
-                    onClick={() => handleDeleteChild(child.id, child.name)}
-                    title="Xóa thông tin"
-                    aria-label="Xóa thông tin"
-                  >
-                    <FontAwesomeIcon icon="trash" />
-                  </button>
-                  <button
-                    className="enroll-child-btn"
-                    onClick={() => {
-                      if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
-                        setEnrollmentError({ show: true, childName: child.name });
-                      } else {
-                        window.location.href = `/enrollment-application/${child.id}`;
-                      }
-                    }}
-                    title="Nhập học"
-                    aria-label="Nhập học"
-                  >
-                    <FontAwesomeIcon icon="graduation-cap" />
-                  </button>
+                  {child.status === 'Active' ? (
+                    <span 
+                      className="enrolled-badge"
+                      title="Đã nhập học"
+                    >
+                      <FontAwesomeIcon icon="check-circle" />
+                      <span>Đã nhập học</span>
+                    </span>
+                  ) : (
+                    <button
+                      className="enroll-child-btn"
+                      onClick={() => {
+                        if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
+                          setEnrollmentError({ show: true, childName: child.name });
+                        } else {
+                          window.location.href = `/enrollment-application/${child.id}`;
+                        }
+                      }}
+                      title="Nhập học"
+                      aria-label="Nhập học"
+                    >
+                      <FontAwesomeIcon icon="graduation-cap" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

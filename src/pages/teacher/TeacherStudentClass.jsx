@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { 
   Card, Table, Avatar, Tag, Typography, Input, Button, 
   Tooltip, Space, Empty, Spin, Tabs, Row, Col, Dropdown,
-  Badge, Segmented, List, Statistic, Modal, Descriptions, Image
+  Badge, Segmented, List, Statistic, Modal, Descriptions, Image, message
 } from 'antd';
 import { 
   UserOutlined, SearchOutlined, FilterOutlined, 
@@ -36,11 +36,28 @@ const TeacherStudentClass = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
+  // 1. First, add a function to ensure unique data
+  const ensureUniqueData = (data) => {
+    const seen = new Set();
+    return data.filter((student) => {
+      if (seen.has(student.id)) {
+        console.warn(`Duplicate student ID found: ${student.id}`);
+        return false;
+      }
+      seen.add(student.id);
+      return true;
+    });
+  };
+
+  // 2. Update the useEffect to filter out duplicates
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const studentsData = await getStudentsByClassId(classId);
+        
+        // Apply the unique filter
+        const uniqueStudentsData = ensureUniqueData(studentsData);
         
         if (currentUser?.id) {
           const classes = await getClassesByTeacherId(currentUser.id);
@@ -48,8 +65,12 @@ const TeacherStudentClass = () => {
           setClassInfo(currentClass);
         }
         
-        setStudents(studentsData);
-        setFilteredStudents(studentsData);
+        setStudents(uniqueStudentsData);
+        setFilteredStudents(uniqueStudentsData);
+
+        if (studentsData.length !== uniqueStudentsData.length) {
+          message.warning(`Some duplicate student records were filtered out (${studentsData.length - uniqueStudentsData.length})`);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -399,7 +420,7 @@ const TeacherStudentClass = () => {
             <Table 
               columns={columns} 
               dataSource={filteredStudents} 
-              rowKey="id"
+              rowKey={(record) => `student-${record.id}-${record.name}`}
               pagination={{ pageSize: 10 }}
               className="students-table"
             />

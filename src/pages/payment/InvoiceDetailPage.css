@@ -10,7 +10,7 @@
   --text-medium: #546e7a;
   --text-light: #78909c;
   --background-light: #f5f7fa;
-  --card-shadow: 0 10px 30px rgba(0,0,0,0.07);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
   --border-radius: 12px;
   --premium-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
   --premium-gradient: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
@@ -136,7 +136,7 @@
 /* Top decoration */
 .invoice-top-decoration {
   height: 8px;
-  background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+  background: linear-gradient(to right, var(--success-color));
   margin-bottom: 0;
 }
 
@@ -154,7 +154,9 @@
   z-index: 1;
 }
 
-.paid-watermark, .failed-watermark, .pending-watermark {
+.paid-watermark,
+.failed-watermark,
+.pending-watermark {
   transform: rotate(-30deg);
   opacity: 0.07;
   font-size: 120px;
@@ -194,26 +196,34 @@
 }
 
 .brand-logo {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
-  border-radius: 12px;
+  width: 80px;
+  height: 80px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: white;
-  box-shadow: 0 6px 15px rgba(255, 112, 67, 0.2);
+  align-items: center;
+  background: linear-gradient(135deg, #fff, #f5f5f5);
+  border-radius: 50%;
+  margin-right: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #ffd0b0;
+  border: 2px solid #fff;
+  transition: all 0.3s;
+}
+
+.brand-logo:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 0 0 3px #ffd0b0;
+  transform: rotate(180deg);
 }
 
 .brand-logo svg {
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
+  color: #ff8a65;
 }
 
 .brand-info h1 {
   margin: 0 0 10px 0;
   font-size: 1.8rem;
-  color: var(--text-dark);
+  color: #e64a19;
   font-weight: 700;
 }
 
@@ -362,7 +372,7 @@
   font-size: 1rem;
 }
 
-.premium-invoice-table th, 
+.premium-invoice-table th,
 .premium-invoice-table td {
   padding: 14px 16px;
 }
@@ -613,6 +623,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -623,9 +634,11 @@
   0% {
     box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
   }
@@ -636,19 +649,19 @@
   .invoice-premium-actions {
     display: none;
   }
-  
+
   .invoice-detail-page {
     padding: 0;
     background-color: white;
   }
-  
+
   .invoice-premium-card {
     box-shadow: none;
     border: none;
     margin: 0;
     padding: 0;
   }
-  
+
   .invoice-watermark {
     display: none;
   }
@@ -659,7 +672,7 @@
   .invoice-detail-page {
     padding: 1.5rem;
   }
-  
+
   .invoice-premium-header,
   .invoice-customer-section,
   .invoice-items-section,
@@ -667,11 +680,11 @@
   .invoice-premium-footer {
     padding: 25px;
   }
-  
+
   .brand-info h1 {
     font-size: 1.5rem;
   }
-  
+
   .invoice-premium-title h2 {
     font-size: 1.8rem;
   }
@@ -683,25 +696,25 @@
     align-items: flex-start;
     gap: 20px;
   }
-  
+
   .invoice-premium-title {
     text-align: left;
     width: 100%;
   }
-  
+
   .invoice-detail-item {
     justify-content: flex-start;
   }
-  
+
   .invoice-premium-status {
     margin-top: 10px;
   }
-  
+
   .customer-info-grid {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
     gap: 15px;
   }
-  
+
   .footer-signatures {
     padding: 0 20px;
   }
@@ -711,21 +724,21 @@
   .invoice-detail-page {
     padding: 1rem;
   }
-  
+
   .invoice-premium-actions {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .invoice-actions-right {
     width: 100%;
   }
-  
+
   .invoice-action-button {
     flex: 1;
     justify-content: center;
   }
-  
+
   .invoice-premium-header,
   .invoice-customer-section,
   .invoice-items-section,
@@ -733,20 +746,20 @@
   .invoice-premium-footer {
     padding: 20px;
   }
-  
+
   .payment-confirmation {
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
     gap: 15px;
   }
-  
+
   .footer-signatures {
     flex-direction: column;
     align-items: center;
     gap: 30px;
   }
-  
+
   .footer-contact {
     flex-direction: column;
     gap: 15px;

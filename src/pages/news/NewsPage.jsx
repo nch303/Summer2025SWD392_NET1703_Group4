@@ -147,7 +147,7 @@ const NewsPage = () => {
         
         <div className="header-container">
           <div className="header-content">
-            <h1 className="main-title">
+            <h1 className="news-main-title">
               Little Stars News
             </h1>
             <div className="title-underline"></div>

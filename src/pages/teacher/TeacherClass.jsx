@@ -16,7 +16,6 @@ import './TeacherClass.css';
 
 const { Title, Text, Paragraph } = Typography;
 const { Search } = Input;
-const { TabPane } = Tabs;
 
 const TeacherClass = () => {
   const [classes, setClasses] = useState([]);
@@ -284,6 +283,27 @@ const TeacherClass = () => {
     </div>
   );
 
+  // Replace Tabs with TabPane children with the items array approach
+  const tabItems = [
+    {
+      key: 'all',
+      label: 'Tất cả lớp học',
+      children: filteredClasses.length === 0 ? 
+        renderEmpty() : 
+        (viewType === 'grid' ? renderGridView() : renderListView())
+    },
+    {
+      key: 'active',
+      label: 'Lớp đang hoạt động',
+      children: null // Replace with actual content when needed
+    },
+    {
+      key: 'full',
+      label: 'Lớp đầy',
+      children: null // Replace with actual content when needed
+    }
+  ];
+
   return (
     <div className="teacher-class-container">
       <div className="class-header">
@@ -360,21 +380,11 @@ const TeacherClass = () => {
         <>
           {classes.length > 0 && renderDashboard()}
 
-          <Tabs defaultActiveKey="all" className="class-tabs">
-            <TabPane tab="Tất cả lớp học" key="all">
-              {filteredClasses.length === 0 ? (
-                renderEmpty()
-              ) : (
-                viewType === 'grid' ? renderGridView() : renderListView()
-              )}
-            </TabPane>
-            <TabPane tab="Lớp đang hoạt động" key="active">
-              {/* Hiển thị các lớp đang hoạt động */}
-            </TabPane>
-            <TabPane tab="Lớp đầy" key="full">
-              {/* Hiển thị các lớp đã đầy */}
-            </TabPane>
-          </Tabs>
+          <Tabs 
+            defaultActiveKey="all" 
+            className="class-tabs" 
+            items={tabItems}
+          />
         </>
       )}
     </div>

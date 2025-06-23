@@ -4,38 +4,38 @@
   --primary-color-dark: #f4511e;
   --primary-color-light: #ffccbc;
   --primary-rgb: 255, 112, 67;
-  
+
   --accent-color: #5c6bc0;
   --accent-color-light: #d1c4e9;
   --accent-rgb: 92, 107, 192;
-  
+
   --success-color: #4caf50;
   --success-color-light: #e8f5e9;
   --success-rgb: 76, 175, 80;
-  
+
   --warning-color: #ffb300;
   --warning-color-light: #fff8e1;
   --warning-rgb: 255, 179, 0;
-  
+
   --danger-color: #f44336;
   --danger-color-light: #ffebee;
   --danger-rgb: 244, 67, 54;
-  
+
   --text-color: #37474f;
   --text-color-dark: #263238;
   --text-color-muted: #607d8b;
-  
+
   --card-bg-color: #ffffff;
   --card-border-color: #eceff1;
-  
+
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  
+
   --border-radius-sm: 8px;
   --border-radius-md: 12px;
   --border-radius-lg: 16px;
-  
+
   --anim-duration-fast: 0.2s;
   --anim-duration-normal: 0.3s;
   --anim-duration-slow: 0.5s;
@@ -93,6 +93,7 @@
     transform: translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -111,12 +112,15 @@
     transform: translateY(-20px);
     opacity: 0;
   }
+
   50% {
     transform: translateY(10px);
   }
+
   75% {
     transform: translateY(-5px);
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
@@ -184,6 +188,7 @@
   0% {
     background-color: rgba(76, 175, 80, 0.3);
   }
+
   100% {
     background-color: transparent;
   }
@@ -250,7 +255,7 @@
   .profile-layout {
     grid-template-columns: 1fr;
   }
-  
+
   .profile-sidebar {
     margin-bottom: 2rem;
   }
@@ -644,14 +649,16 @@
   height: 18px;
   color: #a0aec0;
   pointer-events: none;
-  z-index: 1; /* Ensure icon is above the input */
+  z-index: 1;
+  /* Ensure icon is above the input */
 }
 
 /* Make readonly field and normal input have same height and alignment */
 .input-with-icon input,
 .input-with-icon .readonly-field {
   padding-left: 45px !important;
-  height: 46px; /* Explicit height to ensure consistency */
+  height: 46px;
+  /* Explicit height to ensure consistency */
   display: flex;
   align-items: center;
 }
@@ -724,7 +731,7 @@ textarea {
   .profile-header-content h1 {
     font-size: 1.75rem;
   }
-  
+
   .profile-header-content p {
     font-size: 1rem;
   }
@@ -734,26 +741,26 @@ textarea {
     align-items: flex-start;
     gap: 1rem;
   }
-  
-  .edit-profile-btn, 
+
+  .edit-profile-btn,
   .edit-actions {
     width: 100%;
   }
-  
+
   .edit-actions {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
-  .save-profile-btn, 
+
+  .save-profile-btn,
   .cancel-edit-btn {
     width: 100%;
   }
-  
+
   .cancel-edit-btn {
     order: 1;
   }
-  
+
   .save-profile-btn {
     order: 0;
   }
@@ -775,11 +782,11 @@ textarea {
   left: 2rem;
   right: 2rem;
   height: 1px;
-  background: linear-gradient(90deg, 
-    rgba(255,255,255,0) 0%, 
-    rgba(236,239,241,1) 15%, 
-    rgba(236,239,241,1) 85%, 
-    rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(236, 239, 241, 1) 15%,
+      rgba(236, 239, 241, 1) 85%,
+      rgba(255, 255, 255, 0) 100%);
 }
 
 .children-grid {
@@ -788,9 +795,11 @@ textarea {
   gap: 16px;
   margin-top: 24px;
   padding: 0 24px 24px;
-  max-height: 510px; /* Height for approximately 5 child cards */
-  overflow-y: auto; /* Add vertical scrollbar when needed */
-  
+  max-height: 510px;
+  /* Height for approximately 5 child cards */
+  overflow-y: auto;
+  /* Add vertical scrollbar when needed */
+
   /* Custom scrollbar styling */
   scrollbar-width: thin;
   scrollbar-color: #ffb74d #f5f5f5;
@@ -822,7 +831,8 @@ textarea {
   padding: 16px 24px;
   gap: 20px;
   width: 100%;
-  min-height: 92px; /* Set fixed height for consistent sizing */
+  min-height: 92px;
+  /* Set fixed height for consistent sizing */
   box-sizing: border-box;
 }
 
@@ -871,6 +881,9 @@ textarea {
   position: static;
   display: flex;
   gap: 10px;
+  min-width: 180px;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: 992px) {
@@ -878,16 +891,16 @@ textarea {
     flex-wrap: wrap;
     gap: 12px;
   }
-  
+
   .child-card-row {
     flex-wrap: wrap;
   }
-  
+
   .child-card-row .child-info {
     width: calc(100% - 80px);
     min-width: auto;
   }
-  
+
   .child-details-row {
     width: 100%;
     margin-top: 12px;
@@ -1015,7 +1028,8 @@ textarea {
   gap: 10px;
 }
 
-.edit-child-btn, .delete-child-btn {
+.edit-child-btn,
+.delete-child-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -1053,7 +1067,8 @@ textarea {
   box-shadow: var(--shadow-md);
 }
 
-.edit-child-btn svg, .delete-child-btn svg {
+.edit-child-btn svg,
+.delete-child-btn svg {
   width: 20px;
   height: 20px;
   transition: color var(--anim-duration-fast);
@@ -1085,9 +1100,17 @@ textarea {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .empty-icon svg {
@@ -1203,7 +1226,7 @@ textarea {
 }
 
 .form-group label[for$="*"]::after,
-.form-group label[for$="*"] + .input-with-icon::before {
+.form-group label[for$="*"]+.input-with-icon::before {
   content: '*';
   color: var(--danger-color);
   margin-left: 4px;
@@ -1296,55 +1319,55 @@ textarea {
     grid-template-columns: 1fr;
     padding: 0 16px 16px;
   }
-  
+
   .child-card {
     padding: 18px;
     flex-direction: column;
   }
-  
+
   .child-avatar {
     width: 64px;
     height: 64px;
     margin-right: 0;
     margin-bottom: 16px;
   }
-  
+
   .child-actions {
     top: 14px;
     right: 14px;
   }
-  
+
   .child-details {
     padding: 10px;
   }
-  
+
   .child-details p strong {
     min-width: 80px;
   }
-  
+
   .empty-children-state {
     padding: 32px 16px;
   }
-  
+
   .empty-icon {
     width: 80px;
     height: 80px;
     margin-bottom: 16px;
   }
-  
+
   .empty-icon svg {
     width: 40px;
     height: 40px;
   }
-  
+
   .empty-children-state h3 {
     font-size: 1.4rem;
   }
-  
+
   .empty-children-state p {
     font-size: 1rem;
   }
-  
+
   .add-first-child-btn {
     padding: 12px 24px;
     font-size: 1rem;
@@ -1480,6 +1503,7 @@ textarea {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1490,6 +1514,7 @@ textarea {
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1501,24 +1526,24 @@ textarea {
   .modal-overlay {
     padding: 16px;
   }
-  
+
   .modal-content {
     max-height: 95vh;
   }
-  
+
   .modal-header {
     padding: 1rem;
   }
-  
+
   .modal-body {
     padding: 1rem;
   }
-  
+
   .modal-footer {
     flex-direction: column-reverse;
     gap: 8px;
   }
-  
+
   .modal-footer button {
     width: 100%;
   }
@@ -1552,7 +1577,7 @@ textarea {
   color: var(--text-color-muted);
 }
 
-.edit-child-btn .svg-inline--fa, 
+.edit-child-btn .svg-inline--fa,
 .delete-child-btn .svg-inline--fa {
   width: 20px;
   height: 20px;
@@ -1560,17 +1585,17 @@ textarea {
 }
 
 /* Form đổi mật khẩu */
-.change-password-form {
+.security-section .change-password-form {
   padding: 1.5rem 2rem;
   background-color: var(--card-bg-color);
   border-radius: var(--border-radius-md);
 }
 
-.password-input {
+.security-section .password-input {
   position: relative;
 }
 
-.toggle-password-btn {
+.security-section .toggle-password-btn {
   position: absolute;
   right: 12px;
   top: 50%;
@@ -1590,11 +1615,11 @@ textarea {
   z-index: 2;
 }
 
-.toggle-password-btn:hover {
+.security-section .toggle-password-btn:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.toggle-password-btn .svg-inline--fa {
+.security-section .toggle-password-btn .svg-inline--fa {
   width: 18px;
   height: 18px;
 }
@@ -1625,6 +1650,7 @@ textarea {
 .password-requirements ul {
   margin: 0;
   padding-left: 1.25rem;
+  list-style-type: none; /* Hide default bullets */
 }
 
 .password-requirements li {
@@ -1632,17 +1658,19 @@ textarea {
   font-size: 0.85rem;
   color: var(--text-color-muted);
   position: relative;
+  padding-left: 1.2rem; /* Make space for the custom bullet/check */
 }
 
-.password-requirements li.valid {
-  color: var(--success-color);
+.password-requirements li::before {
+  content: '○'; /* Empty circle for unmet requirements */
+  position: absolute;
+  left: 0;
+  color: #d1d5db;
 }
 
 .password-requirements li.valid::before {
-  content: '✓';
+  content: '✓'; /* Checkmark for valid requirements */
   color: var(--success-color);
-  position: absolute;
-  left: -1rem;
 }
 
 .form-actions {
@@ -1699,7 +1727,7 @@ textarea {
   margin-bottom: 6px;
 }
 
-.password-strength-bar {
+.change-password-password-bar {
   height: 100%;
   border-radius: 3px;
   transition: width 0.3s ease;
@@ -1797,7 +1825,8 @@ textarea {
   margin-bottom: 16px;
 }
 
-.gender-badge, .city-badge {
+.gender-badge,
+.city-badge {
   display: inline-flex;
   align-items: center;
   padding: 6px 12px;
@@ -1934,19 +1963,19 @@ textarea {
     align-items: center;
     text-align: center;
   }
-  
+
   .child-badges {
     justify-content: center;
   }
-  
+
   .birth-info {
     justify-content: center;
   }
-  
+
   .certificate-preview {
     margin: 0 auto;
   }
-  
+
   .parent-info-grid {
     grid-template-columns: 1fr;
   }
@@ -2310,6 +2339,7 @@ textarea {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -2321,6 +2351,7 @@ textarea {
     transform: translateX(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(100%);
     opacity: 0;
@@ -2331,6 +2362,7 @@ textarea {
   from {
     width: 100%;
   }
+
   to {
     width: 0%;
   }
@@ -2400,4 +2432,30 @@ textarea {
 .error-popup .confirm-btn:active {
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.enrolled-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: #4caf50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.enrolled-badge:hover {
+  box-shadow: 0 3px 6px rgba(76, 175, 80, 0.4);
+  transform: translateY(-1px);
+}
+
+.enrolled-badge svg {
+  font-size: 0.85rem;
 }
