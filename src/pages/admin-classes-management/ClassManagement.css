@@ -430,3 +430,451 @@
 .edit-class-modal .ant-modal {
   animation-duration: 0.3s;
 }
+
+/* Teacher and Student Cards */
+.teacher-card, .student-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  transition: all 0.3s;
+  height: 100%;
+}
+
+.teacher-card:hover, .student-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.teacher-card-content, .student-card-content {
+  display: flex;
+  align-items: center;
+}
+
+.teacher-avatar {
+  background-color: #e6f7ff;
+  margin-right: 16px;
+}
+
+.student-avatar {
+  background-color: #f6ffed;
+  margin-right: 12px;
+}
+
+.teacher-info, .student-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: calc(100% - 80px);
+}
+
+.student-info {
+  width: calc(100% - 60px);
+}
+
+.teacher-id {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.id-text {
+  font-size: 12px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 16px;
+}
+
+.empty-message h5 {
+  margin-bottom: 8px;
+}
+
+/* Updated student cards with gender styling */
+.female-avatar {
+  background-color: #fff0f6 !important;
+}
+
+.male-avatar {
+  background-color: #e6f7ff !important;
+}
+
+.student-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.student-card {
+  padding: 8px;
+}
+
+.student-card-content {
+  display: flex;
+  align-items: center;
+}
+
+.student-avatar {
+  border: 2px solid #f0f0f0;
+}
+
+/* Student table styling */
+.students-table {
+  margin-top: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.students-table .ant-table-thead > tr > th {
+  background-color: #f0f7ff !important;
+  font-weight: 600;
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.student-table-row {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.student-table-row:hover {
+  background-color: #f5f8ff;
+}
+
+.student-index {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  background-color: #f0f7ff;
+  border-radius: 50%;
+  font-weight: 500;
+  color: #1890ff;
+  margin: 0 auto;
+}
+
+.student-name {
+  font-size: 15px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.gender-tag {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+/* Enhanced student profile section */
+.student-profile-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(to bottom, #f6f8fa, #fff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 100%;
+}
+
+.student-name-tag {
+  background-color: white;
+  padding: 6px 16px;
+  border-radius: 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 16px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.big-avatar {
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.document-thumbnail {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.document-thumbnail:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Teacher Grid */
+.teachers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.teacher-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.view-teacher-btn {
+  margin-top: 12px;
+  border-radius: 15px;
+}
+
+/* Teacher Detail Modal with consistent styling */
+.teacher-detail-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.teacher-profile-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(to bottom, #f6f8fa, #fff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 100%;
+}
+
+.teacher-name-tag {
+  background-color: white;
+  padding: 6px 16px;
+  border-radius: 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 16px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teacher-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.big-teacher-avatar {
+  background-color: #e6f7ff;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.role-tag-large {
+  font-size: 14px;
+  padding: 2px 12px;
+  margin: 4px;
+}
+
+.class-info-card {
+  height: 100%;
+}
+
+.class-info-card .ant-card-head {
+  background-color: #f6f8fa;
+}
+
+.current-class-info {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.class-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e6f7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.class-icon {
+  font-size: 24px;
+  color: #1890ff;
+}
+
+.class-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.class-meta {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Student Grid */
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.student-card {
+  position: relative;
+  border-radius: 10px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.student-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+.student-number {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #f0f7ff;
+  color: #1890ff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.student-card-inner {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  padding-left: 24px;
+}
+
+.student-avatar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 3px solid white;
+  margin-right: 16px;
+}
+
+.student-card-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.student-card-name {
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.student-card-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.view-details-btn {
+  margin-left: auto;
+  border-radius: 15px;
+  font-size: 12px;
+  height: 24px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.female-avatar {
+  background-color: #fff0f6 !important;
+}
+
+.male-avatar {
+  background-color: #e6f7ff !important;
+}
+
+/* Create Class Modal - reuses most styles from edit modal */
+.create-class-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.create-class-modal .ant-modal-header {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eaecef;
+  padding: 16px 24px;
+}
+
+.create-class-content {
+  padding: 24px 8px 16px;
+}
+
+.create-form .ant-form-item-label {
+  font-weight: 500;
+}
+
+.create-input {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.create-input-number {
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* Animation for modal */
+.create-class-modal .ant-modal {
+  animation-duration: 0.3s;
+}
+
+.create-select {
+  width: 100%;
+}
+
+.create-select .ant-select-selection-item {
+  font-weight: 500;
+}
