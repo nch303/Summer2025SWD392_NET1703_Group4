@@ -141,7 +141,9 @@ namespace Application.Mappings
 
             CreateMap<ClassChildren, ClassChildrenResponse>()
                 .ForMember(dest => dest.ChildrenID, opt => opt.MapFrom(src => src.ChildrenID))
-                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name));
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Childrens!.Avatar))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Childrens!.Gender));
 
             CreateMap<ClassTeacher, ClassTeacherResponse>()
                 .ForMember(dest => dest.TeacherID, opt => opt.MapFrom(src => src.TeacherID))

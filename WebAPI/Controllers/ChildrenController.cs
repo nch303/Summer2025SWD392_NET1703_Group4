@@ -142,6 +142,12 @@ namespace WebAPI.Controllers
                 var application = await _eaService.GetApplicatioinByChildID(Id);
                 childResponse.ApplicationID = application?.ID ?? Guid.Empty;
 
+                //Gan GradeLevel cho ChildResponse
+                var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(childResponse.ID);
+                childResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
+                childResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+
+
                 return Ok(childResponse);
             }
             catch (Exception ex)

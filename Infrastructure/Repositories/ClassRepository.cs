@@ -45,18 +45,14 @@ namespace Infrastructure.Repositories
             {
                 throw new Exception("Class not found!!!");
             }
-            room!.Status = "Unavailable";
+            room!.Status = "Deleted";
             await _context.SaveChangesAsync();
             return room;
         }
 
         public async Task<Class> RestoreClass(int classID)
         {
-            var room = await _context.Classes.Where(a => a.Status == "Available").FirstOrDefaultAsync(a => a.ID == classID);
-            if (room == null)
-            {
-                throw new Exception("Class not found!!!");
-            }
+            var room = await _context.Classes.FirstOrDefaultAsync(a => a.ID == classID);
             room!.Status = "Available";
             await _context.SaveChangesAsync();
             return room;
@@ -82,7 +78,7 @@ namespace Infrastructure.Repositories
                 .Include(a => a.GradeLevels)
                 .Include(a => a.Syllabi)
                 .Include(a => a.EnrichmentPrograms)
-                .Where(a => a.Status == "Available").ToListAsync();
+                .ToListAsync();
             return rooms;
         }
 

@@ -45,6 +45,7 @@ namespace Infrastructure.Repositories
             return await _context.Childrens
                 .Include(a => a.Parents)
                 .Include(a => a.ChildrenGrades)
+                    .ThenInclude(cg => cg.GradeLevels)
                 .FirstOrDefaultAsync(a => a.ID == id);
         }
 

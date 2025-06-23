@@ -27,6 +27,7 @@ namespace WebAPI.Controllers
         {
             var classes = await _classService.GetAllClass();
             var response = _mapper.Map<List<ClassResponse>>(classes);
+            response.Reverse();
             return Ok(response);
         }
 

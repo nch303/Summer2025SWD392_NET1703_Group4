@@ -10,5 +10,7 @@ namespace Application.DTOs.Response
     {
         public Guid? ChildrenID { get; set; }
         public string? ChildrenName { get; set; }
+        public string? Gender { get; set; }
+        public string? Avatar { get; set; }
     }
 }
