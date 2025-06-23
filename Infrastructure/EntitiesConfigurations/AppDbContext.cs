@@ -151,8 +151,8 @@ namespace Infrastructure.EntitiesConfigurations
 
             modelBuilder.Entity<SyllabusDetail>()
                 .HasOne(sd => sd.Syllabi)
-                .WithOne(s => s.SyllabusDetails)
-                .HasForeignKey<SyllabusDetail>(sd => sd.SyllabusID)
+                .WithMany(s => s.SyllabusDetails)
+                .HasForeignKey(sd => sd.SyllabusID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EnrichmentProgram>()

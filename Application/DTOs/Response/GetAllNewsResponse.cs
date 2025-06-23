@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Response
 {
-    public class GetAllSyllabiResponse
+    public class GetAllNewsResponse
     {
         public int ID { get; set; }
-        public string? Name { get; set; }
+        public string? Title { get; set; }
+        public string? Image { get; set; }
     }
 }

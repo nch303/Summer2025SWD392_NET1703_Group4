@@ -19,35 +19,27 @@ namespace Application.Services
             _syllabusRepository = syllabusRepository;
         }
 
-        public async Task<Syllabus> CreateAsync(Syllabus syllabus, SyllabusDetail detail)
+        public async Task<Syllabus> CreateSyllabus(Syllabus syllabus)
         {
-            return await _syllabusRepository.CreateAsync(syllabus, detail);
+            return await _syllabusRepository.CreateSyllabus(syllabus);
         }
 
-        public async Task<List<Syllabus>> GetAllAsync()
+        public async Task<List<Syllabus>> GetAll()
         {
-            return await _syllabusRepository.GetAllAsync();
+            return await _syllabusRepository.GetAll();
         }
 
-        public async Task<SyllabusDetail?> GetDetailByIdAsync(int id)
+        public async Task<Syllabus> Update(int id, Syllabus newSyllabus)
         {
-            return await _syllabusRepository.GetDetailByIdAsync(id);
-        }
-
-        public async Task<Syllabus> UpdateAsync(int id, Syllabus newSyllabus, SyllabusDetail newDetail)
-        {
-            var existingDetail = await _syllabusRepository.GetDetailByIdAsync(id);
             var existingSyllabus = await _syllabusRepository.GetSyllabusById(id);
-            if (existingSyllabus == null || existingDetail == null)
+            if (existingSyllabus == null)
             {
                 throw new Exception("Syllabus not found!!!");
             }
 
             existingSyllabus!.Name = newSyllabus.Name;
-            existingDetail!.Content = newDetail.Content;
-            existingDetail.Duration = newDetail.Duration;
-            existingDetail.Slot = newDetail.Slot;
-            return await _syllabusRepository.UpdateAsync(existingSyllabus, existingDetail);
+            existingSyllabus.SlotAmount = newSyllabus.SlotAmount;
+            return await _syllabusRepository.Update(existingSyllabus);
         }
     }
 }
