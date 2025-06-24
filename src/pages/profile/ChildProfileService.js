@@ -127,3 +127,18 @@ export const deleteChild = async (childId) => {
     throw error;
   }
 }; 
+
+/**
+ * Get child class information including class details, attendance records, and teachers
+ * @param {string} childId - The child's ID
+ * @returns {Promise<Array>} Child class information data
+ */
+export const getChildClassInfo = async (childId) => {
+  try {
+    const response = await api.get(`/api/ClassChildren/GetByChildID/${childId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching child class info for ${childId}:`, error);
+    throw error;
+  }
+}; 

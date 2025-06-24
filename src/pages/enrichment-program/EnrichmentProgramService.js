@@ -29,16 +29,57 @@ export const getAllEnrichmentProgramsForParent = async () => {
 };
 
 /**
- * Get children by parent ID
+ * Get eligible children by parent ID for enrichment program registration
  * @param {string} parentId - The ID of the parent
- * @returns {Promise<Array>} List of children
+ * @returns {Promise<Array>} List of eligible children
  */
 export const getChildrenByParentId = async (parentId) => {
   try {
-    const response = await api.get(`/api/Children/byParentId/${parentId}`);
-    return response.data;
+    // Get all class-children data using the API
+    const response = await api.get(`/api/ClassChildren/GetByParentID/${parentId}`);
+    
+    // Group data by child ID
+    const childrenGroups = new Map();
+    
+    // Group all class records by child ID
+    response.data.forEach(item => {
+      const childId = item.childrenResponse.id;
+      
+      if (!childrenGroups.has(childId)) {
+        childrenGroups.set(childId, {
+          childData: item.childrenResponse,
+          classes: []
+        });
+      }
+      
+      childrenGroups.get(childId).classes.push({
+        status: item.status,
+        isEnrichment: item.classResponse.epName !== null,
+        epName: item.classResponse.epName
+      });
+    });
+    
+    // Filter eligible children
+    const eligibleChildren = [];
+    
+    childrenGroups.forEach((data, childId) => {
+      // Check if child is in any active enrichment class
+      const hasActiveEnrichment = data.classes.some(
+        cls => cls.isEnrichment && cls.status === "Active"
+      );
+      
+      // Check if child is in a regular class
+      const hasRegularClass = data.classes.some(cls => !cls.isEnrichment);
+      
+      // Child is eligible if they are in a regular class AND not in any active enrichment class
+      if (hasRegularClass && !hasActiveEnrichment) {
+        eligibleChildren.push(data.childData);
+      }
+    });
+    
+    return eligibleChildren;
   } catch (error) {
-    console.error('Error fetching children:', error);
+    console.error('Error fetching eligible children:', error);
     throw error;
   }
 };

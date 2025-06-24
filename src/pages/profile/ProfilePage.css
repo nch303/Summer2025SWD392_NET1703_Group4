@@ -878,12 +878,13 @@ textarea {
 }
 
 .child-card-row .child-actions {
-  position: static;
+  position: relative;
   display: flex;
-  gap: 10px;
-  min-width: 180px;
-  justify-content: center;
+  gap: 12px;
+  min-width: 200px;
+  justify-content: flex-end;
   align-items: center;
+  flex-shrink: 0;
 }
 
 @media (max-width: 992px) {
@@ -908,9 +909,47 @@ textarea {
 }
 
 @media (max-width: 768px) {
-  .child-card-row .child-actions {
+  .child-card-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-right: 12px;
+  }
+  
+  .child-info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  
+  .child-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .child-details-row {
+    display: none;
+  }
+  
+  .child-actions {
     margin-left: auto;
-    margin-top: 12px;
+    min-width: auto;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .child-actions {
+    gap: 8px;
+  }
+  
+  .enrolled-badge span {
+    display: none;
+  }
+  
+  .enrolled-badge {
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
   }
 }
 
@@ -1021,31 +1060,36 @@ textarea {
 }
 
 .child-actions {
-  position: absolute;
-  top: 18px;
-  right: 18px;
+  position: relative;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  min-width: 200px;
+  justify-content: flex-end;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .edit-child-btn,
-.delete-child-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
+.communication-book-btn,
+.delete-child-btn,
+.enroll-child-btn {
+  flex: 0 0 36px;
   width: 36px;
   height: 36px;
+  min-width: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--anim-duration-fast);
-  box-shadow: var(--shadow-sm);
+  margin: 0;
+  padding: 0;
 }
 
 .edit-child-btn {
   background-color: rgba(var(--primary-rgb), 0.1);
   color: var(--primary-color);
+  border: none;
+  cursor: pointer;
 }
 
 .delete-child-btn {
@@ -2435,6 +2479,9 @@ textarea {
 }
 
 .enrolled-badge {
+  flex: 0 0 auto;
+  min-width: 120px;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2445,10 +2492,8 @@ textarea {
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-  white-space: nowrap;
   box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
   transition: all 0.3s ease;
-  width: 100%;
 }
 
 .enrolled-badge:hover {
@@ -2458,4 +2503,50 @@ textarea {
 
 .enrolled-badge svg {
   font-size: 0.85rem;
+}
+
+/* Thêm style cho nút sổ liên lạc */
+.communication-book-btn {
+  background-color: rgba(var(--info-rgb), 0.1);
+  color: var(--info-color);
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--anim-duration-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.communication-book-btn:hover {
+  background-color: var(--info-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.communication-book-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: color var(--anim-duration-fast);
+}
+
+.communication-book-btn:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s;
 }
