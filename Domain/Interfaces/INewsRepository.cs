@@ -14,8 +14,9 @@ namespace Domain.Interfaces
         Task<News> ViewNewsDetail(int id);
         Task<News> CreateNewsAsynce(News news);
         Task<News> UpdateNewsAsynce(News news);
-        Task<bool> DeleteNewsAsynce(int id);
+        Task<bool> DeleteNewsAsync(int id);
         Task<List<News>> SearchNewsAsync(string keyword);
         Task<News> GetByIdAsync(int id);
+        Task<bool> RestoreNewsAsync(int id);
     }
 }

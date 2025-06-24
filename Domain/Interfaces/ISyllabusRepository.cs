@@ -13,5 +13,6 @@ namespace Domain.Interfaces
         Task<List<Syllabus>> GetAll();
         Task<Syllabus?> GetSyllabusById(int id);
         Task<Syllabus> Update(Syllabus newSyllabus);
+        Task<bool> DeleteSyllabus(int id);
     }
 }
