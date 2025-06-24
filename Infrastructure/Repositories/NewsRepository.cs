@@ -71,15 +71,16 @@ namespace Infrastructure.Repositories
             return news;
         }
 
-        public async Task<bool> DeleteNewsAsynce(int id)
+        public async Task<bool> DeleteNewsAsync(int id)
         {
             var news = await _context.News.FindAsync(id);
-            if (news == null)
-            {
+            if (news == null || news.Status == "Deleted")
                 return false;
-            }
-            _context.News.Remove(news);
+
+            news.Status = "Deleted";
+            _context.News.Update(news);
             await _context.SaveChangesAsync();
+
             return true;
         }
 
@@ -96,6 +97,18 @@ namespace Infrastructure.Repositories
         public async Task<News> GetByIdAsync(int id)
         {
             return await _context.News.FirstOrDefaultAsync(n => n.ID == id) ?? throw new KeyNotFoundException("News not found");
+        }
+        public async Task<bool> RestoreNewsAsync(int id)
+        {
+            var news = await _context.News.FindAsync(id);
+            if (news == null || news.Status != "Deleted")
+                return false;
+
+            news.Status = "Draft"; 
+            _context.News.Update(news);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

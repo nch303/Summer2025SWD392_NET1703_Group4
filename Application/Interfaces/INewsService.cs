@@ -17,5 +17,7 @@ namespace Application.Interfaces
         Task<bool> DeleteNewsAsync(int id);
         Task<List<News>> SearchNewsAsync(string keyword);
         Task<News> GetByIdAsync(int id);
+        Task<bool> RestoreNewsAsync(int id);
+
     }
 }

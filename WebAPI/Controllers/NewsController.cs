@@ -171,18 +171,18 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var existingNews = await _newsService.GetByIdAsync(id);
-                if (existingNews == null)
-                    return NotFound(new { message = "News not found." });
+                var success = await _newsService.DeleteNewsAsync(id);
+                if (!success)
+                    return NotFound(new { message = "News not found or already deleted." });
 
-                await _newsService.DeleteNewsAsync(id);
-                return Ok(new { message = "News deleted successfully." });
+                return Ok(new { message = "News marked as deleted (soft delete)." });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpGet("search-news")]
         public async Task<IActionResult> SearchNews([FromQuery] string keyword)
@@ -192,6 +192,23 @@ namespace WebAPI.Controllers
                 var result = await _newsService.SearchNewsAsync(keyword);
                 var response = _mapper.Map<List<NewsResponse>>(result);
                 return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("restore-news/{id}")]
+        public async Task<IActionResult> RestoreNews(int id)
+        {
+            try
+            {
+                var success = await _newsService.RestoreNewsAsync(id);
+                if (!success)
+                    return NotFound(new { message = "News not found or is not deleted." });
+
+                return Ok(new { message = "News restored successfully (status = Draft)." });
             }
             catch (Exception ex)
             {

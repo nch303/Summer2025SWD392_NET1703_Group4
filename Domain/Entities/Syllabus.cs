@@ -10,6 +10,7 @@ namespace Domain.Entities
 
         public string? Name { get; set; }
         public int SlotAmount { get; set; }
+        public bool IsDeleted { get; set; }
 
         public ICollection<Class>? Classes { get; set; }
         public ICollection<SyllabusDetail>? SyllabusDetails { get; set; }    
