@@ -78,6 +78,8 @@ namespace Infrastructure.Repositories
                 .Include(a => a.GradeLevels)
                 .Include(a => a.Syllabi)
                 .Include(a => a.EnrichmentPrograms)
+                .Include(a => a.ClassTeachers!)
+                    .ThenInclude(ct => ct.Teachers)
                 .ToListAsync();
             return rooms;
         }
@@ -91,49 +93,108 @@ namespace Infrastructure.Repositories
             return rooms;
         }
 
+        //public async Task<List<Class>> GetAllSortedClass(string type, string trend)
+        //{
+        //    var query = _context.Classes
+        //        .Where(c => c.Status == "Available")
+        //        .Include(c => c.GradeLevels)  // include related entity
+        //        .Include(c => c.ClassTeachers!)
+        //            .ThenInclude(a => a.Teachers)
+        //        .AsQueryable();
+
+        //    var list = await query.ToListAsync();
+
+        //    bool descending = trend?.ToLower() == "desc";
+
+        //    switch (type?.ToLower())
+        //    {
+        //        case "name":
+        //            query = descending ? query.OrderByDescending(c => c.Name)
+        //                               : query.OrderBy(c => c.Name);
+        //            break;
+
+        //        case "gradelevel":
+        //            query = descending ? query.OrderByDescending(c => c.GradeLevels!.Name)
+        //                               : query.OrderBy(c => c.GradeLevels!.Name);
+        //            break;
+
+        //        case "quantity":
+        //            query = descending ? query.OrderByDescending(c => c.Quantity)
+        //                               : query.OrderBy(c => c.Quantity);
+        //            break;
+
+        //        case "academicyear":
+        //            list = descending ? list.OrderByDescending(c => int.Parse(c.AcademicYear!.Split('-')[0])).ToList()
+        //                              : list.OrderBy(c => int.Parse(c.AcademicYear!.Split('-')[0])).ToList();
+        //            break;
+
+        //        case "teacher":
+        //            query = descending
+        //                ? query.OrderByDescending(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault())
+        //                : query.OrderBy(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault());
+        //            break;
+
+        //        default:
+        //            // Default sort by Name
+        //            query = descending ? query.OrderByDescending(c => c.Name)
+        //                               : query.OrderBy(c => c.Name);
+        //            break;
+        //    }
+
+        //    return await query.ToListAsync();
+        //}
+
         public async Task<List<Class>> GetAllSortedClass(string type, string trend)
         {
             var query = _context.Classes
                 .Where(c => c.Status == "Available")
-                .Include(c => c.GradeLevels)  // include related entity
+                .Include(c => c.GradeLevels)
                 .Include(c => c.ClassTeachers!)
                     .ThenInclude(a => a.Teachers)
                 .AsQueryable();
+
+            var list = await query.ToListAsync();
 
             bool descending = trend?.ToLower() == "desc";
 
             switch (type?.ToLower())
             {
                 case "name":
-                    query = descending ? query.OrderByDescending(c => c.Name)
-                                       : query.OrderBy(c => c.Name);
+                    list = descending ? list.OrderByDescending(c => c.Name).ToList()
+                                      : list.OrderBy(c => c.Name).ToList();
                     break;
 
                 case "gradelevel":
-                    query = descending ? query.OrderByDescending(c => c.GradeLevels!.Name)
-                                       : query.OrderBy(c => c.GradeLevels!.Name);
+                    list = descending ? list.OrderByDescending(c => c.GradeLevels!.Name).ToList()
+                                      : list.OrderBy(c => c.GradeLevels!.Name).ToList();
                     break;
 
                 case "quantity":
-                    query = descending ? query.OrderByDescending(c => c.Quantity)
-                                       : query.OrderBy(c => c.Quantity);
+                    list = descending ? list.OrderByDescending(c => c.Quantity).ToList()
+                                      : list.OrderBy(c => c.Quantity).ToList();
+                    break;
+
+                case "academicyear":
+                    list = descending
+                        ? list.OrderByDescending(c => int.Parse(c.AcademicYear!.Split('-')[0])).ToList()
+                        : list.OrderBy(c => int.Parse(c.AcademicYear!.Split('-')[0])).ToList();
                     break;
 
                 case "teacher":
-                    query = descending
-                        ? query.OrderByDescending(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault())
-                        : query.OrderBy(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault());
+                    list = descending
+                        ? list.OrderByDescending(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault()).ToList()
+                        : list.OrderBy(c => c.ClassTeachers!.Select(ct => ct.Teachers!.FullName).FirstOrDefault()).ToList();
                     break;
 
                 default:
-                    // Default sort by Name
-                    query = descending ? query.OrderByDescending(c => c.Name)
-                                       : query.OrderBy(c => c.Name);
+                    list = descending ? list.OrderByDescending(c => c.Name).ToList()
+                                      : list.OrderBy(c => c.Name).ToList();
                     break;
             }
 
-            return await query.ToListAsync();
+            return list;
         }
+
 
         public async Task<Class> UpdateClass(int classID, Class newClass)
         {
