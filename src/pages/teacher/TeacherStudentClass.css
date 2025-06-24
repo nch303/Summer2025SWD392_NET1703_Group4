@@ -308,7 +308,7 @@
   margin-top: 16px;
 }
 
-.contact-item {
+.tsc-contact-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -319,11 +319,11 @@
   transition: all 0.3s;
 }
 
-.contact-item:hover {
+.tsc-contact-item:hover {
   background-color: #f0f0f0;
 }
 
-.contact-item .anticon {
+.tsc-contact-item .anticon {
   color: #1890ff;
   background-color: rgba(24, 144, 255, 0.1);
   padding: 8px;
