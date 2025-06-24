@@ -13,7 +13,7 @@ namespace Application.DTOs.Response
         public string? Status { get; set; }
         public ChildrenResponse ChildrenResponse { get; set; }
         public ClassResponse ClassResponse { get; set; }
-
         public List<AttendanceResponse> AttendanceResponses { get; set; }
+        public List<AccountResponse> Teachers {  get; set; }
     }
 }

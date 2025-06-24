@@ -14,13 +14,15 @@ namespace WebAPI.Controllers
         private IMapper _mapper;
         private readonly IEAService _eaService;
         private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IAccountService _accountService;
         public ClassChildrenController(IClassChildrenService classChildrenService, IMapper mapper, IEAService eaService
-            , IChildrenGradeService childrenGradeService)
+            , IChildrenGradeService childrenGradeService, IAccountService accountService)
         {
             _classChildrenService = classChildrenService;
             _mapper = mapper;
             _eaService = eaService;
             _childrenGradeService = childrenGradeService;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -38,6 +40,12 @@ namespace WebAPI.Controllers
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
                 response.ChildrenResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
                 response.ChildrenResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+
+                //Gan Teachers cho Class
+                var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
+                var teacherResponses = _mapper.Map<List<AccountResponse>>(teachers);
+                response.Teachers = teacherResponses;
+
             }
             
             return Ok(responses);
@@ -58,6 +66,11 @@ namespace WebAPI.Controllers
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
                 response.ChildrenResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
                 response.ChildrenResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+
+                //Gan Teachers cho Class
+                var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
+                var teacherResponses = _mapper.Map<List<AccountResponse>>(teachers);
+                response.Teachers = teacherResponses;
             }
 
             return Ok(responses);
@@ -78,6 +91,11 @@ namespace WebAPI.Controllers
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
                 response.ChildrenResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
                 response.ChildrenResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+
+                //Gan Teachers cho Class
+                var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
+                var teacherResponses = _mapper.Map<List<AccountResponse>>(teachers);
+                response.Teachers = teacherResponses;
             }
 
             return Ok(responses);

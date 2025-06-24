@@ -163,5 +163,22 @@ namespace Infrastructure.Repositories
             return (items, totalCount);
         }
 
+        public async Task<List<Account>> GetTeacherByClassIdAsync(int classId)
+        {
+            var teachers = new List<Account>();
+
+            var classTeachers = await _context.ClassTeachers
+                .Include(ct => ct.Teachers)
+                .Where(ct =>ct.ClassID == classId).ToListAsync();
+
+            foreach(var classTeacher in classTeachers)
+            {
+                var teacher = classTeacher.Teachers;
+                teachers.Add(teacher!);
+            }
+
+            return teachers!;
+        }
+
     }
 }

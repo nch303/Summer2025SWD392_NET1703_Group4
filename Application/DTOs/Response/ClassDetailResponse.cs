@@ -17,6 +17,7 @@ namespace Application.DTOs.Response
         public int Quantity { get; set; }
         public string? Status { get; set; }
         public string? EPName { get; set; }
+        public string? Timetable { get; set; }
         public ICollection<ClassChildrenResponse>? ClassChildrens { get; set; }
         public ICollection<ClassTeacherResponse>? ClassTeachers { get; set; }
     }

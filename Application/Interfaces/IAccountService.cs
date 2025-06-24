@@ -26,5 +26,6 @@ namespace Application.Interfaces
         Task<Account> RestoreAccountAsync(Guid id);
         Task<(List<Account> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize);
         Task<(List<Account> Items, int TotalCount)> SearchAccountsAsync(string keyword, int pageNumber, int pageSize);
+        Task<List<Account>> GetTeacherByClassIdAsync(int classId);
     }
 }

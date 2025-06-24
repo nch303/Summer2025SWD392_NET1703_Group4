@@ -16,6 +16,7 @@ namespace Application.DTOs.Response
         public int MaxChildren { get; set; }
         public int Quantity { get; set; }
         public string? Status { get; set; }
+        public string? Timetable { get; set; }
         public string? EPName { get; set; }
         public List<string>? TeacherNames { get; set; }
     }

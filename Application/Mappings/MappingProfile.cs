@@ -63,6 +63,7 @@ namespace Application.Mappings
                 .ForMember(dest => dest.ID, opt => opt.MapFrom(src => src.ID))
                 .ForMember(dest => dest.AttendanceResponses, opt => opt.MapFrom(src => src.Attendances));
 
+
             CreateMap<Attendance,  AttendanceResponse>();
 
 
@@ -132,6 +133,7 @@ namespace Application.Mappings
                                 src.ClassTeachers != null
                                     ? src.ClassTeachers.Select(ct => ct.Teachers!.FullName).ToList()
                                     : new List<string>()));
+
             CreateMap<Class, ClassDetailResponse>()
                 .ForMember(dest => dest.EPName, opt => opt.MapFrom(src => src.EnrichmentPrograms!.Name))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))

@@ -111,7 +111,7 @@ namespace WebAPI.Controllers
                 var oldPass = account.Password;
                 account = _mapper.Map<Account>(request);
                 account.Id = Id;
-                if(request.Password != null)
+                if (request.Password != null)
                 {
                     account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
                 }
@@ -262,6 +262,21 @@ namespace WebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetTeacherByClass/{classId}")]
+        public async Task<IActionResult> GetTeacherByClassId(int classId)
+        {
+            try
+            {
+                var teachers = await _accountService.GetTeacherByClassIdAsync(classId);
+                var response = _mapper.Map<List<AccountResponse>>(teachers);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

@@ -13,13 +13,12 @@ namespace Domain.Entities
 
         [Required]
         public int SyllabusID { get; set; }
-        [Required]
-        public int GradeLevelID { get; set; }
+        public int? GradeLevelID { get; set; }
         public int? EnrichmentProgramId { get; set; }
-
         public string? AcademicYear { get; set; }
         public int Quantity { get; set; }
         public int MaxChildren {  get; set; }
+        public string? Timetable {  get; set; }
         public string? Status { get; set; }
 
         public ICollection<ClassChildren>? ClassChildrens { get; set; }

@@ -276,5 +276,10 @@ namespace Application.Services
         {
             return await _accountRepository.SearchAccountsAsync(keyword, pageNumber, pageSize);
         }
+
+        public async Task<List<Account>> GetTeacherByClassIdAsync(int classId)
+        {
+            return await _accountRepository.GetTeacherByClassIdAsync(classId);
+        }
     }
 }
