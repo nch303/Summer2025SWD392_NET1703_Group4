@@ -154,3 +154,23 @@
   color: #555;
   margin-bottom: 4px;
 }
+
+/* Add styling for the search inputs */
+.list-card .ant-card-extra .ant-input-search {
+  margin-bottom: 0;
+}
+
+/* Make search inputs consistent across both cards */
+.list-card .ant-input-search .ant-input {
+  border-radius: 4px;
+}
+
+/* Add a little hover effect on search boxes */
+.list-card .ant-input-search:hover .ant-input {
+  border-color: #40a9ff;
+}
+
+/* Make sure the extra area has enough space */
+.list-card .ant-card-head-wrapper {
+  align-items: center;
+}

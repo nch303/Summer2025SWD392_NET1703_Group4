@@ -30,10 +30,10 @@ const AdminNews = () => {
 
   useEffect(() => {
     fetchNews();
-  }, []);
+  }, [showDeleted]);
 
   // Fetch news function
-  const fetchNews = async (page = 1, pageSize = 10) => {
+  const fetchNews = async (page = pagination.current, pageSize = pagination.pageSize) => {
     try {
       setNewsLoading(true);
       const response = await getAllNews(page, pageSize);
@@ -48,7 +48,7 @@ const AdminNews = () => {
       
       setNewsItems(filteredData);
       setPagination({
-        total: filteredData.length,
+        total: totalCount,
         current: pageNumber,
         pageSize: responsePageSize
       });
@@ -63,7 +63,8 @@ const AdminNews = () => {
 
   // Search news function
   const handleSearch = async (value) => {
-    if (!value) {
+    // If search is empty, just reset to normal view
+    if (!value || value.trim() === '') {
       setSearchKeyword('');
       setIsSearching(false);
       return fetchNews();
@@ -72,26 +73,42 @@ const AdminNews = () => {
     try {
       setNewsLoading(true);
       setSearchKeyword(value);
+      
+      // Call the search API
       const response = await searchNews(value);
       
-      if (response && response.data) {
+      console.log("Search response:", response); // Debug the response structure
+      
+      // Check if we have results
+      // Note: The structure might be just 'response' or 'response.data' depending on your API
+      const searchResults = response.data || response || [];
+      
+      if (searchResults && searchResults.length > 0) {
         // Filter out deleted news unless showDeleted is true
         const filteredData = showDeleted
-          ? response.data
-          : response.data.filter(item => item.status !== 'Deleted');
+          ? searchResults
+          : searchResults.filter(item => item.status !== 'Deleted');
           
         setNewsItems(filteredData);
         setPagination({
           ...pagination,
-          total: filteredData.length
+          total: filteredData.length,
+          current: 1 // Reset to page 1 for search results
         });
       } else {
         setNewsItems([]);
+        setPagination({
+          ...pagination,
+          total: 0,
+          current: 1
+        });
+        message.info('No news found matching your search');
       }
       setIsSearching(true);
     } catch (error) {
       console.error("Search error:", error);
       message.error('Failed to search news');
+      setNewsItems([]);
     } finally {
       setNewsLoading(false);
     }
@@ -115,16 +132,17 @@ const AdminNews = () => {
 
   const showModal = async (type, record = null) => {
     setModalType(type);
-    setIsModalVisible(true);
     form.resetFields();
-
+    
+    // Reset original images
+    setOriginalNewsImages({ image: null, banner: null });
+    
     if (record && type === 'edit-news') {
       try {
         setNewsLoading(true);
-        // Fetch đầy đủ dữ liệu tin tức để hiển thị trong form edit
         const newsDetail = await getNewsById(record.id);
         
-        // Điền các trường dữ liệu vào form
+        // Set form fields
         form.setFieldsValue({
           id: newsDetail.id,
           title: newsDetail.title,
@@ -132,19 +150,45 @@ const AdminNews = () => {
           status: newsDetail.status || 'Published',
         });
         
-        // Lưu URLs của ảnh và banner
+        // Store original image URLs
         setOriginalNewsImages({
           image: newsDetail.image,
           banner: newsDetail.banner
         });
         
-        setNewsLoading(false);
+        // Set image fileList if exists
+        if (newsDetail.image) {
+          form.setFieldsValue({
+            image: [{
+              uid: '-1',
+              name: 'current-image.jpg',
+              status: 'done',
+              url: newsDetail.image,
+            }]
+          });
+        }
+        
+        // Set banner fileList if exists
+        if (newsDetail.banner) {
+          form.setFieldsValue({
+            banner: [{
+              uid: '-1',
+              name: 'current-banner.jpg',
+              status: 'done',
+              url: newsDetail.banner,
+            }]
+          });
+        }
+        
       } catch (error) {
-        console.error("Failed to fetch news details for editing:", error);
+        console.error("Failed to fetch news details:", error);
         message.error("Không thể tải thông tin tin tức");
+      } finally {
         setNewsLoading(false);
       }
     }
+    
+    setIsModalVisible(true);
   };
 
   const handleModalOk = async () => {
@@ -152,17 +196,16 @@ const AdminNews = () => {
       const values = await form.validateFields();
       const isEdit = modalType === 'edit-news';
       
-      // Tạo FormData để xử lý tệp tin
+      // Create FormData
       const formData = new FormData();
       formData.append('Title', values.title);
       formData.append('Content', values.content);
       formData.append('Status', values.status || 'Published');
       
-      // Luôn sử dụng ngày giờ hiện tại của Việt Nam (GMT+7) cho cả create và update
+      // Get current date/time in Vietnam timezone (GMT+7)
       const now = new Date();
-      // Tính toán múi giờ Việt Nam (UTC+7)
-      const vietnamTime = new Date(now.getTime());
-      // Để đảm bảo múi giờ chính xác, sử dụng options khi chuyển đổi thành chuỗi
+      // Convert to Vietnam time (UTC+7)
+      const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
       const formattedDate = vietnamTime.toISOString();
       formData.append('PublishDate', formattedDate);
       
@@ -170,46 +213,43 @@ const AdminNews = () => {
         formData.append('Id', values.id);
       }
       
-      // Xử lý upload hình ảnh thumbnail
-      const imageFile = values.image?.fileList?.[0]?.originFileObj;
-      if (imageFile) {
-        formData.append('Image', imageFile);
-      } else if (isEdit && originalNewsImages.image) {
-        // Giữ ảnh cũ, không gửi file mới
-        formData.append('Image', null);
-        formData.append('ExistingImage', originalNewsImages.image);
+      // Handle image file
+      if (values.image && values.image[0]) {
+        if (values.image[0].originFileObj) {
+          // New file uploaded
+          formData.append('Image', values.image[0].originFileObj);
+        } else if (isEdit && originalNewsImages.image) {
+          // Existing image from server
+          formData.append('ExistingImage', originalNewsImages.image);
+        }
       }
       
-      // Xử lý upload banner
-      const bannerFile = values.banner?.fileList?.[0]?.originFileObj;
-      if (bannerFile) {
-        formData.append('Banner', bannerFile);
-      } else if (isEdit && originalNewsImages.banner) {
-        // Giữ banner cũ, không gửi file mới
-        formData.append('Banner', null);
-        formData.append('ExistingBanner', originalNewsImages.banner);
+      // Handle banner file
+      if (values.banner && values.banner[0]) {
+        if (values.banner[0].originFileObj) {
+          // New file uploaded
+          formData.append('Banner', values.banner[0].originFileObj);
+        } else if (isEdit && originalNewsImages.banner) {
+          // Existing banner from server
+          formData.append('ExistingBanner', originalNewsImages.banner);
+        }
       }
       
-      console.log('Form data entries:');
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + (pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]));
-      }
+      setNewsLoading(true);
       
       try {
-        setNewsLoading(true);
-        
         if (isEdit) {
-          if (!values.id) {
-            throw new Error('Cannot update news: ID is missing');
-          }
           await updateNews(values.id, formData);
           message.success('Cập nhật tin tức thành công!');
+          // Refresh current page data
+          fetchNews(pagination.current, pagination.pageSize);
         } else {
           await createNews(formData);
           message.success('Thêm tin tức thành công!');
+          // Go to page 1 only for new items
+          fetchNews(1, pagination.pageSize);
         }
         
-        fetchNews();
         setIsModalVisible(false);
       } catch (error) {
         console.error('Error:', error);
@@ -229,9 +269,34 @@ const AdminNews = () => {
         return;
       }
       
-      await updateNewsStatus(id, 'Deleted');
+      // Get the current news item to send all required fields
+      const newsDetail = await getNewsById(id);
+      
+      // Create FormData for the update
+      const formData = new FormData();
+      formData.append('Id', id);
+      formData.append('Title', newsDetail.title);
+      formData.append('Content', newsDetail.content);
+      formData.append('Status', 'Deleted');  // Change status to Deleted
+      
+      if (newsDetail.image) {
+        formData.append('ExistingImage', newsDetail.image);
+      }
+      
+      if (newsDetail.banner) {
+        formData.append('ExistingBanner', newsDetail.banner);
+      }
+      
+      // Get current date in Vietnam timezone
+      const now = new Date();
+      const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+      const formattedDate = vietnamTime.toISOString();
+      formData.append('PublishDate', formattedDate);
+      
+      // Use the regular update endpoint
+      await updateNews(id, formData);
       message.success('News has been moved to trash');
-      fetchNews();
+      fetchNews(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error("Delete error:", error);
       message.error(`Failed to delete news: ${error.message}`);
@@ -245,9 +310,34 @@ const AdminNews = () => {
         return;
       }
       
-      await updateNewsStatus(id, 'Published');
+      // Get the current news item to send all required fields
+      const newsDetail = await getNewsById(id);
+      
+      // Create FormData for the update
+      const formData = new FormData();
+      formData.append('Id', id);
+      formData.append('Title', newsDetail.title);
+      formData.append('Content', newsDetail.content);
+      formData.append('Status', 'Published');
+      
+      if (newsDetail.image) {
+        formData.append('ExistingImage', newsDetail.image);
+      }
+      
+      if (newsDetail.banner) {
+        formData.append('ExistingBanner', newsDetail.banner);
+      }
+      
+      // Get current date in Vietnam timezone
+      const now = new Date();
+      const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+      const formattedDate = vietnamTime.toISOString();
+      formData.append('PublishDate', formattedDate);
+      
+      // Use the regular update endpoint
+      await updateNews(id, formData);
       message.success('News has been restored successfully');
-      fetchNews();
+      fetchNews(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error("Restore error:", error);
       message.error(`Failed to restore news: ${error.message}`);
@@ -257,14 +347,8 @@ const AdminNews = () => {
   // Toggle showing deleted items
   const toggleShowDeleted = (checked) => {
     setShowDeleted(checked);
-    fetchNews();
-  };
-
-  // Reset search and return to normal list
-  const handleClearSearch = () => {
-    setSearchKeyword('');
-    setIsSearching(false);
-    fetchNews();
+    // Reset to page 1 when toggling deleted items
+    fetchNews(1, pagination.pageSize);
   };
 
   return (
@@ -272,27 +356,22 @@ const AdminNews = () => {
       <Card>
         <Space style={{ marginBottom: 16 }}>
           <Input.Search 
-            placeholder="Tìm kiếm tin tức..." 
+            placeholder="Search news..." 
             style={{ width: 300 }}
             allowClear 
             onSearch={handleSearch}
             loading={newsLoading && isSearching}
-            enterButton={<Button icon={<SearchOutlined />}>Tìm kiếm</Button>}
+            enterButton={<Button icon={<SearchOutlined />}>Search</Button>}
           />
-          {isSearching && (
-            <Button onClick={handleClearSearch}>
-              Xóa tìm kiếm
-            </Button>
-          )}
           <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal('add-news')}>
-            Thêm tin tức
+            Add news
           </Button>
           <Space>
             <Switch
               checked={showDeleted}
               onChange={toggleShowDeleted}
-              checkedChildren="Hiện tin đã xóa"
-              unCheckedChildren="Ẩn tin đã xóa"
+              checkedChildren="Show deleted news"
+              unCheckedChildren="Hide deleted news"
             />
           </Space>
         </Space>
@@ -488,10 +567,8 @@ const AdminNews = () => {
             label="Image"
             valuePropName="fileList"
             getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e && e.fileList;
+              if (Array.isArray(e)) return e;
+              return e && e.fileList ? e.fileList : [];
             }}
           >
             <Upload
@@ -499,14 +576,6 @@ const AdminNews = () => {
               maxCount={1}
               listType="picture"
               accept="image/*"
-              fileList={modalType === 'edit-news' && originalNewsImages?.image ? [
-                {
-                  uid: '-1',
-                  name: 'Current Image',
-                  status: 'done',
-                  url: originalNewsImages.image,
-                }
-              ] : []}
             >
               <Button icon={<UploadOutlined />}>
                 {modalType === 'edit-news' ? 'Change Image' : 'Upload Image'}
@@ -518,10 +587,8 @@ const AdminNews = () => {
             label="Banner Image"
             valuePropName="fileList"
             getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e && e.fileList;
+              if (Array.isArray(e)) return e;
+              return e && e.fileList ? e.fileList : [];
             }}
           >
             <Upload
@@ -529,14 +596,6 @@ const AdminNews = () => {
               maxCount={1}
               listType="picture"
               accept="image/*"
-              fileList={modalType === 'edit-news' && originalNewsImages?.banner ? [
-                {
-                  uid: '-1',
-                  name: 'Current Banner',
-                  status: 'done',
-                  url: originalNewsImages.banner,
-                }
-              ] : []}
             >
               <Button icon={<UploadOutlined />}>
                 {modalType === 'edit-news' ? 'Change Banner' : 'Upload Banner'}

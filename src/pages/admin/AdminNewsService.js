@@ -74,10 +74,19 @@ export const searchNews = async (keyword) => {
   }
 };
 
-// Update news status
+// Update the status of a news item (for soft delete and restore)
 export const updateNewsStatus = async (id, status) => {
   try {
-    const response = await api.put(`/api/News/update-news-status/${id}`, { status });
+    // Since there's no specific status update endpoint, we'll use the regular update endpoint
+    const newsData = new FormData();
+    newsData.append('Id', id);
+    newsData.append('Status', status);
+    
+    const response = await api.put(`/api/News/update-news/${id}`, newsData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error updating news status:', error);

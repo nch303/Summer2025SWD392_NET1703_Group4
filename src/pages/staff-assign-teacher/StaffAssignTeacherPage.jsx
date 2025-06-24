@@ -26,6 +26,7 @@ const StaffAssignTeacherPage = () => {
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
   const [selectedClassId, setSelectedClassId] = useState(null);
+  const [classSearchText, setClassSearchText] = useState('');
 
   // Fetch all teachers and classes
   const fetchData = async () => {
@@ -63,6 +64,30 @@ const StaffAssignTeacherPage = () => {
   const handleClassSelect = (classData) => {
     setSelectedClass(classData);
     setSelectedClassId(classData.id);
+    
+    // If the class has teachers, find that teacher in the teachers list
+    if (classData.teacherNames && classData.teacherNames.length > 0) {
+      // Find the teacher object that matches the name in the class's teacherNames
+      const assignedTeacher = teachers.find(teacher => 
+        classData.teacherNames.includes(teacher.fullName)
+      );
+      
+      if (assignedTeacher) {
+        setSelectedTeacher(assignedTeacher);
+        setSelectedTeacherId(assignedTeacher.id);
+        
+        // Show a message to inform the user
+        message.info(`This class is already assigned to teacher: ${assignedTeacher.fullName}`);
+      } else {
+        // Reset teacher selection if we couldn't find the matching teacher
+        setSelectedTeacher(null);
+        setSelectedTeacherId(null);
+      }
+    } else {
+      // If no teachers assigned to the class, reset teacher selection
+      setSelectedTeacher(null);
+      setSelectedTeacherId(null);
+    }
   };
 
   // Show teacher details modal
@@ -86,12 +111,15 @@ const StaffAssignTeacherPage = () => {
       // Show loading message
       const loadingMessage = message.loading(`Assigning ${teacherName} to ${className}...`, 0);
       
+      // Send only the essential data in the format the API expects
       const assignData = {
-        classId: parseInt(selectedClassId, 10),
+        classId: selectedClassId,  // Don't parse as integer, send as is
         teacherId: selectedTeacherId
       };
       
-      await assignTeacher(assignData);
+      console.log('Sending assignment data:', assignData);
+      
+      const response = await assignTeacher(assignData);
       
       // Close loading message
       loadingMessage();
@@ -103,13 +131,11 @@ const StaffAssignTeacherPage = () => {
         icon: <CheckCircleFilled style={{ color: '#52c41a' }} />
       });
       
-      // Reset selections
+      // Reset selections and refresh data
       setSelectedTeacher(null);
       setSelectedTeacherId(null);
       setSelectedClass(null);
       setSelectedClassId(null);
-      
-      // Refresh data
       fetchData();
       
     } catch (error) {
@@ -130,6 +156,15 @@ const StaffAssignTeacherPage = () => {
       teacher.fullName?.toLowerCase().includes(searchText.toLowerCase()) ||
       teacher.email?.toLowerCase().includes(searchText.toLowerCase()) ||
       teacher.phoneNumber?.includes(searchText)
+  );
+
+  // Add a filtered classes function similar to filtered teachers
+  const filteredClasses = classes.filter(
+    (classItem) =>
+      classItem.name?.toLowerCase().includes(classSearchText.toLowerCase()) ||
+      classItem.syllabusName?.toLowerCase().includes(classSearchText.toLowerCase()) ||
+      classItem.gradeLevelName?.toLowerCase().includes(classSearchText.toLowerCase()) ||
+      classItem.academicYear?.toLowerCase().includes(classSearchText.toLowerCase())
   );
 
   // Class table columns
@@ -159,6 +194,17 @@ const StaffAssignTeacherPage = () => {
           <Row gutter={16}>
             <Col span={24}>
               <Text strong>Current/Max:</Text> {record.quantity}/{record.maxChildren} students
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Text strong>Teachers:</Text>{' '}
+              {record.teacherNames && record.teacherNames.length > 0 
+                ? record.teacherNames.map(name => (
+                    <Tag color="blue" key={name}>{name}</Tag>
+                  ))
+                : <Text type="secondary">No teachers assigned</Text>
+              }
             </Col>
           </Row>
         </div>
@@ -216,6 +262,10 @@ const StaffAssignTeacherPage = () => {
       width: '180px',
       render: (_, record) => {
         const isSelected = selectedTeacherId === record.id;
+        const isAssignedToClass = selectedClass && 
+                                 selectedClass.teacherNames && 
+                                 selectedClass.teacherNames.includes(record.fullName);
+        
         return (
           <div className="action-buttons">
             <Button 
@@ -227,19 +277,19 @@ const StaffAssignTeacherPage = () => {
               Detail
             </Button>
             <Button 
-              type={isSelected ? 'default' : 'primary'}
+              type={isSelected || isAssignedToClass ? 'default' : 'primary'}
               onClick={() => {
-                if (isSelected) {
+                if (isSelected || isAssignedToClass) {
                   setSelectedTeacher(null);
                   setSelectedTeacherId(null);
                 } else {
                   handleTeacherSelect(record);
                 }
               }}
-              className={isSelected ? 'selected-button' : ''}
+              className={(isSelected || isAssignedToClass) ? 'selected-button' : ''}
               disabled={record.status !== 'Active'}
             >
-              {isSelected ? 'Unselect' : 'Select'}
+              {isSelected || isAssignedToClass ? 'Unselect' : 'Select'}
             </Button>
           </div>
         );
@@ -256,9 +306,21 @@ const StaffAssignTeacherPage = () => {
         <Row gutter={[16, 16]}>
           {/* Left side - Classes */}
           <Col xs={24} lg={12}>
-            <Card title="Class List" variant="borderless" className="list-card">
+            <Card 
+              title="Class List" 
+              variant="borderless" 
+              className="list-card"
+              extra={
+                <Input.Search
+                  placeholder="Search classes..."
+                  allowClear
+                  onSearch={(value) => setClassSearchText(value)}
+                  style={{ width: 200 }}
+                />
+              }
+            >
               <Table 
-                dataSource={classes} 
+                dataSource={filteredClasses} 
                 columns={classColumns}
                 rowKey={record => record.id}
                 pagination={{ pageSize: 5 }}
