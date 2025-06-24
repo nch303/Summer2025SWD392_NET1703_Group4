@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getChildrenByParentId, addChild, updateChild, deleteChild } from './ChildProfileService';
+import ChildCommunicationBook from './ChildCommunicationBook';
 import { useUser } from '../../contexts/UserContext';
 import './ProfilePage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,6 +33,10 @@ const ChildProfileManagement = () => {
 
   // Add this new state at the top of the component with other state declarations
   const [enrollmentError, setEnrollmentError] = useState({ show: false, childName: '' });
+
+  // Thêm state cho sổ liên lạc
+  const [communicationBookOpen, setCommunicationBookOpen] = useState(false);
+  const [selectedChildId, setSelectedChildId] = useState(null);
 
   useEffect(() => {
     fetchChildren();
@@ -287,6 +292,18 @@ const ChildProfileManagement = () => {
     reader.readAsDataURL(file);
   };
 
+  // Hàm mở sổ liên lạc
+  const openCommunicationBook = (childId) => {
+    setSelectedChildId(childId);
+    setCommunicationBookOpen(true);
+  };
+
+  // Hàm đóng sổ liên lạc
+  const closeCommunicationBook = () => {
+    setCommunicationBookOpen(false);
+    setSelectedChildId(null);
+  };
+
   if (isLoading && !children.length) {
     return (
       <div className="profile-loading-container">
@@ -375,6 +392,19 @@ const ChildProfileManagement = () => {
                   >
                     <FontAwesomeIcon icon="edit" />
                   </button>
+                  
+                  {/* Chỉ hiển thị nút sổ liên lạc khi học sinh đang học (Active) */}
+                  {child.status === 'Active' && (
+                    <button
+                      className="communication-book-btn"
+                      onClick={() => openCommunicationBook(child.id)}
+                      title="Sổ liên lạc"
+                      aria-label="Sổ liên lạc"
+                    >
+                      <FontAwesomeIcon icon="book" />
+                    </button>
+                  )}
+                  
                   {child.status === 'Active' ? (
                     <span 
                       className="enrolled-badge"
@@ -655,6 +685,13 @@ const ChildProfileManagement = () => {
           </div>
         </div>
       )}
+
+      {/* Thêm Component Sổ Liên Lạc */}
+      <ChildCommunicationBook
+        isOpen={communicationBookOpen}
+        onClose={closeCommunicationBook}
+        childId={selectedChildId}
+      />
     </div>
   );
 };

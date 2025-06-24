@@ -21,3 +21,14 @@ export const getSyllabusById = async (syllabusId) => {
     throw error;
   }
 };
+
+// Lấy thông tin chi tiết các buổi học của giáo trình
+export const getSyllabusDetailById = async (syllabusId) => {
+  try {
+    const response = await api.get(`/api/SyllabusDetail/${syllabusId}/get-all-syllabus-detail`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching syllabus slot details:', error);
+    throw error;
+  }
+};
