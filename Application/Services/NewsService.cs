@@ -23,6 +23,11 @@ namespace Application.Services
             return await _newsRepository.GetListOfNews(page, pageSize);
         }
 
+        public async  Task<(List<News> Items, int TotalCount)> GetListOfNewsForParent(int page, int pageSize)
+        {
+            return await _newsRepository.GetListOfNewsForParent(page, pageSize);
+        }
+
         public async Task<News> ViewNewsDetail(int id)
         {
             return await _newsRepository.ViewNewsDetail(id);
