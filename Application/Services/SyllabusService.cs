@@ -29,17 +29,23 @@ namespace Application.Services
             return await _syllabusRepository.GetAll();
         }
 
-        public async Task<Syllabus> Update(int id, Syllabus newSyllabus)
+        public async Task<List<Syllabus>> Update(List<Syllabus> newSyllabi)
         {
-            var existingSyllabus = await _syllabusRepository.GetSyllabusById(id);
-            if (existingSyllabus == null)
+            var updatedSyllabi = new List<Syllabus>();
+            for (int i = 0; i < newSyllabi.Count(); i++)
             {
-                throw new Exception("Syllabus not found!!!");
-            }
+                var existingSyllabus = await _syllabusRepository.GetSyllabusById(newSyllabi[i].ID);
+                if (existingSyllabus == null)
+                {
+                    throw new Exception("Syllabus not found!!!");
+                }
 
-            existingSyllabus!.Name = newSyllabus.Name;
-            existingSyllabus.SlotAmount = newSyllabus.SlotAmount;
-            return await _syllabusRepository.Update(existingSyllabus);
+                existingSyllabus!.Name = newSyllabi[i].Name;
+                existingSyllabus.SlotAmount = newSyllabi[i].SlotAmount;
+                updatedSyllabi.Add(existingSyllabus);
+                await _syllabusRepository.Update(existingSyllabus);
+            }
+            return updatedSyllabi;
         }
     }
 }

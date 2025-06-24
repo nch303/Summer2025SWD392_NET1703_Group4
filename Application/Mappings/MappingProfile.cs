@@ -22,6 +22,7 @@ namespace Application.Mappings
             CreateMap<SyllabusDetailRequest, SyllabusDetail>();
             CreateMap<SyllabusDetail, SyllabusDetailResponse>();
             CreateMap<SyllabusDetail, GetAllSyllabusDetailResponse>();
+            CreateMap<UpdateSyllabusRequest, Syllabus>();
 
             CreateMap<NewsRequest, News>();
             CreateMap<News, NewsResponse>();

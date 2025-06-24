@@ -11,6 +11,6 @@ namespace Application.Interfaces
     {
         Task<Syllabus> CreateSyllabus(Syllabus syllabus);
         Task<List<Syllabus>> GetAll();
-        Task<Syllabus> Update(int id, Syllabus newSyllabus);
+        Task<List<Syllabus>> Update(List<Syllabus> newSyllabus);
     }
 }
