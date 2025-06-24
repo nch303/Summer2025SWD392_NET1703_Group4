@@ -14,6 +14,7 @@ namespace Application.DTOs.Response
         public string? Name { get; set; }
         public string? GradeLevelName { get; set; }
         public int MaxChildren { get; set; }
+        public string? AcademicYear { get; set; }
         public int Quantity { get; set; }
         public string? Status { get; set; }
         public ICollection<ClassChildren>? ClassChildrens { get; set; }

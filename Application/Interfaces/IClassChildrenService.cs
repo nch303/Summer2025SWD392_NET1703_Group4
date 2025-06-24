@@ -12,5 +12,7 @@ namespace Application.Interfaces
         Task<ClassChildren> GetCurrentAssignment(Guid childID);
         Task<List<ClassChildren>> GetChildrenByClassIdAsync(int classId);
         Task<List<ClassChildren>> GetAllAsync();
+        Task<List<ClassChildren>> GetByParentIdAsync(Guid parentId);
+        Task<List<ClassChildren>> GetByChildIdAsync(Guid childId);
     }
 }

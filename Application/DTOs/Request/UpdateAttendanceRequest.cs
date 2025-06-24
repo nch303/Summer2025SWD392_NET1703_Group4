@@ -9,7 +9,7 @@ namespace Application.DTOs.Request
     public class UpdateAttendanceRequest
     {
         public int AttendanceID { get; set; }
-        public bool IsPresent { get; set; }
+        public string? Status { get; set; } = "Absent";
         public string? Notes { get; set; }
     }
 

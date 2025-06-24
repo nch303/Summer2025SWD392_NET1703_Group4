@@ -11,5 +11,6 @@ namespace Application.DTOs.Response
         public int ID { get; set; }
         public string? Title { get; set; }
         public string? Image { get; set; }
+        public string? Status { get; set; }
     }
 }

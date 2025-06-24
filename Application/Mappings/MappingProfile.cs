@@ -22,6 +22,7 @@ namespace Application.Mappings
             CreateMap<SyllabusDetailRequest, SyllabusDetail>();
             CreateMap<SyllabusDetail, SyllabusDetailResponse>();
             CreateMap<SyllabusDetail, GetAllSyllabusDetailResponse>();
+            CreateMap<UpdateSyllabusRequest, Syllabus>();
 
             CreateMap<NewsRequest, News>();
             CreateMap<News, NewsResponse>();
@@ -126,7 +127,11 @@ namespace Application.Mappings
             CreateMap<Class, ClassResponse>()
                 .ForMember(dest => dest.EPName, opt => opt.MapFrom(src => src.EnrichmentPrograms!.Name))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))
-                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name));
+                .ForMember(dest => dest.SyllabusName, opt => opt.MapFrom(src => src.Syllabi!.Name))
+                .ForMember(dest => dest.TeacherNames, opt => opt.MapFrom(src =>
+                                src.ClassTeachers != null
+                                    ? src.ClassTeachers.Select(ct => ct.Teachers!.FullName).ToList()
+                                    : new List<string>()));
             CreateMap<Class, ClassDetailResponse>()
                 .ForMember(dest => dest.EPName, opt => opt.MapFrom(src => src.EnrichmentPrograms!.Name))
                 .ForMember(dest => dest.GradeLevelName, opt => opt.MapFrom(src => src.GradeLevels!.Name))

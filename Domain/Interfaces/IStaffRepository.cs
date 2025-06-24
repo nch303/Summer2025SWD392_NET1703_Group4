@@ -13,6 +13,6 @@ namespace Domain.Interfaces
         Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds);
         Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId);
         Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId);
-        Task<bool> IsTeacherAssignedToClassAsync(int classId, Guid teacherId);
+        Task<bool> IsTeacherAssignedInAcademicYearAsync(Guid teacherId, string academicYear);
     }
 }

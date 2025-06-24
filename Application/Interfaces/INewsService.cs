@@ -10,6 +10,7 @@ namespace Application.Interfaces
     public interface INewsService
     {
         Task<(List<News> Items, int TotalCount)> GetListOfNews(int page, int pageSize);
+        Task<(List<News> Items, int TotalCount)> GetListOfNewsForParent(int page, int pageSize);
         Task<News> ViewNewsDetail(int id);
         Task<News> CreateNewsAsync(News news);
         Task<News> UpdateNewsAsync(News news);

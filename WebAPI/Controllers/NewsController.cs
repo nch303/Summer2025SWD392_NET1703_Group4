@@ -49,6 +49,29 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("get-list-of-news-for-parent")]
+        public async Task<IActionResult> GetListOfNewsForParent(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var (news, totalCount) = await _newsService.GetListOfNewsForParent(page, pageSize);
+
+                var newsResponses = _mapper.Map<List<GetAllNewsResponse>>(news);
+
+                return Ok(new
+                {
+                    TotalCount = totalCount,
+                    PageNumber = page,
+                    PageSize = pageSize,
+                    Data = newsResponses
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{id}/view-news-detail")]
         public async Task<IActionResult> ViewDetail(int id)
         {

@@ -43,6 +43,22 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpGet("{classId}/get-all-class-attendance")]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> GetAllClassAttendance(int classId)
+        {
+            try
+            {
+                var attendanceList = await _attendanceService.GetAllAttendanceByClassIdAsync(classId);
+                var response = _mapper.Map<List<AttendanceResponse>>(attendanceList);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPut("update")]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> UpdateAttendance([FromBody] List<UpdateAttendanceRequest> requests)
@@ -52,7 +68,7 @@ namespace WebAPI.Controllers
                 var attendancesToUpdate = requests.Select(r => new Attendance
                 {
                     ID = r.AttendanceID,
-                    Status = r.IsPresent ? "Attend" : "Absent", // Usually always "Attend" in this flow
+                    Status = r.Status,
                     Notes = r.Notes
                 }).ToList();
 

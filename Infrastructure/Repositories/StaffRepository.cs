@@ -92,10 +92,12 @@ namespace Infrastructure.Repositories
             return classTeacher;
         }
 
-        public async Task<bool> IsTeacherAssignedToClassAsync(int classId, Guid teacherId)
+        public async Task<bool> IsTeacherAssignedInAcademicYearAsync(Guid teacherId, string academicYear)
         {
             return await _context.ClassTeachers
-                .AnyAsync(ct => ct.TeacherID == teacherId && ct.ClassID == classId);
+                .Include(ct => ct.Classes)
+                .AnyAsync(ct => ct.TeacherID == teacherId &&
+                                ct.Classes!.AcademicYear == academicYear);
         }
     }
 }

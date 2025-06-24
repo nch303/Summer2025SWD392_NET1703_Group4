@@ -35,5 +35,17 @@ namespace Application.Services
             var allChildren = await _repository.GetAllAsync();
             return allChildren;
         }
+
+        public async Task<List<ClassChildren>> GetByParentIdAsync(Guid parentId)
+        {
+            var children = await _repository.GetByParentIdAsync(parentId);
+            return children;
+        }
+
+        public async Task<List<ClassChildren>> GetByChildIdAsync(Guid childId)
+        {
+            var children = await _repository.GetByChildIdAsync(childId);
+            return children;
+        }
     }
 }
