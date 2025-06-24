@@ -40,7 +40,7 @@ namespace Application.Services
 
         public async Task<bool> DeleteNewsAsync(int id)
         {
-            return await _newsRepository.DeleteNewsAsynce(id);
+            return await _newsRepository.DeleteNewsAsync(id);
         }
 
         public async Task<List<News>> SearchNewsAsync(string keyword)
@@ -52,5 +52,11 @@ namespace Application.Services
         {
             return await _newsRepository.ViewNewsDetail(id);
         }
+
+        public async Task<bool> RestoreNewsAsync(int id)
+        {
+            return await _newsRepository.RestoreNewsAsync(id);
+        }
+
     }
 }

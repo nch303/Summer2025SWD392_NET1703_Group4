@@ -51,5 +51,20 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return syllabus;
         }
+
+        public async Task<bool> DeleteSyllabus(int id)
+        {
+            var syllabus = await GetSyllabusById(id);
+            if (syllabus == null)
+            {
+                return false;
+            }
+
+            syllabus.IsDeleted = true;
+            _context.Syllabi.Update(syllabus);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

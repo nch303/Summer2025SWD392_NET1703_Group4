@@ -65,5 +65,17 @@ namespace WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _syllabusService.DeleteSyllabusAsync(id);
+            if (!result)
+            {
+                return NotFound($"Syllabus with ID {id} not found or already deleted.");
+            }
+
+            return Ok($"Syllabus with ID {id} soft-deleted successfully.");
+        }
     }
 }

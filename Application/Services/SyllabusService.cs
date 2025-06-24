@@ -41,5 +41,10 @@ namespace Application.Services
             existingSyllabus.SlotAmount = newSyllabus.SlotAmount;
             return await _syllabusRepository.Update(existingSyllabus);
         }
+
+        public async Task<bool> DeleteSyllabusAsync(int id)
+        {
+            return await _syllabusRepository.DeleteSyllabus(id);
+        }
     }
-}
+} 
