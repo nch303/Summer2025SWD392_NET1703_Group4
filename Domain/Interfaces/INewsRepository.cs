@@ -10,6 +10,7 @@ namespace Domain.Interfaces
     public interface INewsRepository
     {
         Task<(List<News> Items, int TotalCount)> GetListOfNews(int page, int pageSize);
+        Task<(List<News> Items, int TotalCount)> GetListOfNewsForParent(int page, int pageSize);
         Task<News> ViewNewsDetail(int id);
         Task<News> CreateNewsAsynce(News news);
         Task<News> UpdateNewsAsynce(News news);

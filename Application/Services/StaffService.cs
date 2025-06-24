@@ -94,19 +94,16 @@ namespace Application.Services
 
         public async Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId)
         {
-            //Check if the class exists
             var classToAssign = await _classService.GetClass(classId);
             if (classToAssign == null)
-            {
                 throw new Exception("Class not found");
-            }
 
-            // ✅ Check if the teacher is already assigned to any class
-            var isAlreadyAssigned = await _staffRepository.IsTeacherAssignedToClassAsync(classId, teacherId);
-            if (isAlreadyAssigned)
-            {
-                throw new InvalidOperationException("This teacher is already assigned to a class.");
-            }
+            string academicYear = classToAssign.AcademicYear!;
+
+            // Step 2: Validate if teacher is already assigned in the same AcademicYear
+            var isAlreadyAssignedInYear = await _staffRepository.IsTeacherAssignedInAcademicYearAsync(teacherId, academicYear);
+            if (isAlreadyAssignedInYear)
+                throw new InvalidOperationException($"This teacher is already assigned to a class in academic year {academicYear}.");
 
             var result = await _staffRepository.AssignTeacherToClassAsync(classId, teacherId);
             return result;

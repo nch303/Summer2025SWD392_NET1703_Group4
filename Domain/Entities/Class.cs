@@ -17,6 +17,7 @@ namespace Domain.Entities
         public int GradeLevelID { get; set; }
         public int? EnrichmentProgramId { get; set; }
 
+        public string? AcademicYear { get; set; }
         public int Quantity { get; set; }
         public int MaxChildren {  get; set; }
         public string? Status { get; set; }

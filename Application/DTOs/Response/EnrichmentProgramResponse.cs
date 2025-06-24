@@ -17,6 +17,7 @@ namespace Application.DTOs.Response
         public decimal Fee { get; set; }
         public int TypeProgramID { get; set; }
         public string? Type { get; set; }
+        public bool IsDelete { get; set; }
 
     }
 }
