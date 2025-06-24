@@ -28,7 +28,8 @@ namespace WebAPI.Controllers
             {
                 var syllabus = _mapper.Map<Syllabus>(request);
                 var result = await _syllabusService.CreateSyllabus(syllabus);
-                return Ok($"Syllabus {result.Name} has been created successfully!!!");
+                var response = _mapper.Map<SyllabusResponse>(result);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -50,14 +51,14 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut("{id}/update-syllabus")]
-        public async Task<IActionResult> UpdateSyllabus(int id, [FromBody] SyllabusRequest request)
+        [HttpPut("/update-syllabus")]
+        public async Task<IActionResult> UpdateSyllabus([FromBody] List<UpdateSyllabusRequest> request)
         {
             try
             {
-                var newSyllabus = _mapper.Map<Syllabus>(request);
-                var updated = await _syllabusService.Update(id, newSyllabus);
-                var response = _mapper.Map<SyllabusResponse>(updated);
+                var newSyllabus = _mapper.Map<List<Syllabus>>(request);
+                var updated = await _syllabusService.Update(newSyllabus);
+                var response = _mapper.Map<List<SyllabusResponse>>(updated);
                 return Ok(response);
             }
             catch (Exception ex)
