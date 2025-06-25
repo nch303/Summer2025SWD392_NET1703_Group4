@@ -80,16 +80,19 @@ namespace WebAPI.Controllers
                 var invoice = await _invoiceService.GetByIdAsync(invoiceId);
                 var invoicePDFResponse = _mapper.Map<InvoicePDFResponse>(invoice);
 
-                ///Update status enrollment application
-                var enrollmentApp = await _eARepository.GetApplicatioinByChildID(invoice!.ChildrenID);
-                enrollmentApp!.Status = "Paid";
-                await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApp);
+                var invoiceDetails = await _invoiceDetailService.GetByInvoiceIdAsync(invoiceId);
 
+                ///Update status enrollment application
+                if (invoiceDetails[0].TuitionFeeID == null && invoiceDetails[0].ProgramID == null)
+                {
+                    var enrollmentApp = await _eARepository.GetApplicatioinByChildID(invoice!.ChildrenID);
+                    enrollmentApp!.Status = "Paid";
+                    await _eaService.UpdateEnrollmentApplicationAsync(enrollmentApp);
+                }
+               
                 var parentAccount = await _accountService.GetAccountByIdAsync(invoice!.AccountID);
                 invoicePDFResponse.ParentName = parentAccount.FullName;
 
-
-                var invoiceDetails = await _invoiceDetailService.GetByInvoiceIdAsync(invoiceId);
                 var invoiceDetailResponses = _mapper.Map<List<InvoiceDetailResponse>>(invoiceDetails);
                 for (int i = 0; i < invoiceDetails.Count; i++)
                 {
@@ -127,9 +130,12 @@ namespace WebAPI.Controllers
                 );
 
                 //Update status children
-                var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
-                children!.Status = "Paid";
-                await _childrenService.UpdateChildAsync(children);
+                if (invoiceDetails[0].TuitionFeeID == null && invoiceDetails[0].ProgramID == null)
+                {
+                    var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
+                    children!.Status = "Paid";
+                    await _childrenService.UpdateChildAsync(children);
+                }
 
                 // set success payment link
                 redirectUrl = _configuration["Vnpay:successUrl"] + $"/{invoiceId}"
