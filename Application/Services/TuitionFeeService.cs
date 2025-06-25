@@ -21,11 +21,12 @@ namespace Application.Services
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IMapper _mapper;
         private readonly IGradeLevelService _gradeLevelService;
+        private readonly INotificationsRepository _notificationsRepository;
 
         public TuitionFeeService(ITuitionFeeRepositiry tuitionFeeRepository, IAccountService accountService
             , IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
             , IChildrenService childrenService, IChildrenGradeService childrenGradeService
-            , IMapper mapper, IGradeLevelService gradeLevelService)
+            , IMapper mapper, IGradeLevelService gradeLevelService, INotificationsRepository notificationsRepository)
         {
             _tuitionFeeRepository = tuitionFeeRepository;
             _accountService = accountService;
@@ -35,6 +36,7 @@ namespace Application.Services
             _childrenGradeService = childrenGradeService;
             _mapper = mapper;
             _gradeLevelService = gradeLevelService;
+            _notificationsRepository = notificationsRepository;
         }
 
         public async Task<List<TuitionWithChildResponse>> GetTuitionFeeByCurrentAccount()
@@ -155,6 +157,21 @@ namespace Application.Services
                 throw new ArgumentNullException(nameof(tuitionFee), "Tuition fee cannot be null");
             }
             var createdTuitionFee = await _tuitionFeeRepository.CreateAsync(tuitionFee);
+
+            // Tao thong bao cho tung parent
+            var parents = _accountService.GetAllAsync().Result.Where(a => a.RoleId == 2).ToList();
+            foreach (var parent in parents)
+            {
+                var notification = new Notification
+                {
+                    AccountID = parent.Id,
+                    Title = "Bạn có khoản thanh toán học phí mới",
+                    Content = "Bạn có khoản thanh toán học phí tháng " + tuitionFee.Name + " cần phải thanh toán",
+                    IsRead = false // mặc định là chưa đọc
+                };
+
+                await _notificationsRepository.CreateNotificationAsync(notification);
+            }
             return createdTuitionFee;
         }
 
