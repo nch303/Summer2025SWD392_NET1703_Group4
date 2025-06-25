@@ -78,7 +78,7 @@ namespace Application.Services
 
             // Check if the invoice already exists and has a non-exprired payment URL
             // If it does, return the existing payment URL
-            var existingInvoiceDetail = await _invoiceDetailRepository.GetByTuitionIdAsync(request.enrichmentPrograms[0]);
+            var existingInvoiceDetail = await _invoiceDetailRepository.GetByProgramIdAsync(request.enrichmentPrograms[0]);
             if (existingInvoiceDetail.Count != 0)
             {
                 var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
