@@ -128,7 +128,6 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
     switch (status) {
       case 'Attend': return 'Có mặt';
       case 'Absent': return 'Vắng mặt';
-      case 'Late': return 'Đi muộn';
       default: return status;
     }
   };
@@ -514,10 +513,6 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                         <div className="stat-number">{attendStats.absent}</div>
                         <div className="stat-label">Vắng mặt</div>
                       </div>
-                      <div className="attendance-stat-card stat-late">
-                        <div className="stat-number">{attendStats.late}</div>
-                        <div className="stat-label">Đi muộn</div>
-                      </div>
                     </div>
                   )}
                   
@@ -596,10 +591,6 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                       <div className="legend-item">
                         <span className="legend-color absent"></span>
                         <span>Vắng mặt</span>
-                      </div>
-                      <div className="legend-item">
-                        <span className="legend-color late"></span>
-                        <span>Đi muộn</span>
                       </div>
                     </div>
                   </div>

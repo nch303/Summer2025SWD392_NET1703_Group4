@@ -686,6 +686,7 @@
 
 .attendance-absent {
   background-color: #fef2f2;
+  text-align: center;
 }
 
 .attendance-late {
