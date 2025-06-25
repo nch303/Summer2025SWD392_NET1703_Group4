@@ -29,11 +29,12 @@ namespace Application.Services
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IEARepository _eaRepository;
         private readonly IEAService _eaService;
+        private readonly IInvoiceDetailRepository _invoiceDetailRepository;
 
         public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
             , IAccountService accountService, IEnrichProgramService enrichProgramService, ITuitionFeeService tuitionFeeService
             , IGradeLevelService gradeLevelService, IChildrenGradeService childrenGradeService
-            , IEARepository eARepository, IEAService eaService)
+            , IEARepository eARepository, IEAService eaService, IInvoiceDetailRepository invoiceDetailRepository)
         {
             _configuration = configuration;
             _invoiceService = invoiceService;
@@ -45,6 +46,7 @@ namespace Application.Services
             _childrenGradeService = childrenGradeService;
             _eaRepository = eARepository;
             _eaService = eaService;
+            _invoiceDetailRepository = invoiceDetailRepository;
         }
 
 
@@ -76,18 +78,20 @@ namespace Application.Services
 
             // Check if the invoice already exists and has a non-exprired payment URL
             // If it does, return the existing payment URL
-            var existingInvoiceDetail = await _invoiceDetailService.GetByProgramIdAsync(request.enrichmentPrograms[0]);
-            var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
-
-            if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+            var existingInvoiceDetail = await _invoiceDetailRepository.GetByTuitionIdAsync(request.enrichmentPrograms[0]);
+            if (existingInvoiceDetail.Count != 0)
             {
-                return existingInvoice.PaymentLink;
-            }
+                var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
+                if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+                {
+                    return existingInvoice.PaymentLink;
+                }
 
-            // Update the existing invoice with the status "Failed" if it exists
-            if (existingInvoice != null)
-            {
-                await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+                // Update the existing invoice with the status "Failed" if it exists
+                if (existingInvoice != null)
+                {
+                    await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+                }
             }
 
             // Get current account
@@ -161,17 +165,20 @@ namespace Application.Services
 
             // Check if the invoice already exists and has a non-expired payment URL
             // If it does, return the existing payment URL
-            var existingInvoiceDetail = await _invoiceDetailService.GetByTuitionIdAsync(request.TuitionFeeIds[0]);
-            var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
-            if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+            var existingInvoiceDetail = await _invoiceDetailRepository.GetByTuitionIdAsync(request.TuitionFeeIds[0]);
+            if (existingInvoiceDetail.Count != 0)
             {
-                return existingInvoice.PaymentLink;
-            }
+                var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
+                if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
+                {
+                    return existingInvoice.PaymentLink;
+                }
 
-            // Update the existing invoice with the status "Failed" if it exists
-            if (existingInvoice != null)
-            {
-                await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+                // Update the existing invoice with the status "Failed" if it exists
+                if (existingInvoice != null)
+                {
+                    await _invoiceService.UpdateStatusAsync(existingInvoice.ID, "Failed");
+                }
             }
 
             // Get current account
