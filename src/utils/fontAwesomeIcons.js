@@ -90,7 +90,10 @@ import {
   faChalkboard,
   faCalendarTimes,
   faSchool,
-  faCalendarPlus
+  faCalendarPlus,
+  faSms,
+  faEnvelope,
+  faFlag,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -187,7 +190,10 @@ library.add(
   faChalkboard,
   faCalendarTimes,
   faSchool,
-  faCalendarPlus
+  faCalendarPlus,
+  faSms,
+  faEnvelope,
+  faFlag,
 );
 
 // Không cần export vì đã đăng ký vào library 

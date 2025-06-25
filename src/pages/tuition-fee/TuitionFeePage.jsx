@@ -345,13 +345,6 @@ const TuitionFeePage = () => {
               <FontAwesomeIcon icon="exclamation-circle" />
               <span>Quá hạn ({categorizedFees.past.length})</span>
             </button>
-            <button 
-              className={`tuition-fee-tab ${activeBillingTab === 'future' ? 'active' : ''}`}
-              onClick={() => setActiveBillingTab('future')}
-            >
-              <FontAwesomeIcon icon="clock" />
-              <span>Tương lai ({categorizedFees.future.length})</span>
-            </button>
           </div>
           
           {/* Billing content based on active tab */}
@@ -365,6 +358,7 @@ const TuitionFeePage = () => {
                     </div>
                     <div className="tuition-fee-list">
                       {categorizedFees.upcoming.map(fee => renderFeeCard(fee))}
+                      {categorizedFees.future.map(fee => renderFeeCard(fee))}
                     </div>
                   </div>
                 ) : (
@@ -393,27 +387,6 @@ const TuitionFeePage = () => {
                     <FontAwesomeIcon icon="check-circle" />
                     <h3>Không có khoản phí quá hạn</h3>
                     <p>Bạn không có khoản học phí nào bị quá hạn thanh toán. Rất tốt!</p>
-                  </div>
-                )}
-              </>
-            )}
-            
-            {activeBillingTab === 'future' && (
-              <>
-                {categorizedFees.future.length > 0 ? (
-                  <div className="tuition-fee-section">
-                    <div className="tuition-fee-section-header">
-                      <h2>Học phí sắp tới</h2>
-                    </div>
-                    <div className="tuition-fee-list">
-                      {categorizedFees.future.map(fee => renderFeeCard(fee))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="tuition-fee-empty-state">
-                    <FontAwesomeIcon icon="calendar" />
-                    <h3>Không có khoản phí trong tương lai</h3>
-                    <p>Hiện tại chưa có thông tin về các khoản học phí sắp tới.</p>
                   </div>
                 )}
               </>
