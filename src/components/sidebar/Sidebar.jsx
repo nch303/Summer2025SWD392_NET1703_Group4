@@ -104,6 +104,15 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className="staff-sidebar-text">Training</span>
         </Link>
+
+        <Link to="/staff/assign-teachers" className={`staff-sidebar-link ${isActive('/staff/assign-teachers') ? 'active' : ''}`}>
+          <div className="staff-sidebar-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+            </svg>
+          </div>
+          <span className="staff-sidebar-text">Assign Teachers</span>
+        </Link>
       </nav>
     </aside>
   );

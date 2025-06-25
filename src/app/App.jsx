@@ -34,6 +34,7 @@ import NotificationPage from '../pages/notification/NotificationPage';
 import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
 import NewsDetailPage from '../pages/news/NewsDetailPage';
 import EnrichmentProgram from '../pages/enrichment-program/EnrichmentProgram';
+import AdminEnrichment from '../pages/admin/AdminEnrichment';
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -42,7 +43,7 @@ import EnrollmentApplicationManagement from '../pages/staff-dashboard/Enrollment
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
-
+import StudentsManagement from '../pages/admin-students-management/StudentsManagement';
 import AdminSyllabus from '../pages/admin/AdminSyllabus';
 import TuitionFeeManagement from '../pages/admin/TuitionFeeManagement';
 
@@ -62,11 +63,11 @@ import ProtectedRoute from '../components/route-guard/ProtectedRoute';
 import AuthRoute from '../components/route-guard/AuthRoute';
 import { UserProvider } from '../contexts/UserContext';
 
-import EnrichmentActivityListPage from '../pages/enrichment-activities/EnrichmentActivityListPage';
 import SendAnnouncementPage from '../pages/announcement/SendAnnouncementPage';
 import ReportsPage from '../pages/reports/ReportsPage';
-import SyllabusListPage from '../pages/syllabus/SyllabusListPage';
 import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
+import AdminNews from '../pages/admin/AdminNews';
+import StaffAssignTeacherPage from '../pages/staff-assign-teacher/StaffAssignTeacherPage';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -170,7 +171,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />
-            <Route path="/news/:id" element={<NewsDetailPage />} />
+            <Route path="/news/:newsId" element={<NewsDetailPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
@@ -186,6 +187,7 @@ function App() {
             <Route path="students" element={<ChildrenManagement />} />
             <Route path="enrollment-applications" element={<EnrollmentApplicationManagement />} />
             <Route path="assign-students" element={<StaffAssignStudentPage />} />
+            <Route path="assign-teachers" element={<StaffAssignTeacherPage />} />
           </Route>
 
           {/* Admin Routes */}
@@ -196,19 +198,17 @@ function App() {
           }>
             <Route index element={<AdminPage />} />
             <Route path="syllabus" element={<AdminSyllabus />} />
-            <Route path="students" element={<div>Students Management</div>} />
             <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
-            <Route path="classes" element={<ClassManagement />} />
-            <Route path="tuition-fees" element={<TuitionFeeManagement />} />
-            <Route path="enrichment-activities" element={<EnrichmentActivityListPage />} />
-            <Route path="news" element={<NewsPage />} />
+            <Route path="classes/list" element={<ClassManagement />} />
+            <Route path="news" element={<AdminNews />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
             <Route path="reports" element={<ReportsPage />} />
-            <Route path="syllabus" element={<SyllabusListPage />} />
             <Route path="classes" element={<div>Classes Management</div>} />
             <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />
+            <Route path="enrichment" element={<AdminEnrichment />} />
+            <Route path="students" element={<StudentsManagement />} />
           </Route>
 
           {/* Teacher Routes */}

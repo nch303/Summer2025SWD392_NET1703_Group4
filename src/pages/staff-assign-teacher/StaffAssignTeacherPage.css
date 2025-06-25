@@ -1,0 +1,176 @@
+.staff-assign-teacher {
+  padding: 20px;
+}
+
+.staff-assign-teacher .ant-card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+}
+
+.staff-assign-teacher .ant-table-thead > tr > th {
+  background: #f0f4ff;
+  color: #6b8afd;
+  font-weight: 600;
+  border-bottom: 1.5px solid #e8f0fe;
+}
+
+.staff-assign-teacher .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #e8f0fe;
+}
+
+.staff-assign-teacher .ant-table-tbody > tr:hover > td {
+  background: #f8fafc;
+}
+
+.staff-assign-teacher .ant-btn-primary {
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
+  border: none;
+}
+
+.staff-assign-teacher .ant-btn-primary:hover {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+  border: none;
+}
+
+.assignment-form {
+  padding: 16px;
+}
+
+.assignment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.assignment-header h2 {
+  margin: 0;
+  color: #6b8afd;
+}
+
+.assign-teacher-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.list-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.list-card .ant-card-head {
+  background-color: #f0f7ff;
+  border-radius: 8px 8px 0 0;
+}
+
+.assignment-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 20px;
+  background-color: #fffdf0;
+}
+
+.class-info, .teacher-info {
+  padding: 10px 0;
+}
+
+.class-name, .teacher-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #1890ff;
+}
+
+.teacher-avatar {
+  border: 2px solid #f0f0f0;
+  background-color: #e6f7ff;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.detail-button {
+  background-color: #f0f7ff;
+}
+
+.selected-button {
+  background-color: #52c41a;
+  color: white;
+}
+
+.assign-button-container {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.assign-button {
+  min-width: 200px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.custom-table .ant-table-tbody > tr.selected-row {
+  background-color: #e6f7ff;
+}
+
+/* Teacher Detail Modal Styles */
+.teacher-detail {
+  padding: 10px;
+}
+
+.teacher-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.detail-avatar {
+  border: 3px solid #1890ff;
+  background-color: #e6f7ff;
+}
+
+.teacher-detail-title {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.teacher-detail-title h2 {
+  margin: 0;
+  color: #1890ff;
+}
+
+.detail-item {
+  margin-bottom: 10px;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* Add styling for the search inputs */
+.list-card .ant-card-extra .ant-input-search {
+  margin-bottom: 0;
+}
+
+/* Make search inputs consistent across both cards */
+.list-card .ant-input-search .ant-input {
+  border-radius: 4px;
+}
+
+/* Add a little hover effect on search boxes */
+.list-card .ant-input-search:hover .ant-input {
+  border-color: #40a9ff;
+}
+
+/* Make sure the extra area has enough space */
+.list-card .ant-card-head-wrapper {
+  align-items: center;
+}
