@@ -171,7 +171,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />
-            <Route path="/news/:newsId" element={<NewsDetailPage />} />
+            <Route path="/news/:id" element={<NewsDetailPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
@@ -204,6 +204,7 @@ function App() {
             <Route path="news" element={<AdminNews />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="tuition-fees" element={<TuitionFeeManagement />} />
             <Route path="classes" element={<div>Classes Management</div>} />
             <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />

@@ -9,7 +9,7 @@ import api from '../../config/axiosConfig';
 */
 export const getNewsList = async (page = 1, pageSize = 10) => {
   try {
-    const response = await api.get(`/api/News/get-list-of-news`, {
+    const response = await api.get(`/api/News/get-list-of-news-for-parent`, {
       params: {
         page,
         pageSize

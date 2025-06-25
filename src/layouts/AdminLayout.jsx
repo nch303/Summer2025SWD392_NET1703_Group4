@@ -78,7 +78,7 @@ const AdminLayout = () => {
       label: 'Syllabus',
     },
     {
-      key: '/admin/classes',
+      key: '/admin/classes/list',
       icon: <CalendarOutlined />,
       label: 'Classes',
     },
