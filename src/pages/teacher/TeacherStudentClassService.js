@@ -1,10 +1,10 @@
-import axios from '../../config/axiosConfig';
+import api from '../../config/axiosConfig';
 
 // Lấy danh sách học sinh của lớp học
 export const getStudentsByClassId = async (classId) => {
   try {
-    const response = await axios.get(`/api/Children/getChildrenByClassId/${classId}`);
-    return response.data;
+      const response = await api.get(`/api/Children/getChildrenByClassId/${classId}`);
+      return response.data;
   } catch (error) {
     console.error('Error fetching students:', error);
     throw error;
@@ -34,7 +34,7 @@ export const formatBirthday = (dateString) => {
 // Lấy thông tin chi tiết của học sinh
 export const getStudentDetail = async (studentId) => {
   try {
-    const response = await axios.get(`/api/Children/${studentId}`);
+    const response = await api.get(`/api/Children/${studentId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching student detail:', error);

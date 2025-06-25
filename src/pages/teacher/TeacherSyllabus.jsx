@@ -10,7 +10,7 @@ import {
   SortAscendingOutlined, PlusOutlined, FilePdfOutlined,
   BookFilled, ReadOutlined, CheckCircleOutlined, ClockCircleOutlined
 } from '@ant-design/icons';
-import { getAllSyllabi } from './TeacherSyllabusService';
+import { getAllSyllabi, getSyllabusById, getSyllabusDetailById } from './TeacherSyllabusService';
 import './TeacherSyllabus.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -23,6 +23,8 @@ const TeacherSyllabus = () => {
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState('');
   const [selectedSyllabus, setSelectedSyllabus] = useState(null);
+  const [syllabusSlots, setSyllabusSlots] = useState([]);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
 
@@ -51,14 +53,25 @@ const TeacherSyllabus = () => {
     setFilteredSyllabi(filtered);
   };
 
-  const showSyllabusDetail = (syllabus) => {
+  const showSyllabusDetail = async (syllabus) => {
     setSelectedSyllabus(syllabus);
     setDrawerVisible(true);
+    
+    try {
+      setDetailLoading(true);
+      const slotsData = await getSyllabusDetailById(syllabus.id);
+      setSyllabusSlots(slotsData);
+    } catch (error) {
+      console.error('Failed to fetch syllabus details:', error);
+    } finally {
+      setDetailLoading(false);
+    }
   };
 
   const closeDrawer = () => {
     setDrawerVisible(false);
     setSelectedSyllabus(null);
+    setSyllabusSlots([]);
   };
 
   // Mô phỏng dữ liệu giáo trình đã gán
@@ -66,24 +79,6 @@ const TeacherSyllabus = () => {
     { id: 3, name: "học học nữa học máu", className: "Lớp Chồi", status: "Đang dạy", progress: 75 },
     { id: 2, name: "học ăn học nói học gói mang về", className: "Lớp Mầm", status: "Sắp dạy", progress: 0 }
   ];
-
-  // Giả lập dữ liệu chi tiết giáo trình
-  const syllabusDetailData = {
-    id: 3,
-    name: "học học nữa học máu",
-    description: "Giáo trình dành cho trẻ từ 3-4 tuổi, tập trung vào phát triển kỹ năng ngôn ngữ và tư duy logic.",
-    ageGroup: "3-4 tuổi",
-    duration: "12 tuần",
-    author: "Ban Giáo dục Mầm non",
-    publisher: "NXB Giáo dục",
-    publishYear: 2023,
-    units: [
-      { name: "Đơn vị 1: Làm quen với chữ cái", status: "Hoàn thành", progress: 100 },
-      { name: "Đơn vị 2: Học đếm số", status: "Đang dạy", progress: 80 },
-      { name: "Đơn vị 3: Khám phá thế giới tự nhiên", status: "Chưa bắt đầu", progress: 0 },
-      { name: "Đơn vị 4: Phát triển kỹ năng vận động", status: "Chưa bắt đầu", progress: 0 }
-    ]
-  };
 
   const columns = [
     {
@@ -104,6 +99,16 @@ const TeacherSyllabus = () => {
           <BookFilled style={{ color: '#1890ff' }} />
           <Text strong>{text}</Text>
         </Space>
+      ),
+    },
+    {
+      title: 'Số buổi học',
+      dataIndex: 'slotAmount',
+      key: 'slotAmount',
+      width: 150,
+      align: 'center',
+      render: (slotAmount) => (
+        <Tag color="blue">{slotAmount} buổi</Tag>
       ),
     },
     {
@@ -149,6 +154,18 @@ const TeacherSyllabus = () => {
       ),
     },
     {
+      title: 'Số buổi học',
+      dataIndex: 'slotAmount',
+      key: 'slotAmount',
+      width: 150,
+      align: 'center',
+      render: (slotAmount) => slotAmount ? (
+        <Tag color="blue">{slotAmount} buổi</Tag>
+      ) : (
+        <Tag color="default">Chưa cập nhật</Tag>
+      ),
+    },
+    {
       title: 'Lớp',
       dataIndex: 'className',
       key: 'className',
@@ -169,13 +186,15 @@ const TeacherSyllabus = () => {
       key: 'progress',
       render: (progress) => (
         <div className="progress-cell">
-          <div 
-            className="progress-bar" 
-            style={{ 
-              width: `${progress}%`,
-              backgroundColor: progress === 0 ? '#f5f5f5' : progress < 30 ? '#ff4d4f' : progress < 70 ? '#faad14' : '#52c41a'
-            }} 
-          />
+          <div className="progress-bar">
+            <div 
+              style={{ 
+                width: `${progress}%`,
+                height: '100%',
+                backgroundColor: progress === 0 ? '#f5f5f5' : progress < 30 ? '#ff4d4f' : progress < 70 ? '#faad14' : '#52c41a'
+              }} 
+            />
+          </div>
           <Text>{progress}%</Text>
         </div>
       ),
@@ -204,8 +223,13 @@ const TeacherSyllabus = () => {
   const renderSyllabusDetail = () => {
     if (!selectedSyllabus) return null;
 
-    // Sử dụng dữ liệu chi tiết giả lập
-    const detail = syllabusDetailData;
+    // Group slots by 5 for better display
+    const groupedSlots = [];
+    if (syllabusSlots.length > 0) {
+      for (let i = 0; i < syllabusSlots.length; i += 5) {
+        groupedSlots.push(syllabusSlots.slice(i, i + 5));
+      }
+    }
 
     return (
       <div className="syllabus-detail">
@@ -216,10 +240,9 @@ const TeacherSyllabus = () => {
             size={80} 
           />
           <div className="syllabus-title">
-            <Title level={3}>{detail.name}</Title>
+            <Title level={3}>{selectedSyllabus.name}</Title>
             <div className="syllabus-tags">
-              <Tag color="blue">{detail.ageGroup}</Tag>
-              <Tag color="purple">{detail.duration}</Tag>
+              <Tag color="blue">{selectedSyllabus.slotAmount || syllabusSlots.length || 0} buổi học</Tag>
             </div>
           </div>
         </div>
@@ -232,56 +255,45 @@ const TeacherSyllabus = () => {
           column={1}
           className="syllabus-descriptions"
         >
-          <Descriptions.Item label="Mô tả">{detail.description}</Descriptions.Item>
-          <Descriptions.Item label="Tác giả">{detail.author}</Descriptions.Item>
-          <Descriptions.Item label="Nhà xuất bản">{detail.publisher}</Descriptions.Item>
-          <Descriptions.Item label="Năm xuất bản">{detail.publishYear}</Descriptions.Item>
+          <Descriptions.Item label="ID giáo trình">{selectedSyllabus.id}</Descriptions.Item>
+          <Descriptions.Item label="Tên giáo trình">{selectedSyllabus.name}</Descriptions.Item>
+          <Descriptions.Item label="Số buổi học">{selectedSyllabus.slotAmount || syllabusSlots.length || 0}</Descriptions.Item>
         </Descriptions>
 
-        <Divider orientation="left">Nội dung giáo trình</Divider>
-
-        <div className="syllabus-units">
-          {detail.units.map((unit, index) => (
-            <Card 
-              key={index}
-              className="unit-card"
-              title={
-                <Space>
-                  <Text strong>{unit.name}</Text>
-                  <Tag 
-                    color={
-                      unit.status === 'Hoàn thành' ? 'success' : 
-                      unit.status === 'Đang dạy' ? 'processing' : 
-                      'default'
-                    }
-                  >
-                    {unit.status}
-                  </Tag>
-                </Space>
-              }
-              extra={
-                <div className="unit-progress">
-                  <Text>{unit.progress}%</Text>
-                </div>
-              }
-            >
-              <div className="unit-progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ 
-                    width: `${unit.progress}%`,
-                    backgroundColor: unit.progress === 0 ? '#f5f5f5' : unit.progress < 30 ? '#ff4d4f' : unit.progress < 70 ? '#faad14' : '#52c41a'
-                  }} 
-                />
-              </div>
-
-              <div className="unit-actions">
-                <Button type="primary" icon={<EyeOutlined />}>Xem chi tiết</Button>
-                <Button icon={<DownloadOutlined />}>Tải tài liệu</Button>
-              </div>
-            </Card>
-          ))}
-        </div>
+        {detailLoading ? (
+          <div className="loading-container">
+            <Spin size="large" />
+            <Text>Đang tải chi tiết giáo trình...</Text>
+          </div>
+        ) : syllabusSlots.length > 0 ? (
+          <>
+            <Divider orientation="left">Chi tiết các buổi học</Divider>
+            <div className="syllabus-slots">
+              {groupedSlots.map((group, groupIndex) => (
+                <Card 
+                  key={groupIndex}
+                  className="unit-card"
+                  title={
+                    <Text strong>Nhóm buổi học {groupIndex + 1} (Buổi {group[0].slot} - {group[group.length-1].slot})</Text>
+                  }
+                  style={{ marginBottom: 16 }}
+                >
+                  {group.map((slot) => (
+                    <div key={slot.id} style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
+                      <Space size="middle">
+                        <Tag color="blue">Buổi {slot.slot}</Tag>
+                        <Text>{slot.content}</Text>
+                        <Tag color="green">{slot.duration} phút</Tag>
+                      </Space>
+                    </div>
+                  ))}
+                </Card>
+              ))}
+            </div>
+          </>
+        ) : (
+          <Empty description="Không có thông tin chi tiết buổi học" />
+        )}
       </div>
     );
   };

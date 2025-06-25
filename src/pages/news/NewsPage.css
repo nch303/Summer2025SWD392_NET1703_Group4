@@ -105,7 +105,7 @@
     max-width: 800px;
   }
   
-  .main-title {
+  .news-main-title {
     font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
@@ -657,4 +657,52 @@
     .header-container {
       padding: 1rem 1rem 0;
     }
+  }
+  
+  /* Pagination Controls */
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .pagination-button {
+    padding: 0.5rem 1rem;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+  }
+  
+  .pagination-button:hover:not(:disabled) {
+    background-color: #1e88e5;
+  }
+  
+  .pagination-button:disabled {
+    background-color: #bbdefb;
+    cursor: not-allowed;
+  }
+  
+  .pagination-info {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .pagination-summary {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+  .loading-container, .error-container {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }

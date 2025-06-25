@@ -16,7 +16,6 @@ import './TeacherClass.css';
 
 const { Title, Text, Paragraph } = Typography;
 const { Search } = Input;
-const { TabPane } = Tabs;
 
 const TeacherClass = () => {
   const [classes, setClasses] = useState([]);
@@ -71,30 +70,32 @@ const TeacherClass = () => {
   const activeClasses = classes.filter(c => c.status === 'Available').length;
 
   // Menu cho các actions
-  const moreMenu = (classId) => ({
-    items: [
-      {
-        key: '1',
-        label: 'Xem chi tiết lớp học',
-        icon: <TeamOutlined />,
-      },
-      {
-        key: '2',
-        label: 'Xem giáo trình',
-        icon: <BookOutlined />,
-      },
-      {
-        key: '3',
-        label: 'Điểm danh',
-        icon: <FileTextOutlined />,
-      },
-      {
-        key: '4',
-        label: 'Báo cáo tiến độ',
-        icon: <PieChartOutlined />,
-      },
-    ],
-  });
+  const moreMenu = (classId) => {
+    return {
+      items: [
+        {
+          key: '1',
+          label: <Link to={`/teacher/classes/${classId}`}>Xem chi tiết lớp học</Link>,
+          icon: <TeamOutlined />,
+        },
+        {
+          key: '2',
+          label: <span>Xem giáo trình</span>,
+          icon: <BookOutlined />,
+        },
+        {
+          key: '3',
+          label: <Link to={`/teacher/classes/${classId}/view-all-attendance`}>Lịch sử điểm danh</Link>,
+          icon: <FileTextOutlined />,
+        },
+        {
+          key: '4',
+          label: <span>Báo cáo tiến độ</span>,
+          icon: <PieChartOutlined />,
+        },
+      ],
+    };
+  };
 
   // Render grid view
   const renderGridView = () => (
@@ -114,46 +115,48 @@ const TeacherClass = () => {
                 <TeamOutlined />
                 <Text>{classItem.quantity}/{classItem.maxChildren}</Text>
               </div>,
-              <div key="syllabus">
-                <ReadOutlined />
-                <Text>Giáo trình</Text>
-              </div>,
-              <div key="more">
-                <EllipsisOutlined />
-              </div>
+              <Link to={`/teacher/classes/${classItem.id}/check-attendance`} key="attendance">
+                <FileTextOutlined />
+                <Text>Điểm danh</Text>
+              </Link>,
+              <Dropdown menu={moreMenu(classItem.id)} trigger={['click']}>
+                <Button type="text">
+                  <EllipsisOutlined />
+                </Button>
+              </Dropdown>
             ]}
           >
-            <Link to={`/teacher/classes/${classItem.id}`} className="card-link-overlay" />
-            
-            <div className="class-content">
-              <div className="class-avatar-container">
-                <div className="class-avatar">
-                  {classItem.name.charAt(0).toUpperCase()}
-                </div>
-              </div>
-              
-              <div className="class-main-info">
-                <div className="class-name-container">
-                  <Title level={4} className="class-name">{classItem.name}</Title>
-                  <Tag color="blue" className="grade-tag">{classItem.gradeLevelName}</Tag>
+            <Link to={`/teacher/classes/${classItem.id}`} className="content-link">
+              <div className="class-content">
+                <div className="class-avatar-container">
+                  <div className="class-avatar">
+                    {classItem.name.charAt(0).toUpperCase()}
+                  </div>
                 </div>
                 
-                <div className="class-curriculum">
-                  <Text type="secondary">Giáo trình</Text>
-                  <Text className="curriculum-name" ellipsis>{classItem.syllabusName}</Text>
-                </div>
-                
-                <div className="student-count">
-                  <Text type="secondary">Sĩ số lớp</Text>
-                  <Progress 
-                    percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
-                    size="small"
-                    format={() => `${classItem.quantity}/${classItem.maxChildren}`}
-                    status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
-                  />
+                <div className="class-main-info">
+                  <div className="class-name-container">
+                    <Title level={4} className="class-name">{classItem.name}</Title>
+                    <Tag color="blue" className="grade-tag">{classItem.gradeLevelName}</Tag>
+                  </div>
+                  
+                  <div className="class-curriculum">
+                    <Text type="secondary">Giáo trình</Text>
+                    <Text className="curriculum-name" ellipsis>{classItem.syllabusName}</Text>
+                  </div>
+                  
+                  <div className="student-count">
+                    <Text type="secondary">Sĩ số lớp</Text>
+                    <Progress 
+                      percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
+                      size="small"
+                      format={() => `${classItem.quantity}/${classItem.maxChildren}`}
+                      status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </Card>
         </Col>
       ))}
@@ -164,52 +167,59 @@ const TeacherClass = () => {
   const renderListView = () => (
     <div className="class-list-view">
       {filteredClasses.map((classItem) => (
-        <Link to={`/teacher/classes/${classItem.id}`} key={classItem.id}>
-          <Card className="class-list-card" hoverable>
-            <div className="list-card-content">
-              <div className="list-card-left">
-                <Avatar size={60} className="list-avatar">
-                  {classItem.name.charAt(0).toUpperCase()}
-                </Avatar>
+        <Card className="class-list-card" key={classItem.id} hoverable>
+          <div className="list-card-content">
+            <div className="list-card-left">
+              <Avatar size={60} className="list-avatar">
+                {classItem.name.charAt(0).toUpperCase()}
+              </Avatar>
+            </div>
+            
+            <div className="list-card-middle">
+              <div className="list-card-title">
+                <Title level={4}>{classItem.name}</Title>
+                <Tag color={getStatusColor(classItem.status)}>
+                  {classItem.status}
+                </Tag>
               </div>
-              
-              <div className="list-card-middle">
-                <div className="list-card-title">
-                  <Title level={4}>{classItem.name}</Title>
-                  <Tag color={getStatusColor(classItem.status)}>
-                    {classItem.status}
+              <div className="list-card-details">
+                <Tag icon={<BookOutlined />} color="processing">
+                  {classItem.syllabusName}
+                </Tag>
+                <Tag icon={<TeamOutlined />} color="success">
+                  {classItem.quantity}/{classItem.maxChildren} học sinh
+                </Tag>
+                <Tag icon={<UserOutlined />} color="warning">
+                  {classItem.gradeLevelName}
+                </Tag>
+                {classItem.epName && (
+                  <Tag icon={<CalendarOutlined />} color="default">
+                    {classItem.epName}
                   </Tag>
-                </div>
-                <div className="list-card-details">
-                  <Tag icon={<BookOutlined />} color="processing">
-                    {classItem.syllabusName}
-                  </Tag>
-                  <Tag icon={<TeamOutlined />} color="success">
-                    {classItem.quantity}/{classItem.maxChildren} học sinh
-                  </Tag>
-                  <Tag icon={<UserOutlined />} color="warning">
-                    {classItem.gradeLevelName}
-                  </Tag>
-                  {classItem.epName && (
-                    <Tag icon={<CalendarOutlined />} color="default">
-                      {classItem.epName}
-                    </Tag>
-                  )}
-                </div>
-              </div>
-              
-              <div className="list-card-right">
-                <Progress 
-                  type="circle" 
-                  percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
-                  width={50}
-                  format={() => `${Math.round((classItem.quantity / classItem.maxChildren) * 100)}%`}
-                  status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
-                />
+                )}
               </div>
             </div>
-          </Card>
-        </Link>
+            
+            <div className="list-card-right">
+              <Progress 
+                type="circle" 
+                percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
+                width={50}
+                format={() => `${Math.round((classItem.quantity / classItem.maxChildren) * 100)}%`}
+                status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
+              />
+            </div>
+            
+            <div className="list-card-actions">
+              <Link to={`/teacher/classes/${classItem.id}`}>
+                <Button type="primary" icon={<TeamOutlined />}>Xem lớp</Button>
+              </Link>
+              <Link to={`/teacher/classes/${classItem.id}/check-attendance`}>
+                <Button icon={<FileTextOutlined />}>Điểm danh</Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
       ))}
     </div>
   );
@@ -283,6 +293,27 @@ const TeacherClass = () => {
       </Row>
     </div>
   );
+
+  // Replace Tabs with TabPane children with the items array approach
+  const tabItems = [
+    {
+      key: 'all',
+      label: 'Tất cả lớp học',
+      children: filteredClasses.length === 0 ? 
+        renderEmpty() : 
+        (viewType === 'grid' ? renderGridView() : renderListView())
+    },
+    {
+      key: 'active',
+      label: 'Lớp đang hoạt động',
+      children: null // Replace with actual content when needed
+    },
+    {
+      key: 'full',
+      label: 'Lớp đầy',
+      children: null // Replace with actual content when needed
+    }
+  ];
 
   return (
     <div className="teacher-class-container">
@@ -360,21 +391,11 @@ const TeacherClass = () => {
         <>
           {classes.length > 0 && renderDashboard()}
 
-          <Tabs defaultActiveKey="all" className="class-tabs">
-            <TabPane tab="Tất cả lớp học" key="all">
-              {filteredClasses.length === 0 ? (
-                renderEmpty()
-              ) : (
-                viewType === 'grid' ? renderGridView() : renderListView()
-              )}
-            </TabPane>
-            <TabPane tab="Lớp đang hoạt động" key="active">
-              {/* Hiển thị các lớp đang hoạt động */}
-            </TabPane>
-            <TabPane tab="Lớp đầy" key="full">
-              {/* Hiển thị các lớp đã đầy */}
-            </TabPane>
-          </Tabs>
+          <Tabs 
+            defaultActiveKey="all" 
+            className="class-tabs" 
+            items={tabItems}
+          />
         </>
       )}
     </div>

@@ -326,6 +326,16 @@
   font-weight: 600;
 }
 
+.content-link {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+.content-link:hover {
+  color: inherit;
+}
+
 @media (max-width: 992px) {
   .header-top {
     flex-direction: column;

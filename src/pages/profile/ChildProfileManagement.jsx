@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getChildrenByParentId, addChild, updateChild, deleteChild } from './ChildProfileService';
+import ChildCommunicationBook from './ChildCommunicationBook';
 import { useUser } from '../../contexts/UserContext';
 import './ProfilePage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,6 +33,10 @@ const ChildProfileManagement = () => {
 
   // Add this new state at the top of the component with other state declarations
   const [enrollmentError, setEnrollmentError] = useState({ show: false, childName: '' });
+
+  // Thêm state cho sổ liên lạc
+  const [communicationBookOpen, setCommunicationBookOpen] = useState(false);
+  const [selectedChildId, setSelectedChildId] = useState(null);
 
   useEffect(() => {
     fetchChildren();
@@ -287,6 +292,18 @@ const ChildProfileManagement = () => {
     reader.readAsDataURL(file);
   };
 
+  // Hàm mở sổ liên lạc
+  const openCommunicationBook = (childId) => {
+    setSelectedChildId(childId);
+    setCommunicationBookOpen(true);
+  };
+
+  // Hàm đóng sổ liên lạc
+  const closeCommunicationBook = () => {
+    setCommunicationBookOpen(false);
+    setSelectedChildId(null);
+  };
+
   if (isLoading && !children.length) {
     return (
       <div className="profile-loading-container">
@@ -375,28 +392,43 @@ const ChildProfileManagement = () => {
                   >
                     <FontAwesomeIcon icon="edit" />
                   </button>
-                  <button
-                    className="delete-child-btn"
-                    onClick={() => handleDeleteChild(child.id, child.name)}
-                    title="Xóa thông tin"
-                    aria-label="Xóa thông tin"
-                  >
-                    <FontAwesomeIcon icon="trash" />
-                  </button>
-                  <button
-                    className="enroll-child-btn"
-                    onClick={() => {
-                      if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
-                        setEnrollmentError({ show: true, childName: child.name });
-                      } else {
-                        window.location.href = `/enrollment-application/${child.id}`;
-                      }
-                    }}
-                    title="Nhập học"
-                    aria-label="Nhập học"
-                  >
-                    <FontAwesomeIcon icon="graduation-cap" />
-                  </button>
+                  
+                  {/* Chỉ hiển thị nút sổ liên lạc khi học sinh đang học (Active) */}
+                  {child.status === 'Active' && (
+                    <button
+                      className="communication-book-btn"
+                      onClick={() => openCommunicationBook(child.id)}
+                      title="Sổ liên lạc"
+                      aria-label="Sổ liên lạc"
+                    >
+                      <FontAwesomeIcon icon="book" />
+                    </button>
+                  )}
+                  
+                  {child.status === 'Active' ? (
+                    <span 
+                      className="enrolled-badge"
+                      title="Đã nhập học"
+                    >
+                      <FontAwesomeIcon icon="check-circle" />
+                      <span>Đã nhập học</span>
+                    </span>
+                  ) : (
+                    <button
+                      className="enroll-child-btn"
+                      onClick={() => {
+                        if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
+                          setEnrollmentError({ show: true, childName: child.name });
+                        } else {
+                          window.location.href = `/enrollment-application/${child.id}`;
+                        }
+                      }}
+                      title="Nhập học"
+                      aria-label="Nhập học"
+                    >
+                      <FontAwesomeIcon icon="graduation-cap" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -653,6 +685,13 @@ const ChildProfileManagement = () => {
           </div>
         </div>
       )}
+
+      {/* Thêm Component Sổ Liên Lạc */}
+      <ChildCommunicationBook
+        isOpen={communicationBookOpen}
+        onClose={closeCommunicationBook}
+        childId={selectedChildId}
+      />
     </div>
   );
 };

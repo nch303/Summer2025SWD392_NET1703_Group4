@@ -29,3 +29,33 @@ code {
   background-color: #3b82f6;
   color: white;
 }
+
+/* Bỏ lớp mask cho tất cả Modals */
+.ant-modal-mask {
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+}
+
+/* Tăng shadow cho modal để nó nổi bật hơn khi không có mask */
+.ant-modal-content {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Z-index cho modal luôn hiển thị trên cùng */
+.ant-modal-wrap {
+  z-index: 1050 !important;
+}
+
+/* Tăng z-index cho dropdowns, tooltips để không bị trùng với modal */
+.ant-dropdown {
+  z-index: 1100 !important;
+}
+
+.ant-tooltip {
+  z-index: 1100 !important;
+}
+
+.ant-picker-dropdown {
+  z-index: 1100 !important;
+}

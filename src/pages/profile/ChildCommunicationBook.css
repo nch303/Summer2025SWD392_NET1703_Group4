@@ -1,0 +1,1203 @@
+/* ChildCommunicationBook.css */
+:root {
+  --primary-color: #ff7043;
+  --primary-color-dark: #f4511e;
+  --primary-color-light: #ffccbc;
+  --primary-rgb: 255, 112, 67;
+
+  --accent-color: #5c6bc0;
+  --accent-color-light: #d1c4e9;
+  --accent-rgb: 92, 107, 192;
+
+  --success-color: #4caf50;
+  --success-color-light: #e8f5e9;
+  --success-rgb: 76, 175, 80;
+
+  --warning-color: #ffb300;
+  --warning-color-light: #fff8e1;
+  --warning-rgb: 255, 179, 0;
+
+  --danger-color: #f44336;
+  --danger-color-light: #ffebee;
+  --danger-rgb: 244, 67, 54;
+  
+  --info-color: #2196f3;
+  --info-color-light: #e3f2fd;
+  --info-rgb: 33, 150, 243;
+
+  --text-color: #37474f;
+  --text-color-dark: #263238;
+  --text-color-muted: #607d8b;
+
+  --card-bg-color: #ffffff;
+  --card-border-color: #eceff1;
+
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+}
+
+/* Communication Book Modal */
+.communication-book-modal {
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f8fafc;
+}
+
+.communication-book-modal .modal-header {
+  background: linear-gradient(135deg, #ff8a65 0%, #ff7043 100%);
+  padding: 1.5rem;
+}
+
+.communication-book-modal .modal-header h3 {
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+/* Tab Navigation - Fixed Size Version */
+.communication-book-tabs {
+  display: flex;
+  background-color: #ff7043; /* Thay đổi nền sang màu cam như header */
+  border-bottom: none;
+  padding: 0;
+  position: relative;
+  scrollbar-width: none; /* Firefox */
+}
+
+.communication-book-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* Xóa indicator trượt cũ */
+.communication-book-tabs::after {
+  display: none;
+}
+
+.communication-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25%; /* Chia đều 4 tab (25% cho mỗi tab) */
+  min-width: 150px; /* Độ rộng tối thiểu đảm bảo nội dung hiển thị đẹp */
+  height: 56px; /* Chiều cao cố định */
+  padding: 0 8px;
+  color: rgba(255, 255, 255, 0.85); /* Màu chữ trắng hơi trong suốt */
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  position: relative;
+  flex: none; /* Không co giãn theo flex */
+  border-bottom: 4px solid transparent;
+  text-align: center;
+}
+
+.communication-tab svg {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Active tab styling */
+.communication-tab.active {
+  color: #ffffff;
+  font-weight: 600;
+  border-bottom: 4px solid #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.communication-tab.active svg {
+  color: #ffffff;
+}
+
+/* Hover effects */
+.communication-tab:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .communication-tab {
+    min-width: 120px;
+    font-size: 0.85rem;
+    height: 50px;
+  }
+}
+
+/* Hiển thị chỉ biểu tượng trên màn hình rất nhỏ */
+@media (max-width: 480px) {
+  .communication-tab {
+    width: 25%; /* Vẫn giữ kích thước cố định */
+    min-width: 60px;
+    padding: 0;
+  }
+  
+  .communication-tab span {
+    display: none;
+  }
+  
+  .communication-tab svg {
+    margin-right: 0;
+  }
+}
+
+/* Tab content transition */
+.communication-tab-panel {
+  animation: fadeIn 0.4s ease-out;
+  padding: 0;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading State */
+.communication-book-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.communication-book-loading p {
+  margin-top: 1rem;
+  color: var(--text-color-muted);
+}
+
+/* Error State */
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.error-message svg {
+  font-size: 3rem;
+  color: var(--danger-color);
+  margin-bottom: 1rem;
+}
+
+.error-message p {
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+/* Content Container */
+.communication-book-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+/* Tab Panel */
+.communication-tab-panel {
+  padding: 1.5rem;
+}
+
+/* Child Header Information */
+.communication-book-header {
+  display: flex;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.communication-book-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+  background-color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 4px solid #fff;
+}
+
+.communication-book-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.communication-book-avatar svg {
+  font-size: 3rem;
+  color: var(--accent-color);
+}
+
+.communication-book-header-info {
+  flex: 1;
+}
+
+.communication-book-header-info h2 {
+  margin: 0 0 1rem;
+  font-size: 1.8rem;
+  color: var(--text-color-dark);
+}
+
+.communication-book-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Badges */
+.gender-badge, .age-badge, .city-badge, .status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.gender-badge svg, .age-badge svg, .city-badge svg, .status-badge svg {
+  margin-right: 6px;
+}
+
+.gender-badge.male {
+  background-color: rgba(66, 153, 225, 0.1);
+  color: #3182ce;
+}
+
+.gender-badge.female {
+  background-color: rgba(236, 72, 153, 0.1);
+  color: #db2777;
+}
+
+.age-badge {
+  background-color: rgba(var(--warning-rgb), 0.1);
+  color: var(--warning-color);
+}
+
+.city-badge {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+}
+
+.status-badge {
+  background-color: rgba(var(--text-color-muted), 0.1);
+  color: var(--text-color-muted);
+}
+
+.status-badge.active {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success-color);
+}
+
+.status-badge.inactive {
+  background-color: rgba(var(--danger-rgb), 0.1);
+  color: var(--danger-color);
+}
+
+/* Section Styling */
+.communication-book-section {
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.communication-book-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 5px;
+  background: linear-gradient(to bottom, var(--primary-color), rgba(var(--primary-rgb), 0.3));
+  border-radius: 10px 0 0 10px;
+}
+
+.communication-book-section h4 {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  color: var(--text-color-dark);
+  margin: 0 0 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.communication-book-section h4 svg {
+  margin-right: 10px;
+  color: var(--primary-color);
+}
+
+/* New Info Display Style */
+.communication-book-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  border-left: 3px solid transparent;
+}
+
+.info-item:nth-child(odd) {
+  background-color: #f8fafc;
+}
+
+.info-item:hover {
+  border-left: 3px solid var(--primary-color);
+}
+
+.info-item.highlight {
+  background-color: rgba(var(--accent-rgb), 0.05);
+}
+
+.info-item::before {
+  display: none;
+}
+
+.info-label {
+  flex: 0 0 30%;
+  padding: 0.85rem 1rem;
+  margin: 0;
+  background-color: rgba(var(--primary-rgb), 0.08);
+  border-right: 1px solid #e2e8f0;
+  color: var(--text-color-dark);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.info-label i,
+.info-label svg {
+  margin-right: 8px;
+  color: var(--primary-color);
+  width: 16px;
+  height: 16px;
+}
+
+.info-value {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  font-weight: 500;
+  color: var(--text-color-dark);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-word;
+  padding-left: 1rem;
+}
+
+.info-value::before {
+  display: none;
+}
+
+/* Status-specific styling */
+.status-text {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  color: var(--success-color);
+  background-color: rgba(var(--success-rgb), 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.status-text svg {
+  margin-right: 5px;
+}
+
+/* Class Container */
+.class-info-container {
+  background-color: #fff;
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Class Information Section Styling */
+.class-info-container {
+  background-color: #f8fafc;
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.class-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.class-info-name h3 {
+  margin: 0 0 5px;
+  font-size: 1.4rem;
+  color: var(--text-color-dark);
+}
+
+.class-grade-level {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.class-status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 20px;
+}
+
+/* Class Capacity Bar */
+.class-capacity {
+  margin-top: 1.5rem;
+}
+
+.capacity-bar {
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.capacity-filled {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-color-light), var(--accent-color));
+  border-radius: 4px;
+}
+
+.capacity-text {
+  font-size: 0.85rem;
+  color: var(--text-color-muted);
+  text-align: right;
+}
+
+/* Teachers List */
+.teachers-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.teacher-card {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.teacher-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color-light) 0%, var(--primary-color) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  color: white;
+}
+
+.teacher-info {
+  flex: 1;
+}
+
+.teacher-info h5 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: var(--text-color-dark);
+}
+
+.teacher-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.teacher-email, .teacher-phone {
+  display: flex;
+  align-items: center;
+  color: var(--text-color-muted);
+}
+
+.teacher-email svg, .teacher-phone svg {
+  margin-right: 6px;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+}
+
+.no-teachers-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  color: var(--text-color-muted);
+  font-size: 1rem;
+}
+
+.no-teachers-message svg {
+  margin-right: 8px;
+  color: var(--warning-color);
+}
+
+/* Attendance Records */
+.attendance-records {
+  margin-top: 1rem;
+}
+
+.attendance-month {
+  margin-bottom: 1.5rem;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  color: var(--text-color-dark);
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.month-header svg {
+  margin-right: 8px;
+  color: var(--primary-color);
+}
+
+.attendance-table {
+  overflow-x: auto;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.attendance-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.attendance-table th {
+  background-color: rgba(var(--primary-rgb), 0.08);
+  color: var(--text-color-dark);
+  font-size: 0.9rem;
+  border-bottom: 2px solid rgba(var(--primary-rgb), 0.2);
+}
+
+.attendance-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.attendance-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.attendance-table tr:hover td {
+  background-color: rgba(var(--primary-rgb), 0.03);
+}
+
+.attendance-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.attendance-status.attend {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success-color);
+}
+
+.attendance-status.absent {
+  background-color: rgba(var(--danger-rgb), 0.1);
+  color: var(--danger-color);
+}
+
+.attendance-status.late {
+  background-color: rgba(var(--warning-rgb), 0.1);
+  color: var(--warning-color);
+}
+
+.attendance-attend {
+  background-color: #f0fdf4;
+}
+
+.attendance-absent {
+  background-color: #fef2f2;
+}
+
+.attendance-late {
+  background-color: #fffbeb;
+}
+
+.no-attendance-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  color: var(--text-color-muted);
+  font-size: 1rem;
+}
+
+.no-attendance-message svg {
+  margin-right: 8px;
+  color: var(--warning-color);
+}
+
+/* Attendance Legend */
+.attendance-summary {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid #f1f5f9;
+}
+
+.attendance-legend {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.legend-color.attend {
+  background-color: rgba(var(--success-rgb), 0.5);
+}
+
+.legend-color.absent {
+  background-color: rgba(var(--danger-rgb), 0.5);
+}
+
+.legend-color.late {
+  background-color: rgba(var(--warning-rgb), 0.5);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .communication-book-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .communication-book-avatar {
+    margin: 0 0 1.5rem;
+  }
+
+  .communication-book-badges {
+    justify-content: center;
+  }
+
+  .communication-book-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teachers-list {
+    grid-template-columns: 1fr;
+  }
+
+  .communication-book-tabs {
+    padding: 0;
+    justify-content: flex-start;
+  }
+  
+  .communication-tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    flex: 0 0 auto;
+    max-width: none;
+  }
+  
+  .communication-tab svg {
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Only show icons on very small screens */
+  @media (max-width: 480px) {
+    .communication-tab {
+      padding: 0.75rem;
+    }
+    
+    .communication-tab span {
+      display: none;
+    }
+    
+    .communication-tab svg {
+      margin-right: 0;
+    }
+    
+    .communication-tab.active svg {
+      transform: scale(1.2);
+    }
+  }
+
+  .class-info-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .attendance-legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .info-item {
+    padding: 0.85rem;
+  }
+  
+  .info-value {
+    font-size: 1rem;
+  }
+
+  .info-label {
+    flex: 0 0 40%;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .info-item {
+    flex-direction: column;
+  }
+  
+  .info-label {
+    flex: 0 0 auto;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.6rem 1rem;
+    justify-content: center;
+  }
+  
+  .info-value {
+    padding: 0.6rem 1rem;
+    text-align: center;
+  }
+}
+
+/* Add indicator for horizontal scrolling on tabs */
+.communication-book-tabs::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  background: linear-gradient(to right, rgba(255,255,255,0), #ffffff);
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.communication-book-tabs.has-overflow::before {
+  opacity: 1;
+}
+
+/* Birth Certificate */
+.birth-certificate-container {
+  position: relative;
+  max-width: 280px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  margin: 1rem auto;
+  border: none;
+  outline: 2px solid rgba(var(--primary-rgb), 0.2);
+}
+
+.birth-certificate-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+  max-height: 200px; /* Giới hạn chiều cao */
+  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+}
+
+.birth-certificate-container:hover .birth-certificate-img {
+  transform: scale(1.03);
+}
+
+.view-certificate-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7); /* Tối hơn một chút */
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1; /* Hiển thị luôn thay vì hover */
+}
+
+.birth-certificate-container:hover .view-certificate-overlay {
+  background: rgba(var(--primary-rgb), 0.8); /* Đổi màu khi hover */
+}
+
+.view-certificate-overlay svg {
+  margin-right: 6px;
+}
+
+/* Thêm style cho tiêu đề phần giáo viên trong lớp học */
+.teacher-section-title {
+  font-size: 1.1rem;
+  color: var(--text-color-dark);
+  margin: 1.5rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+}
+
+.teacher-section-title:before {
+  content: '\f51c'; /* FontAwesome chalkboard-teacher */
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: var(--primary-color);
+  margin-right: 8px;
+  font-size: 1rem;
+}
+
+/* Style cho phần điểm danh theo lớp */
+.class-attendance-block {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed #e2e8f0;
+}
+
+.class-attendance-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.class-attendance-title {
+  font-size: 1.1rem;
+  color: var(--text-color-dark);
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(var(--primary-rgb), 0.08);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+}
+
+.class-attendance-title svg {
+  margin-right: 8px;
+  color: var(--primary-color);
+}
+
+/* Tạo card summary ở đầu mỗi tab */
+.summary-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 5px solid var(--primary-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card h5 {
+  font-size: 1.1rem;
+  color: var(--text-color-dark);
+  margin: 0 0 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.summary-card h5 svg {
+  margin-right: 8px;
+  color: var(--primary-color);
+}
+
+.summary-card p {
+  color: var(--text-color-muted);
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Tạo Style cho điểm danh */
+.attendance-statistics {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.attendance-stat-card {
+  flex: 1;
+  background-color: #fff;
+  border-radius: var(--border-radius-sm);
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-attend .stat-number {
+  color: var(--success-color);
+}
+
+.stat-absent .stat-number {
+  color: var(--danger-color);
+}
+
+.stat-late .stat-number {
+  color: var(--warning-color);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-color-muted);
+}
+
+/* Cải thiện bảng điểm danh */
+.attendance-table {
+  overflow-x: auto;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.attendance-table table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.attendance-table th {
+  background-color: rgba(var(--primary-rgb), 0.08);
+  color: var(--text-color-dark);
+  font-size: 0.9rem;
+  border-bottom: 2px solid rgba(var(--primary-rgb), 0.2);
+}
+
+.attendance-table th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.attendance-table th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.attendance-table tr:hover td {
+  background-color: rgba(var(--primary-rgb), 0.03);
+}
+
+/* Badge hiển thị tổng số */
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(var(--accent-rgb), 0.2);
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Nút liên lạc nhanh */
+.quick-contact {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1rem;
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.contact-btn svg {
+  margin-right: 6px;
+}
+
+.contact-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.contact-phone {
+  background-color: rgba(var(--success-rgb), 0.1);
+  color: var(--success-color);
+}
+
+.contact-phone:hover {
+  background-color: var(--success-color);
+}
+
+.contact-email {
+  background-color: rgba(var(--info-rgb), 0.1);
+  color: var(--info-color);
+}
+
+.contact-email:hover {
+  background-color: var(--info-color);
+}
+
+/* Cải tiến phần lớp học - panel trượt */
+.class-selector {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  scrollbar-width: thin;
+}
+
+.class-selector::-webkit-scrollbar {
+  height: 4px;
+}
+
+.class-selector::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.class-selector::-webkit-scrollbar-thumb {
+  background: var(--primary-color-light);
+  border-radius: 10px;
+}
+
+.class-card-small {
+  flex: 0 0 auto;
+  padding: 0.8rem 1.2rem;
+  background-color: #fff;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  min-width: 150px;
+  position: relative;
+}
+
+.class-card-small.active {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  border-color: var(--primary-color);
+}
+
+.class-card-small:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.class-card-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-color-dark);
+  margin-bottom: 5px;
+}
+
+.class-card-grade {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+}
+
+.class-card-grade svg {
+  margin-right: 4px;
+  font-size: 0.75rem;
+}

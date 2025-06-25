@@ -17,6 +17,7 @@ import {
   BarChartOutlined,
   ReadOutlined,
   FileProtectOutlined,
+  DollarOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../contexts/UserContext';
 import Navbar from '../components/navbar/Navbar';
@@ -65,6 +66,11 @@ const AdminLayout = () => {
       key: '/admin/reports',
       icon: <BarChartOutlined />,
       label: 'Reports',
+    },
+    {
+      key: '/admin/tuition-fees',
+      icon: <DollarOutlined />,
+      label: 'Tuition Fees',
     },
     {
       key: '/admin/syllabus',

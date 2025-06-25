@@ -85,7 +85,12 @@ import {
   faCheckSquare,
   faChevronLeft,
   faChevronRight,
-  faReceipt
+  faReceipt,
+  faBook,
+  faChalkboard,
+  faCalendarTimes,
+  faSchool,
+  faCalendarPlus
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -177,7 +182,12 @@ library.add(
   faCheckSquare,
   faChevronLeft,
   faChevronRight,
-  faReceipt
+  faReceipt,
+  faBook,
+  faChalkboard,
+  faCalendarTimes,
+  faSchool,
+  faCalendarPlus
 );
 
 // Không cần export vì đã đăng ký vào library 

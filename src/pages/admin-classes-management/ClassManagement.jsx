@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Space, Button, Tag, Card, Input, Select, Row, Col, Typography, Spin, Modal, Descriptions, List, Avatar, Empty, Divider, Progress, Tabs, Statistic, Form, InputNumber, notification } from 'antd';
-import { SearchOutlined, PlusOutlined, ReloadOutlined, UserOutlined, BookOutlined, ScheduleOutlined, TeamOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, InfoCircleOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
-import { getAllClasses, getClassDetail, updateClass } from './ClassManagementService';
+import { Table, Space, Button, Tag, Card, Input, Select, Row, Col, Typography, Spin, Modal, Descriptions, List, Avatar, Empty, Divider, Progress, Tabs, Statistic, Form, InputNumber, notification, Badge, Alert } from 'antd';
+import { SearchOutlined, PlusOutlined, ReloadOutlined, UserOutlined, BookOutlined, ScheduleOutlined, TeamOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, StopOutlined, InfoCircleOutlined, EditOutlined, SaveOutlined, MailOutlined, PhoneOutlined, HomeOutlined, DeleteOutlined, UndoOutlined } from '@ant-design/icons';
+import { getAllClasses, getClassDetail, updateClass, getStudentDetail, getTeacherDetail, createClass, getAllSyllabi, getAllGradeLevels, getAllEnrichmentPrograms, deleteClass, restoreClass } from './ClassManagementService';
 import './ClassManagement.css';
 
 const { Title, Text } = Typography;
@@ -24,8 +24,44 @@ const ClassManagement = () => {
   const [selectedClass, setSelectedClass] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
+  // Add these states to the component
+  const [studentDetailVisible, setStudentDetailVisible] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [studentDetailLoading, setStudentDetailLoading] = useState(false);
+
+  // Add these new states to the component
+  const [teacherDetailVisible, setTeacherDetailVisible] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [teacherDetailLoading, setTeacherDetailLoading] = useState(false);
+
+  // Add these state variables near the top with other state declarations
+  const [createVisible, setCreateVisible] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createForm] = Form.useForm();
+
+  // Add these state variables
+  const [syllabi, setSyllabi] = useState([]);
+  const [gradeLevels, setGradeLevels] = useState([]);
+  const [enrichmentPrograms, setEnrichmentPrograms] = useState([]);
+  const [loadingOptions, setLoadingOptions] = useState(false);
+
+  // Add these state variables with other state declarations
+  const [gradeLevelFilter, setGradeLevelFilter] = useState('All');
+  const [enrichmentFilter, setEnrichmentFilter] = useState('All');
+
+  // Add this state for delete confirmation
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+  const [deletingClass, setDeletingClass] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // Add these states for restore confirmation
+  const [restoreConfirmVisible, setRestoreConfirmVisible] = useState(false);
+  const [restoringClass, setRestoringClass] = useState(null);
+  const [restoreLoading, setRestoreLoading] = useState(false);
+
   useEffect(() => {
     fetchClasses();
+    loadFormOptions(); // This will load grade levels and enrichment programs for filters
   }, []);
 
   // Update form when editing class changes
@@ -43,12 +79,17 @@ const ClassManagement = () => {
     try {
       setLoading(true);
       const data = await getAllClasses();
-      // Add index as temporary ID for each class
-      const classesWithIds = data.map((classItem, index) => ({
-        ...classItem,
-        id: index + 1, // Use index + 1 as a temporary ID
-      }));
-      setClasses(classesWithIds);
+      
+      // Debug log to see data structure
+      if (data.length > 0) {
+        console.log('Class data structure example:', data[0]);
+        // Log all classes and their deleted status properties
+        data.forEach(item => {
+          console.log(`Class ID: ${item.id}, Name: ${item.name}, Status: ${item.status}, isDeleted: ${item.isDeleted}`);
+        });
+      }
+      
+      setClasses(data);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch classes:', error);
@@ -59,9 +100,9 @@ const ClassManagement = () => {
   const fetchClassDetail = async (id) => {
     try {
       setDetailLoading(true);
-      // Since we're using the class object itself for detail view in this mock
-      const selectedClass = classes.find(c => c.id === id);
-      setSelectedClass(selectedClass);
+      // Call the API to get detailed class information
+      const detailData = await getClassDetail(id);
+      setSelectedClass(detailData);
       setDetailLoading(false);
     } catch (error) {
       console.error(`Failed to fetch class detail for ID ${id}:`, error);
@@ -152,10 +193,40 @@ const ClassManagement = () => {
     }
   };
 
+  // Add handler functions for the new filters
+  const handleGradeLevelFilter = (value) => {
+    setGradeLevelFilter(value);
+  };
+
+  const handleEnrichmentFilter = (value) => {
+    setEnrichmentFilter(value);
+  };
+
+  // Update the filtered classes logic to focus on IDs
   const filteredClasses = classes.filter((classItem) => {
-    const matchesSearch = classItem.name.toLowerCase().includes(searchText.toLowerCase());
+    // Name search
+    const matchesSearch = classItem.name?.toLowerCase().includes(searchText.toLowerCase());
+    
+    // Status filter
     const matchesStatus = statusFilter === 'All' || classItem.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    
+    // Grade level filter - Check multiple possible property names and handle type conversion
+    const gradeId = parseInt(gradeLevelFilter);
+    const matchesGradeLevel = 
+      gradeLevelFilter === 'All' || 
+      (classItem.gradeLevelID && parseInt(classItem.gradeLevelID) === gradeId) || 
+      (classItem.gradeLevelId && parseInt(classItem.gradeLevelId) === gradeId) ||
+      (classItem.gradeLevelName && gradeLevels.some(g => g.id === gradeId && g.name === classItem.gradeLevelName));
+    
+    // Enrichment program filter - Check multiple possible property names and handle type conversion
+    const enrichmentId = parseInt(enrichmentFilter);
+    const matchesEnrichment = 
+      enrichmentFilter === 'All' || 
+      (classItem.enrichmentProgramId && parseInt(classItem.enrichmentProgramId) === enrichmentId) || 
+      (classItem.enrichmentProgramID && parseInt(classItem.enrichmentProgramID) === enrichmentId) ||
+      (classItem.epName && enrichmentPrograms.some(e => e.id === enrichmentId && e.name === classItem.epName));
+    
+    return matchesSearch && matchesStatus && matchesGradeLevel && matchesEnrichment;
   });
 
   // Calculate summary statistics
@@ -165,11 +236,12 @@ const ClassManagement = () => {
 
   const columns = [
     {
-      title: () => <div className="column-title">ID</div>,
-      dataIndex: 'id',
-      key: 'id',
+      title: () => <div className="column-title">#</div>,
+      key: 'index',
       width: '5%',
-      sorter: (a, b) => a.id - b.id,
+      render: (_, __, index) => (
+        <div className="student-index">{index + 1}</div>
+      ),
     },
     {
       title: () => <div className="column-title">Class Name</div>,
@@ -230,8 +302,10 @@ const ClassManagement = () => {
       ),
       filters: [
         { text: 'Available', value: 'Available' },
+        { text: 'Unavailable', value: 'Unavailable' },
         { text: 'Full', value: 'Full' },
         { text: 'Closed', value: 'Closed' },
+        { text: 'Deleted', value: 'Deleted' },
       ],
       onFilter: (value, record) => record.status === value,
     },
@@ -239,27 +313,296 @@ const ClassManagement = () => {
       title: () => <div className="column-title">Actions</div>,
       key: 'actions',
       width: '20%',
-      render: (_, record) => (
-        <Space size="middle" className="action-buttons" onClick={(e) => e.stopPropagation()}>
-          <Button 
-            type="primary" 
-            icon={<FileTextOutlined />}
-            onClick={() => showClassDetail(record.id)}
-            size="middle"
-          >
-            View
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            size="middle"
-            onClick={(e) => showEditModal(record, e)}
-          >
-            Edit
-          </Button>
-        </Space>
-      ),
+      render: (_, record) => {
+        // Enhanced check for deleted status to cover all possible variations
+        const isDeleted = 
+          record.isDeleted === true || 
+          record.deleted === true || 
+          record.isDeleted === 1 ||
+          record.deleted === 1 ||
+          record.status === "Deleted" || 
+          record.Status === "Deleted";
+        
+        console.log(`Class ${record.name} (ID: ${record.id}) - isDeleted: ${isDeleted}, status: ${record.status}`);
+        
+        return (
+          <div onClick={e => e.stopPropagation()}>
+            <Space size="middle" className="action-buttons">
+              <Button 
+                type="primary" 
+                icon={<FileTextOutlined />}
+                onClick={() => showClassDetail(record.id)}
+                size="middle"
+              >
+                View
+              </Button>
+              <Button
+                icon={<EditOutlined />}
+                size="middle"
+                onClick={e => {
+                  e.stopPropagation();
+                  showEditModal(record, e);
+                }}
+              >
+                Edit
+              </Button>
+              {isDeleted ? (
+                <Button
+                  type="primary"
+                  icon={<UndoOutlined />}
+                  size="middle"
+                  onClick={e => {
+                    e.stopPropagation();
+                    console.log(`Restore button clicked for ID: ${record.id}`);
+                    showRestoreConfirm(record);
+                  }}
+                  style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
+                >
+                  Restore
+                </Button>
+              ) : (
+                <Button
+                  danger
+                  icon={<DeleteOutlined />}
+                  size="middle"
+                  onClick={e => {
+                    e.stopPropagation();
+                    showDeleteConfirm(record);
+                  }}
+                >
+                  Delete
+                </Button>
+              )}
+            </Space>
+          </div>
+        );
+      }
     },
   ];
+
+  // Add this function to fetch student details
+  const fetchStudentDetail = async (id) => {
+    try {
+      setStudentDetailLoading(true);
+      const detailData = await getStudentDetail(id);
+      setSelectedStudent(detailData);
+      setStudentDetailLoading(false);
+    } catch (error) {
+      console.error(`Failed to fetch student detail for ID ${id}:`, error);
+      setStudentDetailLoading(false);
+    }
+  };
+
+  // Add function to show student detail modal
+  const showStudentDetail = (studentId) => {
+    fetchStudentDetail(studentId);
+    setStudentDetailVisible(true);
+  };
+
+  // Add function to close the student detail modal
+  const handleStudentDetailModalClose = () => {
+    setStudentDetailVisible(false);
+    setSelectedStudent(null);
+  };
+
+  // Add function to fetch teacher details
+  const fetchTeacherDetail = async (id) => {
+    try {
+      setTeacherDetailLoading(true);
+      const detailData = await getTeacherDetail(id);
+      setSelectedTeacher(detailData);
+      setTeacherDetailLoading(false);
+    } catch (error) {
+      console.error(`Failed to fetch teacher detail for ID ${id}:`, error);
+      setTeacherDetailLoading(false);
+    }
+  };
+
+  // Add function to show teacher detail modal
+  const showTeacherDetail = (teacherId) => {
+    console.log('Showing teacher detail for ID:', teacherId);
+    fetchTeacherDetail(teacherId);
+    setTeacherDetailVisible(true);
+  };
+
+  // Add function to close the teacher detail modal
+  const handleTeacherDetailModalClose = () => {
+    setTeacherDetailVisible(false);
+    setSelectedTeacher(null);
+  };
+
+  // Add a function to load dropdown data
+  const loadFormOptions = async () => {
+    setLoadingOptions(true);
+    try {
+      const [syllabiData, gradeLevelsData, enrichmentProgramsData] = await Promise.all([
+        getAllSyllabi(),
+        getAllGradeLevels(),
+        getAllEnrichmentPrograms()
+      ]);
+      
+      setSyllabi(syllabiData);
+      setGradeLevels(gradeLevelsData);
+      setEnrichmentPrograms(enrichmentProgramsData);
+    } catch (error) {
+      console.error('Error loading form options:', error);
+      notification.error({
+        message: 'Failed to load options',
+        description: 'Unable to load form options. Please refresh and try again.'
+      });
+    } finally {
+      setLoadingOptions(false);
+    }
+  };
+
+  // Update the showCreateModal function to load data
+  const showCreateModal = () => {
+    createForm.resetFields();
+    loadFormOptions();
+    setCreateVisible(true);
+  };
+
+  const handleCreateModalClose = () => {
+    setCreateVisible(false);
+    createForm.resetFields();
+  };
+
+  const handleCreateClass = async (values) => {
+    try {
+      setCreateLoading(true);
+      await createClass(values);
+      
+      // Show success notification
+      notification.success({
+        message: 'Class Created',
+        description: `${values.name} has been successfully created.`,
+      });
+      
+      // Refresh the class list
+      fetchClasses();
+      
+      // Close modal
+      setCreateVisible(false);
+      createForm.resetFields();
+    } catch (error) {
+      console.error('Failed to create class:', error);
+      
+      // Show error notification
+      notification.error({
+        message: 'Creation Failed',
+        description: 'There was an error creating the class. Please try again.',
+      });
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
+  // Then, let's update the refresh function to properly reset filters and reload data
+  const handleRefresh = () => {
+    // Reset filters to default values
+    setSearchText('');
+    setStatusFilter('All');
+    setGradeLevelFilter('All');
+    setEnrichmentFilter('All');
+    
+    // Reload data
+    fetchClasses();
+    loadFormOptions();
+  };
+
+  // Add function to show delete confirmation modal
+  const showDeleteConfirm = (classData) => {
+    console.log('Delete confirmation called for:', classData.name);
+    setDeletingClass(classData);
+    setDeleteConfirmVisible(true);
+  };
+
+  // Add function to handle delete cancellation
+  const handleDeleteCancel = () => {
+    setDeleteConfirmVisible(false);
+    setDeletingClass(null);
+  };
+
+  // Add function to handle class deletion
+  const handleDeleteClass = async () => {
+    if (!deletingClass) return;
+    
+    try {
+      setDeleteLoading(true);
+      await deleteClass(deletingClass.id);
+      
+      // Show success notification
+      notification.success({
+        message: 'Class Deleted',
+        description: `${deletingClass.name} has been successfully deleted.`,
+      });
+      
+      // Refresh class list
+      fetchClasses();
+      
+      // Close modal
+      setDeleteConfirmVisible(false);
+      setDeletingClass(null);
+    } catch (error) {
+      console.error('Failed to delete class:', error);
+      
+      // Show error notification
+      notification.error({
+        message: 'Deletion Failed',
+        description: 'There was an error deleting the class. Please try again.',
+      });
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // Add function to show restore confirmation modal
+  const showRestoreConfirm = (classData) => {
+    console.log('Restore confirmation called for:', classData.name);
+    setRestoringClass(classData);
+    setRestoreConfirmVisible(true);
+  };
+
+  // Add function to handle restore cancellation
+  const handleRestoreCancel = () => {
+    setRestoreConfirmVisible(false);
+    setRestoringClass(null);
+  };
+
+  // Update the handleRestoreClass function to add more logging
+  const handleRestoreClass = async () => {
+    if (!restoringClass) return;
+    
+    try {
+      setRestoreLoading(true);
+      console.log(`Attempting to restore class with ID: ${restoringClass.id}`);
+      const response = await restoreClass(restoringClass.id);
+      console.log('Restore API response:', response);
+      
+      // Show success notification
+      notification.success({
+        message: 'Class Restored',
+        description: `${restoringClass.name} has been successfully restored.`,
+      });
+      
+      // Refresh class list
+      fetchClasses();
+      
+      // Close modal
+      setRestoreConfirmVisible(false);
+      setRestoringClass(null);
+    } catch (error) {
+      console.error('Failed to restore class:', error);
+      
+      // Show error notification
+      notification.error({
+        message: 'Restoration Failed',
+        description: 'There was an error restoring the class. Please try again.',
+      });
+    } finally {
+      setRestoreLoading(false);
+    }
+  };
 
   return (
     <div className="class-management-container">
@@ -313,6 +656,7 @@ const ClassManagement = () => {
             icon={<PlusOutlined />}
             className="add-button"
             size="large"
+            onClick={showCreateModal}
           >
             Add New Class
           </Button>
@@ -322,19 +666,20 @@ const ClassManagement = () => {
         
         <div className="filter-section">
           <Row gutter={[16, 16]} align="middle">
-            <Col xs={24} sm={24} md={10} lg={8}>
+            <Col xs={24} sm={24} md={12} lg={6}>
               <Input
                 placeholder="Search by class name"
                 prefix={<SearchOutlined />}
                 allowClear
+                value={searchText}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="search-input"
                 size="large"
               />
             </Col>
-            <Col xs={24} sm={12} md={8} lg={6}>
+            <Col xs={24} sm={12} md={6} lg={4}>
               <Select
-                defaultValue="All"
+                value={statusFilter}
                 style={{ width: '100%' }}
                 onChange={handleStatusFilter}
                 className="status-select"
@@ -345,22 +690,68 @@ const ClassManagement = () => {
                 <Option value="Available">
                   <CheckCircleOutlined style={{ color: 'green' }} /> Available
                 </Option>
+                <Option value="Unavailable">
+                  <CloseCircleOutlined style={{ color: 'orange' }} /> Unavailable
+                </Option>
                 <Option value="Full">
-                  <CloseCircleOutlined style={{ color: 'orange' }} /> Full
+                  <ExclamationCircleOutlined style={{ color: 'orange' }} /> Full
                 </Option>
                 <Option value="Closed">
-                  <InfoCircleOutlined style={{ color: 'red' }} /> Closed
+                  <StopOutlined style={{ color: 'red' }} /> Closed
                 </Option>
+                <Option value="Deleted">
+                  <DeleteOutlined style={{ color: 'red' }} /> Deleted
+                </Option>
+              </Select>
+            </Col>
+            <Col xs={24} sm={12} md={6} lg={4}>
+              <Select
+                value={gradeLevelFilter}
+                style={{ width: '100%' }}
+                onChange={(value) => {
+                  console.log('Selected Grade Level:', value, typeof value); // Debug log
+                  setGradeLevelFilter(value);
+                }}
+                className="grade-select"
+                size="large"
+                placeholder="Filter by grade"
+                loading={loadingOptions}
+              >
+                <Option value="All">All Grades</Option>
+                {gradeLevels.map(grade => (
+                  <Option key={grade.id} value={grade.id}>{grade.name}</Option>
+                ))}
+              </Select>
+            </Col>
+            <Col xs={24} sm={12} md={6} lg={4}>
+              <Select
+                value={enrichmentFilter}
+                style={{ width: '100%' }}
+                onChange={(value) => {
+                  console.log('Selected Enrichment:', value, typeof value); // Debug log
+                  setEnrichmentFilter(value);
+                }}
+                className="enrichment-select"
+                size="large"
+                placeholder="Filter by enrichment"
+                loading={loadingOptions}
+              >
+                <Option value="All">All Programs</Option>
+                {enrichmentPrograms.map(program => (
+                  <Option key={program.id} value={program.id}>
+                    {program.name} - {program.type}
+                  </Option>
+                ))}
               </Select>
             </Col>
             <Col xs={24} sm={12} md={6} lg={4}>
               <Button 
                 icon={<ReloadOutlined />} 
-                onClick={fetchClasses}
+                onClick={handleRefresh}
                 className="refresh-button"
                 size="large"
               >
-                Refresh
+                Reset Filters
               </Button>
             </Col>
           </Row>
@@ -471,28 +862,54 @@ const ClassManagement = () => {
                   key="teachers"
                 >
                   <div className="list-section">
-                    {selectedClass.classTeachers && selectedClass.classTeachers && selectedClass.classTeachers.length > 0 ? (
-                      <List
-                        itemLayout="horizontal"
-                        dataSource={selectedClass.classTeachers}
-                        renderItem={teacher => (
-                          <List.Item className="teacher-list-item">
-                            <List.Item.Meta
-                              avatar={<Avatar size={48} icon={<UserOutlined />} className="teacher-avatar" />}
-                              title={<Text strong>{teacher.teacherName || 'Teacher Name'}</Text>}
-                              description={
-                                <div className="teacher-details">
-                                  <Tag color="blue">{teacher.subject || 'Subject'}</Tag>
-                                  {teacher.email && <div><Text type="secondary">Email: {teacher.email}</Text></div>}
-                                </div>
-                              }
-                            />
-                          </List.Item>
-                        )}
-                      />
+                    {selectedClass.classTeachers && selectedClass.classTeachers.length > 0 ? (
+                      <div className="teachers-grid">
+                        {selectedClass.classTeachers.map(teacher => (
+                          <Card 
+                            key={teacher.teacherID} 
+                            className="teacher-card" 
+                            hoverable
+                            onClick={() => showTeacherDetail(teacher.teacherID)}
+                          >
+                            <div className="teacher-card-content">
+                              <div className="teacher-avatar-container">
+                                <Avatar 
+                                  size={70} 
+                                  src={teacher.avatar || null}
+                                  icon={!teacher.avatar ? <UserOutlined /> : null} 
+                                  className="teacher-avatar" 
+                                />
+                                <Tag color="blue" className="teacher-tag">
+                                  Teacher
+                                </Tag>
+                              </div>
+                              <div className="teacher-info">
+                                <Title level={5} className="teacher-name">{teacher.teacherName}</Title>
+                                <Button
+                                  type="primary"
+                                  size="small"
+                                  icon={<FileTextOutlined />}
+                                  className="view-teacher-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    showTeacherDetail(teacher.teacherID);
+                                  }}
+                                >
+                                  View Profile
+                                </Button>
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
                     ) : (
                       <Empty 
-                        description="No teachers assigned to this class" 
+                        description={
+                          <div className="empty-message">
+                            <Title level={5}>No Teachers Assigned</Title>
+                            <Text type="secondary">This class doesn't have any teachers assigned yet.</Text>
+                          </div>
+                        }
                         image={Empty.PRESENTED_IMAGE_SIMPLE} 
                         className="empty-data"
                       />
@@ -503,37 +920,73 @@ const ClassManagement = () => {
                 <TabPane 
                   tab={
                     <span>
-                      <UserOutlined /> Students
+                      <UserOutlined /> Students ({selectedClass.quantity || 0})
                     </span>
                   } 
                   key="students"
                 >
                   <div className="list-section">
-                    {selectedClass.classChildrens && selectedClass.classChildrens && selectedClass.classChildrens.length > 0 ? (
-                      <List
-                        itemLayout="horizontal"
-                        dataSource={selectedClass.classChildrens}
-                        renderItem={student => (
-                          <List.Item className="student-list-item">
-                            <List.Item.Meta
-                              avatar={<Avatar size={48} icon={<UserOutlined />} className="student-avatar" />}
-                              title={<Text strong>{student.childName || 'Student Name'}</Text>}
-                              description={
-                                <div className="student-details">
-                                  {student.enrollmentDate && (
-                                    <div>
-                                      <ScheduleOutlined /> <Text type="secondary">Enrolled: {student.enrollmentDate}</Text>
-                                    </div>
-                                  )}
+                    {selectedClass.classChildrens && selectedClass.classChildrens.length > 0 ? (
+                      <>
+                        <div className="student-header">
+                          <Title level={5}>Enrolled Students</Title>
+                          <Badge 
+                            count={selectedClass.classChildrens.length} 
+                            style={{ backgroundColor: '#52c41a' }} 
+                          />
+                        </div>
+                        
+                        <div className="students-grid">
+                          {selectedClass.classChildrens.map((student, index) => (
+                            <Card 
+                              key={student.childrenID}
+                              className="student-card" 
+                              hoverable
+                              onClick={() => showStudentDetail(student.childrenID)}
+                            >
+                              <div className="student-number">{index + 1}</div>
+                              <div className="student-card-inner">
+                                <Avatar 
+                                  size={60} 
+                                  src={student.avatar && student.avatar !== "string" ? student.avatar : null}
+                                  icon={!student.avatar || student.avatar === "string" ? <UserOutlined /> : null} 
+                                  className={`student-avatar ${student.gender?.toLowerCase() === "female" ? "female-avatar" : "male-avatar"}`}
+                                />
+                                <div className="student-card-details">
+                                  <Text strong className="student-card-name">{student.childrenName}</Text>
+                                  <div className="student-card-badges">
+                                    {student.gender && student.gender !== "string" && (
+                                      <Tag color={student.gender.toLowerCase() === "female" ? "pink" : "blue"} className="gender-tag">
+                                        {student.gender}
+                                      </Tag>
+                                    )}
+                                    <Button 
+                                      type="primary" 
+                                      size="small" 
+                                      icon={<FileTextOutlined />}
+                                      className="view-details-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        showStudentDetail(student.childrenID);
+                                      }}
+                                    >
+                                      Details
+                                    </Button>
+                                  </div>
                                 </div>
-                              }
-                            />
-                          </List.Item>
-                        )}
-                      />
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+                      </>
                     ) : (
                       <Empty 
-                        description="No students enrolled in this class" 
+                        description={
+                          <div className="empty-message">
+                            <Title level={5}>No Students Enrolled</Title>
+                            <Text type="secondary">This class doesn't have any students enrolled yet.</Text>
+                          </div>
+                        }
                         image={Empty.PRESENTED_IMAGE_SIMPLE} 
                         className="empty-data"
                       />
@@ -690,6 +1143,444 @@ const ClassManagement = () => {
             </>
           )}
         </div>
+      </Modal>
+
+      {/* Student Detail Modal */}
+      <Modal
+        title={
+          <div className="modal-title">
+            <UserOutlined className="modal-icon" />
+            <span>Student Details</span>
+          </div>
+        }
+        open={studentDetailVisible}
+        onCancel={handleStudentDetailModalClose}
+        width={700}
+        className="student-detail-modal"
+        footer={[
+          <Button key="close" onClick={handleStudentDetailModalClose} size="large">
+            Close
+          </Button>
+        ]}
+      >
+        <Spin spinning={studentDetailLoading}>
+          {selectedStudent && (
+            <div className="student-detail-content">
+              <Row gutter={[24, 24]}>
+                <Col xs={24} md={8}>
+                  <div className="student-profile-photo">
+                    <Avatar 
+                      size={150} 
+                      src={selectedStudent.avatar && selectedStudent.avatar !== "string" ? selectedStudent.avatar : null}
+                      icon={!selectedStudent.avatar || selectedStudent.avatar === "string" ? <UserOutlined /> : null} 
+                      className="big-avatar"
+                    />
+                    <div className="student-name-tag">
+                      <Text strong>{selectedStudent.name}</Text>
+                    </div>
+                    <div className="student-tags">
+                      <Tag color={selectedStudent.gender?.toLowerCase() === "female" ? "pink" : "blue"} className="gender-tag-large">
+                        {selectedStudent.gender || 'Unspecified'}
+                      </Tag>
+                      <Tag color={selectedStudent.status === "Active" ? "green" : "orange"} className="status-tag-large">
+                        {selectedStudent.status || 'Unknown'}
+                      </Tag>
+                    </div>
+                  </div>
+                </Col>
+                <Col xs={24} md={16}>
+                  <Card className="student-info-card" title="Personal Information">
+                    <Descriptions column={1} bordered size="small" labelStyle={{ fontWeight: 500 }}>
+                      <Descriptions.Item label="Full Name">{selectedStudent.name}</Descriptions.Item>
+                      <Descriptions.Item label="Date of Birth">
+                        {new Date(selectedStudent.birthday).toLocaleDateString()}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Gender">{selectedStudent.gender}</Descriptions.Item>
+                      <Descriptions.Item label="City">{selectedStudent.city !== "string" ? selectedStudent.city : "-"}</Descriptions.Item>
+                      <Descriptions.Item label="Class Name">{selectedClass.name || "-"}</Descriptions.Item>
+                      <Descriptions.Item label="Grade Level">
+                        {selectedStudent.gradeLevelName || selectedClass.gradeLevelName || "-"}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Enrollment Date">
+                        {selectedStudent.enrollDate !== "0001-01-01T00:00:00" ? 
+                          new Date(selectedStudent.enrollDate).toLocaleDateString() : "-"}
+                      </Descriptions.Item>
+                    </Descriptions>
+                  </Card>
+                </Col>
+              </Row>
+              
+              <Row gutter={[24, 24]} className="detail-row">
+                <Col xs={24} md={12}>
+                  <Card className="student-info-card" title="Parent Information">
+                    <Descriptions column={1} bordered size="small" labelStyle={{ fontWeight: 500 }}>
+                      <Descriptions.Item label="Parent Name">{selectedStudent.parentName}</Descriptions.Item>
+                      <Descriptions.Item label="Contact Number">{selectedStudent.phoneNumber}</Descriptions.Item>
+                    </Descriptions>
+                  </Card>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Card className="student-info-card" title="Documents">
+                    <div className="document-preview">
+                      {selectedStudent.birthCertificate && selectedStudent.birthCertificate !== "string" ? (
+                        <div className="document-item">
+                          <img 
+                            src={selectedStudent.birthCertificate} 
+                            alt="Birth Certificate" 
+                            className="document-thumbnail" 
+                            onClick={() => window.open(selectedStudent.birthCertificate, '_blank')}
+                          />
+                          <div className="document-label">Birth Certificate</div>
+                        </div>
+                      ) : (
+                        <Empty 
+                          description="No birth certificate provided" 
+                          image={Empty.PRESENTED_IMAGE_SIMPLE} 
+                        />
+                      )}
+                    </div>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          )}
+        </Spin>
+      </Modal>
+
+      {/* Teacher Detail Modal */}
+      <Modal
+        title={
+          <div className="modal-title">
+            <TeamOutlined className="modal-icon" />
+            <span>Teacher Details</span>
+          </div>
+        }
+        open={teacherDetailVisible}
+        onCancel={handleTeacherDetailModalClose}
+        width={700}
+        className="teacher-detail-modal"
+        footer={[
+          <Button key="close" onClick={handleTeacherDetailModalClose} size="large">
+            Close
+          </Button>
+        ]}
+      >
+        <Spin spinning={teacherDetailLoading}>
+          {selectedTeacher && (
+            <div className="teacher-detail-content">
+              <Row gutter={[24, 24]}>
+                <Col xs={24} md={8}>
+                  <div className="teacher-profile-photo">
+                    <Avatar 
+                      size={150} 
+                      icon={<UserOutlined />} 
+                      className="big-teacher-avatar" 
+                    />
+                    <div className="teacher-name-tag">
+                      <Text strong>{selectedTeacher.fullName}</Text>
+                    </div>
+                    <div className="teacher-tags">
+                      <Tag color="blue" className="role-tag-large">
+                        {selectedTeacher.roleName}
+                      </Tag>
+                      <Tag 
+                        color={selectedTeacher.status === "Active" ? "green" : "orange"} 
+                        className="status-tag-large"
+                      >
+                        {selectedTeacher.status}
+                      </Tag>
+                    </div>
+                  </div>
+                </Col>
+                <Col xs={24} md={16}>
+                  <Card className="teacher-info-card" title="Personal Information">
+                    <Descriptions column={1} bordered size="small" labelStyle={{ fontWeight: 500 }}>
+                      <Descriptions.Item label="Full Name">{selectedTeacher.fullName}</Descriptions.Item>
+                      <Descriptions.Item label="Email Address">{selectedTeacher.email}</Descriptions.Item>
+                      <Descriptions.Item label="Phone Number">{selectedTeacher.phoneNumber || '-'}</Descriptions.Item>
+                      <Descriptions.Item label="Address">{selectedTeacher.address || '-'}</Descriptions.Item>
+                      <Descriptions.Item label="Role">{selectedTeacher.roleName}</Descriptions.Item>
+                      <Descriptions.Item label="Status">{selectedTeacher.status}</Descriptions.Item>
+                    </Descriptions>
+                  </Card>
+                </Col>
+              </Row>
+              
+              <Row gutter={[24, 24]} className="detail-row">
+                <Col xs={24}>
+                  <Card className="class-info-card" title="Currently Teaching">
+                    <div className="current-class-info">
+                      <div className="class-icon-wrapper">
+                        <BookOutlined className="class-icon" />
+                      </div>
+                      <div className="class-details">
+                        <Text strong>{selectedClass.name}</Text>
+                        <div className="class-meta">
+                          <Tag color="cyan">{selectedClass.gradeLevelName}</Tag>
+                          <Tag color="purple">{selectedClass.syllabusName}</Tag>
+                          <Tag color="green">
+                            {selectedClass.quantity} Students
+                          </Tag>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          )}
+        </Spin>
+      </Modal>
+
+      {/* Create Class Modal */}
+      <Modal
+        title={
+          <div className="modal-title">
+            <PlusOutlined className="modal-icon" />
+            <span>Create New Class</span>
+          </div>
+        }
+        open={createVisible}
+        onCancel={handleCreateModalClose}
+        footer={null}
+        width={600}
+        className="create-class-modal"
+        maskClosable={false}
+        destroyOnClose={true}
+      >
+        <div className="create-class-content">
+          <Spin spinning={loadingOptions}>
+            <Form
+              form={createForm}
+              layout="vertical"
+              onFinish={handleCreateClass}
+              className="create-form"
+            >
+              <Form.Item
+                name="name"
+                label="Class Name"
+                rules={[
+                  { 
+                    required: true, 
+                    message: 'Please enter the class name!' 
+                  },
+                  {
+                    max: 100,
+                    message: 'Class name cannot exceed 100 characters!'
+                  }
+                ]}
+              >
+                <Input 
+                  placeholder="Enter class name" 
+                  className="create-input"
+                  size="large"
+                />
+              </Form.Item>
+              
+              <Form.Item
+                name="syllabusID"
+                label="Syllabus"
+                rules={[
+                  { 
+                    required: true, 
+                    message: 'Please select a syllabus!' 
+                  }
+                ]}
+              >
+                <Select
+                  placeholder="Select syllabus"
+                  size="large"
+                  className="create-select"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {syllabi.map(syllabus => (
+                    <Option key={syllabus.id} value={syllabus.id}>{syllabus.name}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              
+              <Form.Item
+                name="gradeLevelID"
+                label="Grade Level"
+                rules={[
+                  { 
+                    required: true, 
+                    message: 'Please select a grade level!' 
+                  }
+                ]}
+              >
+                <Select
+                  placeholder="Select grade level"
+                  size="large"
+                  className="create-select"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {gradeLevels.map(grade => (
+                    <Option key={grade.id} value={grade.id}>{grade.name}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              
+              <Form.Item
+                name="maxChildren"
+                label="Maximum Children"
+                rules={[
+                  { 
+                    required: true, 
+                    message: 'Please enter the maximum number of children!' 
+                  },
+                  {
+                    type: 'number',
+                    min: 1,
+                    message: 'Maximum children must be at least 1!'
+                  },
+                  {
+                    type: 'number',
+                    max: 100,
+                    message: 'Maximum children cannot exceed 100!'
+                  }
+                ]}
+              >
+                <InputNumber 
+                  placeholder="Enter maximum children" 
+                  className="create-input-number"
+                  min={1}
+                  max={100}
+                  size="large"
+                  style={{ width: '100%' }}
+                />
+              </Form.Item>
+              
+              <Form.Item
+                name="enrichmentProgramId"
+                label="Enrichment Program (Optional)"
+              >
+                <Select
+                  placeholder="Select enrichment program (optional)"
+                  size="large"
+                  className="create-select"
+                  allowClear
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Option value={0}>None</Option>
+                  {enrichmentPrograms.map(program => (
+                    <Option key={program.id} value={program.id}>
+                      {program.name} - {program.type}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              
+              <Form.Item className="form-actions">
+                <Button 
+                  type="default" 
+                  onClick={handleCreateModalClose}
+                  className="cancel-button"
+                  size="large"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="primary" 
+                  htmlType="submit"
+                  icon={<PlusOutlined />}
+                  loading={createLoading}
+                  className="save-button"
+                  size="large"
+                >
+                  Create Class
+                </Button>
+              </Form.Item>
+            </Form>
+          </Spin>
+        </div>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        title={
+          <div className="modal-title">
+            <DeleteOutlined className="modal-icon" style={{ color: '#ff4d4f' }} />
+            <span>Confirm Deletion</span>
+          </div>
+        }
+        open={deleteConfirmVisible}
+        onCancel={handleDeleteCancel}
+        footer={[
+          <Button key="cancel" onClick={handleDeleteCancel} size="large">
+            Cancel
+          </Button>,
+          <Button 
+            key="delete" 
+            type="primary" 
+            danger 
+            loading={deleteLoading}
+            onClick={handleDeleteClass}
+            size="large"
+          >
+            Delete
+          </Button>
+        ]}
+      >
+        {deletingClass && (
+          <div className="delete-confirmation-content">
+            <p>Are you sure you want to delete the class <Text strong>{deletingClass.name}</Text>?</p>
+            <p>This action cannot be undone.</p>
+            
+            {deletingClass.quantity > 0 && (
+              <Alert
+                message="Warning"
+                description={`This class currently has ${deletingClass.quantity} student(s) enrolled. Deleting this class may affect these students.`}
+                type="warning"
+                showIcon
+                style={{ marginTop: 16 }}
+              />
+            )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Restore Confirmation Modal */}
+      <Modal
+        title={
+          <div className="modal-title">
+            <UndoOutlined className="modal-icon" style={{ color: '#52c41a' }} />
+            <span>Confirm Restoration</span>
+          </div>
+        }
+        open={restoreConfirmVisible}
+        onCancel={handleRestoreCancel}
+        footer={[
+          <Button key="cancel" onClick={handleRestoreCancel} size="large">
+            Cancel
+          </Button>,
+          <Button 
+            key="restore" 
+            type="primary" 
+            loading={restoreLoading}
+            onClick={handleRestoreClass}
+            size="large"
+            style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
+          >
+            Restore
+          </Button>
+        ]}
+      >
+        {restoringClass && (
+          <div className="restore-confirmation-content">
+            <p>Are you sure you want to restore the class <Text strong>{restoringClass.name}</Text>?</p>
+            <p>The class will be available again after restoration.</p>
+          </div>
+        )}
       </Modal>
     </div>
   );
