@@ -12,7 +12,7 @@ namespace Application.DTOs.Request
         public string? Name { get; set; }
         public int SyllabusID { get; set; }
         public string? AcademicYear { get; set; }
-        public int GradeLevelID { get; set; }
+        public int? GradeLevelID { get; set; }
         public int MaxChildren { get; set; }
         public string? Timetable { get; set; }
         public int? EnrichmentProgramId { get; set; }

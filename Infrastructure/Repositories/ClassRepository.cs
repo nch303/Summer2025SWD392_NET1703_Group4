@@ -35,6 +35,10 @@ namespace Infrastructure.Repositories
             .Reference(r => r.GradeLevels)
             .LoadAsync();
 
+            await _context.Entry(room)
+            .Reference(r => r.EnrichmentPrograms)
+            .LoadAsync();
+
             return room;
         }
 
