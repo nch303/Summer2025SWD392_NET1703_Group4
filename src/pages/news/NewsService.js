@@ -1,9 +1,20 @@
 import api from '../../config/axiosConfig';
 
-// Get all news
-export const getAllNews = async () => {
+/**
+
+*Get list of news with pagination
+*@param {number} page - Current page number
+*@param {number} pageSize - Number of items per page
+*@returns {Promise} - Promise with news data
+*/
+export const getNewsList = async (page = 1, pageSize = 10) => {
   try {
-    const response = await api.get('/api/News/get-list-of-news');
+    const response = await api.get(`/api/News/get-list-of-news`, {
+      params: {
+        page,
+        pageSize
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching news:', error);
@@ -11,46 +22,32 @@ export const getAllNews = async () => {
   }
 };
 
-// Get news by ID
+/**
+*Get news detail by id
+*@param {number} id - News id
+*@returns {Promise} - Promise with news detail
+*/
 export const getNewsById = async (id) => {
+  try {
+    const response = await api.get(`/api/News/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching news with id ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+Get news detail view by id
+@param {number} id - News id
+@returns {Promise} - Promise with news detail view
+*/
+export const getNewsDetailView = async (id) => {
   try {
     const response = await api.get(`/api/News/${id}/view-news-detail`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching news with ID ${id}:`, error);
-    throw error;
-  }
-};
-
-// Create news
-export const createNews = async (newsData) => {
-  try {
-    const response = await api.post('/api/News/create-news', newsData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating news:', error);
-    throw error;
-  }
-};
-
-// Update news
-export const updateNews = async (id, newsData) => {
-  try {
-    const response = await api.put(`/api/News/update-news/${id}`, newsData);
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating news with ID ${id}:`, error);
-    throw error;
-  }
-};
-
-// Delete news
-export const deleteNews = async (id) => {
-  try {
-    const response = await api.delete(`/api/News/delete-news/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error deleting news with ID ${id}:`, error);
+    console.error(`Error fetching news detail for id ${id}:`, error);
     throw error;
   }
 };

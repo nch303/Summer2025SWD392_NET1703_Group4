@@ -166,7 +166,8 @@ function App() {
                 <EnrichmentProgram />
               </ProtectedRoute>
             } />
-            <Route path="/news" element={<AdminNews />} />
+            <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/:newsId" element={<NewsDetailPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
