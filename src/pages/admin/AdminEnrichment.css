@@ -108,9 +108,40 @@
   box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
 }
 
+/* Styling for deleted rows */
+.admin-enrichment .deleted-row {
+  background-color: #fff1f0;
+  opacity: 0.85;
+}
+
+.admin-enrichment .deleted-row:hover > td {
+  background-color: #ffebe9 !important;
+}
+
+/* Styling for restore button */
+.admin-enrichment .restore-button {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+}
+
+.admin-enrichment .restore-button:hover {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+}
+
 @media (max-width: 768px) {
   .enrichment-header {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.admin-enrichment .ant-picker-header-view {
+  flex: auto;
+  text-align: center;
+}
+
+.admin-enrichment .ant-picker-header-super-next-btn,
+.admin-enrichment .ant-picker-header-next-btn {
+  display: inline-block !important;
+  position: relative !important;
+  visibility: visible !important;
 }

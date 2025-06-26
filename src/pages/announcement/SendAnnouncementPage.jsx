@@ -366,7 +366,6 @@ const SendAnnouncementPage = () => {
         <div className="success-message">
           <FontAwesomeIcon icon="check-circle" style={{ color: '#52c41a', fontSize: '32px', marginBottom: '16px' }} />
           <p>Đã gửi thông báo thành công đến {sentCount} tài khoản!</p>
-          <p>Tiêu đề: {form.title}</p>
         </div>
       </Modal>
     </div>

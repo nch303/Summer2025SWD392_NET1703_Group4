@@ -54,3 +54,21 @@ export const deleteEnrichmentProgram = async (id) => {
     throw error;
   }
 };
+
+// Restore enrichment program
+export const restoreEnrichmentProgram = async (program) => {
+  try {
+    // Update isDelete to false
+    const updatedProgram = {
+      ...program,
+      isDelete: false
+    };
+    
+    // Send the complete updated program back to the server
+    const response = await api.put(`/api/EnrichmentProgam/${program.id}`, updatedProgram);
+    return response.data;
+  } catch (error) {
+    console.error(`Error restoring enrichment program with ID ${program.id}:`, error);
+    throw error;
+  }
+};

@@ -96,7 +96,7 @@ import {
   faFlag,
   faSpinner,
   faHouse,
-  faSchoolFlag
+  faSchoolFlag,
   faIdBadge,
   faHeading,
 } from '@fortawesome/free-solid-svg-icons';
