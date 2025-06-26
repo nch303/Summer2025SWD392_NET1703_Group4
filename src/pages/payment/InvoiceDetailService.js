@@ -12,6 +12,25 @@ export const getInvoiceDetails = async (invoiceId, signal) => {
       params: { invoiceId },
       signal // Giữ signal cho cancelation
     });
+    
+    // Modify the description to include tuitionFeeName if available
+    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+      const firstItem = response.data[0];
+      if (firstItem.description && firstItem.tuitionFeeName) {
+        // Update the first line of the description to include tuitionFeeName
+        const lines = firstItem.description.split('\n');
+        if (lines.length > 0) {
+          // Find the end of the first item name and insert tuitionFeeName before the price parenthesis
+          const firstLine = lines[0];
+          const match = firstLine.match(/^- (.+?)(\s*\(.+?\))/);
+          if (match) {
+            lines[0] = `- ${match[1]} - ${firstItem.tuitionFeeName}${match[2]}`;
+            firstItem.description = lines.join('\n');
+          }
+        }
+      }
+    }
+    
     return response.data;
   } catch (error) {
     // Không log lỗi nếu request bị cancel có chủ đích

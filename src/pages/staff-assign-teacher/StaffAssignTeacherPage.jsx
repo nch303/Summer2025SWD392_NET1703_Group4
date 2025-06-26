@@ -1,105 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Card, Table, Button, Space, Form, Select, message, 
-  Modal, Spin, Input, Typography, Tag, Row, Col, Avatar, Divider
+  Card, Button, Spin, Avatar, Tag, Typography, Input, 
+  Row, Col, message, Modal, Divider, Badge, Alert, 
+  Progress, Checkbox, Collapse, Empty, Tooltip, Drawer
 } from 'antd';
 import { 
-  UserAddOutlined, UserOutlined, InfoCircleOutlined, 
-  CheckCircleFilled, CloseCircleFilled
+  UserOutlined, InfoCircleOutlined, CheckCircleOutlined, 
+  WarningOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined
 } from '@ant-design/icons';
 import './StaffAssignTeacherPage.css';
 import { getAllTeachers, assignTeacher, getAllClasses } from './StaffAssignTeacherService';
 
 const { Title, Text } = Typography;
-const { Option } = Select;
 
 const StaffAssignTeacherPage = () => {
   const [teachers, setTeachers] = useState([]);
   const [classes, setClasses] = useState([]);
+  const [classesByGrade, setClassesByGrade] = useState({});
   const [loading, setLoading] = useState(false);
   const [assigning, setAssigning] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const [searchText, setSearchText] = useState('');
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [selectedClass, setSelectedClass] = useState(null);
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [selectedClass, setSelectedClass] = useState(null);
   const [selectedClassId, setSelectedClassId] = useState(null);
-  const [classSearchText, setClassSearchText] = useState('');
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
-  // Fetch all teachers and classes
-  const fetchData = async () => {
+  // Fetch data
+  useEffect(() => {
+    fetchClassList();
+    fetchTeacherList();
+  }, []);
+
+  const fetchClassList = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const [teachersData, classesData] = await Promise.all([
-        getAllTeachers(),
-        getAllClasses()
-      ]);
-      
-      setTeachers(teachersData || []);
-      
+      const data = await getAllClasses();
       // Filter out deleted classes
-      const activeClasses = classesData ? classesData.filter(c => c.status !== 'Deleted') : [];
+      const activeClasses = data ? data.filter(c => c.status !== 'Deleted') : [];
       setClasses(activeClasses);
-    } catch (error) {
-      message.error('Failed to fetch data');
-      console.error('Error fetching data:', error);
+      
+      // Organize classes by grade level
+      const classesByGrade = {};
+      
+      activeClasses.forEach(classItem => {
+        if (classItem.epName) {
+          // If class has an epName, put it in the "Năng khiếu" category
+          if (!classesByGrade["Năng khiếu"]) {
+            classesByGrade["Năng khiếu"] = [];
+          }
+          classesByGrade["Năng khiếu"].push(classItem);
+        } else {
+          // Regular class goes into its normal grade level
+          if (!classesByGrade[classItem.gradeLevelName]) {
+            classesByGrade[classItem.gradeLevelName] = [];
+          }
+          classesByGrade[classItem.gradeLevelName].push(classItem);
+        }
+      });
+      
+      setClassesByGrade(classesByGrade);
+    } catch (err) {
+      message.error('Failed to load class list');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Handle teacher selection
-  const handleTeacherSelect = (teacher) => {
-    setSelectedTeacher(teacher);
-    setSelectedTeacherId(teacher.id);
-  };
-
-  // Handle class selection
-  const handleClassSelect = (classData) => {
-    setSelectedClass(classData);
-    setSelectedClassId(classData.id);
-    
-    // If the class has teachers, find that teacher in the teachers list
-    if (classData.teacherNames && classData.teacherNames.length > 0) {
-      // Find the teacher object that matches the name in the class's teacherNames
-      const assignedTeacher = teachers.find(teacher => 
-        classData.teacherNames.includes(teacher.fullName)
-      );
-      
-      if (assignedTeacher) {
-        setSelectedTeacher(assignedTeacher);
-        setSelectedTeacherId(assignedTeacher.id);
-        
-        // Show a message to inform the user
-        message.info(`This class is already assigned to teacher: ${assignedTeacher.fullName}`);
-      } else {
-        // Reset teacher selection if we couldn't find the matching teacher
-        setSelectedTeacher(null);
-        setSelectedTeacherId(null);
-      }
-    } else {
-      // If no teachers assigned to the class, reset teacher selection
-      setSelectedTeacher(null);
-      setSelectedTeacherId(null);
+  const fetchTeacherList = async () => {
+    setLoading(true);
+    try {
+      const data = await getAllTeachers();
+      // Filter to only active teachers
+      const activeTeachers = data ? data.filter(teacher => teacher.status === 'Active') : [];
+      setTeachers(activeTeachers);
+      setFilteredTeachers(activeTeachers);
+    } catch (err) {
+      message.error('Failed to load teacher list');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Show teacher details modal
-  const showTeacherDetail = (teacher) => {
-    setSelectedTeacher(teacher);
-    setDetailModalVisible(true);
+  // Select a class and open teacher drawer
+  const handleClassSelect = (classInfo) => {
+    setSelectedClassId(classInfo.id);
+    setSelectedClass(classInfo);
+    setSelectedTeacher(null);
+    setSelectedTeacherId(null);
+    
+    // Filter teachers if needed (in this case we don't filter by criteria)
+    setFilteredTeachers(teachers);
+    
+    // Open the drawer to show teachers
+    setDrawerVisible(true);
   };
 
-  // Handle assignment submission
+  // Toggle teacher selection
+  const handleTeacherSelect = (teacher) => {
+    if (selectedTeacherId === teacher.id) {
+      // Deselect if already selected
+      setSelectedTeacher(null);
+      setSelectedTeacherId(null);
+    } else {
+      setSelectedTeacher(teacher);
+      setSelectedTeacherId(teacher.id);
+    }
+  };
+
+  // Handle the assignment process
   const handleAssign = async () => {
     if (!selectedClassId || !selectedTeacherId) {
-      message.error('Please select both a class and a teacher');
+      message.error('Please select a class and a teacher');
       return;
     }
     
@@ -108,284 +122,323 @@ const StaffAssignTeacherPage = () => {
     
     setAssigning(true);
     try {
-      // Show loading message
       const loadingMessage = message.loading(`Assigning ${teacherName} to ${className}...`, 0);
       
-      // Send only the essential data in the format the API expects
       const assignData = {
-        classId: selectedClassId,  // Don't parse as integer, send as is
+        classId: selectedClassId,
         teacherId: selectedTeacherId
       };
       
-      console.log('Sending assignment data:', assignData);
+      await assignTeacher(assignData);
       
-      const response = await assignTeacher(assignData);
-      
-      // Close loading message
       loadingMessage();
       
-      // Success message
-      message.success({
-        content: `Teacher "${teacherName}" successfully assigned to class "${className}"!`,
+      // Show success notification
+      notification.success({
+        message: 'Assignment Successful',
+        description: `Teacher "${teacherName}" successfully assigned to class "${className}"!`,
+        placement: 'topRight',
         duration: 5,
-        icon: <CheckCircleFilled style={{ color: '#52c41a' }} />
+        icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+        className: 'teacher-assignment-success-notification',
+        style: {
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          borderRadius: '8px',
+        }
       });
       
-      // Reset selections and refresh data
+      // Reset UI state
       setSelectedTeacher(null);
       setSelectedTeacherId(null);
       setSelectedClass(null);
       setSelectedClassId(null);
-      fetchData();
+      setDrawerVisible(false);
       
-    } catch (error) {
-      console.error('Assignment error:', error);
-      message.error({
-        content: `Failed to assign teacher: ${error.message || 'Unknown error'}`,
+      // Refresh data
+      await fetchClassList();
+      await fetchTeacherList();
+      
+    } catch (err) {
+      console.error('Assignment error:', err);
+      
+      notification.error({
+        message: 'Assignment Failed',
+        description: `Failed to assign teacher: ${err.message || 'Unknown error'}`,
+        placement: 'topRight',
         duration: 5,
-        icon: <CloseCircleFilled style={{ color: '#ff4d4f' }} />
       });
     } finally {
       setAssigning(false);
     }
   };
 
-  // Filter teachers based on search text
-  const filteredTeachers = teachers.filter(
-    (teacher) =>
-      teacher.fullName?.toLowerCase().includes(searchText.toLowerCase()) ||
-      teacher.email?.toLowerCase().includes(searchText.toLowerCase()) ||
-      teacher.phoneNumber?.includes(searchText)
-  );
+  // Show teacher details in modal
+  const showTeacherDetail = (teacher) => {
+    setSelectedTeacher(teacher);
+    setDetailModalVisible(true);
+  };
 
-  // Add a filtered classes function similar to filtered teachers
-  const filteredClasses = classes.filter(
-    (classItem) =>
-      classItem.name?.toLowerCase().includes(classSearchText.toLowerCase()) ||
-      classItem.syllabusName?.toLowerCase().includes(classSearchText.toLowerCase()) ||
-      classItem.gradeLevelName?.toLowerCase().includes(classSearchText.toLowerCase()) ||
-      classItem.academicYear?.toLowerCase().includes(classSearchText.toLowerCase())
-  );
+  const closeDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedClassId(null);
+    setSelectedClass(null);
+    setSelectedTeacher(null);
+    setSelectedTeacherId(null);
+  };
 
-  // Class table columns
-  const classColumns = [
-    {
-      title: 'Class Information',
-      key: 'info',
-      render: (record) => (
-        <div className="class-info">
-          <div className="class-name">{record.name}</div>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Text strong>Grade Level:</Text> {record.gradeLevelName}
-            </Col>
-            <Col span={12}>
-              <Text strong>Status:</Text>{' '}
-              <Tag color={record.status === 'Available' ? 'green' : 'orange'}>
-                {record.status || 'Unknown'}
-              </Tag>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Text strong>Syllabus:</Text> {record.syllabusName}
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Text strong>Current/Max:</Text> {record.quantity}/{record.maxChildren} students
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Text strong>Teachers:</Text>{' '}
-              {record.teacherNames && record.teacherNames.length > 0 
-                ? record.teacherNames.map(name => (
-                    <Tag color="blue" key={name}>{name}</Tag>
-                  ))
-                : <Text type="secondary">No teachers assigned</Text>
-              }
-            </Col>
-          </Row>
-        </div>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      width: '120px',
-      render: (_, record) => (
-        <Button 
-          type="primary" 
-          onClick={() => handleClassSelect(record)}
-          disabled={selectedClassId === record.id}
-          className={selectedClassId === record.id ? 'selected-button' : ''}
-        >
-          {selectedClassId === record.id ? 'Selected' : 'Select'}
-        </Button>
-      ),
-    },
-  ];
-
-  // Teacher table columns
-  const teacherColumns = [
-    {
-      title: '',
-      key: 'avatar',
-      width: '80px',
-      render: () => (
-        <Avatar
-          icon={<UserOutlined />}
-          size={64}
-          className="teacher-avatar"
-        />
-      ),
-    },
-    {
-      title: 'Teacher Information',
-      key: 'info',
-      render: (record) => (
-        <div className="teacher-info">
-          <div className="teacher-name">{record.fullName}</div>
-          <div>
-            <Text strong>Email:</Text> {record.email}
-          </div>
-          <div>
-            <Text strong>Phone:</Text> {record.phoneNumber}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      width: '180px',
-      render: (_, record) => {
-        const isSelected = selectedTeacherId === record.id;
-        const isAssignedToClass = selectedClass && 
-                                 selectedClass.teacherNames && 
-                                 selectedClass.teacherNames.includes(record.fullName);
+  const searchTeachers = (value) => {
+    setSearchText(value);
+    if (!value) {
+      setFilteredTeachers(teachers);
+      return;
+    }
+    
+    const filtered = teachers.filter(
+      teacher => 
+        teacher.fullName?.toLowerCase().includes(value.toLowerCase()) ||
+        teacher.email?.toLowerCase().includes(value.toLowerCase()) ||
+        teacher.phoneNumber?.includes(value)
+    );
+    
+    setFilteredTeachers(filtered);
+  };
         
         return (
-          <div className="action-buttons">
-            <Button 
-              type="default"
-              icon={<InfoCircleOutlined />}
-              onClick={() => showTeacherDetail(record)}
-              className="detail-button"
-            >
-              Detail
-            </Button>
-            <Button 
-              type={isSelected || isAssignedToClass ? 'default' : 'primary'}
-              onClick={() => {
-                if (isSelected || isAssignedToClass) {
-                  setSelectedTeacher(null);
-                  setSelectedTeacherId(null);
-                } else {
-                  handleTeacherSelect(record);
-                }
-              }}
-              className={(isSelected || isAssignedToClass) ? 'selected-button' : ''}
-              disabled={record.status !== 'Active'}
-            >
-              {isSelected || isAssignedToClass ? 'Unselect' : 'Select'}
-            </Button>
+    <div className="teacher-assign-container">
+      <div className="teacher-assign-page-header">
+        <Title level={2} className="teacher-assign-page-title">Assign Teacher to Class</Title>
+        {selectedTeacher && (
+          <div className="teacher-counter">
+            <Badge count={selectedTeacher ? 1 : 0} offset={[0, 10]}>
+              <TeamOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
+            </Badge>
           </div>
-        );
-      },
-    },
-  ];
-
-  return (
-    <div className="assign-teacher-container">
-      <Title level={2}>Assign Teacher to Class</Title>
-      <Divider />
+        )}
+      </div>
       
       <Spin spinning={loading}>
-        <Row gutter={[16, 16]}>
-          {/* Left side - Classes */}
-          <Col xs={24} lg={12}>
+        <Row gutter={[24, 24]}>
+          {/* Class selection section */}
+          <Col span={24}>
             <Card 
-              title="Class List" 
-              variant="borderless" 
-              className="list-card"
+              title={
+                <div className="card-title-with-icon">
+                  <AppstoreOutlined /> Classes by Grade Level
+                </div>
+              }
+              className="teacher-assign-card"
               extra={
-                <Input.Search
-                  placeholder="Search classes..."
-                  allowClear
-                  onSearch={(value) => setClassSearchText(value)}
-                  style={{ width: 200 }}
-                />
+                selectedClass && (
+                  <Tag color="blue" className="selected-class-tag">
+                    Selected: {selectedClass.name}
+                  </Tag>
+                )
               }
             >
-              <Table 
-                dataSource={filteredClasses} 
-                columns={classColumns}
-                rowKey={record => record.id}
-                pagination={{ pageSize: 5 }}
-                scroll={{ y: 400 }}
-                className="custom-table"
-                rowClassName={(record) => selectedClassId === record.id ? 'selected-row' : ''}
-              />
+              {Object.keys(classesByGrade).length > 0 ? (
+                <Collapse 
+                  defaultActiveKey={Object.keys(classesByGrade)} 
+                  className="teacher-grade-collapse"
+                  items={Object.entries(classesByGrade).map(([gradeName, classes]) => ({
+                    key: gradeName,
+                    label: (
+                      <span className="teacher-grade-header">
+                        <span className="teacher-grade-name">{gradeName}</span>
+                        <Tag color="blue" className="teacher-grade-count">{classes.length} classes</Tag>
+                      </span>
+                    ),
+                    children: (
+                      <div className="teacher-class-card-container">
+                        {classes.map(classItem => (
+                          <Card 
+                            key={classItem.id} 
+                            className={`teacher-class-card ${selectedClassId === classItem.id ? 'teacher-selected-class' : ''}`}
+                            onClick={() => handleClassSelect(classItem)}
+                          >
+                            {selectedClassId === classItem.id && (
+                              <CheckCircleOutlined className="teacher-selected-icon" />
+                            )}
+                            
+                            <div className="teacher-class-card-header">
+                              <span className="teacher-class-name">{classItem.name}</span>
+                            </div>
+                            
+                            <div className="teacher-class-info">
+                              <p>
+                                <Text strong>Syllabus:</Text> {classItem.syllabusName}
+                              </p>
+                              <p>
+                                <Text strong>Status:</Text>{' '}
+                                <Tag color={classItem.status === 'Available' ? 'green' : 'red'}>
+                                  {classItem.status || 'Unknown'}
+                                </Tag>
+                              </p>
+                              <div className="teacher-capacity-section">
+                                <div className="teacher-capacity-text">
+                                  <Text strong>Capacity:</Text> 
+                                  <span className={classItem.quantity >= classItem.maxChildren ? 'teacher-capacity-full' : ''}>
+                                    {classItem.quantity}/{classItem.maxChildren} students
+                                  </span>
+                                </div>
+                                <Progress 
+                                  percent={(classItem.quantity / classItem.maxChildren) * 100} 
+                                  showInfo={false}
+                                  status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
+                                  size="small"
+                                />
+                              </div>
+                              {classItem.teacherNames && classItem.teacherNames.length > 0 && (
+                                <div className="teacher-assigned-section">
+                                  <Text strong>Assigned Teachers:</Text>
+                                  <div className="teacher-tag-container">
+                                    {classItem.teacherNames.map((name, idx) => (
+                                      <Tag key={idx} color="blue">{name}</Tag>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {classItem.epName && (
+                                <p>
+                                  <Text strong>Enrichment:</Text> {classItem.epName}
+                                </p>
+                              )}
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+                    )
+                  }))}
+                />
+              ) : (
+                <Empty description="No classes available" />
+              )}
             </Card>
           </Col>
           
-          {/* Right side - Teachers */}
-          <Col xs={24} lg={12}>
-            <Card 
-              title="Teachers List" 
-              variant="borderless" 
-              className="list-card"
-              extra={
+          {/* Instruction message when no class is selected */}
+          {!selectedClass && !loading && (
+            <Col span={24}>
+              <Alert
+                message="Select a Class"
+                description="Please select a class from above to view available teachers for assignment."
+                type="info"
+                showIcon
+                icon={<InfoCircleOutlined />}
+              />
+            </Col>
+          )}
+        </Row>
+      </Spin>
+
+      {/* Teacher List Drawer */}
+      <Drawer
+        title={
+          <div className="teacher-drawer-header">
+            <div className="teacher-drawer-title">
+              {selectedClass && (
+                <>
+                  <div className="teacher-drawer-title-text">
+                    Teachers for {selectedClass.name}
+                  </div>
+                  <div className="teacher-drawer-subtitle">
+                    <Tag color="blue">
+                      {selectedClass.gradeLevelName}
+                    </Tag>
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="teacher-search-container">
                 <Input.Search
                   placeholder="Search teachers..."
                   allowClear
-                  onSearch={(value) => setSearchText(value)}
-                  style={{ width: 200 }}
-                />
-              }
-            >
-              <Table 
-                dataSource={filteredTeachers} 
-                columns={teacherColumns}
-                rowKey="id"
-                pagination={{ pageSize: 5 }}
-                scroll={{ y: 400 }}
-                className="custom-table"
-                rowClassName={(record) => selectedTeacherId === record.id ? 'selected-row' : ''}
+                onChange={e => searchTeachers(e.target.value)}
+                style={{ width: 180 }}
               />
-            </Card>
-          </Col>
-        </Row>
+            </div>
+          </div>
+        }
+        placement="right"
+        width={500}
+        onClose={closeDrawer}
+        open={drawerVisible}
+        closeIcon={<CloseOutlined />}
+        className="teacher-list-drawer"
+      >
+        {filteredTeachers.length > 0 ? (
+          <div className="teacher-drawer-list">
+            {filteredTeachers.map(teacher => {
+              const isSelected = selectedTeacherId === teacher.id;
+              const isAssignedToClass = selectedClass?.teacherNames?.includes(teacher.fullName);
+              
+              return (
+                <div 
+                  key={teacher.id} 
+                  className={`teacher-drawer-card ${isSelected ? 'teacher-selected' : ''} ${isAssignedToClass ? 'teacher-already-assigned' : ''}`}
+                  onClick={() => !isAssignedToClass && handleTeacherSelect(teacher)}
+                >
+                  <div className="teacher-drawer-content">
+                    <Avatar 
+                      icon={<UserOutlined />} 
+                      size={54}
+                      className="teacher-avatar" 
+                    />
+                    <div className="teacher-drawer-info">
+                      <h3 className="teacher-drawer-name">{teacher.fullName}</h3>
+                      <p className="teacher-drawer-details">
+                        {teacher.email}
+                        <span className="detail-separator">•</span>
+                        {teacher.phoneNumber}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="teacher-drawer-actions">
+                    {isAssignedToClass ? (
+                      <Tag color="green">Already Assigned</Tag>
+                    ) : (
+                      <Checkbox 
+                        checked={isSelected}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTeacherSelect(teacher);
+                        }}
+                      />
+                    )}
+                    <Button
+                      type="text"
+                      icon={<InfoCircleOutlined />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showTeacherDetail(teacher);
+                      }}
+                      className="teacher-drawer-detail-btn"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <Empty description="No teachers available" />
+        )}
         
-        <Divider />
-        
-        {/* Assignment section */}
-        <Card title="Assignment Information" variant="borderless" className="assignment-card">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Text strong>Selected Class:</Text> {selectedClass?.name || 'None'}
-            </Col>
-            <Col span={12}>
-              <Text strong>Selected Teacher:</Text> {selectedTeacher?.fullName || 'None'}
-            </Col>
-          </Row>
-          
-          <div className="assign-button-container">
+        {/* Bottom actions in drawer */}
+        {selectedTeacher && (
+          <div className="teacher-drawer-footer-actions">
             <Button
               type="primary"
               onClick={handleAssign}
               loading={assigning}
-              disabled={assigning || !selectedClassId || !selectedTeacherId}
               size="large"
-              className="assign-button"
+              icon={<UserOutlined />}
+              block
             >
-              Assign Teacher to Class
+              Assign {selectedTeacher?.fullName} to {selectedClass?.name}
             </Button>
           </div>
-        </Card>
-      </Spin>
+        )}
+      </Drawer>
 
       {/* Teacher Detail Modal */}
       <Modal
@@ -400,12 +453,12 @@ const StaffAssignTeacherPage = () => {
         width={700}
       >
         {selectedTeacher && (
-          <div className="teacher-detail">
+          <div className="teacher-detail-content">
             <div className="teacher-detail-header">
               <Avatar 
                 icon={<UserOutlined />}
                 size={100}
-                className="detail-avatar"
+                className="teacher-detail-avatar"
               />
               <div className="teacher-detail-title">
                 <h2>{selectedTeacher.fullName}</h2>
@@ -417,20 +470,20 @@ const StaffAssignTeacherPage = () => {
             
             <Row gutter={[16, 16]}>
               <Col span={12}>
-                <div className="detail-item">
-                  <div className="detail-label">Email:</div>
+                <div className="teacher-detail-item">
+                  <div className="teacher-detail-label">Email:</div>
                   <div>{selectedTeacher.email}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="detail-item">
-                  <div className="detail-label">Phone Number:</div>
+                <div className="teacher-detail-item">
+                  <div className="teacher-detail-label">Phone Number:</div>
                   <div>{selectedTeacher.phoneNumber}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="detail-item">
-                  <div className="detail-label">Status:</div>
+                <div className="teacher-detail-item">
+                  <div className="teacher-detail-label">Status:</div>
                   <div>
                     <Tag color={selectedTeacher.status === 'Active' ? 'green' : 'red'}>
                       {selectedTeacher.status}
@@ -439,9 +492,9 @@ const StaffAssignTeacherPage = () => {
                 </div>
               </Col>
               <Col span={12}>
-                <div className="detail-item">
-                  <div className="detail-label">Address:</div>
-                  <div>{selectedTeacher.address}</div>
+                <div className="teacher-detail-item">
+                  <div className="teacher-detail-label">Address:</div>
+                  <div>{selectedTeacher.address || 'Not provided'}</div>
                 </div>
               </Col>
             </Row>

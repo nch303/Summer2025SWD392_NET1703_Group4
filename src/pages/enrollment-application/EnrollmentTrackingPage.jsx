@@ -104,7 +104,14 @@ const EnrollmentTrackingPage = () => {
     
     setSelectedApplication(application);
     fetchApplicationDetail(application.eaid);
-    fetchFeeDescription(application.childrenID);
+    
+    // Only fetch fee description if status is not Pending
+    if (application.status !== 'Pending') {
+      fetchFeeDescription(application.childrenID);
+    } else {
+      setFeeDescription(""); // Clear any previous fee description
+    }
+    
     setShowDetailModal(true);
     
     setTimeout(() => {
@@ -730,7 +737,8 @@ const EnrollmentTrackingPage = () => {
                     </div>
                   </div>
                   
-                  {feeDescription && (
+                  {/* Only show fee information if application status is not Pending */}
+                  {feeDescription && applicationDetail && applicationDetail.status !== 'Pending' && (
                     <div className="tracking-detail-section">
                       <h4>
                         <FontAwesomeIcon icon="money-bill-wave" />

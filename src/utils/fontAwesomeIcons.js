@@ -94,6 +94,9 @@ import {
   faSms,
   faEnvelope,
   faFlag,
+  faSpinner,
+  faHouse,
+  faSchoolFlag
   faIdBadge,
   faHeading,
 } from '@fortawesome/free-solid-svg-icons';
@@ -196,6 +199,9 @@ library.add(
   faSms,
   faEnvelope,
   faFlag,
+  faSpinner,
+  faHouse,
+  faSchoolFlag,
   faIdBadge,
   faHeading,
 );
