@@ -94,11 +94,11 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Children>> GetPaidChildrenAsync()
+        public async Task<List<Children>> GetNotEnrolledChildrenAsync()
         {
             return await _context.Childrens
                 .Include(c => c.Parents)
-                .Where(c => c.Status == "Paid")
+                .Where(c => c.Status == "Not Enrolled")
                 .ToListAsync();
         }
     }

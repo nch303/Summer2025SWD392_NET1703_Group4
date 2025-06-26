@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
                 var invoiceDetails = await _invoiceDetailService.GetByInvoiceIdAsync(invoiceId);
 
                 ///Update status enrollment application
-                if (invoiceDetails[0].TuitionFeeID == null && invoiceDetails[0].ProgramID == null)
+                if (invoiceDetails[0].ProgramID == null)
                 {
                     var enrollmentApp = await _eARepository.GetApplicatioinByChildID(invoice!.ChildrenID);
                     enrollmentApp!.Status = "Paid";
@@ -130,10 +130,10 @@ namespace WebAPI.Controllers
                 );
 
                 //Update status children
-                if (invoiceDetails[0].TuitionFeeID == null && invoiceDetails[0].ProgramID == null)
+                if (invoiceDetails[0].ProgramID == null)
                 {
                     var children = await _childrenService.GetChildByIdAsync(invoice.ChildrenID);
-                    children!.Status = "Paid";
+                    children!.Status = "Active";
                     await _childrenService.UpdateChildAsync(children);
                 }
 
