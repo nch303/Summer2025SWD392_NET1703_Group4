@@ -3,7 +3,7 @@ import api from '../../config/axiosConfig';
 // Get all teachers
 export const getAllTeachers = async () => {
   try {
-    const response = await api.get('/api/Account/get-list-of-teachers');
+    const response = await api.get('/api/Staff/GetTeachersNoClass');
     return response.data;
   } catch (error) {
     console.error('Error fetching teachers:', error);
@@ -14,8 +14,15 @@ export const getAllTeachers = async () => {
 // Assign teacher to class
 export const assignTeacher = async (assignData) => {
   try {
-    // Revert back to the original endpoint that was in the code
-    const response = await api.post('/api/Staff/assign-teacher', assignData);
+    // Log the data being sent for debugging
+    console.log('Sending assignment data:', assignData);
+    
+    // Extract the IDs and ensure correct types
+    const classId = parseInt(assignData.classId); // Ensure it's an integer
+    const teacherId = String(assignData.teacherId); // Ensure it's a string
+    
+    // Use query parameters instead of request body
+    const response = await api.post(`/api/Staff/assign-teacher?classId=${classId}&teacherId=${teacherId}`);
     
     return response.data;
   } catch (error) {

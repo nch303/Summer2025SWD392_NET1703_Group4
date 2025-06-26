@@ -275,22 +275,23 @@
 }
 
 .teacher-class-card {
-  cursor: pointer;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
-  transition: all 0.3s;
   position: relative;
+  transition: all 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #000000;
 }
 
 .teacher-class-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  border: 1px solid #000000;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .teacher-class-card.teacher-selected-class {
   border-color: #1890ff;
   background-color: #e6f7ff;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
 }
 
 .teacher-selected-icon {
@@ -307,46 +308,78 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .teacher-class-name {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.teacher-class-info p {
-  margin-bottom: 6px;
+.teacher-class-info-compact {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
 }
 
-.teacher-capacity-section {
-  margin-top: 8px;
+.teacher-class-main-info {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.teacher-capacity-text {
+.teacher-class-tag {
+  margin: 0;
+}
+
+.teacher-assigned-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.teacher-tag-container-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.teacher-capacity-compact {
+  margin-top: auto;
+}
+
+.capacity-label-container {
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
 }
 
-.teacher-capacity-full {
+.capacity-full {
   color: #ff4d4f;
 }
 
-.teacher-assigned-section {
-  margin-top: 8px;
-  border-top: 1px dashed #f0f0f0;
-  padding-top: 8px;
+.teacher-card-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
 }
 
-.teacher-tag-container {
-  margin-top: 4px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+/* Enrichment class special styling */
+.enrichment-category .teacher-category-icon {
+  background-color: #f9f0ff;
+  color: #722ed1;
+}
+
+.enrichment-category .teacher-category-name {
+  color: #722ed1;
 }
 
 /* Drawer styling */
@@ -575,4 +608,270 @@
     text-align: center;
     padding: 16px;
   }
+}
+
+.teacher-category-header {
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8e8e8;
+  display: flex;
+  align-items: center;
+}
+
+.teacher-category-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1890ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.teacher-category-icon {
+  color: #1890ff;
+  background-color: #e6f7ff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chi tiết lớp học modal - thiết kế mới */
+.class-detail-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.class-detail-modal .ant-modal-body {
+  padding: 0;
+}
+
+.class-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f0f7ff, #e6f7ff);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.class-detail-title h2 {
+  margin: 0 0 10px 0;
+  font-size: 22px;
+  color: #262626;
+  font-weight: 600;
+}
+
+.class-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.class-detail-icon {
+  margin-left: 16px;
+}
+
+.detail-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.detail-icon.regular {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.detail-icon.enrichment {
+  background-color: #f9f0ff;
+  color: #722ed1;
+}
+
+.class-detail-card {
+  padding: 0;
+  box-shadow: none;
+}
+
+.class-detail-card .ant-card-body {
+  padding: 0;
+}
+
+.class-detail-section {
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.class-detail-section:last-child {
+  border-bottom: none;
+}
+
+.class-detail-section h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #262626;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.class-detail-section h3 .anticon,
+.class-detail-section h3 svg {
+  color: #1890ff;
+}
+
+.detail-item {
+  margin-bottom: 12px;
+}
+
+.detail-label {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 6px;
+}
+
+.detail-value {
+  font-size: 15px;
+  color: #262626;
+  font-weight: 500;
+}
+
+.detail-value.highlight {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.capacity-summary {
+  margin-bottom: 12px;
+}
+
+.capacity-numbers {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.current-capacity {
+  font-size: 24px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.capacity-separator {
+  font-size: 20px;
+  margin: 0 6px;
+  color: #8c8c8c;
+}
+
+.max-capacity {
+  font-size: 20px;
+  color: #8c8c8c;
+}
+
+.capacity-label {
+  margin-left: 8px;
+  font-size: 15px;
+  color: #8c8c8c;
+}
+
+.capacity-warning {
+  color: #ff4d4f;
+  font-size: 14px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.teachers-assigned-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.teacher-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f8ff;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100px;
+}
+
+.teacher-avatar {
+  background-color: #1890ff;
+  border: 2px solid #d6e4ff;
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+.teacher-name {
+  text-align: center;
+  font-size: 14px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-teachers {
+  background-color: #fafafa;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Academic year filter styling */
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.academic-year-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 14px;
+  color: #595959;
+  white-space: nowrap;
+}
+
+.academic-year-display {
+  min-width: 100px;
+  padding: 4px 12px;
+  background-color: #f5f8ff;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+/* Nổi bật Academic Year tag */
+.academic-year-tag {
+  font-weight: 600;
+  padding: 2px 8px;
+}
+
+/* Đảm bảo selected class tag vẫn hiển thị tốt */
+.selected-class-tag {
+  margin: 0;
+}
+
+/* Grade level filter styling */
+.grade-level-filter {
+  margin-left: 24px;
 }
