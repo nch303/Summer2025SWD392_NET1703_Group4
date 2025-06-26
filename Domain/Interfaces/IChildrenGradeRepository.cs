@@ -10,8 +10,9 @@ namespace Infrastructure.Repositories
     public interface IChildrenGradeRepository
     {
         Task<List<ChildrenGrade>> GetChildrenGradesByAccountIdAsync(Guid accountId);
-        Task<ChildrenGrade> GetChildrenGradesByChildrenIdAsync(Guid childrenId);
+        Task<List<ChildrenGrade>> GetChildrenGradesByChildrenIdAsync(Guid childrenId);
         Task<ChildrenGrade> CreateChildrenGradeAsync(ChildrenGrade childrenGrade);
+        Task<ChildrenGrade> UpdateChildrenGradeAsync(ChildrenGrade childrenGrade);
 
     }
 }

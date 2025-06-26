@@ -16,15 +16,20 @@ namespace Application.Services
         private readonly IEARepository _eARepository;
         private readonly IChildrenService _childrenService;
         private readonly IClassChildrenService _classChildrenService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IChildrenGradeService _childrengradeService;
 
         public StaffService(IStaffRepository staffRepository, IClassService classService, IEARepository eARepository
-            , IChildrenService childrenService, IClassChildrenService classChildrenService)
+            , IChildrenService childrenService, IClassChildrenService classChildrenService, IAccountRepository accountRepository
+            , IChildrenGradeService childrenGradeService)
         {
             _staffRepository = staffRepository;
             _classService = classService;
             _eARepository = eARepository;
             _childrenService = childrenService;
             _classChildrenService = classChildrenService;
+            _accountRepository = accountRepository;
+            _childrengradeService = childrenGradeService;
         }
 
         public async Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds)
@@ -59,6 +64,14 @@ namespace Application.Services
             }
 
             var children = await _staffRepository.AssignChildrenListToClassAsync(classId, childrenIds);
+
+            // Update status of childrenGrade
+            foreach (var childId in childrenIds)
+            {
+                var childrenGrades = await _childrengradeService.GetChildrenGradesByChildrenIdAsync(childId);
+                childrenGrades[childrenGrades.Count - 1].Status = "Enrolled";
+            }
+
             return children;
 
         }
@@ -88,10 +101,43 @@ namespace Application.Services
 
             string academicYear = classToAssign.AcademicYear!;
 
-            // Step 2: Validate if teacher is already assigned in the same AcademicYear
+            // Validate if teacher is already assigned in the same AcademicYear
             var isAlreadyAssignedInYear = await _staffRepository.IsTeacherAssignedInAcademicYearAsync(teacherId, academicYear);
             if (isAlreadyAssignedInYear)
                 throw new InvalidOperationException($"This teacher is already assigned to a class in academic year {academicYear}.");
+
+            // Check xem giáo viên có bị chia trùng lớp không
+            var classesByTeacher = await _classService.GetClassesByTeacherIdAsync(teacherId);
+            var enrichmentClasses = classesByTeacher.Where(c => c.EnrichmentProgramId != null && c.AcademicYear!.Equals(academicYear)).ToList();
+            foreach (var existingClass in enrichmentClasses)
+            {
+                if (existingClass.ID == classId)
+                {
+                    throw new InvalidOperationException("Giáo viên đã được phân công cho lớp này.");
+                }
+            }
+
+            // Check xem giáo viên có dạy lớp phụ mà bị trùng thời gian không
+            if (classesByTeacher != null)
+            {
+                if (enrichmentClasses.Count > 0)
+                {
+                    foreach (var enrichmentClass in enrichmentClasses)
+                    {
+                        var timetable1 = enrichmentClass.Timetable?.Split(',').Select(s => s.Trim()).ToList() ?? new List<string>();
+                        var timetable2 = classToAssign.Timetable?.Split(',').Select(s => s.Trim()).ToList() ?? new List<string>();
+
+                        bool hasConflict = timetable1.Intersect(timetable2).Any();
+
+                        if (hasConflict)
+                        {
+                            throw new InvalidOperationException($"Giáo viên có lớp bị trùng thời gian biểu.");
+                        }
+                    }
+                }
+            }
+
+
 
             var result = await _staffRepository.AssignTeacherToClassAsync(classId, teacherId);
             return result;

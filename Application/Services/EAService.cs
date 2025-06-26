@@ -99,9 +99,9 @@ namespace Application.Services
             var culture = CultureInfo.GetCultureInfo("vi-VN");
 
             var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(childId);
-            var tuitionName = "09/" + childrenGrade.AcademicYear!.Split('-')[0];
+            var tuitionName = "09/" + childrenGrade[0].AcademicYear!.Split('-')[0];
             var tuition = await _tuitionService.GetTuitionFeeByNameAsync(tuitionName);
-            var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(childrenGrade.GradeLevelID);
+            var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(childrenGrade[0].GradeLevelID);
 
             var lines = new List<string>();
             decimal totalAmount = 0;

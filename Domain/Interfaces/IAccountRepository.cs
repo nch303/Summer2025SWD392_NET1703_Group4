@@ -27,5 +27,6 @@ namespace Domain.Interfaces
         Task<IQueryable<Account>> GetAllQueryableAsync();
         Task<(List<Account> Items, int TotalCount)> SearchAccountsAsync(string keyword, int pageNumber, int pageSize);
         Task<List<Account>> GetTeacherByClassIdAsync(int classId);
+        Task<List<Account>> GetTeachersNoClass();
     }
 }

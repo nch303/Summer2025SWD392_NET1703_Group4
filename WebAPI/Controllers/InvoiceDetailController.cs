@@ -20,10 +20,11 @@ namespace WebAPI.Controllers
         private readonly ITuitionFeeService _tuitionFeeService;
         private readonly IGradeLevelService _gradeLevelService;
         private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IInvoiceService _invoiceService;
         public InvoiceDetailController(IInvoiceDetailService invoiceDetailService, IMapper mapper,
             IAccountService accountService, IChildrenService childrenService, IEnrichProgramService enrichProgramService
             , ITuitionFeeService tuitionFeeService, IGradeLevelService gradeLevelService
-            , IChildrenGradeService childrenGradeService)
+            , IChildrenGradeService childrenGradeService, IInvoiceService invoiceService)
         {
             _invoiceDetailService = invoiceDetailService;
             _mapper = mapper;
@@ -33,6 +34,7 @@ namespace WebAPI.Controllers
             _tuitionFeeService = tuitionFeeService;
             _gradeLevelService = gradeLevelService;
             _childrenGradeService = childrenGradeService;
+            _invoiceService = invoiceService;
         }
 
         [HttpGet]
@@ -62,12 +64,32 @@ namespace WebAPI.Controllers
                         var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
                         detail.tuitionFeeName = tuition!.Name;
 
-                        var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+                        var invoice = await _invoiceService.GetByIdAsync(invoiceDetails[i].InvoiceID);
 
-                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(chidrenGrade.GradeLevelID);
+                        //Get academic year
+                        string academicYear = "";
+
+                        var year = invoice!.Date.Year;
+
+                        // So sánh với ngày 1/6 của năm hiện tại
+                        var schoolStartDate = new DateTime(year, 6, 1);
+
+                        if (invoice.Date < schoolStartDate)
+                        {
+                            academicYear = (year - 1).ToString() + "-" + year.ToString();
+                        }
+                        else
+                        {
+                            academicYear = year.ToString() + "-" + (year + 1).ToString();
+                        }
+
+                        var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+                        var currentGrade = chidrenGrade!.Where(cg => cg.AcademicYear!.Equals(academicYear)).FirstOrDefault();
+
+                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(currentGrade!.GradeLevelID);
                         var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
                         var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevelFeeFormated + " đồng)";
-                        
+
                         // Design Description cua hoa don
                         // Tách các phần tử
                         string designedDescription = "";
@@ -91,16 +113,16 @@ namespace WebAPI.Controllers
                             designedDescription = "- " + gradeFeeName + "\n" + designedDescription.TrimEnd('\n');
                         }
                         else
-                        { 
+                        {
                             if (tuition.Description == null)
                             {
                                 designedDescription = "- " + gradeFeeName;
                             }
-                            else 
+                            else
                             {
                                 designedDescription = "- " + gradeFeeName + "\n" + tuition.Description!;
                             }
-                            
+
                         }
 
                         detail.Description = designedDescription;

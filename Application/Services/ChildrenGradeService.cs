@@ -21,7 +21,7 @@ namespace Application.Services
             return await _childrenGradeRepository.GetChildrenGradesByAccountIdAsync(accountId);
         }
 
-        public async Task<ChildrenGrade> GetChildrenGradesByChildrenIdAsync(Guid childrenId)
+        public async Task<List<ChildrenGrade>> GetChildrenGradesByChildrenIdAsync(Guid childrenId)
         {
             return await _childrenGradeRepository.GetChildrenGradesByChildrenIdAsync(childrenId);
         }
@@ -29,6 +29,11 @@ namespace Application.Services
         public async Task<ChildrenGrade> CreateChildrenGradeAsync(ChildrenGrade childrenGrade)
         {
             return await _childrenGradeRepository.CreateChildrenGradeAsync(childrenGrade);
+        }
+
+        public async Task<ChildrenGrade> UpdateChildrenGradeAsync(ChildrenGrade childrenGrade)
+        {
+            return await _childrenGradeRepository.UpdateChildrenGradeAsync(childrenGrade);
         }
     }
 }

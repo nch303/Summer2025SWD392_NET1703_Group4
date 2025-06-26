@@ -19,11 +19,12 @@ namespace WebAPI.Controllers
         private readonly IClassService _classService;
         private readonly IEAService _EAService;
         private readonly IChildrenGradeService _childrenGradeService;
+        private readonly IAccountService _accountService;
 
 
         public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
             , INotificationService notificationService, IClassService classService, IEAService eAService
-            , IChildrenGradeService childrenGradeService)
+            , IChildrenGradeService childrenGradeService, IAccountService accountService)
         {
             _staffService = staffService;
             _childrenService = childrenService;
@@ -32,6 +33,7 @@ namespace WebAPI.Controllers
             _classService = classService;
             _EAService = eAService;
             _childrenGradeService = childrenGradeService;
+            _accountService = accountService;
         }
 
         [HttpGet("GetNotEnrolledChildren")]
@@ -50,8 +52,14 @@ namespace WebAPI.Controllers
 
                     //Gan GradeLevel cho ChildResponse
                     var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
-                    response[i].GradeLevelID = grade?.GradeLevels!.ID ?? 0;
-                    response[i].GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+                    if (grade.Count == 0)
+                    {
+                        response[i].GradeLevelID = 0;
+                        response[i].GradeLevelName = string.Empty;
+                        continue;
+                    }
+                    response[i].GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                    response[i].GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
                 }
 
                 response = response.OrderByDescending(c => c.EnrollDate).ToList();
@@ -167,6 +175,21 @@ namespace WebAPI.Controllers
             {
                 var openClass = await _classService.OpenClass(classId);
                 return Ok(new { message = "Class is now available" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetTeachersNoClass")]
+        public async Task<IActionResult> GetTeachersNoClassAsync()
+        {
+            try
+            {
+                var teachers = await _accountService.GetTeachersNoClassAsync();
+                var response = _mapper.Map<List<AccountResponse>>(teachers);
+                return Ok(response);
             }
             catch (Exception ex)
             {

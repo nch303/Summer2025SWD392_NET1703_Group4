@@ -38,8 +38,14 @@ namespace WebAPI.Controllers
 
                 //Gan GradeLevel cho ChildResponse
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
-                response.ChildrenResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
-                response.ChildrenResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+                if (grade.Count == 0)
+                {
+                    response.ChildrenResponse.GradeLevelID = 0;
+                    response.ChildrenResponse.GradeLevelName = string.Empty;
+                    continue;
+                }
+                response.ChildrenResponse.GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                response.ChildrenResponse.GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
 
                 //Gan Teachers cho Class
                 var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
@@ -64,8 +70,14 @@ namespace WebAPI.Controllers
 
                 //Gan GradeLevel cho ChildResponse
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
-                response.ChildrenResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
-                response.ChildrenResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+                if (grade.Count == 0)
+                {
+                    response.ChildrenResponse.GradeLevelID = 0;
+                    response.ChildrenResponse.GradeLevelName = string.Empty;
+                    continue;
+                }
+                response.ChildrenResponse.GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                response.ChildrenResponse.GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
 
                 //Gan Teachers cho Class
                 var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
@@ -89,8 +101,14 @@ namespace WebAPI.Controllers
 
                 //Gan GradeLevel cho ChildResponse
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
-                response.ChildrenResponse.GradeLevelID = grade?.GradeLevels!.ID ?? 0;
-                response.ChildrenResponse.GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+                if (grade.Count == 0)
+                {
+                    response.ChildrenResponse.GradeLevelID = 0;
+                    response.ChildrenResponse.GradeLevelName = string.Empty;
+                    continue;
+                }
+                response.ChildrenResponse.GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                response.ChildrenResponse.GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
 
                 //Gan Teachers cho Class
                 var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
