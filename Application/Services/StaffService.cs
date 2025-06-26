@@ -108,6 +108,14 @@ namespace Application.Services
 
             // Check xem giáo viên có bị chia trùng lớp không
             var classesByTeacher = await _classService.GetClassesByTeacherIdAsync(teacherId);
+            foreach (var existingClass in classesByTeacher)
+            {
+                if (existingClass.ID == classId)
+                {
+                    throw new InvalidOperationException("Giáo viên đã được phân công cho lớp này.");
+                }
+            }
+
             var enrichmentClasses = classesByTeacher.Where(c => c.EnrichmentProgramId != null && c.AcademicYear!.Equals(academicYear)).ToList();
             foreach (var existingClass in enrichmentClasses)
             {

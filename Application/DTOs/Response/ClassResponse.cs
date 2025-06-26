@@ -18,6 +18,7 @@ namespace Application.DTOs.Response
         public string? Status { get; set; }
         public string? Timetable { get; set; }
         public string? EPName { get; set; }
+        public int? EnrichmentProgramId { get; set; }
         public List<string>? TeacherNames { get; set; }
     }
 }

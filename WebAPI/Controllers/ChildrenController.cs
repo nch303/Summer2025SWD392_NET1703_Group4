@@ -144,6 +144,12 @@ namespace WebAPI.Controllers
 
                 //Gan GradeLevel cho ChildResponse
                 var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(childResponse.ID);
+                if (grade.Count == 0)
+                {
+                    childResponse.GradeLevelID = 0;
+                    childResponse.GradeLevelName = string.Empty;
+                    return Ok(childResponse);
+                }
                 childResponse.GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
                 childResponse.GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
 
