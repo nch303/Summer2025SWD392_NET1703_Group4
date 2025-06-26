@@ -1,6 +1,6 @@
 .staff-assign-container {
   padding: 24px;
-  background-color: #f0f2f5;
+  background-color: #f5f7fa;
   min-height: 90vh;
 }
 
@@ -14,175 +14,258 @@
 .staff-assign-page-title {
   position: relative;
   margin-bottom: 0 !important;
+  color: #262626;
 }
 
 .staff-assign-page-title::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 0;
-  width: 60px;
-  height: 3px;
-  background-color: #1890ff;
-  border-radius: 3px;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #1890ff, #52c41a);
+  border-radius: 2px;
 }
 
 .staff-assign-card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   border-radius: 12px;
+  border: none;
   transition: all 0.3s ease;
-  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.card-title-with-icon .anticon {
+  color: #1890ff;
+}
+
+/* Grade level collapse panel styling */
+.grade-collapse {
+  background: transparent;
   border: none;
 }
 
-.staff-assign-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+.grade-collapse .ant-collapse-item {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px !important;
+  margin-bottom: 16px;
+  overflow: hidden;
 }
 
-.staff-assign-card .ant-card-head {
-  background: linear-gradient(135deg, #e6f7ff, #f0f7ff);
-  border-radius: 12px 12px 0 0;
-  border-bottom: 1px solid #e6f7ff;
-  padding: 16px 24px;
+.grade-collapse .ant-collapse-header {
+  background-color: #f5f8ff;
+  padding: 16px 20px !important;
+  align-items: center;
 }
 
-.staff-assign-card .ant-card-head-title {
-  font-weight: 600;
-  color: #0050b3;
+.grade-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.staff-assign-summary-card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  margin-top: 20px;
-  background: linear-gradient(135deg, #fffef0, #fff8e6);
-  border: 1px solid #ffe58f;
-}
-
-.staff-assign-class-info, .staff-assign-student-info {
-  padding: 12px 0;
-}
-
-.staff-assign-class-name, .staff-assign-student-name {
-  font-weight: 600;
+.grade-name {
   font-size: 16px;
-  margin-bottom: 10px;
-  color: #1890ff;
+  font-weight: 600;
+  color: #262626;
+}
+
+.grade-count {
+  margin-left: auto;
+}
+
+.grade-collapse .ant-collapse-content-box {
+  padding: 16px !important;
+  background-color: #fff;
+}
+
+/* Class cards styling */
+.class-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.class-card {
+  cursor: pointer;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  transition: all 0.3s;
   position: relative;
-  display: inline-block;
 }
 
-.staff-assign-class-name::after, .staff-assign-student-name::after {
-  display: none;
+.class-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
 }
 
-.staff-assign-class-name, 
-.staff-assign-student-name {
-  color: #1890ff;
-  border-bottom: 1px solid transparent;
+.class-card.selected-class {
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
 }
 
-.staff-assign-student-avatar {
+.selected-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #52c41a;
+  font-size: 20px;
+  z-index: 1;
+}
+
+.class-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.class-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.class-info p {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.capacity-section {
+  margin-top: 8px;
+}
+
+.capacity-text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.capacity-full {
+  color: #ff4d4f;
+}
+
+/* Student cards styling */
+.student-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.student-card {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.student-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.student-card.selected-student {
+  border-color: #52c41a;
+  background-color: #f6ffed;
+}
+
+.student-card[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.student-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 12px;
+}
+
+.student-card-content {
+  display: flex;
+  gap: 16px;
+}
+
+.student-avatar {
   border: 2px solid #f0f0f0;
-  transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.staff-assign-student-avatar:hover {
-  transform: scale(1.1);
-  border-color: #1890ff;
+.student-info {
+  flex: 1;
 }
 
-.staff-assign-action-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
+.student-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #262626;
 }
 
-.staff-assign-detail-btn {
-  background-color: #f0f7ff;
-  border-radius: 6px;
-  border: 1px solid #d9e6f2;
-  transition: all 0.3s;
+.student-birthday, .student-gender {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #595959;
 }
 
-.staff-assign-detail-btn:hover {
-  background-color: #e6f7ff;
-  border-color: #1890ff;
+.student-birthday span, .student-gender span {
+  color: #8c8c8c;
+  margin-right: 4px;
+}
+
+.detail-button {
+  padding: 0 8px;
+  height: 28px;
+}
+
+.detail-button:hover {
   color: #1890ff;
-  transform: translateY(-2px);
 }
 
-.staff-assign-selected-btn {
-  background-color: #52c41a;
-  color: white;
-  border: none;
-}
-
-.staff-assign-selected-btn:hover {
-  background-color: #73d13d !important;
-  color: white !important;
-}
-
-.staff-assign-button-container {
-  margin-top: 24px;
+/* Assignment action area */
+.assignment-action {
   text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px dashed #f0f0f0;
 }
 
-.staff-assign-button {
-  min-width: 250px;
+.assignment-action .ant-btn {
   height: 48px;
+  min-width: 280px;
   font-size: 16px;
   font-weight: 600;
   border-radius: 24px;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
-  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
 }
 
-.staff-assign-button:hover {
+.assignment-action .ant-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.5);
+  box-shadow: 0 6px 16px rgba(82, 196, 26, 0.3);
 }
 
-.staff-assign-table {
-  border-radius: 8px;
-  overflow: hidden;
-  table-layout: fixed !important;
+/* Student detail modal styling */
+.student-detail-content {
+  padding: 8px;
 }
 
-.staff-assign-table .ant-table-thead > tr > th {
-  background-color: #f0f7ff;
-  color: #0050b3;
-  font-weight: 600;
-}
-
-.staff-assign-table .ant-table-tbody > tr.staff-assign-selected-row {
-  background-color: rgba(230, 247, 255, 0.7);
-  position: relative;
-}
-
-.staff-assign-table .ant-table-tbody > tr.staff-assign-selected-row::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background-color: #1890ff;
-}
-
-.staff-assign-table .ant-table-tbody > tr:hover > td {
-  background-color: rgba(204, 230, 255, 0.7) !important;
-}
-
-/* Student Detail Modal Styles */
-.staff-assign-student-detail {
-  padding: 16px;
-}
-
-.staff-assign-detail-header {
+.student-detail-header {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -192,247 +275,230 @@
   margin-bottom: 20px;
 }
 
-.staff-assign-detail-avatar {
+.student-detail-avatar {
   border: 3px solid #1890ff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.staff-assign-detail-title {
+.student-detail-title {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.staff-assign-detail-title h2 {
+.student-detail-title h2 {
   margin: 0;
-  color: #1890ff;
+  color: #262626;
   font-size: 24px;
   font-weight: 600;
 }
 
-.staff-assign-detail-item {
-  background-color: #f9f9f9;
+.student-detail-item {
+  background-color: #fafafa;
   border-radius: 8px;
   padding: 12px 16px;
-  margin-bottom: 12px;
   transition: all 0.2s;
-  border-left: 3px solid transparent;
+  border-left: 3px solid #e6f7ff;
 }
 
-.staff-assign-detail-item:hover {
+.student-detail-item:hover {
   border-left-color: #1890ff;
   background-color: #f5faff;
 }
 
-.staff-assign-detail-label {
+.student-detail-label {
   font-weight: 600;
-  color: #434343;
-  margin-bottom: 6px;
+  color: #262626;
+  margin-bottom: 8px;
 }
 
-.staff-assign-warning {
-  color: #ff4d4f;
-  text-align: center;
-  margin-top: 16px;
-  font-weight: 600;
-  background-color: #fff2f0;
-  border: 1px dashed #ffccc7;
-  padding: 12px;
-  border-radius: 8px;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .class-card-container,
+  .student-card-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .student-card-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .student-detail-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+}
+
+/* Selected class tag */
+.selected-class-tag {
+  font-size: 14px;
+  padding: 4px 8px;
+}
+
+/* Drawer styling */
+.student-list-drawer .ant-drawer-header {
+  padding: 16px 24px;
+  background: #f5f8ff;
+  border-bottom: 1px solid rgba(24, 144, 255, 0.1);
+}
+
+.drawer-header {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+}
+
+.drawer-title {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.staff-assign-info-box {
-  background-color: #f6ffed;
+.drawer-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.drawer-subtitle {
+  display: flex;
+  gap: 8px;
+}
+
+.drawer-student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 4px;
+}
+
+.drawer-student-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: white;
+  border: 1px solid #f0f0f0;
   border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.drawer-student-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: #e6e6e6;
+}
+
+.drawer-student-card.selected-student {
+  background-color: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.drawer-student-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.drawer-student-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.drawer-student-name {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #262626;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawer-student-details {
+  margin: 0;
+  font-size: 13px;
+  color: #8c8c8c;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-separator {
+  margin: 0 6px;
+}
+
+.drawer-student-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.drawer-detail-btn {
+  padding: 4px 8px;
+  height: auto;
+  color: #1890ff;
+}
+
+.drawer-footer-actions {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 0;
+  background-color: white;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 24px;
+}
+
+/* Make the drawer body fill the entire height */
+.ant-drawer-body {
+  padding: 24px;
+  height: calc(100% - 55px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.student-list-drawer .ant-drawer-body {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .student-list-drawer {
+    width: 100% !important;
+  }
+  
+  .drawer-student-card {
+    padding: 10px 12px;
+  }
+}
+
+/* Toast notification styling */
+.assignment-success-notification {
+  background-color: #f6ffed;
   border-left: 4px solid #52c41a;
 }
 
-.staff-assign-status-tag {
-  border-radius: 4px;
-  padding: 2px 8px;
-  font-weight: 500;
+.assignment-success-notification .ant-notification-notice-message {
+  color: #52c41a;
+  font-weight: 600;
 }
 
-.staff-assign-divider {
-  position: relative;
-  text-align: center;
-  margin: 32px 0;
+.assignment-success-notification .ant-notification-notice-description {
+  color: rgba(0, 0, 0, 0.75);
 }
 
-.staff-assign-divider::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: #f0f0f0;
-  z-index: 1;
-}
-
-.staff-assign-divider-text {
-  position: relative;
-  z-index: 2;
-  background-color: #f0f2f5;
-  padding: 0 16px;
-  color: #1890ff;
-  font-weight: 500;
-}
-
-.staff-assign-capacity-bar {
-  background-color: #f5f5f5;
-  border-radius: 10px;
-  height: 8px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-
-.staff-assign-capacity-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #1890ff, #52c41a);
-  border-radius: 10px;
-  transition: width 0.5s ease;
-}
-
-/* Add these new styles */
-.staff-assign-table .ant-table-row {
-  cursor: default;
-}
-
-.staff-assign-table .ant-radio-wrapper {
-  display: flex;
-  justify-content: center;
-  transition: none;
-}
-
-.staff-assign-table .ant-radio-inner {
-  border-color: #d9d9d9;
-  transition: all 0.2s;
-}
-
-.staff-assign-table .ant-radio-checked .ant-radio-inner {
-  border-color: #1890ff;
-  background-color: #fff;
-}
-
-.staff-assign-table .ant-radio-checked .ant-radio-inner::after {
-  background-color: #1890ff;
-  opacity: 1;
-  transform: scale(0.6);
-}
-
-/* Ensure the class info column maintains its width */
-.staff-assign-table .ant-table-cell:first-child {
-  width: 80%;
-}
-
-/* Make the select column fixed width */
-.staff-assign-table .ant-table-cell:last-child {
-  width: 80px;
-  min-width: 80px;
-  text-align: center;
-  cursor: pointer;
-}
-
-/* Fix the class info layout to prevent compression */
-.staff-assign-class-info {
-  width: 100%;
-  min-width: 300px;
-}
-
-/* Ensure the student table columns have proper widths */
-.staff-assign-student-table {
-  width: 100%;
-  table-layout: fixed;
-}
-
-/* Adjust column widths for students table */
-.staff-assign-student-table .avatar-column {
-  width: 100px;
-}
-
-.staff-assign-student-table .info-column {
-  width: calc(100% - 280px);
-}
-
-.staff-assign-student-table .action-column {
-  width: 180px;
-}
-
-/* Make the student info area expand properly */
-.staff-assign-student-info {
-  max-width: 100%;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-}
-
-/* Remove horizontal scroll but keep vertical scroll */
-.staff-assign-table .ant-table-body {
-  overflow-x: hidden !important;
-}
-
-/* Đặt kích thước radio button cố định để không thay đổi khi được chọn */
-.staff-assign-table .ant-radio {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-/* Điều chỉnh kích thước inner radio button để tránh co giãn */
-.staff-assign-table .ant-radio-inner {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-.staff-assign-table .ant-radio-checked .ant-radio-inner::after {
-  transform: scale(0.5) !important;
-  width: 8px !important;
-  height: 8px !important;
-  margin-top: -4px !important;
-  margin-left: -4px !important;
-}
-
-/* Tắt mọi animation và transition */
-.staff-assign-table * {
-  transition: background-color 0.2s !important;
-}
-
-/* Ngăn không cho bất kỳ cột nào thay đổi kích thước */
-.staff-assign-table .ant-table-cell {
-  padding: 16px !important; /* Cố định padding */
-}
-
-/* Đặt kích thước cứng cho cột radio */
-.staff-assign-table .ant-table-cell:last-child {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-}
-
-/* Đảm bảo cột thông tin không thay đổi kích thước */
-.staff-assign-table .ant-table-cell:first-child {
-  width: calc(100% - 70px) !important;
-}
-
-/* Loại bỏ hiệu ứng hover gây thay đổi kích thước */
-.staff-assign-table .ant-table-tbody > tr:hover > td {
-  background-color: #f5f5f5;
-}
-
-/* Loại bỏ dải bên trái gây thụt lề */
-.staff-assign-table .ant-table-tbody > tr.staff-assign-selected-row::after {
-  display: none;
-}
-
-/* Điều chỉnh cách hiển thị hàng được chọn */
-.staff-assign-table .ant-table-tbody > tr.staff-assign-selected-row {
-  background-color: #e6f7ff !important;
+.assignment-success-notification .ant-notification-notice-close {
+  color: rgba(0, 0, 0, 0.45);
 }

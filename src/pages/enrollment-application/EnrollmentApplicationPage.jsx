@@ -296,10 +296,20 @@ const EnrollmentApplicationPage = () => {
                           (childAge === 4 && level.name.includes("Chồi")) ||
                           (childAge === 5 && level.name.includes("Lá"));
                         
+                        // Determine if level is not allowed (child too young for this level)
+                        const isTooAdvanced = 
+                          (childAge < 4 && level.name.includes("Chồi")) || 
+                          (childAge < 5 && level.name.includes("Lá"));
+                        
+                        // Determine if we need to show warning (child too old for this level)
+                        const isTooBasic = 
+                          (childAge > 3 && level.name.includes("Mầm")) ||
+                          (childAge > 4 && level.name.includes("Chồi"));
+                        
                         return (
                           <label 
                             key={level.id} 
-                            className={`grade-radio-label ${formData.gradeLevelID === level.id.toString() ? 'active' : ''} ${isRecommended ? 'recommended' : ''}`}
+                            className={`grade-radio-label ${formData.gradeLevelID === level.id.toString() ? 'active' : ''} ${isRecommended ? 'recommended' : ''} ${isTooAdvanced ? 'disabled' : ''} ${isTooBasic ? 'warning' : ''}`}
                           >
                             <input
                               type="radio"
@@ -307,8 +317,12 @@ const EnrollmentApplicationPage = () => {
                               value={level.id}
                               checked={formData.gradeLevelID === level.id.toString()}
                               onChange={handleInputChange}
+                              disabled={isTooAdvanced}
                             />
                             <span className="grade-radio-text">{level.name}</span>
+                            {isTooBasic && formData.gradeLevelID === level.id.toString() && (
+                              <span className="level-warning-indicator">&#9888;</span>
+                            )}
                           </label>
                         );
                       })}
@@ -319,13 +333,19 @@ const EnrollmentApplicationPage = () => {
                     </div>
                   )}
                 </div>
-                {child && (
-                  <div className="grade-info">
-                    <FontAwesomeIcon icon="info-circle" className="info-icon" />
+                
+                {/* Add warning message when grade level is too low for child's age */}
+                {formData.gradeLevelID && gradeLevels.some(level => {
+                  const childAge = calculateAge(child.birthday);
+                  const isTooBasic = 
+                    (childAge > 3 && level.name.includes("Mầm") && formData.gradeLevelID === level.id.toString()) ||
+                    (childAge > 4 && level.name.includes("Chồi") && formData.gradeLevelID === level.id.toString());
+                  return isTooBasic;
+                }) && (
+                  <div className="grade-warning">
+                    <FontAwesomeIcon icon="exclamation-triangle" className="warning-icon" />
                     <span>
-                      Trẻ {calculateAge(child.birthday)} tuổi nên đăng ký lớp 
-                      {calculateAge(child.birthday) <= 3 ? " Mầm" : 
-                       calculateAge(child.birthday) === 4 ? " Chồi" : " Lá"}
+                      Trẻ {calculateAge(child.birthday)} tuổi đang đăng ký lớp thấp hơn độ tuổi khuyến nghị
                     </span>
                   </div>
                 )}

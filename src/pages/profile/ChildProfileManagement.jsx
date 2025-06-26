@@ -146,6 +146,7 @@ const ChildProfileManagement = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setFormErrors({});
     setTimeout(() => {
       resetForm();
       setIsEditingChild(null);
@@ -173,10 +174,14 @@ const ChildProfileManagement = () => {
         errors.birthday = 'Ngày sinh không thể là ngày trong tương lai';
       }
       
-      // Kiểm tra tuổi phù hợp (ví dụ: từ 2-6 tuổi)
-      const ageInYears = (today - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
-      if (ageInYears > 6) {
-        errors.birthday = 'Độ tuổi của bé phải nhỏ hơn hoặc bằng 5 tuổi';
+      // Tính tuổi theo năm (chỉ lấy số năm tròn)
+      const yearDiff = today.getFullYear() - birthDate.getFullYear();
+      
+      // Kiểm tra tuổi phù hợp (từ 3-5 tuổi)
+      if (yearDiff < 3) {
+        errors.birthday = 'Độ tuổi của bé phải từ 3 tuổi trở lên';
+      } else if (yearDiff > 5) {
+        errors.birthday = 'Độ tuổi của bé phải dưới 5 tuổi';
       }
     }
     

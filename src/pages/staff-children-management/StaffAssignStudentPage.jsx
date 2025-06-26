@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Spin, Card, Row, Col, Table, Divider, Avatar, Tag, Typography, Modal, Alert, Progress, Badge, Radio } from 'antd';
+import { Button, message, Spin, Card, Row, Col, Badge, Divider, Avatar, Tag, Typography, Modal, Alert, Progress, Checkbox, Collapse, Space, Empty, Tooltip, Drawer, notification } from 'antd';
 import { getAllClasses, getPaidChildren, assignChildrenToClass } from './StaffAssignStudentService.js';
-import { UserOutlined, InfoCircleOutlined, CheckCircleFilled, CloseCircleFilled, ExclamationCircleOutlined, RightOutlined, TeamOutlined } from '@ant-design/icons';
+import { UserOutlined, InfoCircleOutlined, CheckCircleOutlined, WarningOutlined, TeamOutlined, PlusOutlined, AppstoreOutlined, CloseOutlined } from '@ant-design/icons';
 import './StaffAssignStudentPage.css';
 
 const { Title, Text } = Typography;
@@ -9,16 +9,25 @@ const { Title, Text } = Typography;
 const StaffAssignStudentPage = () => {
   const [selectedChildren, setSelectedChildren] = useState([]);
   const [classList, setClassList] = useState([]);
-  const [allChildrenList, setAllChildrenList] = useState([]); // Store all children
-  const [filteredChildrenList, setFilteredChildrenList] = useState([]); // Store filtered children
+  const [classListByGrade, setClassListByGrade] = useState({});
+  const [allChildrenList, setAllChildrenList] = useState([]);
+  const [filteredChildrenList, setFilteredChildrenList] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState(null);
-  const [selectedGradeLevel, setSelectedGradeLevel] = useState(null);
+  const [selectedClass, setSelectedClass] = useState(null);
   const [loading, setLoading] = useState(false);
   const [assigning, setAssigning] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectAll, setSelectAll] = useState(false);
+  // Add drawer state
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // Extract the fetch functions so they can be reused
+  // Fetch data
+  useEffect(() => {
+    fetchClassList();
+    fetchChildrenList();
+  }, []);
+
   const fetchClassList = async () => {
     setLoading(true);
     try {
@@ -26,6 +35,16 @@ const StaffAssignStudentPage = () => {
       // Filter out classes with non-null EP name
       const filteredClasses = data.filter(classItem => classItem.epName === null);
       setClassList(filteredClasses);
+      
+      // Organize classes by grade level
+      const classesByGrade = {};
+      filteredClasses.forEach(classItem => {
+        if (!classesByGrade[classItem.gradeLevelName]) {
+          classesByGrade[classItem.gradeLevelName] = [];
+        }
+        classesByGrade[classItem.gradeLevelName].push(classItem);
+      });
+      setClassListByGrade(classesByGrade);
     } catch (err) {
       message.error('Failed to load class list');
     } finally {
@@ -38,7 +57,6 @@ const StaffAssignStudentPage = () => {
     try {
       const data = await getPaidChildren();
       setAllChildrenList(data);
-      setFilteredChildrenList(data); // Initially show all children
     } catch (err) {
       message.error('Failed to load children list');
     } finally {
@@ -46,104 +64,115 @@ const StaffAssignStudentPage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchClassList();
-    fetchChildrenList();
-  }, []);
-
-  // Filter children when a class is selected
-  const handleClassSelect = (classId) => {
-    setSelectedClassId(classId);
-    setSelectedChildren([]); // Clear selected children when changing class
-    
-    // Find the selected class
-    const selectedClass = classList.find(c => c.id === classId);
-    
-    if (selectedClass) {
-      // Store the grade level for filtering
-      setSelectedGradeLevel(selectedClass.gradeLevelName);
+  // Select a class and filter students
+  const handleClassSelect = (classInfo) => {
+    setSelectedClassId(classInfo.id);
+    setSelectedClass(classInfo);
+    setSelectedChildren([]);
+    setSelectAll(false);
       
       // Filter children by grade level
       const filtered = allChildrenList.filter(
-        child => child.gradeLevelName === selectedClass.gradeLevelName
+      child => child.gradeLevelName === classInfo.gradeLevelName
       );
       
       setFilteredChildrenList(filtered);
       
-      // Show message about filtering
-      message.info(`Showing ${filtered.length} students in ${selectedClass.gradeLevelName} grade level`);
+    // Open the drawer to show students
+    setDrawerVisible(true);
+  };
+
+  // Toggle select all students
+  const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    setSelectAll(checked);
+    
+    if (checked) {
+      // Calculate how many students we can add based on remaining capacity
+      const remainingCapacity = selectedClass ? selectedClass.maxChildren - selectedClass.quantity : 0;
+      const studentsToAdd = filteredChildrenList.slice(0, remainingCapacity);
+      setSelectedChildren(studentsToAdd.map(child => child.id));
+      
+      // Show warning if not all students can be added
+      if (studentsToAdd.length < filteredChildrenList.length) {
+        message.warning(`Only ${remainingCapacity} students can be added due to class capacity limits.`);
+      }
+    } else {
+      setSelectedChildren([]);
     }
   };
 
+  // Toggle a single student selection
+  const toggleStudentSelection = (studentId) => {
+    const isSelected = selectedChildren.includes(studentId);
+    
+    if (isSelected) {
+      setSelectedChildren(selectedChildren.filter(id => id !== studentId));
+      setSelectAll(false);
+    } else {
+      // Check if adding this student would exceed class capacity
+      if (selectedClass && selectedChildren.length >= selectedClass.maxChildren - selectedClass.quantity) {
+        message.warning('Class capacity limit reached. Cannot add more students.');
+        return;
+      }
+      
+      setSelectedChildren([...selectedChildren, studentId]);
+      
+      // Check if all students are now selected
+      if (selectedChildren.length + 1 === filteredChildrenList.length || 
+          selectedChildren.length + 1 === selectedClass.maxChildren - selectedClass.quantity) {
+        setSelectAll(true);
+      }
+    }
+  };
+
+  // Handle the assignment process
   const handleAssign = async () => {
     if (!selectedClassId || selectedChildren.length === 0) {
       message.error('Please select a class and at least one student');
       return;
     }
     
-    // Get class name for messages
-    const className = classList.find(c => c.id === selectedClassId)?.name || 'selected class';
+    const className = selectedClass?.name || 'selected class';
     const studentCount = selectedChildren.length;
     
     setAssigning(true);
     try {
-      // Show loading message
       const loadingMessage = message.loading(`Assigning ${studentCount} student(s) to ${className}...`, 0);
       
-      // Perform assignment
       await assignChildrenToClass(selectedClassId, selectedChildren);
       
-      // Close loading message
       loadingMessage();
       
-      // Success notification with Modal
-      Modal.success({
-        title: 'Assignment Successful',
-        content: (
-          <div>
-            <p>{studentCount} student(s) successfully assigned to {className}!</p>
-            <p>The student list will now be refreshed.</p>
-          </div>
-        ),
-        okText: 'OK',
-        icon: <CheckCircleFilled style={{ color: '#52c41a' }} />,
-        maskClosable: true
+      // Show success notification instead of modal
+      notification.success({
+        message: 'Assignment Successful',
+        description: `${studentCount} student(s) successfully assigned to ${className}!`,
+        placement: 'topRight',
+        duration: 5,
+        icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+        className: 'assignment-success-notification',
+        style: {
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          borderRadius: '8px',
+        }
       });
       
-      // Reset selections
+      // Reset UI state
       setSelectedChildren([]);
       setSelectedClassId(null);
-      setSelectedGradeLevel(null);
+      setSelectedClass(null);
+      setSelectAll(false);
+      setDrawerVisible(false);
       
-      // Completely refresh data with new API calls
-      setLoading(true);
-      
-      try {
-        // Fetch fresh class data
-        const classData = await getAllClasses();
-        const filteredClasses = classData.filter(classItem => classItem.epName === null);
-        setClassList(filteredClasses);
-        
-        // Fetch fresh student data
-        const studentData = await getPaidChildren();
-        
-        // Update both student lists
-        setAllChildrenList(studentData);
-        setFilteredChildrenList(studentData);
-      } catch (refreshError) {
-        message.warning({
-          content: 'Assignment successful, but failed to refresh data. Please reload the page.',
-          duration: 5
-        });
-        console.error('Error refreshing data:', refreshError);
-      } finally {
-        setLoading(false);
-      }
+      // Refresh data
+      await fetchClassList();
+      await fetchChildrenList();
+      setFilteredChildrenList([]);
       
     } catch (err) {
       console.error('Assignment error:', err);
       
-      // Error notification with Modal
       Modal.error({
         title: 'Assignment Failed',
         content: (
@@ -153,22 +182,19 @@ const StaffAssignStudentPage = () => {
           </div>
         ),
         okText: 'Try Again',
-        icon: <CloseCircleFilled style={{ color: '#ff4d4f' }} />,
-        maskClosable: true
       });
     } finally {
       setAssigning(false);
     }
   };
 
-  // Format date to display
+  // Format date and calculate age
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
   };
 
-  // Calculate age from birthday
   const calculateAge = (birthday) => {
     if (!birthday) return '';
     const birthDate = new Date(birthday);
@@ -181,289 +207,266 @@ const StaffAssignStudentPage = () => {
     return age;
   };
 
+  // Show student details in modal
   const showStudentDetail = (student) => {
     setSelectedStudent(student);
     setDetailModalVisible(true);
   };
 
-  // Modify the class columns to use simplified radio buttons
-  const classColumns = [
-    {
-      title: 'Class Information',
-      dataIndex: 'info',
-      key: 'info',
-      ellipsis: false,
-      width: 'calc(100% - 70px)',
-      render: (_, record) => (
-        <div className="staff-assign-class-info">
-          <div className="staff-assign-class-name">{record.name}</div>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Text strong>Grade Level:</Text> {record.gradeLevelName}
-            </Col>
-            <Col span={12}>
-              <Text strong>Status:</Text>{' '}
-              <Tag 
-                className="staff-assign-status-tag" 
-                color={record.status === 'Available' ? 'green' : 'red'}
-              >
-                {record.status || 'Unknown'}
-              </Tag>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Text strong>Syllabus:</Text> {record.syllabusName}
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Text strong>Capacity:</Text> {record.quantity}/{record.maxChildren} students
-              <div className="staff-assign-capacity-bar">
-                <div 
-                  className="staff-assign-capacity-fill" 
-                  style={{ width: `${(record.quantity / record.maxChildren) * 100}%` }}
-                />
-              </div>
-            </Col>
-          </Row>
-        </div>
-      ),
-    },
-    {
-      title: 'Select',
-      dataIndex: 'action',
-      key: 'action',
-      width: 70,
-      align: 'center',
-      render: (_, record) => (
-        <Radio 
-          checked={selectedClassId === record.id}
-          onChange={() => {
-            if (selectedClassId === record.id) {
+  const closeDrawer = () => {
+    setDrawerVisible(false);
               setSelectedClassId(null);
-              setSelectedGradeLevel(null);
+    setSelectedClass(null);
               setSelectedChildren([]);
-              setFilteredChildrenList(allChildrenList);
-              message.info('Class selection cleared');
-            } else {
-              handleClassSelect(record.id);
-            }
-          }}
-        />
-      ),
-    },
-  ];
-
-  // Simplify the onRow handler
-  const onRowClick = (record) => {
-    return {
-      onClick: (e) => {
-        // Only trigger when clicking on the last cell (radio button cell)
-        if (e.target.closest('td') && e.target.closest('td').cellIndex === 1) {
-          if (selectedClassId === record.id) {
-            setSelectedClassId(null);
-            setSelectedGradeLevel(null);
-            setSelectedChildren([]);
-            setFilteredChildrenList(allChildrenList);
-            message.info('Class selection cleared');
-          } else {
-            handleClassSelect(record.id);
-          }
-        }
-      }
-    };
+    setSelectAll(false);
+    setFilteredChildrenList([]);
   };
-
-  // Update children columns with better width configurations
-  const childrenColumns = [
-    {
-      title: '',
-      key: 'avatar',
-      width: '100px',
-      className: 'avatar-column',
-      render: (record) => (
-        <Avatar 
-          src={record.avatar} 
-          icon={!record.avatar && <UserOutlined />} 
-          size={64}
-          className="staff-assign-student-avatar" 
-        />
-      ),
-    },
-    {
-      title: 'Student Information',
-      key: 'info',
-      className: 'info-column',
-      render: (record) => (
-        <div className="staff-assign-student-info">
-          <div className="staff-assign-student-name">{record.name}</div>
-          <div>
-            <Text strong>Birthday:</Text> {formatDate(record.birthday)} ({calculateAge(record.birthday)} years)
-          </div>
-          <div>
-            <Text strong>Grade Level:</Text> {record.gradeLevelName}
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      width: '180px',
-      className: 'action-column',
-      render: (_, record) => {
-        const isSelected = selectedChildren.includes(record.id);
-        return (
-          <div className="staff-assign-action-buttons">
-            <Button 
-              type="default"
-              icon={<InfoCircleOutlined />}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent row click
-                showStudentDetail(record);
-              }}
-              className="staff-assign-detail-btn"
-            >
-              Detail
-            </Button>
-            <Button 
-              type={isSelected ? 'default' : 'primary'}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent row click
-                if (isSelected) {
-                  setSelectedChildren(prev => prev.filter(id => id !== record.id));
-                } else {
-                  setSelectedChildren(prev => [...prev, record.id]);
-                }
-              }}
-              className={isSelected ? 'staff-assign-selected-btn' : ''}
-              disabled={!selectedClassId}
-            >
-              {isSelected ? 'Unselect' : 'Select'}
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
 
   return (
     <div className="staff-assign-container">
       <div className="staff-assign-page-header">
         <Title level={2} className="staff-assign-page-title">Assign Students to Class</Title>
+        <div className="student-counter">
         <Badge count={selectedChildren.length} offset={[0, 10]}>
           <TeamOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
         </Badge>
       </div>
-      
-      <div className="staff-assign-divider">
-        <span className="staff-assign-divider-text">Select Class & Students</span>
       </div>
       
       <Spin spinning={loading}>
-        <Row gutter={[24, 16]}>
-          {/* Left side - Classes */}
-          <Col xs={24} lg={12}>
+        <Row gutter={[24, 24]}>
+          {/* Class selection section */}
+          <Col span={24}>
             <Card 
-              title="Available Classes" 
-              extra={<Badge count={classList.length} style={{ backgroundColor: '#108ee9' }} />}
-              variant="borderless" 
+              title={
+                <div className="card-title-with-icon">
+                  <AppstoreOutlined /> Classes by Grade Level
+                </div>
+              }
               className="staff-assign-card"
+              extra={
+                selectedClass && (
+                  <Tag color="blue" className="selected-class-tag">
+                    Selected: {selectedClass.name}
+                  </Tag>
+                )
+              }
             >
-              {classList.length > 0 ? (
-                <Table 
-                  dataSource={classList} 
-                  columns={classColumns}
-                  rowKey={record => record.id || record.ID}
-                  pagination={{ pageSize: 5 }}
-                  scroll={{ y: 400 }}
-                  className="staff-assign-table"
-                  rowClassName={(record) => selectedClassId === record.id ? 'staff-assign-selected-row' : ''}
-                  onRow={onRowClick}
-                  tableLayout="fixed"
+              {Object.keys(classListByGrade).length > 0 ? (
+                <Collapse 
+                  defaultActiveKey={Object.keys(classListByGrade)} 
+                  className="grade-collapse"
+                  items={Object.entries(classListByGrade).map(([gradeName, classes]) => ({
+                    key: gradeName,
+                    label: (
+                      <span className="grade-header">
+                        <span className="grade-name">{gradeName}</span>
+                        <Tag color="blue" className="grade-count">{classes.length} classes</Tag>
+                      </span>
+                    ),
+                    children: (
+                      <div className="class-card-container">
+                        {classes.map(classItem => (
+                          <Card 
+                            key={classItem.id} 
+                            className={`class-card ${selectedClassId === classItem.id ? 'selected-class' : ''}`}
+                            onClick={() => handleClassSelect(classItem)}
+                          >
+                            {selectedClassId === classItem.id && (
+                              <CheckCircleOutlined className="selected-icon" />
+                            )}
+                            
+                            <div className="class-card-header">
+                              <span className="class-name">{classItem.name}</span>
+                            </div>
+                            
+                            <div className="class-info">
+                              <p>
+                                <Text strong>Syllabus:</Text> {classItem.syllabusName}
+                              </p>
+                              <p>
+                                <Text strong>Status:</Text>{' '}
+                                <Tag color={classItem.status === 'Available' ? 'green' : 'red'}>
+                                  {classItem.status || 'Unknown'}
+                                </Tag>
+                              </p>
+                              <div className="capacity-section">
+                                <div className="capacity-text">
+                                  <Text strong>Capacity:</Text> 
+                                  <span className={classItem.quantity >= classItem.maxChildren ? 'capacity-full' : ''}>
+                                    {classItem.quantity}/{classItem.maxChildren} students
+                                  </span>
+                                </div>
+                                <Progress 
+                                  percent={(classItem.quantity / classItem.maxChildren) * 100} 
+                                  showInfo={false}
+                                  status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
+                                  size="small"
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+                    )
+                  }))}
                 />
               ) : (
-                <Alert 
-                  message="No Classes Available" 
-                  description="There are currently no classes available for assignment." 
-                  type="info" 
-                  showIcon 
-                />
+                <Empty description="No classes available" />
               )}
             </Card>
           </Col>
           
-          {/* Right side - Children */}
-          <Col xs={24} lg={12}>
-            <Card 
-              title={selectedGradeLevel ? 
-                `Paid Students (${selectedGradeLevel} Grade Level)` : 
-                "Paid Students"
-              }
-              extra={<Badge count={filteredChildrenList.length} style={{ backgroundColor: '#52c41a' }} />}
-              variant="borderless" 
-              className="staff-assign-card"
-            >
-              <Table 
-                dataSource={filteredChildrenList} 
-                columns={childrenColumns}
-                rowKey="id"
-                pagination={{ pageSize: 5 }}
-                scroll={{ y: 600, x: false }} // Remove horizontal scroll
-                className="staff-assign-table staff-assign-student-table" // Add the specific student table class
-                rowClassName={(record) => selectedChildren.includes(record.id) ? 'staff-assign-selected-row' : ''}
-                locale={{ emptyText: selectedClassId ? 
-                  'No students available for this grade level' : 
-                  'Please select a class first to see available students'
-                }}
+          {/* Instruction message when no class is selected */}
+          {!selectedClass && !loading && (
+            <Col span={24}>
+              <Alert
+                message="Select a Class"
+                description="Please select a class from above to view eligible students for assignment."
+                type="info"
+                showIcon
+                icon={<InfoCircleOutlined />}
               />
-              {!selectedClassId && (
-                <div className="staff-assign-warning">
-                  <ExclamationCircleOutlined /> 
-                  Please select a class before selecting students
-                </div>
-              )}
-            </Card>
-          </Col>
+            </Col>
+          )}
         </Row>
-        
-        <div className="staff-assign-divider">
-          <span className="staff-assign-divider-text">Review & Confirm</span>
-        </div>
-        
-        {/* Assignment section */}
-        <Card 
-          title="Assignment Information" 
-          variant="borderless" 
-          className="staff-assign-summary-card"
-        >
-          <div className="staff-assign-info-box">
-            <Row gutter={16}>
-              <Col span={12}>
-                <Text strong>Selected Class:</Text> {classList.find(c => c.id === selectedClassId)?.name || 'None'}
-              </Col>
-              <Col span={12}>
-                <Text strong>Students to Assign:</Text> {selectedChildren.length}
-              </Col>
-            </Row>
+      </Spin>
+
+      {/* Student List Drawer */}
+      <Drawer
+        title={
+          <div className="drawer-header">
+            <div className="drawer-title">
+              {selectedClass && (
+                <>
+                  <div className="drawer-title-text">
+                    Students for {selectedClass.gradeLevelName} - {selectedClass.name}
+                  </div>
+                  <div className="drawer-subtitle">
+                    <Tooltip title={`${selectedClass.quantity}/${selectedClass.maxChildren} students currently in class`}>
+                      <Tag color={selectedClass.quantity >= selectedClass.maxChildren ? "red" : "green"}>
+                        {selectedClass.maxChildren - selectedClass.quantity} spots available
+                      </Tag>
+                    </Tooltip>
+                  </div>
+                </>
+              )}
+            </div>
+            <Checkbox 
+              onChange={handleSelectAll} 
+              checked={selectAll}
+              disabled={selectedClass && selectedClass.quantity >= selectedClass.maxChildren}
+            >
+              Select All
+            </Checkbox>
           </div>
-          
-          <div className="staff-assign-button-container">
+        }
+        placement="right"
+        width={500}
+        onClose={closeDrawer}
+        open={drawerVisible}
+        closeIcon={<CloseOutlined />}
+        className="student-list-drawer"
+      >
+        {filteredChildrenList.length > 0 ? (
+          <div className="drawer-student-list">
+            {filteredChildrenList.map(student => {
+              const isSelected = selectedChildren.includes(student.id);
+              const isCapacityReached = !isSelected && 
+                selectedClass && selectedClass.quantity + selectedChildren.length >= selectedClass.maxChildren;
+              
+              return (
+                <div 
+                  key={student.id} 
+                  className={`drawer-student-card ${isSelected ? 'selected-student' : ''}`}
+                  onClick={() => !isCapacityReached && toggleStudentSelection(student.id)}
+                >
+                  <div className="drawer-student-content">
+                    <Avatar 
+                      src={student.avatar} 
+                      icon={!student.avatar && <UserOutlined />} 
+                      size={54}
+                      className="student-avatar" 
+                    />
+                    <div className="drawer-student-info">
+                      <h3 className="drawer-student-name">{student.name}</h3>
+                      <p className="drawer-student-details">
+                        {formatDate(student.birthday)} ({calculateAge(student.birthday)} years)
+                        <span className="detail-separator">•</span>
+                        {student.gender}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="drawer-student-actions">
+                    <Checkbox 
+                      checked={isSelected}
+                      disabled={isCapacityReached && !isSelected}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!isCapacityReached || isSelected) {
+                          toggleStudentSelection(student.id);
+                        }
+                      }}
+                    />
+                    <Button
+                      type="text"
+                      icon={<InfoCircleOutlined />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showStudentDetail(student);
+                      }}
+                      className="drawer-detail-btn"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <Empty description="No students available for this grade level" />
+        )}
+        
+        {/* Show warning if we're close to capacity */}
+        {selectedClass && selectedClass.maxChildren - selectedClass.quantity - selectedChildren.length <= 3 && 
+          selectedClass.maxChildren - selectedClass.quantity > 0 && (
+          <Alert
+            message="Class is almost full"
+            description={`This class has only ${selectedClass.maxChildren - selectedClass.quantity - selectedChildren.length} spots remaining after your current selection.`}
+            type="warning"
+            showIcon
+            icon={<WarningOutlined />}
+            style={{ marginTop: 16 }}
+          />
+        )}
+        
+        {/* Show error if class is full */}
+        {selectedClass && selectedClass.maxChildren <= selectedClass.quantity && (
+          <Alert
+            message="Class is at full capacity"
+            description="This class cannot accept any more students. Please select another class."
+            type="error"
+            showIcon
+            style={{ marginTop: 16 }}
+          />
+        )}
+        
+        {/* Bottom actions in drawer */}
+        {selectedChildren.length > 0 && (
+          <div className="drawer-footer-actions">
             <Button
               type="primary"
               onClick={handleAssign}
               loading={assigning}
-              disabled={assigning || !selectedClassId || selectedChildren.length === 0}
               size="large"
-              className="staff-assign-button"
-              icon={<RightOutlined />}
+              icon={<PlusOutlined />}
+              block
             >
-              Assign {selectedChildren.length} Student{selectedChildren.length !== 1 ? 's' : ''} to Class
+              Assign {selectedChildren.length} Student{selectedChildren.length !== 1 ? 's' : ''} to {selectedClass?.name}
             </Button>
           </div>
-        </Card>
-      </Spin>
+        )}
+      </Drawer>
 
       {/* Student Detail Modal */}
       <Modal
@@ -478,15 +481,15 @@ const StaffAssignStudentPage = () => {
         width={700}
       >
         {selectedStudent && (
-          <div className="staff-assign-student-detail">
-            <div className="staff-assign-detail-header">
+          <div className="student-detail-content">
+            <div className="student-detail-header">
               <Avatar 
                 src={selectedStudent.avatar} 
                 icon={!selectedStudent.avatar && <UserOutlined />} 
                 size={100}
-                className="staff-assign-detail-avatar"
+                className="student-detail-avatar"
               />
-              <div className="staff-assign-detail-title">
+              <div className="student-detail-title">
                 <h2>{selectedStudent.name}</h2>
                 <Tag color="blue">{selectedStudent.gradeLevelName}</Tag>
               </div>
@@ -496,44 +499,44 @@ const StaffAssignStudentPage = () => {
             
             <Row gutter={[16, 16]}>
               <Col span={12}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">Birthday:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">Birthday:</div>
                   <div>{formatDate(selectedStudent.birthday)} ({calculateAge(selectedStudent.birthday)} years)</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">Gender:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">Gender:</div>
                   <div>{selectedStudent.gender}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">Parent Name:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">Parent Name:</div>
                   <div>{selectedStudent.parentName}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">Phone Number:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">Phone Number:</div>
                   <div>{selectedStudent.phoneNumber}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">City:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">City:</div>
                   <div>{selectedStudent.city}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">Enrollment Date:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">Enrollment Date:</div>
                   <div>{formatDate(selectedStudent.enrollDate)}</div>
                 </div>
               </Col>
               <Col span={24}>
-                <div className="staff-assign-detail-item">
-                  <div className="staff-assign-detail-label">Birth Certificate:</div>
+                <div className="student-detail-item">
+                  <div className="student-detail-label">Birth Certificate:</div>
                   <div>
                     <a href={selectedStudent.birthCertificate} target="_blank" rel="noopener noreferrer">
                       View Certificate
