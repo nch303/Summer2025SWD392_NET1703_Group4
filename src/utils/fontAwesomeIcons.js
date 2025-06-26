@@ -94,6 +94,8 @@ import {
   faSms,
   faEnvelope,
   faFlag,
+  faIdBadge,
+  faHeading,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -194,6 +196,8 @@ library.add(
   faSms,
   faEnvelope,
   faFlag,
+  faIdBadge,
+  faHeading,
 );
 
 // Không cần export vì đã đăng ký vào library 
