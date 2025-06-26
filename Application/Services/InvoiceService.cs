@@ -109,19 +109,18 @@ namespace Application.Services
                     //Get academic year
                     string academicYear = "";
 
-
                     var year = invoice.Date.Year;
 
-                    // So sánh với ngày 1/9 của năm hiện tại
-                    var schoolStartDate = new DateTime(year, 9, 1);
+                    // So sánh với ngày 1/6 của năm hiện tại
+                    var schoolStartDate = new DateTime(year, 6, 1);
 
                     if (invoice.Date < schoolStartDate)
                     {
-                        academicYear = (year - 1).ToString() + "-" + year.ToString();
+                        academicYear = (year - 1).ToString() + "-" + (year).ToString();
                     }
                     else
                     {
-                        academicYear = year.ToString() + "-" + (year + 1).ToString();
+                        academicYear = (year).ToString() + "-" + (year + 1).ToString();
                     }
 
                     var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
@@ -133,7 +132,7 @@ namespace Application.Services
 
                     // Design Description cua hoa don
                     // Tách các phần tử
-                    
+
                     if (tuition.Description!.Contains("+"))
                     {
                         string[] parts = tuition.Description!.Split(" + ");
