@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message, Spin, Card, Row, Col, Badge, Divider, Avatar, Tag, Typography, Modal, Alert, Progress, Checkbox, Collapse, Space, Empty, Tooltip, Drawer, notification } from 'antd';
+import { Button, message, Spin, Card, Row, Col, Badge, Divider, Avatar, Tag, Typography, Modal, Alert, Progress, Checkbox, Collapse, Space, Empty, Tooltip, Drawer, notification, Radio } from 'antd';
 import { getAllClasses, getPaidChildren, assignChildrenToClass } from './StaffAssignStudentService.js';
 import { UserOutlined, InfoCircleOutlined, CheckCircleOutlined, WarningOutlined, TeamOutlined, PlusOutlined, AppstoreOutlined, CloseOutlined } from '@ant-design/icons';
 import './StaffAssignStudentPage.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const { Title, Text } = Typography;
 
@@ -21,6 +22,11 @@ const StaffAssignStudentPage = () => {
   const [selectAll, setSelectAll] = useState(false);
   // Add drawer state
   const [drawerVisible, setDrawerVisible] = useState(false);
+  // First, add state variables for academic year filtering
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState('all');
+  const [gradeLevels, setGradeLevels] = useState([]);
+  const [selectedGradeLevel, setSelectedGradeLevel] = useState('all');
 
   // Fetch data
   useEffect(() => {
@@ -36,9 +42,35 @@ const StaffAssignStudentPage = () => {
       const filteredClasses = data.filter(classItem => classItem.epName === null);
       setClassList(filteredClasses);
       
+      // Extract unique academic years
+      const years = [...new Set(filteredClasses.map(c => c.academicYear))].sort();
+      setAcademicYears(years);
+      
+      // Extract unique grade levels
+      const grades = [...new Set(filteredClasses.map(c => c.gradeLevelName).filter(Boolean))];
+      setGradeLevels(grades);
+      
+      // If no academic year is selected yet, select the most recent one
+      if (selectedAcademicYear === 'all' && years.length > 0) {
+        setSelectedAcademicYear(years[0]);
+      }
+      
+      // Apply filters
+      let classesToOrganize = filteredClasses;
+      
+      // Filter by academic year if selected
+      if (selectedAcademicYear !== 'all') {
+        classesToOrganize = classesToOrganize.filter(c => c.academicYear === selectedAcademicYear);
+      }
+      
+      // Filter by grade level if selected
+      if (selectedGradeLevel !== 'all') {
+        classesToOrganize = classesToOrganize.filter(c => c.gradeLevelName === selectedGradeLevel);
+      }
+      
       // Organize classes by grade level
       const classesByGrade = {};
-      filteredClasses.forEach(classItem => {
+      classesToOrganize.forEach(classItem => {
         if (!classesByGrade[classItem.gradeLevelName]) {
           classesByGrade[classItem.gradeLevelName] = [];
         }
@@ -222,6 +254,62 @@ const StaffAssignStudentPage = () => {
     setFilteredChildrenList([]);
   };
 
+  // Add handlers for academic year and grade level changes
+  const handleAcademicYearChange = (value) => {
+    setSelectedAcademicYear(value);
+    
+    // Apply filter
+    let classesToOrganize = classList.filter(classItem => classItem.epName === null);
+    
+    // Filter by academic year
+    if (value !== 'all') {
+      classesToOrganize = classesToOrganize.filter(c => c.academicYear === value);
+    }
+    
+    // Keep grade level filter if active
+    if (selectedGradeLevel !== 'all') {
+      classesToOrganize = classesToOrganize.filter(c => c.gradeLevelName === selectedGradeLevel);
+    }
+    
+    // Organize classes by grade level
+    const classesByGrade = {};
+    classesToOrganize.forEach(classItem => {
+      if (!classesByGrade[classItem.gradeLevelName]) {
+        classesByGrade[classItem.gradeLevelName] = [];
+      }
+      classesByGrade[classItem.gradeLevelName].push(classItem);
+    });
+    setClassListByGrade(classesByGrade);
+  };
+
+  const handleGradeLevelChange = (e) => {
+    const value = e.target.value;
+    setSelectedGradeLevel(value);
+    
+    // Apply filter
+    let classesToOrganize = classList.filter(classItem => classItem.epName === null);
+    
+    // Keep academic year filter if active
+    if (selectedAcademicYear !== 'all') {
+      classesToOrganize = classesToOrganize.filter(c => c.academicYear === selectedAcademicYear);
+    }
+    
+    // Filter by grade level
+    if (value !== 'all') {
+      classesToOrganize = classesToOrganize.filter(c => c.gradeLevelName === value);
+    }
+    
+    // Organize classes by grade level
+    const classesByGrade = {};
+    classesToOrganize.forEach(classItem => {
+      if (!classesByGrade[classItem.gradeLevelName]) {
+        classesByGrade[classItem.gradeLevelName] = [];
+      }
+      classesByGrade[classItem.gradeLevelName].push(classItem);
+    });
+    setClassListByGrade(classesByGrade);
+  };
+
   return (
     <div className="staff-assign-container">
       <div className="staff-assign-page-header">
@@ -245,11 +333,62 @@ const StaffAssignStudentPage = () => {
               }
               className="staff-assign-card"
               extra={
-                selectedClass && (
-                  <Tag color="blue" className="selected-class-tag">
-                    Selected: {selectedClass.name}
-                  </Tag>
-                )
+                <div className="card-header-actions">
+                  {/* Academic year filter */}
+                  <div className="academic-year-filter">
+                    <span className="filter-label">Năm học:</span>
+                    <Button 
+                      icon={<FontAwesomeIcon icon="chevron-left" />} 
+                      size="small"
+                      onClick={() => {
+                        const currentIndex = academicYears.indexOf(selectedAcademicYear);
+                        if (currentIndex > 0) {
+                          handleAcademicYearChange(academicYears[currentIndex - 1]);
+                        }
+                      }}
+                      disabled={academicYears.indexOf(selectedAcademicYear) === 0}
+                    />
+                    <span className="academic-year-display">
+                      {selectedAcademicYear || 'Tất cả'}
+                    </span>
+                    <Button 
+                      icon={<FontAwesomeIcon icon="chevron-right" />} 
+                      size="small"
+                      onClick={() => {
+                        const currentIndex = academicYears.indexOf(selectedAcademicYear);
+                        if (currentIndex < academicYears.length - 1) {
+                          handleAcademicYearChange(academicYears[currentIndex + 1]);
+                        }
+                      }}
+                      disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
+                    />
+                  </div>
+                  
+                  {/* Grade level filter */}
+                  <div className="grade-level-filter">
+                    <Radio.Group 
+                      value={selectedGradeLevel}
+                      onChange={handleGradeLevelChange}
+                      buttonStyle="solid"
+                      size="small"
+                      optionType="button"
+                    >
+                      <Radio.Button value="all">Tất cả</Radio.Button>
+                      {gradeLevels.map(grade => (
+                        <Radio.Button key={grade} value={grade}>
+                          {grade}
+                        </Radio.Button>
+                      ))}
+                    </Radio.Group>
+                  </div>
+                  
+                  {/* Selected class tag */}
+                  {selectedClass && (
+                    <Tag color="blue" className="selected-class-tag">
+                      Selected: {selectedClass.name}
+                    </Tag>
+                  )}
+                </div>
               }
             >
               {Object.keys(classListByGrade).length > 0 ? (
@@ -316,19 +455,6 @@ const StaffAssignStudentPage = () => {
               )}
             </Card>
           </Col>
-          
-          {/* Instruction message when no class is selected */}
-          {!selectedClass && !loading && (
-            <Col span={24}>
-              <Alert
-                message="Select a Class"
-                description="Please select a class from above to view eligible students for assignment."
-                type="info"
-                showIcon
-                icon={<InfoCircleOutlined />}
-              />
-            </Col>
-          )}
         </Row>
       </Spin>
 
@@ -468,83 +594,118 @@ const StaffAssignStudentPage = () => {
         )}
       </Drawer>
 
-      {/* Student Detail Modal */}
+      {/* Student Detail Modal - Improved Design */}
       <Modal
-        title="Student Details"
+        title={null}
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={[
           <Button key="close" onClick={() => setDetailModalVisible(false)}>
-            Close
+            Đóng
           </Button>
         ]}
         width={700}
+        className="student-detail-modal"
       >
         {selectedStudent && (
           <div className="student-detail-content">
+            {/* Header with student name */}
             <div className="student-detail-header">
+              <div className="student-detail-title">
+                <h2>{selectedStudent.name}</h2>
+                <div className="student-detail-badges">
+                  <Tag color="blue">{selectedStudent.gradeLevelName}</Tag>
+                  <Tag color={selectedStudent.gender === 'Male' ? 'blue' : 'magenta'}>{selectedStudent.gender}</Tag>
+                </div>
+              </div>
               <Avatar 
                 src={selectedStudent.avatar} 
                 icon={!selectedStudent.avatar && <UserOutlined />} 
-                size={100}
+                size={80}
                 className="student-detail-avatar"
               />
-              <div className="student-detail-title">
-                <h2>{selectedStudent.name}</h2>
-                <Tag color="blue">{selectedStudent.gradeLevelName}</Tag>
-              </div>
             </div>
-            
-            <Divider />
-            
-            <Row gutter={[16, 16]}>
-              <Col span={12}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">Birthday:</div>
-                  <div>{formatDate(selectedStudent.birthday)} ({calculateAge(selectedStudent.birthday)} years)</div>
-                </div>
-              </Col>
-              <Col span={12}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">Gender:</div>
-                  <div>{selectedStudent.gender}</div>
-                </div>
-              </Col>
-              <Col span={12}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">Parent Name:</div>
-                  <div>{selectedStudent.parentName}</div>
-                </div>
-              </Col>
-              <Col span={12}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">Phone Number:</div>
-                  <div>{selectedStudent.phoneNumber}</div>
-                </div>
-              </Col>
-              <Col span={12}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">City:</div>
-                  <div>{selectedStudent.city}</div>
-                </div>
-              </Col>
-              <Col span={12}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">Enrollment Date:</div>
-                  <div>{formatDate(selectedStudent.enrollDate)}</div>
-                </div>
-              </Col>
-              <Col span={24}>
-                <div className="student-detail-item">
-                  <div className="student-detail-label">Birth Certificate:</div>
-                  <div>
-                    <a href={selectedStudent.birthCertificate} target="_blank" rel="noopener noreferrer">
-                      View Certificate
-                    </a>
-                  </div>
-                </div>
-              </Col>
-            </Row>
+
+            {/* Student information card */}
+            <Card bordered={false} className="student-detail-card">
+              <div className="student-detail-section">
+                <h3>
+                  <FontAwesomeIcon icon="user" /> Thông tin cá nhân
+                </h3>
+                <Row gutter={[24, 16]}>
+                  <Col span={12}>
+                    <div className="detail-item">
+                      <div className="detail-label">Ngày sinh:</div>
+                      <div className="detail-value">{formatDate(selectedStudent.birthday)} ({calculateAge(selectedStudent.birthday)} tuổi)</div>
+                    </div>
+                  </Col>
+                  <Col span={12}>
+                    <div className="detail-item">
+                      <div className="detail-label">Giấy khai sinh:</div>
+                      <div className="detail-value">
+                        {selectedStudent.birthCertificate ? (
+                          <a href={selectedStudent.birthCertificate} target="_blank" rel="noopener noreferrer">
+                            Xem giấy tờ
+                          </a>
+                        ) : (
+                          'Chưa có'
+                        )}
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+
+              <div className="student-detail-section">
+                <h3>
+                  <FontAwesomeIcon icon="home" /> Thông tin liên hệ
+                </h3>
+                <Row gutter={[24, 16]}>
+                  <Col span={12}>
+                    <div className="detail-item">
+                      <div className="detail-label">Phụ huynh:</div>
+                      <div className="detail-value">{selectedStudent.parentName}</div>
+                    </div>
+                  </Col>
+                  <Col span={12}>
+                    <div className="detail-item">
+                      <div className="detail-label">Số điện thoại:</div>
+                      <div className="detail-value">{selectedStudent.phoneNumber}</div>
+                    </div>
+                  </Col>
+                  <Col span={24}>
+                    <div className="detail-item">
+                      <div className="detail-label">Thành phố:</div>
+                      <div className="detail-value">{selectedStudent.city}</div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+
+              <div className="student-detail-section">
+                <h3>
+                  <FontAwesomeIcon icon="calendar-alt" /> Thông tin học tập
+                </h3>
+                <Row gutter={[24, 16]}>
+                  <Col span={12}>
+                    <div className="detail-item">
+                      <div className="detail-label">Ngày nhập học:</div>
+                      <div className="detail-value highlight">
+                        {formatDate(selectedStudent.enrollDate)}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col span={12}>
+                    <div className="detail-item">
+                      <div className="detail-label">Cấp lớp:</div>
+                      <div className="detail-value">
+                        <Tag color="blue">{selectedStudent.gradeLevelName}</Tag>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </Card>
           </div>
         )}
       </Modal>

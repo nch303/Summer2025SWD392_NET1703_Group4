@@ -96,9 +96,11 @@ import {
   faFlag,
   faSpinner,
   faHouse,
-  faSchoolFlag
+  faSchoolFlag,
   faIdBadge,
   faHeading,
+  faStar,
+  faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -204,6 +206,8 @@ library.add(
   faSchoolFlag,
   faIdBadge,
   faHeading,
+  faStar,
+  faArrowRight,
 );
 
 // Không cần export vì đã đăng ký vào library 

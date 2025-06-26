@@ -13,7 +13,7 @@ export async function getAllClasses() {
 
 export async function getPaidChildren() {
   try {
-    const response = await api.get('/api/Children/paidChildren');
+    const response = await api.get('/api/Staff/GetNotEnrolledChildren');
     return response.data;
   } catch (error) {
     console.error('Error fetching children:', error);

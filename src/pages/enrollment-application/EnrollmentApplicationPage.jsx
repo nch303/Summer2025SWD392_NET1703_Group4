@@ -398,7 +398,7 @@ const EnrollmentApplicationPage = () => {
                 </div>
               </div>
               
-              <div className="form-actions">
+              <div className="enrollment-form-actions">
                 <button 
                   type="button" 
                   className="btn-cancel"

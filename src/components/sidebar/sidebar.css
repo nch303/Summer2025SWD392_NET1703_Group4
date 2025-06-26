@@ -1,13 +1,13 @@
 /* Rename all sidebar classes to be more specific */
 .staff-sidebar {
-  width: 260px;
-  min-width: 260px;
-  background-color: #ffffff;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+  width: 280px;
+  min-width: 280px;
+  background: linear-gradient(to bottom, #ffffff, #f8f9ff);
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
+  border-radius: 16px;
   margin-left: 20px;
   margin-right: 20px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: sticky;
   top: 80px;
   height: calc(100vh - 120px);
@@ -16,66 +16,92 @@
   overflow-y: auto;
   z-index: 10;
   flex-shrink: 0;
+  border: 1px solid rgba(231, 235, 247, 0.8);
 }
 
 .staff-sidebar-header {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(231, 235, 247, 0.8);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .staff-sidebar-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
+  letter-spacing: -0.2px;
 }
 
 .staff-sidebar-toggle {
   background: none;
   border: none;
-  color: #666;
+  color: #6b7280;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px;
-  border-radius: 5px;
-  transition: background-color 0.2s;
-  min-width: 30px;
-  min-height: 30px;
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  min-width: 34px;
+  min-height: 34px;
 }
 
 .staff-sidebar-toggle:hover {
-  background-color: #f0f0f0;
+  background-color: #f0f0ff;
+  color: #4a6cf7;
+  transform: scale(1.05);
 }
 
 .staff-sidebar-toggle svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .staff-sidebar-nav {
-  padding: 10px 0;
+  padding: 12px;
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .staff-sidebar-link {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: 14px 18px;
   color: #555;
   text-decoration: none;
-  transition: background-color 0.2s, color 0.2s;
-  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  border-radius: 12px;
   margin: 2px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.staff-sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.3s;
+  border-radius: 0 4px 4px 0;
 }
 
 .staff-sidebar-icon {
@@ -84,42 +110,55 @@
   justify-content: center;
   min-width: 24px;
   height: 24px;
-  margin-right: 10px;
-  transition: margin 0.3s ease;
+  margin-right: 12px;
+  transition: all 0.3s ease;
 }
 
 .staff-sidebar-icon svg {
   width: 20px;
   height: 20px;
-  color: inherit;
+  transition: transform 0.2s ease;
 }
 
 .staff-sidebar-text {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: opacity 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .staff-sidebar-link:hover {
-  background-color: #f5f7fa;
+  background-color: rgba(74, 108, 247, 0.05);
   color: #4a6cf7;
+  transform: translateX(2px);
+}
+
+.staff-sidebar-link:hover .staff-sidebar-icon svg {
+  transform: scale(1.1);
 }
 
 .staff-sidebar-link.active {
   color: #4a6cf7;
-  background-color: #eef1ff;
-  border-left: 3px solid #4a6cf7;
+  background-color: rgba(74, 108, 247, 0.08);
+  font-weight: 600;
+}
+
+.staff-sidebar-link.active::before {
+  height: 70%;
+  opacity: 1;
+  top: 15%;
+}
+
+.staff-sidebar-link.active .staff-sidebar-icon {
+  transform: scale(1.05);
 }
 
 /* Collapsed sidebar styles */
 .sidebar-collapsed .staff-sidebar {
-  width: 70px;
-  min-width: 70px;
-  margin-right: 20px;
-  overflow: visible;
+  width: 80px;
+  min-width: 80px;
 }
 
 .sidebar-collapsed .staff-sidebar-title {
@@ -140,7 +179,12 @@
 
 .sidebar-collapsed .staff-sidebar-link {
   justify-content: center;
-  padding: 12px;
+  padding: 16px 12px;
+}
+
+.sidebar-collapsed .staff-sidebar-link:hover {
+  transform: scale(1.05);
+  background-color: rgba(74, 108, 247, 0.08);
 }
 
 /* Tooltip for collapsed sidebar */
@@ -154,14 +198,22 @@
   left: 100%;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.75);
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
   color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
   white-space: nowrap;
   z-index: 100;
-  margin-left: 10px;
+  margin-left: 12px;
+  box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-50%) translateX(-10px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
 }
 
 /* Responsive adjustments */

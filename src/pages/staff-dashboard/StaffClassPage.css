@@ -1,0 +1,682 @@
+.staff-class-container {
+    padding: 24px;
+    background-color: #f5f7fa;
+    min-height: 90vh;
+  }
+  
+  .staff-class-page-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .staff-class-page-title {
+    position: relative;
+    margin-bottom: 0 !important;
+    color: #262626;
+  }
+  
+  .staff-class-page-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #1890ff, #52c41a);
+    border-radius: 2px;
+  }
+  
+  .staff-class-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    border: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .card-title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+  }
+  
+  .card-title-with-icon .anticon {
+    color: #1890ff;
+  }
+  
+  /* Academic year filter styling */
+  .card-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .academic-year-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .filter-label {
+    font-size: 14px;
+    color: #595959;
+    white-space: nowrap;
+  }
+  
+  .academic-year-display {
+    min-width: 100px;
+    padding: 4px 12px;
+    background-color: #f5f8ff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    color: #1890ff;
+  }
+  
+  /* Grade level filter styling */
+  .grade-level-filter {
+    margin-left: 24px;
+  }
+  
+  /* Section styling */
+  .class-section {
+    margin-bottom: 32px;
+  }
+  
+  .class-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .class-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #1890ff;
+  }
+  
+  .class-section-header.enrichment {
+    color: #722ed1;
+  }
+  
+  .section-icon {
+    font-size: 18px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  /* Grade level collapse panel styling */
+  .class-level-collapse {
+    background: transparent;
+    border: none;
+  }
+  
+  .class-level-collapse .ant-collapse-item {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px !important;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  
+  .class-level-collapse .ant-collapse-header {
+    background-color: #f5f8ff;
+    padding: 16px 20px !important;
+    align-items: center;
+  }
+  
+  .grade-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .grade-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+  }
+  
+  .grade-count {
+    margin-left: auto;
+  }
+  
+  .class-level-collapse .ant-collapse-content-box {
+    padding: 16px !important;
+    background-color: #fff;
+  }
+  
+  /* Class cards styling */
+  .class-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  
+  .class-card {
+    position: relative;
+    transition: all 0.3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .class-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: #1890ff;
+  }
+  
+  .class-card.enrichment {
+    border-left: 3px solid #722ed1;
+  }
+  
+  .class-card.enrichment:hover {
+    border-color: #722ed1;
+  }
+  
+  .class-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .class-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .class-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+  
+  .class-teachers {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .teacher-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .class-syllabus {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .class-capacity {
+    margin-top: auto;
+  }
+  
+  .capacity-label-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  
+  .capacity-full {
+    color: #ff4d4f;
+  }
+  
+  .class-card-footer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  /* Class Detail Modal */
+  .class-detail-modal .ant-modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  .class-detail-modal .ant-modal-body {
+    padding: 0;
+  }
+  
+  .class-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  
+  .class-detail-header.regular {
+    background: linear-gradient(135deg, #e6f7ff, #bae7ff);
+  }
+  
+  .class-detail-header.enrichment {
+    background: linear-gradient(135deg, #f9f0ff, #efdbff);
+  }
+  
+  .class-detail-title h2 {
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #262626;
+  }
+  
+  .class-detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .class-detail-icon {
+    margin-left: 16px;
+  }
+  
+  .detail-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .detail-icon.regular {
+    background-color: #fff;
+    color: #1890ff;
+    border: 2px solid #91caff;
+  }
+  
+  .detail-icon.enrichment {
+    background-color: #fff;
+    color: #722ed1;
+    border: 2px solid #d3adf7;
+  }
+  
+  /* Tabs styling */
+  .class-detail-tabs {
+    padding: 16px 24px;
+  }
+  
+  .class-detail-tabs .ant-tabs-nav {
+    margin-bottom: 24px;
+  }
+  
+  .class-detail-tab-content {
+    padding-bottom: 24px;
+  }
+  
+  .class-detail-card {
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .class-detail-card:last-child {
+    margin-bottom: 0;
+  }
+  
+  .detail-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+  }
+  
+  .detail-item {
+    margin-bottom: 16px;
+  }
+  
+  .detail-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .detail-label {
+    font-size: 14px;
+    color: #8c8c8c;
+    margin-bottom: 6px;
+  }
+  
+  .detail-value {
+    font-size: 15px;
+    color: #262626;
+    font-weight: 500;
+  }
+  
+  .detail-value.highlight {
+    color: #1890ff;
+    font-weight: 600;
+  }
+  
+  /* Schedule Display */
+  .schedule-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .schedule-day-tag {
+    font-size: 14px;
+    padding: 4px 12px;
+  }
+  
+  /* Capacity Visualization */
+  .capacity-card {
+    background-color: #fafafa;
+  }
+  
+  .capacity-visualization {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px 0;
+  }
+  
+  .capacity-donut {
+    margin-bottom: 24px;
+  }
+  
+  .capacity-stats {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 18px;
+  }
+  
+  .capacity-stat-item {
+    text-align: center;
+  }
+  
+  .capacity-stat-value {
+    font-size: 36px;
+    font-weight: 600;
+    color: #262626;
+    line-height: 1;
+  }
+  
+  .capacity-stat-label {
+    font-size: 14px;
+    color: #8c8c8c;
+    margin-top: 4px;
+  }
+  
+  .capacity-stat-divider {
+    margin: 0 16px;
+    font-size: 36px;
+    font-weight: 300;
+    color: #d9d9d9;
+  }
+  
+  .capacity-warning-alert {
+    margin: 16px 0;
+    border-radius: 8px;
+  }
+  
+  .capacity-description {
+    margin-top: 16px;
+    text-align: center;
+    color: #595959;
+    font-size: 14px;
+  }
+  
+  /* Teacher section */
+  .teacher-section {
+    margin-top: 24px;
+  }
+  
+  .teachers-assigned-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+  }
+  
+  .teacher-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    width: 140px;
+    transition: all 0.3s ease;
+  }
+  
+  .teacher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .teacher-avatar {
+    background-color: #1890ff;
+    margin-bottom: 12px;
+    border: 3px solid #e6f7ff;
+  }
+  
+  .teacher-name {
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 8px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Class Status Card */
+  .status-card {
+    margin-top: 24px;
+  }
+  
+  .class-status {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .class-status.available {
+    background-color: #f6ffed;
+    border: 1px solid #b7eb8f;
+  }
+  
+  .class-status.unavailable {
+    background-color: #fff7e6;
+    border: 1px solid #ffd591;
+  }
+  
+  .status-icon {
+    font-size: 32px;
+    margin-right: 20px;
+  }
+  
+  .class-status.available .status-icon {
+    color: #52c41a;
+  }
+  
+  .class-status.unavailable .status-icon {
+    color: #fa8c16;
+  }
+  
+  .status-value {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .status-description {
+    color: #595959;
+    font-size: 14px;
+  }
+  
+  /* Attendance Tab */
+  .attendance-date-selector {
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .date-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  
+  .attendance-summary-cards {
+    margin-bottom: 24px;
+  }
+  
+  .summary-card {
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  .summary-card.present {
+    background-color: #f6ffed;
+    border: 1px solid #b7eb8f;
+  }
+  
+  .summary-card.absent {
+    background-color: #fff1f0;
+    border: 1px solid #ffa39e;
+  }
+  
+  .summary-icon {
+    font-size: 28px;
+    margin-right: 16px;
+  }
+  
+  .summary-card.present .summary-icon {
+    color: #52c41a;
+  }
+  
+  .summary-card.absent .summary-icon {
+    color: #f5222d;
+  }
+  
+  .summary-count {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  
+  .summary-label {
+    font-size: 14px;
+    color: #595959;
+    margin-top: 4px;
+  }
+  
+  .attendance-table-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .attendance-date-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #262626;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .attendance-table.enhanced {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .attendance-table.enhanced .ant-table-thead > tr > th {
+    background-color: #f5f8ff;
+    color: #262626;
+    font-weight: 500;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .class-card-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .class-detail-header {
+      flex-direction: column;
+      text-align: center;
+      padding: 16px;
+    }
+    
+    .class-detail-icon {
+      margin: 16px 0 0;
+    }
+    
+    .attendance-date-title {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+  
+  /* List/Table styling */
+  .class-list-container {
+    margin-bottom: 16px;
+  }
+  
+  .class-table .ant-table-thead > tr > th {
+    background-color: #f5f8ff;
+    color: #262626;
+    font-weight: 500;
+  }
+  
+  .class-table .ant-table-tbody > tr.regular-row:hover > td {
+    background-color: rgba(24, 144, 255, 0.05);
+  }
+  
+  .class-table .ant-table-tbody > tr.enrichment-row:hover > td {
+    background-color: rgba(114, 46, 209, 0.05);
+  }
+  
+  .class-capacity-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .class-name-cell {
+    font-weight: 600;
+    color: #262626;
+  }
