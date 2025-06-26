@@ -246,35 +246,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("paidChildren")]
-        public async Task<IActionResult> GetPaidChildrenAsync()
-        {
-            try
-            {
-                var children = await _childrenService.GetPaidChildrenAsync();
-                var response = _mapper.Map<List<ChildrenResponse>>(children);
-
-                for (int i = 0; i < response.Count(); i++)
-                {
-                    //Gan ApplicationID cho ChildResponse
-                    var application = await _eaService.GetApplicatioinByChildID(response[i].ID);
-                    response[i].ApplicationID = application?.ID ?? Guid.Empty;
-
-                    //Gan GradeLevel cho ChildResponse
-                    var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
-                    response[i].GradeLevelID = grade?.GradeLevels!.ID ?? 0;
-                    response[i].GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
-                }
-
-                response = response.OrderByDescending(c => c.EnrollDate).ToList();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
         [HttpGet("getChildrenByClassId/{classId}")]
         public async Task<IActionResult> GetChildrenByClassIdAsync(int classId)
         {

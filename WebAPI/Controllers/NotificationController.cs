@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> CreateNotification([FromBody] NotificationRequest request)
         {
             var result = await _notificationService.CreateNotificationAsync(request);
-            var notificationResponse = _mapper.Map<NotificationResponse>(result);
+            var notificationResponse = _mapper.Map<List<NotificationResponse>>(result);
             return Ok(notificationResponse);
         }
 

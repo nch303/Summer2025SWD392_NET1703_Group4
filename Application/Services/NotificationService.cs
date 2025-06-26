@@ -19,17 +19,24 @@ namespace Application.Services
             _authService = authService;
             _notificationsRepository = notificationsRepository;
         }
-        public async Task<Notification> CreateNotificationAsync(NotificationRequest request)
+        public async Task<List<Notification>> CreateNotificationAsync(NotificationRequest request)
         {
-            var notification = new Notification
+            var notifications = new List<Notification>();
+            foreach(var accountID in request.AccountIDs)
             {
-                AccountID = request.AccountID,
-                Title = request.Title,
-                Content = request.Content,
-                IsRead = false // mặc định là chưa đọc
-            };
+                var notification = new Notification
+                {
+                    AccountID = accountID,
+                    Title = request.Title,
+                    Content = request.Content,
+                    IsRead = false // mặc định là chưa đọc
+                };
+                notifications.Add(notification);
 
-            return await _notificationsRepository.CreateNotificationAsync(notification);
+                await _notificationsRepository.CreateNotificationAsync(notification);
+            }
+            return notifications;
+
         }
 
         public async Task<List<Notification>> GetNotificationsByCurrentAsync()

@@ -202,7 +202,6 @@ namespace Application.Services
             {
                 var tuition = await _tuitionFeeService.GetTuitionFeeByIdAsync(tuitionFeeId);
                 var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(tuition!.GradeLevelID);
-                decimal price;
                 var invoiceDetail = new InvoiceDetail
                 {
                     ID = Guid.NewGuid(),
@@ -287,7 +286,6 @@ namespace Application.Services
                     };
                     await _invoiceService.CreateAsync(invoice);
 
-                    decimal price;
                     var invoiceDetail = new InvoiceDetail
                     {
                         ID = Guid.NewGuid(),
@@ -325,7 +323,6 @@ namespace Application.Services
                 };
                 await _invoiceService.CreateAsync(invoice);
 
-                decimal price;
                 var invoiceDetail = new InvoiceDetail
                 {
                     ID = Guid.NewGuid(),

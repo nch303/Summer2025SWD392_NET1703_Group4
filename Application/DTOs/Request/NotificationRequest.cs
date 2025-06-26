@@ -8,7 +8,7 @@ namespace Application.DTOs.Request
 {
     public class NotificationRequest
     {
-        public Guid AccountID { get; set; }
+        public List<Guid> AccountIDs { get; set; }
         public string? Title { get; set; }
         public string? Content { get; set; }
     }

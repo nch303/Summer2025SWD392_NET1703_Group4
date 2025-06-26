@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Request;
 using Application.DTOs.Response;
 using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,12 @@ namespace WebAPI.Controllers
         private readonly INotificationService _notificationService;
         private readonly IClassService _classService;
         private readonly IEAService _EAService;
+        private readonly IChildrenGradeService _childrenGradeService;
+
 
         public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
-            , INotificationService notificationService, IClassService classService, IEAService eAService)
+            , INotificationService notificationService, IClassService classService, IEAService eAService
+            , IChildrenGradeService childrenGradeService)
         {
             _staffService = staffService;
             _childrenService = childrenService;
@@ -27,16 +31,31 @@ namespace WebAPI.Controllers
             _notificationService = notificationService;
             _classService = classService;
             _EAService = eAService;
+            _childrenGradeService = childrenGradeService;
         }
 
-        [HttpGet("GetPaidChildren")]
-        public async Task<IActionResult> GetPaidChildren()
+        [HttpGet("GetNotEnrolledChildren")]
+        public async Task<IActionResult> GetNotEnrolledChildrenAsync()
         {
             try
             {
-                var children = await _staffService.GetPaidChildrenAsync();
-                var childrenResponse = _mapper.Map<List<ChildrenResponse>>(children);
-                return Ok(childrenResponse);
+                var children = await _childrenService.GetNotEnrolledChildrenAsync();
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+
+                for (int i = 0; i < response.Count(); i++)
+                {
+                    //Gan ApplicationID cho ChildResponse
+                    var application = await _EAService.GetApplicatioinByChildID(response[i].ID);
+                    response[i].ApplicationID = application?.ID ?? Guid.Empty;
+
+                    //Gan GradeLevel cho ChildResponse
+                    var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
+                    response[i].GradeLevelID = grade?.GradeLevels!.ID ?? 0;
+                    response[i].GradeLevelName = grade?.GradeLevels!.Name ?? string.Empty;
+                }
+
+                response = response.OrderByDescending(c => c.EnrollDate).ToList();
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -64,7 +83,7 @@ namespace WebAPI.Controllers
                     {
                         return NotFound($"Child with ID {childId} not found.");
                     }
-                    child.Status = "Active";
+                    child.Status = "Enrolled";
                     await _childrenService.UpdateChildAsync(child);
                 }
 
@@ -85,9 +104,12 @@ namespace WebAPI.Controllers
 
                     if (child?.Parents != null && classInfo != null)
                     {
+                        var accountIDs = new List<Guid>();
+                        accountIDs.Add(child.Parents.Id);
+
                         var notification = new NotificationRequest
                         {
-                            AccountID = child.ParentID,
+                            AccountIDs = accountIDs,
                             Title = notificationMessage,
                             Content = $"Dear {child.Parents.FullName},\n\nWe are pleased to inform you that your child, {child.Name}, has been successfully assigned to the class \"{classInfo.Name}\".\n\nThank you for your trust and support.\n\n- The School Administration"
                         };

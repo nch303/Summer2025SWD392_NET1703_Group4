@@ -27,18 +27,6 @@ namespace Application.Services
             _classChildrenService = classChildrenService;
         }
 
-        public async Task<List<Children>> GetPaidChildrenAsync()
-        {
-            // Fetch all children who are not enrolled in any class
-            var notEnrolledChildren = await _staffRepository.GetPaidChildrenAsync();
-            if (notEnrolledChildren == null || notEnrolledChildren.Count == 0)
-            {
-                throw new Exception("No children found who are not enrolled in any class.");
-            }
-
-            return notEnrolledChildren;
-        }
-
         public async Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds)
         {
             //Check if the class exists

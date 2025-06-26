@@ -74,9 +74,9 @@ namespace Application.Services
             return await _childrenRepository.SearchChildrenInClassAsync(classId, searchTerm);
         }
 
-        public async Task<List<Children>> GetPaidChildrenAsync()
+        public async Task<List<Children>> GetNotEnrolledChildrenAsync()
         {
-            return await _childrenRepository.GetPaidChildrenAsync();
+            return await _childrenRepository.GetNotEnrolledChildrenAsync();
 
         }
 

@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface INotificationService
     {
-        Task<Notification> CreateNotificationAsync(NotificationRequest request);
+        Task<List<Notification>> CreateNotificationAsync(NotificationRequest request);
         Task<List<Notification>> GetNotificationsByCurrentAsync();
         Task MarkAsReadAsync(int notificationId);
         Task<Notification> UpdateNotificationAsync(UpdateNotificationRequest updateNotificationRequest);
