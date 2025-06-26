@@ -60,11 +60,12 @@ namespace Infrastructure.Repositories
             return childrenGrades;
         }
 
-        public async Task<ChildrenGrade> GetChildrenGradesByChildrenIdAsync(Guid childrenId)
+        public async Task<List<ChildrenGrade>> GetChildrenGradesByChildrenIdAsync(Guid childrenId)
         {
             var childrengrade =  await _context.ChildrenGrades
                 .Include(cg => cg.GradeLevels)
-                .FirstOrDefaultAsync(cg => cg.ChildrenID == childrenId);
+                .Where(cg => cg.ChildrenID == childrenId)
+                .ToListAsync();
             return childrengrade!;
         }
 
@@ -73,6 +74,20 @@ namespace Infrastructure.Repositories
             _context.ChildrenGrades.Add(childrenGrade);
             await _context.SaveChangesAsync();
             return childrenGrade;
+        }
+
+        public async Task<ChildrenGrade> UpdateChildrenGradeAsync(ChildrenGrade childrenGrade)
+        {
+            var existingGrade = await _context.ChildrenGrades
+                .FirstOrDefaultAsync(cg => cg.ID == childrenGrade.ID);
+
+            existingGrade.ChildrenID = childrenGrade.ChildrenID;
+            existingGrade.GradeLevelID = childrenGrade.GradeLevelID;
+            existingGrade.AcademicYear = childrenGrade.AcademicYear;
+            existingGrade.Status = childrenGrade.Status;
+            _context.ChildrenGrades.Update(existingGrade);
+            await _context.SaveChangesAsync();
+            return existingGrade;
         }
     }
 }

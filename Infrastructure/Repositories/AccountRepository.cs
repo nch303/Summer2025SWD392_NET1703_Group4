@@ -146,10 +146,10 @@ namespace Infrastructure.Repositories
                 query = query.Where(a =>
                     a.FullName.Contains(keyword) ||
                     a.Email.Contains(keyword) ||
-                    a.Address.Contains(keyword) ||
-                    a.Role.Name.Contains(keyword) ||
+                    a.Address!.Contains(keyword) ||
+                    a.Role!.Name.Contains(keyword) ||
                     a.PhoneNumber.Contains(keyword) ||
-                    a.Status.Contains(keyword));
+                    a.Status!.Contains(keyword));
             }
 
             var totalCount = await query.CountAsync();
@@ -169,9 +169,9 @@ namespace Infrastructure.Repositories
 
             var classTeachers = await _context.ClassTeachers
                 .Include(ct => ct.Teachers)
-                .Where(ct =>ct.ClassID == classId).ToListAsync();
+                .Where(ct => ct.ClassID == classId).ToListAsync();
 
-            foreach(var classTeacher in classTeachers)
+            foreach (var classTeacher in classTeachers)
             {
                 var teacher = classTeacher.Teachers;
                 teachers.Add(teacher!);
@@ -180,5 +180,16 @@ namespace Infrastructure.Repositories
             return teachers!;
         }
 
+        public async Task<List<Account>> GetTeachersNoClass()
+        {
+            var teachers = await _context.Accounts
+                .Include(a => a.Role)!
+                .Include(a => a.ClassTeachers)!
+                    .ThenInclude(ct => ct.Classes)
+                .Where(a => a.Role!.Name == "Teacher")
+                .ToListAsync();
+            return teachers;
+
+        }
     }
 }

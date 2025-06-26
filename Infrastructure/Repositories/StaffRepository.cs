@@ -87,7 +87,8 @@ namespace Infrastructure.Repositories
             return await _context.ClassTeachers
                 .Include(ct => ct.Classes)
                 .AnyAsync(ct => ct.TeacherID == teacherId &&
-                                ct.Classes!.AcademicYear == academicYear);
+                                ct.Classes!.AcademicYear == academicYear &&
+                                ct.Classes!.EnrichmentProgramId == null);
         }
     }
 }

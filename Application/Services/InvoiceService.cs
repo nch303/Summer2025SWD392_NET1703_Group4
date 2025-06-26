@@ -106,9 +106,28 @@ namespace Application.Services
                     var tuition = await _tuitionFeeRepositiry.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
                     detail.tuitionFeeName = tuition!.Name;
 
-                    var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+                    //Get academic year
+                    string academicYear = "";
 
-                    var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(chidrenGrade.GradeLevelID);
+
+                    var year = invoice.Date.Year;
+
+                    // So sánh với ngày 1/9 của năm hiện tại
+                    var schoolStartDate = new DateTime(year, 9, 1);
+
+                    if (invoice.Date < schoolStartDate)
+                    {
+                        academicYear = (year - 1).ToString() + "-" + year.ToString();
+                    }
+                    else
+                    {
+                        academicYear = year.ToString() + "-" + (year + 1).ToString();
+                    }
+
+                    var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+                    var currentChildrenGrade = chidrenGrade.FirstOrDefault(cg => cg.AcademicYear == academicYear);
+
+                    var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(currentChildrenGrade!.GradeLevelID);
                     var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
                     var gradeFeeName = "Học phí lớp " + gradeLevel!.Name! + " (" + gradeLevelFeeFormated + " đồng)";
 

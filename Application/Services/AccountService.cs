@@ -281,5 +281,54 @@ namespace Application.Services
         {
             return await _accountRepository.GetTeacherByClassIdAsync(classId);
         }
+
+        public async Task<List<Account>> GetTeachersNoClassAsync()
+        {
+            var teachers = await _accountRepository.GetTeachersNoClass();
+            var teachersRemove = new List<Account>();
+            var classTeachers = new List<ClassTeacher>();
+
+            //Get academic year
+            string academicYear = "";
+
+            var today = DateTime.Now.Date;
+            var year = today.Year;
+
+            // So sánh với ngày 1/9 của năm hiện tại
+            var schoolStartDate = new DateTime(year, 9, 1);
+
+            if (today < schoolStartDate)
+            {
+                academicYear = (year - 1).ToString() + "-" + year.ToString();
+            }
+            else
+            {
+                academicYear = year.ToString() + "-" + (year + 1).ToString();
+            }
+
+            //Lấy danh sách các giáo viên dạy lớp chính trong năm học hiện tại
+            foreach (var teacher in teachers)
+            {
+                classTeachers = teacher.ClassTeachers!.ToList();
+                if(classTeachers.Count != 0)
+                {
+                    foreach(var classTeacher in classTeachers)
+                    {
+                        if(classTeacher.Classes!.AcademicYear!.Equals(academicYear) && classTeacher.Classes.EnrichmentProgramId == null)
+                        {
+                            teachersRemove.Add(teacher);
+                        }
+                    }
+                }
+            }
+
+            //Loại những giáo viên đó ra khỏi danh sách
+            foreach (var teacher in teachersRemove)
+            {
+                teachers.Remove(teacher);
+            }
+
+            return teachers;
+        }
     }
 }
