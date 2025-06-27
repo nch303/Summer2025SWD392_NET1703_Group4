@@ -122,5 +122,41 @@ namespace Application.Services
         {
             return await _classRepository.GetClassesByTeacherIdAsync(teacherId);
         }
+
+        public async Task<List<Class>> GetClassesToAssignAsync()
+        {
+            var classes = await _classRepository.GetAllClass();
+
+            //Get academic year
+            string academicYear = "";
+
+            var today = DateTime.Now.Date;
+            var year = today.Year;
+
+            // So sánh với ngày 1/6 của năm hiện tại
+            var schoolStartDate = new DateTime(year, 6, 1);
+
+            if (today < schoolStartDate)
+            {
+                academicYear = (year - 1).ToString() + "-" + year.ToString();
+            }
+            else
+            {
+                academicYear = year.ToString() + "-" + (year + 1).ToString();
+            }
+
+            var classesResult = classes.Where(c => c.Status == "Unavailable" && c.AcademicYear.Equals(academicYear)).ToList();
+            return classesResult;
+        }
+
+        public async Task<Class> FinishClass(int classId)
+        {
+            var room = await _classRepository.GetClass(classId);
+            if (room == null)
+                throw new Exception("Class not found.");
+            if (room.Status == "Finished")
+                throw new Exception("Class is already finished.");
+            return await _classRepository.FinishClass(classId);
+        }
     }
 }

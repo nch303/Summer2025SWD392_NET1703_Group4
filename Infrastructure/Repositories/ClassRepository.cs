@@ -258,5 +258,14 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             return classes!;
         }
+
+        public async Task<Class> FinishClass(int classID)
+        {
+            var room = await _context.Classes.FirstOrDefaultAsync(a => a.ID == classID);
+            room.Status = "Finished";
+            _context.Classes.Update(room);
+            await _context.SaveChangesAsync();
+            return room;
+        }
     }
 }

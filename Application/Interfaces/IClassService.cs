@@ -22,5 +22,7 @@ namespace Application.Interfaces
         Task<List<Class>> GetClassesByChildIdAsync(Guid childId);
         Task<Class> OpenClass(int classID);
         Task<List<Class>> GetClassesByTeacherIdAsync(Guid teacherId);
+        Task<List<Class>> GetClassesToAssignAsync();
+        Task<Class> FinishClass(int classID);
     }
 }

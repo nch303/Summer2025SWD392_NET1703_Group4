@@ -14,5 +14,6 @@ namespace Domain.Interfaces
         Task<List<ClassChildren>> GetAllAsync();
         Task<List<ClassChildren>> GetByParentIdAsync(Guid parentId);
         Task<List<ClassChildren>> GetByChildIdAsync(Guid childId);
+        Task<bool> KickClassChildren(Guid childId, int classId);
     }
 }

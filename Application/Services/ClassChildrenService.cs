@@ -47,5 +47,15 @@ namespace Application.Services
             var children = await _repository.GetByChildIdAsync(childId);
             return children;
         }
+
+        public async Task<bool> KickClassChildren(Guid childId, int classId)
+        {
+            var classChildren = await _repository.GetChilldrenByClassIdAsync(classId);
+            if (classChildren.Count != 0 && classChildren.Where(cc => cc.ChildrenID == childId).Count() !=0)
+            {
+                return await _repository.KickClassChildren(childId, classId);
+            }
+            else return false;
+        }
     }
 }

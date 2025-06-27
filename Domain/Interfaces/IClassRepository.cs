@@ -16,5 +16,6 @@ namespace Domain.Interfaces
         Task<List<Class>> GetClassesByChildIdAsync(Guid childId);
         Task<Class> OpenClass(int classID);
         Task<List<Class>> GetClassesByTeacherIdAsync(Guid teacherId);
+        Task<Class> FinishClass(int classID);
     }
 }

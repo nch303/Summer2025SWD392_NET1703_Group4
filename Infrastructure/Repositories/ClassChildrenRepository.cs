@@ -84,5 +84,18 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             return children;
         }
+
+        public async Task<bool> KickClassChildren(Guid childId, int classId)
+        {
+            var classChildren = await _context.ClassChildrens.FirstOrDefaultAsync(cc => cc.ChildrenID == childId && cc.ClassID == classId);
+            var attendance = await _context.Attendances.Where(a => a.ClassChildrenID == classChildren.ID).ToListAsync();
+            if (attendance.Count != 0)
+            {
+                _context.Attendances.RemoveRange(attendance);
+            }
+            _context.ClassChildrens.Remove(classChildren);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

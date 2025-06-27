@@ -294,8 +294,8 @@ namespace Application.Services
             var today = DateTime.Now.Date;
             var year = today.Year;
 
-            // So sánh với ngày 1/9 của năm hiện tại
-            var schoolStartDate = new DateTime(year, 9, 1);
+            // So sánh với ngày 1/6 của năm hiện tại
+            var schoolStartDate = new DateTime(year, 6, 1);
 
             if (today < schoolStartDate)
             {

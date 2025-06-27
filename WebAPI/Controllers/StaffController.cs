@@ -20,11 +20,12 @@ namespace WebAPI.Controllers
         private readonly IEAService _EAService;
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IAccountService _accountService;
+        private readonly IClassChildrenService _classChildrenService;
 
 
         public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
             , INotificationService notificationService, IClassService classService, IEAService eAService
-            , IChildrenGradeService childrenGradeService, IAccountService accountService)
+            , IChildrenGradeService childrenGradeService, IAccountService accountService, IClassChildrenService classChildrenService)
         {
             _staffService = staffService;
             _childrenService = childrenService;
@@ -34,6 +35,7 @@ namespace WebAPI.Controllers
             _EAService = eAService;
             _childrenGradeService = childrenGradeService;
             _accountService = accountService;
+            _classChildrenService = classChildrenService;
         }
 
         [HttpGet("GetNotEnrolledChildren")]
@@ -190,6 +192,73 @@ namespace WebAPI.Controllers
                 var teachers = await _accountService.GetTeachersNoClassAsync();
                 var response = _mapper.Map<List<AccountResponse>>(teachers);
                 return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetClassesToAssign")]
+        public async Task<IActionResult> GetClassesToAssignAsync()
+        {
+            try
+            {
+                var classes = await _classService.GetClassesToAssignAsync();
+                var response = _mapper.Map<List<ClassResponse>>(classes);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("finish-class")]
+        public async Task<IActionResult> FinishClass(List<int> classIds)
+        {
+            try
+            {
+                foreach (var classId in classIds)
+                {
+                    var finishedClass = await _classService.FinishClass(classId);
+                }
+
+                return Ok(new { message = "Class has been finished successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("KickClassChildren/{childId}/{classId}")]
+        public async Task<IActionResult> KickClassChildren(Guid childId, int classId)
+        {
+            try
+            {
+                var result = await _classChildrenService.KickClassChildren(childId, classId);
+                if (result)
+                {
+                    // Update the status of the child to "Not Enrolled"
+                    var child = await _childrenService.GetChildByIdAsync(childId);
+                    child!.Status = "Temporary";
+                    await _childrenService.UpdateChildAsync(child);
+
+                    // Update the status of the enrollment application to "Rejected"
+                    var application = await _EAService.GetApplicatioinByChildID(childId);
+                    if (application != null)
+                    {
+                        application.Status = "Rejected";
+                        await _EAService.UpdateEnrollmentApplicationAsync(application);
+                    }
+
+                    return Ok(new { message = "Child has been removed from the class successfully." });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Failed to remove child from the class." });
+                }
             }
             catch (Exception ex)
             {

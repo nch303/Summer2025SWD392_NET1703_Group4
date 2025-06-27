@@ -59,6 +59,7 @@ namespace Infrastructure.Repositories
             var updateAccount = _context.Accounts.FirstOrDefault(a => a.Id == account.Id);
             updateAccount!.FullName = account.FullName;
             updateAccount.PhoneNumber = account.PhoneNumber;
+            updateAccount.Address = account.Address;
             _context.Accounts.Update(updateAccount);
             await _context.SaveChangesAsync();
             return account;
