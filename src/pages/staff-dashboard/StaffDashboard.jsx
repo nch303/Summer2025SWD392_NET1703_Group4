@@ -1,341 +1,456 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  Card, Row, Col, Statistic, Button, Spin, Avatar,
+  List, Tag, Progress, Tabs, Badge, Empty, Tooltip
+} from 'antd';
+import {
+  AppstoreOutlined, TeamOutlined, UserOutlined,
+  FormOutlined, BookOutlined, ScheduleOutlined,
+  CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined,
+  FileTextOutlined, CalendarOutlined, BarChartOutlined,
+  ProfileOutlined, BellOutlined, EnvironmentOutlined
+} from '@ant-design/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './staffDashboard.css';
+import { getAllClasses } from './StaffClassService';
+import { getAllApplications } from './EnrollmentApplicationManagementService';
+import { getAllChildren } from '../staff-children-management/ChildrenManagementService';
+import { getAllTeachers } from '../staff-assign-teacher/StaffAssignTeacherService';
 
 const StaffDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalClasses: 0,
+    totalTeachers: 0,
+    totalStudents: 0,
+    pendingApplications: 0,
+    availableClasses: 0,
+    enrolledStudents: 0
+  });
+  const [recentApplications, setRecentApplications] = useState([]);
+  const [classesByCapacity, setClassesByCapacity] = useState([]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      // Fetch all required data in parallel
+      const [classesData, applicationsData, childrenData, teachersData] = await Promise.all([
+        getAllClasses(),
+        getAllApplications(),
+        getAllChildren(),
+        getAllTeachers()
+      ]);
+
+      // Process classes data
+      const activeClasses = classesData.filter(c => c.status !== 'Deleted');
+      const availableClasses = activeClasses.filter(c => c.status === 'Available');
+
+      // Calculate enrollment stats
+      const enrolledStudents = activeClasses.reduce((total, cls) => total + cls.quantity, 0);
+      const pendingApplications = applicationsData.filter(app => app.status === 'Pending').length;
+
+      // Set capacity-sorted classes (highest % filled first)
+      const sortedClasses = [...activeClasses]
+        .map(cls => ({
+          ...cls,
+          capacityPercent: Math.round((cls.quantity / cls.maxChildren) * 100)
+        }))
+        .sort((a, b) => b.capacityPercent - a.capacityPercent)
+        .slice(0, 5); // Top 5 by capacity
+
+      // Get recent applications
+      const recentApps = applicationsData
+        .sort((a, b) => new Date(b.applicationDate) - new Date(a.applicationDate))
+        .slice(0, 5);
+
+      // Update state with all data
+      setStats({
+        totalClasses: activeClasses.length,
+        totalTeachers: childrenData.length,
+        totalStudents: childrenData.length,
+        pendingApplications,
+        availableClasses: availableClasses.length,
+        enrolledStudents
+      });
+
+      setRecentApplications(recentApps);
+      setClassesByCapacity(sortedClasses);
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Format date string
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('vi-VN', options);
+  };
+
+  // Navigation shortcuts
+  const quickAccessLinks = [
+    {
+      title: 'Quản lý lớp học',
+      icon: <BookOutlined />,
+      color: '#4a6cf7',
+      path: '/staff/classes',
+      description: 'Xem và quản lý danh sách lớp học'
+    },
+    {
+      title: 'Quản lý học sinh',
+      icon: <TeamOutlined />,
+      color: '#54d62c',
+        path: '/staff/students',
+      description: 'Quản lý thông tin và hồ sơ học sinh'
+    },
+    {
+      title: 'Phân công giáo viên',
+      icon: <UserOutlined />,
+      color: '#a46bf5',
+      path: '/staff/assign-teachers',
+      description: 'Phân công giáo viên cho các lớp học'
+    },
+    {
+      title: 'Đơn nhập học',
+      icon: <FormOutlined />,
+      color: '#ffab00',
+      path: '/staff/enrollment-applications',
+      description: 'Xử lý các đơn đăng ký nhập học'
+    },
+    {
+      title: 'Xếp lớp',
+      icon: <AppstoreOutlined />,
+      color: '#00bcd4',
+      path: '/staff/assign-students',
+      description: 'Phân bổ học sinh vào lớp học'
+    },
+    {
+      title: 'Lịch học',
+      icon: <CalendarOutlined />,
+      color: '#ff5555',
+      path: '/staff/schedule',
+      description: 'Xem lịch học và phân công'
+    }
+  ];
 
   return (
-    <div className="staff-dashboard">
-      <div className="dashboard-header">
-        <div className="dashboard-title-section">
-          <h2>Staff Dashboard</h2>
-          <div className="dashboard-breadcrumb">
-            <Link to="/">Home</Link> / <span>Staff Dashboard</span>
-          </div>
+    <div className="staff-dashboard-container">
+      <div className="dashboard-welcome-header">
+        <div className="welcome-content">
+          <h1>Xin chào, <span className="staff-name">Nhân viên</span></h1>
+          <p>Chào mừng quay trở lại trang quản lý Little Stars Preschool</p>
         </div>
-        <div className="dashboard-actions">
-          <div className="search-container">
-            <input type="text" placeholder="Search staff..." className="search-input" />
-            <button className="search-button">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-              </svg>
-            </button>
-          </div>
+        <div className="dashboard-date">
+          <CalendarOutlined /> {new Date().toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </div>
-      
-      <div className="dashboard-tabs">
-        <button 
-          className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
+
+      <Spin spinning={loading} tip="Đang tải dữ liệu...">
+        {/* Stats Row */}
+        <Row gutter={[24, 24]} className="stats-row">
+          <Col xs={24} sm={12} lg={8}>
+            <Card variant="borderless" className="stat-card">
+              <div className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(74, 108, 247, 0.1)' }}>
+                <BookOutlined style={{ color: '#4a6cf7' }} />
+              </div>
+              <Statistic
+                title="Lớp học đang hoạt động"
+                value={stats.totalClasses}
+                suffix={
+                  <Tag color="blue">
+                    {stats.availableClasses} lớp có thể nhận học sinh
+                  </Tag>
+                }
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} lg={8}>
+            <Card variant="borderless" className="stat-card">
+              <div className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(84, 214, 44, 0.1)' }}>
+                <TeamOutlined style={{ color: '#54d62c' }} />
+              </div>
+              <Statistic
+                title="Học sinh đã nhập học"
+                value={stats.enrolledStudents}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} lg={8}>
+            <Card variant="borderless" className="stat-card">
+              <div className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(255, 171, 0, 0.1)' }}>
+                <FormOutlined style={{ color: '#ffab00' }} />
+              </div>
+              <Statistic
+                title="Đơn nhập học chờ xử lý"
+                value={stats.pendingApplications}
+                valueStyle={{ color: stats.pendingApplications > 0 ? '#ffab00' : undefined }}
+              />
+              {stats.pendingApplications > 0 && (
+                <Button
+                  type="primary"
+                  size="small"
+                  icon={<FormOutlined />}
+                  style={{ marginTop: 16, background: '#ffab00', borderColor: '#ffab00' }}
+                  onClick={() => navigate('/staff/enrollment-applications')}
+                >
+                  Xử lý ngay
+                </Button>
+              )}
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Quick Access Section */}
+        <Card
+          title={
+            <span className="section-title">
+              <AppstoreOutlined /> Truy cập nhanh
+            </span>
+          }
+          variant="borderless"
+          className="section-card"
         >
-          Overview
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'attendance' ? 'active' : ''}`}
-          onClick={() => setActiveTab('attendance')}
-        >
-          Attendance
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'performance' ? 'active' : ''}`}
-          onClick={() => setActiveTab('performance')}
-        >
-          Performance
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'reports' ? 'active' : ''}`}
-          onClick={() => setActiveTab('reports')}
-        >
-          Reports
-        </button>
-      </div>
-      
-      <div className="dashboard-cards">
-        <div className="dashboard-card">
-          <div className="card-icon icon-blue">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-            </svg>
-          </div>
-          <div className="card-info">
-            <h3>42</h3>
-            <p>Total Staff</p>
-            <div className="card-trend positive">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 14l5-5 5 5H7z" />
-              </svg>
-              <span>+5% this month</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="dashboard-card">
-          <div className="card-icon icon-green">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/>
-            </svg>
-          </div>
-          <div className="card-info">
-            <h3>38</h3>
-            <p>Present Today</p>
-            <div className="card-trend positive">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 14l5-5 5 5H7z" />
-              </svg>
-              <span>90% attendance</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="dashboard-card">
-          <div className="card-icon icon-orange">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13.5 13.48l-4-4c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l4 4c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-            </svg>
-          </div>
-          <div className="card-info">
-            <h3>4</h3>
-            <p>On Leave</p>
-            <div className="card-trend negative">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 10l5 5 5-5H7z" />
-              </svg>
-              <span>-1 since yesterday</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="dashboard-card">
-          <div className="card-icon icon-purple">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z"/>
-            </svg>
-          </div>
-          <div className="card-info">
-            <h3>5</h3>
-            <p>New This Month</p>
-            <div className="card-trend positive">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 14l5-5 5 5H7z" />
-              </svg>
-              <span>+2 from last month</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="dashboard-widgets">
-        <div className="widget widget-attendance">
-          <div className="widget-header">
-            <h3>Staff Attendance (Last 30 Days)</h3>
-            <div className="widget-actions">
-              <button className="widget-action active">30d</button>
-              <button className="widget-action">90d</button>
-              <button className="widget-action">1y</button>
-              <button className="widget-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div className="chart-area">
-            <div className="chart-container">
-              <div className="chart-placeholder">
-                <svg className="placeholder-chart" viewBox="0 0 500 200">
-                  <path d="M0,150 C100,100 200,190 300,120 C400,50 500,80 500,150" stroke="#4a6cf7" strokeWidth="3" fill="none" />
-                  <path d="M0,150 C100,100 200,190 300,120 C400,50 500,80 500,150 L500,200 L0,200 Z" fill="url(#blueGradient)" fillOpacity="0.2" />
-                  <defs>
-                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#4a6cf7" stopOpacity="0.5" />
-                      <stop offset="100%" stopColor="#4a6cf7" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="chart-legend">
-                  <div className="legend-item">
-                    <span className="legend-color" style={{backgroundColor: "#4a6cf7"}}></span>
-                    <span>Present</span>
+          <Row gutter={[24, 24]}>
+            {quickAccessLinks.map(link => (
+              <Col xs={24} sm={12} md={8} key={link.path}>
+                <Link to={link.path} className="quick-access-link">
+                  <Card
+                    variant="borderless"
+                    hoverable
+                    className="quick-access-card"
+                  >
+                    <div className="quick-access-header">
+                      <div className="quick-icon" style={{ backgroundColor: `${link.color}20`, color: link.color }}>
+                        {link.icon}
+                      </div>
+                      <h3>{link.title}</h3>
+                    </div>
+                    <p className="quick-description">{link.description}</p>
+                    <div className="quick-access-arrow">
+                      <FontAwesomeIcon icon="arrow-right" />
+                    </div>
+                  </Card>
+                </Link>
+              </Col>
+            ))}
+          </Row>
+        </Card>
+
+        <Row gutter={[24, 24]} className="dashboard-sections">
+          {/* Recent Applications */}
+          <Col xs={24} lg={12}>
+            <Card
+              title={
+                <span className="section-title">
+                  <FormOutlined /> Đơn nhập học gần đây
+                </span>
+              }
+              variant="borderless"
+              className="section-card"
+              extra={
+                <Link to="/staff/enrollment-applications">
+                  Xem tất cả
+                </Link>
+              }
+            >
+              {recentApplications.length > 0 ? (
+                <List
+                  dataSource={recentApplications}
+                  renderItem={(app) => (
+                    <List.Item key={app.eaid} className="app-list-item">
+                      <List.Item.Meta
+                        avatar={
+                          <Avatar icon={<UserOutlined />} />
+                        }
+                        title={
+                          <div className="app-title">
+                            <span>{app.childrenName}</span>
+                            <Tag color={
+                              app.status === 'Paid' ? 'green' :
+                                app.status === 'Enrolled' ? 'green' :
+                                  app.status === 'Approved' ? 'green' :
+                                app.status === 'Pending' ? 'orange' : 'red'
+                            }>
+                              {app.status === 'Paid' ? 'Đã thanh toán' :
+                                app.status === 'Enrolled' ? 'Đã xếp lớp' :
+                                  app.status === 'Approved' ? 'Đã duyệt' :
+                                    app.status === 'Pending' ? 'Chờ duyệt' : 'Đã từ chối'}
+                            </Tag>
+                          </div>
+                        }
+                        description={
+                          <div className="app-description">
+                            <span>Phụ huynh: {app.parentName}</span>
+                            <span>Ngày đăng ký: {formatDate(app.applicationDate)}</span>
+                          </div>
+                        }
+                      />
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <Empty description="Không có đơn nhập học gần đây" />
+              )}
+            </Card>
+          </Col>
+
+          {/* Class Capacity - Enhanced Design without visible teachers */}
+          <Col xs={24} lg={12}>
+            <Card
+              title={
+                <span className="section-title">
+                  <BarChartOutlined /> Tình trạng lớp học
+                </span>
+              }
+              variant="borderless"
+              className="section-card class-capacity-card"
+              extra={
+                <Link to="/staff/classes">
+                  Xem tất cả
+                </Link>
+              }
+            >
+              {classesByCapacity.length > 0 ? (
+                <div className="class-capacity-list">
+                  {classesByCapacity.map((cls) => (
+                    <Tooltip 
+                      key={cls.id} 
+                      title={
+                        <div className="class-tooltip-content">
+                          <div className="tooltip-title">Giáo viên:</div>
+                          <div className="tooltip-content">
+                            {cls.teacherNames && cls.teacherNames.length > 0 ? 
+                              cls.teacherNames.join(', ') : 
+                              'Chưa có'
+                            }
+                          </div>
+                        </div>
+                      }
+                      placement="right"
+                    >
+                      <div className="class-capacity-item-enhanced">
+                        <div className="class-main-info">
+                          <div className="class-badge-name">
+                            <div className={`class-type-badge ${cls.epName ? 'enrichment' : 'regular'}`}>
+                              {cls.epName ? 'NK' : cls.gradeLevelName || 'L'}
+                            </div>
+                            <div className="class-name-text">{cls.name}</div>
+                          </div>
+                          <div className="capacity-indicator">
+                            <span className={cls.quantity >= cls.maxChildren ? 'capacity-full' : 
+                                           cls.capacityPercent >= 75 ? 'capacity-high' : 
+                                           cls.capacityPercent >= 50 ? 'capacity-medium' : 'capacity-low'}>
+                              {cls.quantity}/{cls.maxChildren}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="capacity-progress-container">
+                          <div className="capacity-progress-bar">
+                            <div 
+                              className={`capacity-progress-fill ${
+                                cls.quantity >= cls.maxChildren ? 'full' : 
+                                cls.capacityPercent >= 75 ? 'high' : 
+                                cls.capacityPercent >= 50 ? 'medium' : 'low'
+                              }`} 
+                              style={{ width: `${cls.capacityPercent}%` }}
+                            />
+                          </div>
+                          <div className="capacity-percentage">{cls.capacityPercent}%</div>
+                        </div>
+                      </div>
+                    </Tooltip>
+                  ))}
+                </div>
+              ) : (
+                <Empty description="Không có dữ liệu lớp học" />
+              )}
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Todo list and notifications section */}
+        <Row gutter={[24, 24]} className="dashboard-sections">
+          <Col xs={24} lg={24}>
+            <Card
+              title={
+                <span className="section-title">
+                  <ProfileOutlined /> Công việc cần làm
+                </span>
+              }
+              variant="borderless"
+              className="section-card todo-card"
+            >
+              <div className="task-item-list">
+                {stats.pendingApplications > 0 && (
+                  <div className="task-item priority-high">
+                    <div className="task-icon">
+                      <FormOutlined />
+                    </div>
+                    <div className="task-content">
+                      <div className="task-title">
+                        <span>Xử lý đơn nhập học</span>
+                        <Badge count={stats.pendingApplications} style={{ backgroundColor: '#ff4d4f' }} />
+                      </div>
+                      <div className="task-description">
+                        Có {stats.pendingApplications} đơn nhập học đang chờ được xử lý
+                      </div>
+                    </div>
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={() => navigate('/staff/enrollment-applications')}
+                    >
+                      Xử lý
+                    </Button>
                   </div>
-                  <div className="legend-item">
-                    <span className="legend-color" style={{backgroundColor: "#ffab00"}}></span>
-                    <span>On Leave</span>
+                )}
+
+                <div className="task-item priority-medium">
+                  <div className="task-icon">
+                    <BookOutlined />
                   </div>
+                  <div className="task-content">
+                    <div className="task-title">
+                      <span>Kiểm tra lớp học</span>
+                    </div>
+                    <div className="task-description">
+                      Cập nhật trạng thái và phân bổ học sinh cho các lớp học
+                    </div>
+                  </div>
+                  <Button onClick={() => navigate('/staff/classes')}>
+                    Xem lớp học
+                  </Button>
+                </div>
+
+                <div className="task-item priority-normal">
+                  <div className="task-icon">
+                    <CalendarOutlined />
+                  </div>
+                  <div className="task-content">
+                    <div className="task-title">
+                      <span>Xem lịch học</span>
+                    </div>
+                    <div className="task-description">
+                      Kiểm tra lịch học và xác nhận thời khóa biểu các lớp
+                    </div>
+                  </div>
+                  <Button onClick={() => navigate('/staff/schedule')}>
+                    Xem lịch
+                  </Button>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="widget widget-distribution">
-          <div className="widget-header">
-            <h3>Staff Distribution</h3>
-            <div className="widget-actions">
-              <button className="widget-action active">Department</button>
-              <button className="widget-action">Role</button>
-              <button className="widget-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div className="chart-area">
-            <div className="donut-chart-container">
-              <svg className="donut-chart" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#4a6cf7" strokeWidth="30" strokeDasharray="251.2 502.4" strokeDashoffset="0"></circle>
-                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#54d62c" strokeWidth="30" strokeDasharray="125.6 502.4" strokeDashoffset="-251.2"></circle>
-                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#ffab00" strokeWidth="30" strokeDasharray="75.36 502.4" strokeDashoffset="-376.8"></circle>
-                <circle cx="100" cy="100" r="80" fill="transparent" stroke="#a46bf5" strokeWidth="30" strokeDasharray="50.24 502.4" strokeDashoffset="-452.16"></circle>
-                <text x="100" y="100" textAnchor="middle" dy="0.3em" className="donut-chart-text">42</text>
-                <text x="100" y="120" textAnchor="middle" dy="0.3em" className="donut-chart-subtext">Staff</text>
-              </svg>
-              <div className="chart-legend">
-                <div className="legend-item">
-                  <span className="legend-color" style={{backgroundColor: "#4a6cf7"}}></span>
-                  <span>Teachers (50%)</span>
-                </div>
-                <div className="legend-item">
-                  <span className="legend-color" style={{backgroundColor: "#54d62c"}}></span>
-                  <span>Admin (25%)</span>
-                </div>
-                <div className="legend-item">
-                  <span className="legend-color" style={{backgroundColor: "#ffab00"}}></span>
-                  <span>Support (15%)</span>
-                </div>
-                <div className="legend-item">
-                  <span className="legend-color" style={{backgroundColor: "#a46bf5"}}></span>
-                  <span>Other (10%)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="dashboard-table-section">
-        <div className="table-header">
-          <h3>Recently Added Staff</h3>
-          <div className="table-actions">
-            <div className="table-filter">
-              <select className="filter-select">
-                <option>All Staff</option>
-                <option>Active</option>
-                <option>On Leave</option>
-                <option>Inactive</option>
-              </select>
-            </div>
-            <Link to="/staff/list" className="view-all-btn">View All</Link>
-          </div>
-        </div>
-        
-        <div className="table-container">
-          <table className="staff-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Department</th>
-                <th>Join Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div className="staff-info">
-                    <div className="staff-avatar">JD</div>
-                    <div className="staff-details">
-                      <span className="staff-name">John Doe</span>
-                      <span className="staff-email">john.doe@example.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Lead Teacher</td>
-                <td>Kindergarten</td>
-                <td>May 15, 2023</td>
-                <td><span className="staff-status status-active">Active</span></td>
-                <td>
-                  <div className="action-buttons">
-                    <button className="action-icon edit-icon" title="Edit">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                      </svg>
-                    </button>
-                    <button className="action-icon view-icon" title="View Profile">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div className="staff-info">
-                    <div className="staff-avatar">JS</div>
-                    <div className="staff-details">
-                      <span className="staff-name">Jane Smith</span>
-                      <span className="staff-email">jane.smith@example.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Assistant Teacher</td>
-                <td>Preschool</td>
-                <td>Jun 2, 2023</td>
-                <td><span className="staff-status status-active">Active</span></td>
-                <td>
-                  <div className="action-buttons">
-                    <button className="action-icon edit-icon" title="Edit">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                      </svg>
-                    </button>
-                    <button className="action-icon view-icon" title="View Profile">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div className="staff-info">
-                    <div className="staff-avatar">RJ</div>
-                    <div className="staff-details">
-                      <span className="staff-name">Robert Johnson</span>
-                      <span className="staff-email">robert.j@example.com</span>
-                    </div>
-                  </div>
-                </td>
-                <td>Administrator</td>
-                <td>Admin</td>
-                <td>Jun 10, 2023</td>
-                <td><span className="staff-status status-leave">On Leave</span></td>
-                <td>
-                  <div className="action-buttons">
-                    <button className="action-icon edit-icon" title="Edit">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                      </svg>
-                    </button>
-                    <button className="action-icon view-icon" title="View Profile">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </Card>
+          </Col>
+        </Row>
+      </Spin>
     </div>
   );
 };

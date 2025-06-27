@@ -279,7 +279,7 @@ const ChangePasswordForm = () => {
           {errors.confirmPassword && <div className="form-error">{errors.confirmPassword}</div>}
         </div>
         
-        <div className="form-actions">
+        <div className="profile-form-actions">
           <button 
             type="submit" 
             className="save-profile-btn"

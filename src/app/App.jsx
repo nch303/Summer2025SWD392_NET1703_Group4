@@ -40,6 +40,7 @@ import AdminEnrichment from '../pages/admin/AdminEnrichment';
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
 import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
 import EnrollmentApplicationManagement from '../pages/staff-dashboard/EnrollmentApplicationManagement';
+import StaffClasses from '../pages/staff-dashboard/StaffClassPage';
 
 // Admin Pages
 import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
@@ -190,6 +191,8 @@ function App() {
             <Route path="assign-students" element={<StaffAssignStudentPage />} />
             <Route path="assign-teachers" element={<StaffAssignTeacherPage />} />
             <Route path="enrichment-participants" element={<EnrichmentParticipants />} />
+            <Route path="classes" element={<StaffClasses />} />
+
           </Route>
 
           {/* Admin Routes */}

@@ -28,7 +28,7 @@ const EnrollmentApplicationManagement = () => {
   const [notification, setNotification] = useState({
     title: '',
     content: '',
-    accountID: ''
+    accountIDs: []
   });
   
   const { showSpinner, hideSpinner } = useProcessingSpinner();
@@ -118,7 +118,7 @@ const EnrollmentApplicationManagement = () => {
     setNotification({
       title,
       content,
-      accountID: application.parentID
+      accountIDs: [application.parentID]
     });
     
     setNotificationAction(action);

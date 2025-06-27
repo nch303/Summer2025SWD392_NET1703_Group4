@@ -196,8 +196,8 @@ const EnrollmentTrackingPage = () => {
     switch (status) {
       case 'Pending': return 'Đang xử lý';
       case 'Approved': return 'Đã duyệt';
+      case 'Enrolled': return 'Đã xếp lớp';
       case 'Paid': return 'Đã thanh toán';
-      case 'Enrolled': return 'Đã nhập học';
       case 'Rejected': return 'Đã từ chối';
       default: return 'Đang xử lý';
     }
@@ -249,24 +249,40 @@ const EnrollmentTrackingPage = () => {
       if (response && response.url) {
         const paymentWindow = window.open(response.url, '_blank');
         
+        // Check window status more frequently (200ms instead of 300ms)
         const checkWindowClosed = setInterval(() => {
           if (paymentWindow && paymentWindow.closed) {
             clearInterval(checkWindowClosed);
             hideSpinner();
             setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
             
-            fetchApplications();
+            // Show a loading message while we update the status
             toast.info('Đang cập nhật trạng thái thanh toán...');
+            
+            // Refresh data after a short delay to allow backend to process payment
+            setTimeout(() => {
+              fetchApplications();
+              // Check if modal is open and refresh that data too
+              if (selectedApplication && selectedApplication.eaid === application.eaid) {
+                fetchApplicationDetail(application.eaid);
+              }
+            }, 2000);
           }
-        }, 300);
+        }, 200);
         
+        // Set a maximum timeout for the payment window check
         setTimeout(() => {
-          if (paymentWindow && !paymentWindow.closed) {
+          if (!paymentWindow.closed) {
             hideSpinner();
             setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+            // Clear the interval
+            clearInterval(checkWindowClosed);
+            
+            // Set a timeout to refresh data anyway, in case payment was completed
+            // but user didn't close the window
+            setTimeout(fetchApplications, 5000);
           }
-          clearInterval(checkWindowClosed);
-        }, 300000);
+        }, 300000); // 5 minutes max wait
         
       } else {
         console.error('Invalid response format:', response);
@@ -297,7 +313,7 @@ const EnrollmentTrackingPage = () => {
     
     const isProcessing = processingPayment[app.eaid];
     
-    if (app.status === 'Approved') {
+    if (app.status === 'Enrolled') {
       return (
         <button 
           className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
@@ -371,7 +387,7 @@ const EnrollmentTrackingPage = () => {
               <span className="tracking-tab-icon tracking-enrolled">
                 <FontAwesomeIcon icon="user-check" />
               </span>
-              <span className="tracking-tab-text">Đã nhập học</span>
+              <span className="tracking-tab-text">Đã xếp lớp</span>
             </button>
             <button 
               className={`tracking-tab-btn ${filterStatus === 'Rejected' ? 'active' : ''}`}
@@ -517,35 +533,35 @@ const EnrollmentTrackingPage = () => {
                         ></div>
                         
                         <div 
-                          className={`tracking-timeline-step ${(app.status === 'Paid' || app.status === 'Enrolled') ? 'active' : ''}`}
-                          data-status="Paid"
+                          className={`tracking-timeline-step ${(app.status === 'Enrolled' || app.status === 'Paid') ? 'active' : ''}`}
+                          data-status="Enrolled"
                         >
                           <div className="tracking-step-number">3</div>
                           <div className="tracking-step-icon">
-                            <FontAwesomeIcon icon={(app.status === 'Paid' || app.status === 'Enrolled') ? "check" : "money-check-alt"} />
+                            <FontAwesomeIcon icon={(app.status === 'Enrolled' || app.status === 'Paid') ? "check" : "user-check"} />
                           </div>
-                          <div className="tracking-step-label">Thanh toán</div>
+                          <div className="tracking-step-label">Xếp lớp</div>
                         </div>
                         
                         <div 
                           className={`tracking-timeline-connector ${
-                            app.status === 'Enrolled' 
+                            app.status === 'Paid' 
                               ? 'active' 
-                              : app.status === 'Paid' ? 'half-active' : ''
+                              : app.status === 'Enrolled' ? 'half-active' : ''
                           }`}
-                          data-from="Paid" 
-                          data-to="Enrolled"
+                          data-from="Enrolled" 
+                          data-to="Paid"
                         ></div>
                         
                         <div 
-                          className={`tracking-timeline-step ${app.status === 'Enrolled' ? 'active' : ''}`}
-                          data-status="Enrolled"
+                          className={`tracking-timeline-step ${app.status === 'Paid' ? 'active' : ''}`}
+                          data-status="Paid"
                         >
                           <div className="tracking-step-number">4</div>
                           <div className="tracking-step-icon">
-                            <FontAwesomeIcon icon={app.status === 'Enrolled' ? "check" : "user-check"} />
+                            <FontAwesomeIcon icon={app.status === 'Paid' ? "check" : "money-check-alt"} />
                           </div>
-                          <div className="tracking-step-label">Nhập học</div>
+                          <div className="tracking-step-label">Thanh toán</div>
                         </div>
                       </div>
                       
@@ -778,7 +794,7 @@ const EnrollmentTrackingPage = () => {
                 <FontAwesomeIcon icon="times" />
                 Đóng
               </button>
-              {applicationDetail && applicationDetail.status === 'Approved' && (
+              {applicationDetail && (applicationDetail.status === 'Enrolled') && (
                 <button 
                   className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
                   onClick={() => {

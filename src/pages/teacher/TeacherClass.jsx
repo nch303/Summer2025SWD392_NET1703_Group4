@@ -105,11 +105,6 @@ const TeacherClass = () => {
           <Card 
             className="class-card" 
             hoverable
-            extra={
-              <Tag color={getStatusColor(classItem.status)} className="status-tag">
-                {classItem.status}
-              </Tag>
-            }
             actions={[
               <div key="students">
                 <TeamOutlined />
@@ -126,27 +121,34 @@ const TeacherClass = () => {
               </Dropdown>
             ]}
           >
+            <div className="teacher-class-status-badge">
+              <Tag color={getStatusColor(classItem.status)}>
+                {classItem.status}
+              </Tag>
+            </div>
+
             <Link to={`/teacher/classes/${classItem.id}`} className="content-link">
-              <div className="class-content">
-                <div className="class-avatar-container">
-                  <div className="class-avatar">
-                    {classItem.name.charAt(0).toUpperCase()}
+              <div className="class-card-header">
+                <div className="class-avatar">
+                  {classItem.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="class-title-container">
+                  <Title level={4} className="class-name">{classItem.name}</Title>
+                  <div className="class-tags">
+                    {classItem.gradeLevelName && <Tag color="blue">{classItem.gradeLevelName}</Tag>}
                   </div>
                 </div>
+              </div>
+              
+              <div className="class-details">
+                <div className="class-info-row">
+                  <Text type="secondary">Giáo trình:</Text>
+                  <Text strong ellipsis>{classItem.syllabusName}</Text>
+                </div>
                 
-                <div className="class-main-info">
-                  <div className="class-name-container">
-                    <Title level={4} className="class-name">{classItem.name}</Title>
-                    <Tag color="blue" className="grade-tag">{classItem.gradeLevelName}</Tag>
-                  </div>
-                  
-                  <div className="class-curriculum">
-                    <Text type="secondary">Giáo trình</Text>
-                    <Text className="curriculum-name" ellipsis>{classItem.syllabusName}</Text>
-                  </div>
-                  
-                  <div className="student-count">
-                    <Text type="secondary">Sĩ số lớp</Text>
+                <div className="class-info-row">
+                  <Text type="secondary">Sĩ số:</Text>
+                  <div className="student-progress">
                     <Progress 
                       percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
                       size="small"

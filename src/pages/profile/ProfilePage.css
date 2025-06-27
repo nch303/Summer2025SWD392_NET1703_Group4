@@ -1723,6 +1723,12 @@ textarea {
   justify-content: flex-end;
 }
 
+.profile-form-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Tab Bảo mật */
 .security-section {
   background-color: white;

@@ -390,7 +390,7 @@
   font-size: 0.9rem;
 }
 
-.form-actions {
+.enrollment-form-actions {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
@@ -861,8 +861,9 @@
   font-size: 14px;
 }
 
-.form-actions {
+.enrollment-form-actions {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   margin-top: 30px;
   gap: 20px;
@@ -907,7 +908,7 @@
     background: white;
   }
   
-  .form-actions {
+  .enrollment-form-actions {
     display: none;
   }
   
