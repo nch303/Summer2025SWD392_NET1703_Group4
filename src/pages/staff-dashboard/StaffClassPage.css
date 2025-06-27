@@ -213,13 +213,13 @@
     flex-grow: 1;
   }
   
-  .class-teachers {
+  .class-staff-teachers {
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
   
-  .teacher-tags {
+  .staff-teacher-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -450,18 +450,18 @@
   }
   
   /* Teacher section */
-  .teacher-section {
+  .staff-teacher-section {
     margin-top: 24px;
   }
   
-  .teachers-assigned-list {
+  .staff-teachers-assigned-list {
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
     justify-content: center;
   }
   
-  .teacher-card {
+  .staff-teacher-card {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -473,18 +473,18 @@
     transition: all 0.3s ease;
   }
   
-  .teacher-card:hover {
+  .staff-teacher-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }
   
-  .teacher-avatar {
+  .staff-teacher-avatar {
     background-color: #1890ff;
     margin-bottom: 12px;
     border: 3px solid #e6f7ff;
   }
   
-  .teacher-name {
+  .staff-teacher-name {
     font-weight: 500;
     text-align: center;
     margin-bottom: 8px;
@@ -679,4 +679,81 @@
   .class-name-cell {
     font-weight: 600;
     color: #262626;
+  }
+  
+  /* Students Tab */
+  .staff-students-container {
+    margin-top: 8px;
+  }
+  
+  .staff-students-table {
+    margin-top: 16px;
+  }
+  
+  .staff-students-table.enhanced .ant-table-thead > tr > th {
+    background-color: #f5f8ff;
+    color: #262626;
+    font-weight: 500;
+  }
+  
+  .staff-students-table.enhanced .ant-pagination {
+    margin-top: 16px;
+  }
+  
+  .staff-student-avatar {
+    margin-right: 12px;
+    background-color: #1890ff;
+  }
+  
+  /* Add these styles at the end of the file */
+  .kick-student-btn {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+  }
+  
+  .kick-student-btn:hover {
+    background-color: #ff7875;
+    color: white;
+  }
+  
+  .kick-student-btn:active {
+    background-color: #d9363e;
+    color: white;
+  }
+  
+  /* Add these styles for the open class button */
+  .open-class-btn {
+    background-color: #52c41a;
+    color: white;
+    border: none;
+  }
+  
+  .open-class-btn:hover {
+    background-color: #73d13d;
+    color: white;
+  }
+  
+  .open-class-btn:active {
+    background-color: #389e0d;
+    color: white;
+  }
+  
+  /* Add these styles for the finish class button */
+  .finish-class-btn {
+    background-color: #fff;
+    color: #ff4d4f;
+    border: 1px solid #ff4d4f;
+  }
+  
+  .finish-class-btn:hover {
+    background-color: #fff1f0;
+    color: #ff4d4f;
+    border: 1px solid #ff7875;
+  }
+  
+  .finish-class-btn:active {
+    background-color: #fff1f0;
+    color: #d9363e;
+    border: 1px solid #d9363e;
   }

@@ -462,15 +462,15 @@ const EnrichmentProgram = () => {
           {/* Search section */}
           <div className="sidebar-section">
             <h3 className="sidebar-title">Tìm kiếm</h3>
-            <div className="search-container">
+            <div className="enrichment-program-search-container">
               <input
                 type="text"
-                className="search-input"
+                className="enrichment-program-search-input"
                 placeholder="Tìm kiếm chương trình học..."
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
-              <FontAwesomeIcon icon="search" className="search-icon" />
+              <FontAwesomeIcon icon="search" className="enrichment-program-search-icon" />
             </div>
           </div>
 
@@ -478,7 +478,7 @@ const EnrichmentProgram = () => {
           {!loading && !error && programs.length > 0 && (
             <div className="sidebar-section">
               <h3 className="sidebar-title">Phân loại</h3>
-              <div className="program-filters">
+              <div className="enrichment-program-filters">
                 <button
                   className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
                   onClick={() => setFilter('all')}
@@ -505,9 +505,9 @@ const EnrichmentProgram = () => {
           {!loading && !error && programs.length > 0 && (
             <div className="sidebar-section">
               <h3 className="sidebar-title">Sắp xếp</h3>
-              <div className="sort-container">
+              <div className="enrichment-program-sort-container">
                 <select
-                  className="sort-select"
+                  className="enrichment-program-sort-select"
                   value={sortBy}
                   onChange={handleSortChange}
                 >
@@ -517,7 +517,7 @@ const EnrichmentProgram = () => {
                   <option value="dateAsc">Ngày tăng dần</option>
                   <option value="dateDesc">Ngày giảm dần</option>
                 </select>
-                <FontAwesomeIcon icon="sort" className="sort-icon" />
+                <FontAwesomeIcon icon="sort" className="enrichment-program-sort-icon" />
               </div>
             </div>
           )}
@@ -580,29 +580,29 @@ const EnrichmentProgram = () => {
                       <p className="program-description">{program.description || "Chưa có mô tả chi tiết."}</p>
 
                       <div className="program-details">
-                        <div className="detail-item">
-                          <FontAwesomeIcon icon="calendar-alt" className="detail-icon" />
-                          <div className="detail-content">
-                            <span className="detail-label">Thời gian</span>
-                            <span className="detail-value">
+                        <div className="enrichment-program-detail-item">
+                          <FontAwesomeIcon icon="calendar-alt" className="enrichment-program-detail-icon" />
+                          <div className="enrichment-program-detail-content">
+                            <span className="enrichment-program-detail-label">Thời gian</span>
+                            <span className="enrichment-program-detail-value">
                               {formatDisplayDate(program.startDate)} - {formatDisplayDate(program.endDate)}
                             </span>
                           </div>
                         </div>
 
-                        <div className="detail-item">
-                          <FontAwesomeIcon icon="users" className="detail-icon" />
-                          <div className="detail-content">
-                            <span className="detail-label">Sĩ số tối đa</span>
-                            <span className="detail-value">{program.maxChildren} học sinh</span>
+                        <div className="enrichment-program-detail-item">
+                          <FontAwesomeIcon icon="users" className="enrichment-program-detail-icon" />
+                          <div className="enrichment-program-detail-content">
+                            <span className="enrichment-program-detail-label">Sĩ số tối đa</span>
+                            <span className="enrichment-program-detail-value">{program.maxChildren} học sinh</span>
                           </div>
                         </div>
 
-                        <div className="detail-item">
-                          <FontAwesomeIcon icon="money-bill-wave" className="detail-icon" />
-                          <div className="detail-content">
-                            <span className="detail-label">Học phí</span>
-                            <span className="detail-value fee">{formatCurrency(program.fee)}</span>
+                        <div className="enrichment-program-detail-item">
+                          <FontAwesomeIcon icon="money-bill-wave" className="enrichment-program-detail-icon" />
+                          <div className="enrichment-program-detail-content">
+                            <span className="enrichment-program-detail-label">Học phí</span>
+                            <span className="enrichment-program-detail-value fee">{formatCurrency(program.fee)}</span>
                           </div>
                         </div>
                       </div>

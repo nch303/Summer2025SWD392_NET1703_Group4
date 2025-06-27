@@ -489,7 +489,7 @@
 }
 
 /* Class Capacity Bar */
-.class-capacity {
+.communication-book-class-capacity {
   margin-top: 1.5rem;
 }
 
@@ -514,14 +514,14 @@
 }
 
 /* Teachers List */
-.teachers-list {
+.communication-book-teachers-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.teacher-card {
+.communication-book-teacher-card {
   display: flex;
   align-items: center;
   background-color: #fff;
@@ -531,7 +531,7 @@
   border: 1px solid #f1f5f9;
 }
 
-.teacher-avatar {
+.communication-book-teacher-avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -544,36 +544,36 @@
   color: white;
 }
 
-.teacher-info {
+.communication-book-teacher-info {
   flex: 1;
 }
 
-.teacher-info h5 {
+.communication-book-teacher-info h5 {
   margin: 0 0 8px;
   font-size: 1rem;
   color: var(--text-color-dark);
 }
 
-.teacher-contact {
+.communication-book-teacher-contact {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 0.85rem;
 }
 
-.teacher-email, .teacher-phone {
+.communication-book-teacher-email, .communication-book-teacher-phone {
   display: flex;
   align-items: center;
   color: var(--text-color-muted);
 }
 
-.teacher-email svg, .teacher-phone svg {
+.communication-book-teacher-email svg, .communication-book-teacher-phone svg {
   margin-right: 6px;
   font-size: 0.9rem;
   color: var(--primary-color);
 }
 
-.no-teachers-message {
+.communication-book-no-teachers-message {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -582,7 +582,7 @@
   font-size: 1rem;
 }
 
-.no-teachers-message svg {
+.communication-book-no-teachers-message svg {
   margin-right: 8px;
   color: var(--warning-color);
 }
@@ -962,7 +962,7 @@
 }
 
 /* Tạo card summary ở đầu mỗi tab */
-.summary-card {
+.communication-book-summary-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-radius: var(--border-radius-md);
   padding: 1rem;
@@ -971,7 +971,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.summary-card h5 {
+.communication-book-summary-card h5 {
   font-size: 1.1rem;
   color: var(--text-color-dark);
   margin: 0 0 0.8rem;
@@ -979,12 +979,12 @@
   align-items: center;
 }
 
-.summary-card h5 svg {
+.communication-book-summary-card h5 svg {
   margin-right: 8px;
   color: var(--primary-color);
 }
 
-.summary-card p {
+.communication-book-summary-card p {
   color: var(--text-color-muted);
   margin: 0;
   font-size: 0.95rem;
@@ -1026,7 +1026,7 @@
   color: var(--warning-color);
 }
 
-.stat-label {
+.communication-book-stat-label {
   font-size: 0.85rem;
   color: var(--text-color-muted);
 }

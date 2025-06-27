@@ -378,7 +378,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
               
               {activeTab === 'class' && (
                 <div className="communication-tab-panel">
-                  <div className="summary-card">
+                  <div className="communication-book-summary-card">
                     <h5>
                       <FontAwesomeIcon icon="chalkboard" />
                       Thông tin lớp học
@@ -443,7 +443,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                             </div>
                           </div>
                           
-                          <div className="class-capacity">
+                          <div className="communication-book-class-capacity">
                             <div className="capacity-bar">
                               <div 
                                 className="capacity-filled" 
@@ -456,22 +456,22 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                           </div>
                           
                           {/* Phần giáo viên */}
-                          <h5 className="teacher-section-title">Giáo viên phụ trách</h5>
+                          <h5 className="communication-book-teacher-section-title">Giáo viên phụ trách</h5>
                           {classesInfo[selectedClassIndex].teachers && classesInfo[selectedClassIndex].teachers.length > 0 ? (
-                            <div className="teachers-list">
+                            <div className="communication-book-teachers-list">
                               {classesInfo[selectedClassIndex].teachers.map((teacher) => (
-                                <div key={teacher.id} className="teacher-card">
-                                  <div className="teacher-avatar">
+                                <div key={teacher.id} className="communication-book-teacher-card">
+                                  <div className="communication-book-teacher-avatar">
                                     <FontAwesomeIcon icon="user-tie" />
                                   </div>
-                                  <div className="teacher-info">
+                                  <div className="communication-book-teacher-info">
                                     <h5>{teacher.fullName}</h5>
-                                    <div className="teacher-contact">
-                                      <div className="teacher-email">
+                                    <div className="communication-book-teacher-contact">
+                                      <div className="communication-book-teacher-email">
                                         <FontAwesomeIcon icon="envelope" />
                                         <span>{teacher.email}</span>
                                       </div>
-                                      <div className="teacher-phone">
+                                      <div className="communication-book-teacher-phone">
                                         <FontAwesomeIcon icon="phone" />
                                         <span>{teacher.phoneNumber}</span>
                                       </div>
@@ -495,7 +495,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
               
               {activeTab === 'attendance' && (
                 <div className="communication-tab-panel">
-                  <div className="summary-card">
+                  <div className="communication-book-summary-card">
                     <h5>
                       <FontAwesomeIcon icon="calendar-check" />
                       Điểm danh
@@ -507,11 +507,11 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                     <div className="attendance-statistics">
                       <div className="attendance-stat-card stat-attend">
                         <div className="stat-number">{attendStats.attend}</div>
-                        <div className="stat-label">Có mặt</div>
+                        <div className="communication-book-stat-label">Có mặt</div>
                       </div>
                       <div className="attendance-stat-card stat-absent">
                         <div className="stat-number">{attendStats.absent}</div>
-                        <div className="stat-label">Vắng mặt</div>
+                        <div className="communication-book-stat-label">Vắng mặt</div>
                       </div>
                     </div>
                   )}

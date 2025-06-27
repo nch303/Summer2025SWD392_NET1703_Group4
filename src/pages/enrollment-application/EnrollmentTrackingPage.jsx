@@ -249,41 +249,88 @@ const EnrollmentTrackingPage = () => {
       if (response && response.url) {
         const paymentWindow = window.open(response.url, '_blank');
         
-        // Check window status more frequently (200ms instead of 300ms)
-        const checkWindowClosed = setInterval(() => {
-          if (paymentWindow && paymentWindow.closed) {
-            clearInterval(checkWindowClosed);
-            hideSpinner();
-            setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+        // Start polling for status changes immediately
+        let statusCheckInterval;
+        let attempts = 0;
+        const maxAttempts = 30; // Check for up to 5 minutes (10s * 30)
+        
+        statusCheckInterval = setInterval(async () => {
+          // Increment attempts counter
+          attempts++;
+          
+          try {
+            // Directly check application status from the server
+            const updatedApplication = await getEnrollmentApplicationDetail(application.eaid);
             
-            // Show a loading message while we update the status
-            toast.info('Đang cập nhật trạng thái thanh toán...');
-            
-            // Refresh data after a short delay to allow backend to process payment
-            setTimeout(() => {
+            // If payment status has changed or window is closed
+            if ((updatedApplication && updatedApplication.status === 'Paid') || 
+                (paymentWindow && paymentWindow.closed)) {
+              
+              // Clear the interval and update UI
+              clearInterval(statusCheckInterval);
+              hideSpinner();
+              setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+              
+              // Refresh all data
               fetchApplications();
+              
               // Check if modal is open and refresh that data too
               if (selectedApplication && selectedApplication.eaid === application.eaid) {
                 fetchApplicationDetail(application.eaid);
               }
-            }, 2000);
+              
+              // Show success message if paid
+              if (updatedApplication && updatedApplication.status === 'Paid') {
+                toast.success('Thanh toán thành công!');
+              }
+              
+              return;
+            }
+            
+            // Stop checking after max attempts
+            if (attempts >= maxAttempts) {
+              clearInterval(statusCheckInterval);
+              hideSpinner();
+              setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+              toast.info('Vui lòng làm mới trang để cập nhật trạng thái thanh toán');
+            }
+          } catch (err) {
+            console.error('Error checking payment status:', err);
+          }
+        }, 10000); // Check every 10 seconds
+        
+        // Still monitor window close event for immediate feedback
+        const checkWindowClosed = setInterval(() => {
+          if (paymentWindow && paymentWindow.closed) {
+            clearInterval(checkWindowClosed);
+            hideSpinner();
+            
+            // Show loading message
+            toast.info('Đang cập nhật trạng thái thanh toán...');
+            
+            // Immediate check for status update
+            getEnrollmentApplicationDetail(application.eaid)
+              .then(updatedData => {
+                if (updatedData && updatedData.status === 'Paid') {
+                  toast.success('Thanh toán thành công!');
+                }
+                
+                // Refresh all data
+                fetchApplications();
+                
+                // Update modal if open
+                if (selectedApplication && selectedApplication.eaid === application.eaid) {
+                  fetchApplicationDetail(application.eaid);
+                }
+                
+                setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+              })
+              .catch(err => {
+                console.error('Error fetching updated status:', err);
+                setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
+              });
           }
         }, 200);
-        
-        // Set a maximum timeout for the payment window check
-        setTimeout(() => {
-          if (!paymentWindow.closed) {
-            hideSpinner();
-            setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
-            // Clear the interval
-            clearInterval(checkWindowClosed);
-            
-            // Set a timeout to refresh data anyway, in case payment was completed
-            // but user didn't close the window
-            setTimeout(fetchApplications, 5000);
-          }
-        }, 300000); // 5 minutes max wait
-        
       } else {
         console.error('Invalid response format:', response);
         toast.error('Không thể tạo liên kết thanh toán. Định dạng phản hồi không hợp lệ.');

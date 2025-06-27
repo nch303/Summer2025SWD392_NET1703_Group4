@@ -867,11 +867,11 @@ const ClassManagement = () => {
                         {selectedClass.classTeachers.map(teacher => (
                           <Card 
                             key={teacher.teacherID} 
-                            className="teacher-card" 
+                            className="admin-teacher-card" 
                             hoverable
                             onClick={() => showTeacherDetail(teacher.teacherID)}
                           >
-                            <div className="teacher-card-content">
+                            <div className="admin-teacher-card-content">
                               <div className="teacher-avatar-container">
                                 <Avatar 
                                   size={70} 
@@ -940,21 +940,21 @@ const ClassManagement = () => {
                           {selectedClass.classChildrens.map((student, index) => (
                             <Card 
                               key={student.childrenID}
-                              className="student-card" 
+                              className="admin-student-card" 
                               hoverable
                               onClick={() => showStudentDetail(student.childrenID)}
                             >
                               <div className="student-number">{index + 1}</div>
-                              <div className="student-card-inner">
+                              <div className="admin-student-card-inner">
                                 <Avatar 
                                   size={60} 
                                   src={student.avatar && student.avatar !== "string" ? student.avatar : null}
                                   icon={!student.avatar || student.avatar === "string" ? <UserOutlined /> : null} 
                                   className={`student-avatar ${student.gender?.toLowerCase() === "female" ? "female-avatar" : "male-avatar"}`}
                                 />
-                                <div className="student-card-details">
-                                  <Text strong className="student-card-name">{student.childrenName}</Text>
-                                  <div className="student-card-badges">
+                                <div className="admin-student-card-details">
+                                  <Text strong className="admin-student-card-name">{student.childrenName}</Text>
+                                  <div className="admin-student-card-badges">
                                     {student.gender && student.gender !== "string" && (
                                       <Tag color={student.gender.toLowerCase() === "female" ? "pink" : "blue"} className="gender-tag">
                                         {student.gender}

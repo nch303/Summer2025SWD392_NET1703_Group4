@@ -101,6 +101,7 @@ import {
   faHeading,
   faStar,
   faArrowRight,
+  faUserGraduate,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các icon sẽ sử dụng trong ứng dụng
@@ -208,6 +209,7 @@ library.add(
   faHeading,
   faStar,
   faArrowRight,
+  faUserGraduate,
 );
 
 // Không cần export vì đã đăng ký vào library 
