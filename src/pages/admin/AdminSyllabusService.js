@@ -76,3 +76,25 @@ export const getSyllabusDetails = async (syllabusId) => {
     throw error;
   }
 };
+
+// Add function to update multiple syllabi at once
+export const updateMultipleSyllabi = async (syllabusDataArray) => {
+  try {
+    const response = await api.put('/update-syllabus', syllabusDataArray);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating multiple syllabi:', error);
+    throw error;
+  }
+};
+
+// Add function to update a specific syllabus detail
+export const updateSyllabusDetail = async (id, detailData) => {
+  try {
+    const response = await api.put(`/api/SyllabusDetail/${id}/update-syllabus`, detailData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating syllabus detail with ID ${id}:`, error);
+    throw error;
+  }
+};
