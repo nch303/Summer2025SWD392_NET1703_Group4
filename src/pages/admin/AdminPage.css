@@ -246,3 +246,192 @@
     margin-bottom: 16px;
   }
 }
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  color: #333;
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.year-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.stat-card {
+  height: 100%;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+  background: #f8fafc;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
+  transform: translateY(-2px) scale(1.02);
+  border-color: #6b8afd;
+}
+
+.chart-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+  background: #f8fafc;
+  transition: all 0.3s;
+  margin-bottom: 24px;
+}
+
+.chart-card:hover {
+  box-shadow: 0 6px 18px rgba(107, 138, 253, 0.16);
+  border-color: #e0e7ff;
+}
+
+.chart-card .ant-card-head {
+  border-bottom: 1px solid #e8f0fe;
+}
+
+.chart-card .ant-card-head-title {
+  padding: 12px 0;
+}
+
+.chart-card .ant-card-head-title h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5c7cfa;
+}
+
+.pie-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+}
+
+.pie-stats {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pie-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.pie-stat-total {
+  margin-top: 8px;
+  font-weight: 600;
+  border-top: 1px dashed #e8f0fe;
+  padding-top: 8px;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+/* Styling for tabs */
+.chart-card .ant-tabs-nav {
+  margin-bottom: 20px;
+}
+
+.chart-card .ant-tabs-tab {
+  padding: 8px 16px;
+}
+
+.chart-card .ant-tabs-tab:hover {
+  color: #6b8afd;
+}
+
+.chart-card .ant-tabs-tab-active {
+  background: #f0f4ff;
+  border-radius: 8px;
+}
+
+.chart-card .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #6b8afd !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .pie-container {
+    flex-direction: column;
+  }
+  
+  .pie-stats {
+    margin-top: 20px;
+    margin-left: 0;
+  }
+}
+
+/* Add these styles to AdminPage.css */
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.export-btn {
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
+  border: none;
+  border-radius: 8px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 138, 253, 0.2);
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+}
+
+/* Update responsive styling */
+@media (max-width: 768px) {
+  .dashboard-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 12px;
+  }
+  
+  .year-filter {
+    width: 100%;
+  }
+  
+  .export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
