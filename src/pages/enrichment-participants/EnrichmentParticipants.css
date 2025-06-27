@@ -1,0 +1,205 @@
+/* EnrichmentParticipants.css */
+.enrichment-participants {
+  padding: 24px;
+  background-color: #f5f8ff;
+}
+
+.stats-card {
+  box-shadow: 0 6px 16px rgba(107, 138, 253, 0.12);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: none;
+}
+
+.header-section {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.header-section h2 {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.description-text {
+  font-size: 16px;
+}
+
+.section-icon {
+  margin-right: 10px;
+  color: #5c7cfa;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.section-divider {
+  margin: 32px 0;
+}
+
+.filter-section {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f9fbff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.filter-row {
+  margin-bottom: 16px;
+}
+
+.filter-label {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #4c6ef5;
+  font-size: 15px;
+}
+
+.styled-select {
+  border-radius: 8px;
+  height: 42px;
+}
+
+.styled-select .ant-select-selector {
+  border-radius: 8px !important;
+  height: 42px !important;
+}
+
+.pie-chart-container {
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.pie-chart-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 138, 253, 0.15);
+}
+
+.chart-section {
+  margin: 30px 0;
+}
+
+.bar-chart-container {
+  height: 400px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.bar-chart-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 138, 253, 0.15);
+}
+
+.students-section {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.table-title {
+  margin: 0 !important;
+  color: #333;
+}
+
+.search-input {
+  width: 250px;
+  border-radius: 8px;
+  height: 40px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.styled-empty {
+  margin: 40px 0;
+}
+
+.styled-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.styled-table .ant-table-thead > tr > th {
+  background-color: #f0f4ff;
+  color: #4c6ef5;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .enrichment-participants {
+    padding: 16px;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .pie-chart-container,
+  .bar-chart-container {
+    height: 350px;
+    padding: 15px;
+  }
+  
+  .filter-section,
+  .students-section {
+    padding: 15px;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .pie-chart-container,
+  .bar-chart-container {
+    height: 300px;
+    padding: 10px;
+  }
+  
+  .filter-row {
+    margin-bottom: 8px;
+  }
+  
+  .students-section {
+    padding: 12px;
+  }
+  
+  .section-divider {
+    margin: 20px 0;
+  }
+}

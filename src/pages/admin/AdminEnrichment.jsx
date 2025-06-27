@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Card, Table, Button, Space, Popconfirm, message, Tag, Modal, Form, 
-  Input, InputNumber, DatePicker, Select, Spin, Typography
+  Input, InputNumber, DatePicker, Select, Spin, Typography, Switch
 } from 'antd';
 import { 
   PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined, 
-  CloseCircleOutlined, DollarOutlined
+  CloseCircleOutlined, DollarOutlined, UndoOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import './AdminEnrichment.css';
 import { 
   getAllEnrichmentPrograms, getEnrichmentProgramById, 
-  createEnrichmentProgram, updateEnrichmentProgram, deleteEnrichmentProgram 
+  createEnrichmentProgram, updateEnrichmentProgram, deleteEnrichmentProgram,
+  restoreEnrichmentProgram
 } from './AdminEnrichmentService';
 
 const { Title, Text } = Typography;
@@ -26,6 +27,7 @@ const AdminEnrichment = () => {
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState('');
+  const [showDeleted, setShowDeleted] = useState(false);
 
   // Fetch all enrichment programs
   const fetchPrograms = async () => {
@@ -33,9 +35,7 @@ const AdminEnrichment = () => {
       setLoading(true);
       const data = await getAllEnrichmentPrograms();
       console.log('Fetched programs:', data);
-      // Filter out deleted items (isDelete === true)
-      const activePrograms = data ? data.filter(program => !program.isDelete) : [];
-      setPrograms(activePrograms);
+      setPrograms(data || []);
     } catch (error) {
       message.error('Failed to fetch enrichment programs');
     } finally {
@@ -82,8 +82,7 @@ const AdminEnrichment = () => {
         endDate: endDate ? endDate.format('YYYY-MM-DD') : null,
         maxChildren: values.maxChildren,
         fee: values.fee,
-        typeProgramID: values.typeProgramID,
-        type: values.type
+        typeProgramID: values.typeProgramID
       };
 
       if (modalType === 'edit') {
@@ -113,6 +112,17 @@ const AdminEnrichment = () => {
     }
   };
 
+  // Handle restore
+  const handleRestore = async (record) => {
+    try {
+      await restoreEnrichmentProgram(record);
+      message.success('Enrichment program restored successfully');
+      fetchPrograms();
+    } catch (error) {
+      message.error(`Failed to restore enrichment program: ${error.message}`);
+    }
+  };
+
   // Table columns
   const columns = [
     {
@@ -120,13 +130,18 @@ const AdminEnrichment = () => {
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text, record) => (
+        <span style={{ textDecoration: record.isDelete ? 'line-through' : 'none' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      render: (type) => (
-        <Tag color="blue">{type}</Tag>
+      render: (type, record) => (
+        <Tag color={record.isDelete ? 'default' : 'blue'}>{type}</Tag>
       ),
     },
     {
@@ -134,6 +149,11 @@ const AdminEnrichment = () => {
       dataIndex: 'description',
       key: 'description',
       ellipsis: true,
+      render: (text, record) => (
+        <span style={{ textDecoration: record.isDelete ? 'line-through' : 'none' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: 'Start Date',
@@ -167,38 +187,65 @@ const AdminEnrichment = () => {
       sorter: (a, b) => a.fee - b.fee,
     },
     {
+      title: 'Status',
+      key: 'status',
+      render: (_, record) => (
+        <Tag color={record.isDelete ? 'volcano' : 'green'}>
+          {record.isDelete ? 'Deleted' : 'Active'}
+        </Tag>
+      ),
+    },
+    {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space size="small">
-          <Button 
-            type="primary" 
-            icon={<EditOutlined />} 
-            onClick={() => showModal('edit', record)}
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure you want to delete this program?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="primary" danger icon={<DeleteOutlined />}>
-              Delete
+        <Space size="small" wrap>
+          {record.isDelete ? (
+            <Button 
+              type="primary" 
+              icon={<UndoOutlined />} 
+              onClick={() => handleRestore(record)}
+              className="restore-button"
+            >
+              Restore
             </Button>
-          </Popconfirm>
+          ) : (
+            <>
+              <Button 
+                type="primary" 
+                icon={<EditOutlined />} 
+                onClick={() => showModal('edit', record)}
+              >
+                Edit
+              </Button>
+              <Popconfirm
+                title="Are you sure you want to delete this program?"
+                onConfirm={() => handleDelete(record.id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button 
+                  type="primary" 
+                  danger 
+                  icon={<DeleteOutlined />}
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
+            </>
+          )}
         </Space>
       ),
     },
   ];
 
-  // Filter programs based on search text
+  // Filter programs based on search text and deleted status
   const filteredPrograms = programs.filter(
     (program) =>
-      program.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-      program.description?.toLowerCase().includes(searchText.toLowerCase()) ||
-      program.type?.toLowerCase().includes(searchText.toLowerCase())
+      (showDeleted || !program.isDelete) &&
+      (program.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+       program.description?.toLowerCase().includes(searchText.toLowerCase()) ||
+       program.type?.toLowerCase().includes(searchText.toLowerCase()))
   );
 
   return (
@@ -212,6 +259,12 @@ const AdminEnrichment = () => {
               allowClear
               onSearch={(value) => setSearchText(value)}
               style={{ width: 300 }}
+            />
+            <Switch
+              checked={showDeleted}
+              onChange={setShowDeleted}
+              checkedChildren="Show Deleted"
+              unCheckedChildren="Hide Deleted"
             />
             <Button 
               type="primary" 
@@ -229,6 +282,7 @@ const AdminEnrichment = () => {
             columns={columns}
             rowKey="id"
             pagination={{ pageSize: 10 }}
+            rowClassName={(record) => record.isDelete ? 'deleted-row' : ''}
           />
         </Spin>
       </Card>
@@ -263,14 +317,19 @@ const AdminEnrichment = () => {
             label="Program Type"
             rules={[{ required: true, message: 'Please select program type' }]}
           >
-            <Select placeholder="Select program type">
-              <Option value="Swimming">Swimming</Option>
+            <Select 
+              placeholder="Select program type"
+              onChange={(value) => {
+                // Set the corresponding typeProgramID based on selected type
+                if (value === "Piano") {
+                  form.setFieldsValue({ typeProgramID: 1 });
+                } else if (value === "Boi") {
+                  form.setFieldsValue({ typeProgramID: 2 });
+                }
+              }}
+            >
               <Option value="Piano">Piano</Option>
-              <Option value="Dancing">Dancing</Option>
-              <Option value="Art">Art</Option>
-              <Option value="Chess">Chess</Option>
-              <Option value="Robotics">Robotics</Option>
-              <Option value="Language">Language</Option>
+              <Option value="Boi">Boi</Option>
             </Select>
           </Form.Item>
           
@@ -287,7 +346,19 @@ const AdminEnrichment = () => {
             label="Program Duration"
             rules={[{ required: true, message: 'Please select start and end dates' }]}
           >
-            <RangePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+            <RangePicker 
+              style={{ width: '100%' }} 
+              format="DD/MM/YYYY"
+              disabledDate={(current) => current && current < dayjs().startOf('day')}
+              inputReadOnly={false}
+              allowClear={true}
+              onChange={(dates) => {
+                if (dates && dates[0] && dates[1] && dates[1].isBefore(dates[0])) {
+                  message.error('End date cannot be before start date');
+                  form.setFieldsValue({ dates: [dates[0], null] });
+                }
+              }}
+            />
           </Form.Item>
           
           <Form.Item 
