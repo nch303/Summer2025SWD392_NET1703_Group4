@@ -53,6 +53,11 @@ const AdminLayout = () => {
       label: 'Enrichment Activities',
     },
     {
+      key: '/admin/enrichment-participants',
+      icon: <BarChartOutlined />,
+      label: 'Enrichment Participants',
+    },
+    {
       key: '/admin/news',
       icon: <NotificationOutlined />,
       label: 'News',

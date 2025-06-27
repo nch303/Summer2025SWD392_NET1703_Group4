@@ -68,6 +68,7 @@ import ReportsPage from '../pages/reports/ReportsPage';
 import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
 import AdminNews from '../pages/admin/AdminNews';
 import StaffAssignTeacherPage from '../pages/staff-assign-teacher/StaffAssignTeacherPage';
+import EnrichmentParticipants from '../pages/enrichment-participants/EnrichmentParticipants';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -188,6 +189,7 @@ function App() {
             <Route path="enrollment-applications" element={<EnrollmentApplicationManagement />} />
             <Route path="assign-students" element={<StaffAssignStudentPage />} />
             <Route path="assign-teachers" element={<StaffAssignTeacherPage />} />
+            <Route path="enrichment-participants" element={<EnrichmentParticipants />} />
           </Route>
 
           {/* Admin Routes */}
@@ -210,6 +212,7 @@ function App() {
             <Route path="users/list" element={<AccountListPage />} />
             <Route path="enrichment" element={<AdminEnrichment />} />
             <Route path="students" element={<StudentsManagement />} />
+            <Route path="enrichment-participants" element={<EnrichmentParticipants />} />
           </Route>
 
           {/* Teacher Routes */}
