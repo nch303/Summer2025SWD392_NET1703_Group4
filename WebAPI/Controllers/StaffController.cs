@@ -170,7 +170,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("openClass)/{classId}")]
+        [HttpPost("openClass/{classId}")]
         public async Task<IActionResult> OpenClass(int classId)
         {
             try
