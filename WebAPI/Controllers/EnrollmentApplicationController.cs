@@ -100,7 +100,7 @@ namespace WebAPI.Controllers
                     ChildrenID = updated.ChildrenID,
                     AcademicYear = updated.AcademicYear,
                     GradeLevelID = updated.GradeLevelID, // Default value, can be updated later
-                    Status = "Not Enrolled" // Default value, can be updated later
+                    Status = "Inactive" // Default value, can be updated later
                 };
                 await _childrenGradeService.CreateChildrenGradeAsync(childrenGrade);
 

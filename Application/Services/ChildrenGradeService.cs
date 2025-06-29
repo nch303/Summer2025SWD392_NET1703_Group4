@@ -35,5 +35,10 @@ namespace Application.Services
         {
             return await _childrenGradeRepository.UpdateChildrenGradeAsync(childrenGrade);
         }
+
+        public async Task<List<ChildrenGrade>> GetActiveChildrenGradeAsync()
+        {
+            return await _childrenGradeRepository.GetActiveChildrenGradeAsync();
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace Application.Interfaces
     {
         Task<List<GradeLevel>> GetAllGradeLevelsAsync();
         Task<GradeLevel?> GetGradeLevelByIdAsync(int id);
+        Task<GradeLevel> GetGradeLevelByNameAsync(string name);
     }
 }

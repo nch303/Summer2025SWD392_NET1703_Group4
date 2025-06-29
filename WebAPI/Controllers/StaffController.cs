@@ -286,5 +286,63 @@ namespace WebAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("GetActiveChildrenGrades")]
+        public async Task<IActionResult> GetActiveChildrenGradesAsync()
+        {
+            try
+            {
+                var childrenGrades = await _childrenGradeService.GetActiveChildrenGradeAsync();
+                var children = new List<Children>();
+                foreach (var grade in childrenGrades)
+                {
+                    var child = grade.Childrens;
+                    if (child != null)
+                    {
+                        children.Add(child);
+                    }
+                }
+                var response = _mapper.Map<List<ChildrenResponse>>(children);
+
+                for (int i = 0; i < response.Count(); i++)
+                {
+                    //Gan ApplicationID cho ChildResponse
+                    var application = await _EAService.GetApplicatioinByChildID(response[i].ID);
+                    response[i].ApplicationID = application?.ID ?? Guid.Empty;
+
+                    //Gan GradeLevel cho ChildResponse
+                    var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
+                    if (grade.Count == 0)
+                    {
+                        response[i].GradeLevelID = 0;
+                        response[i].GradeLevelName = string.Empty;
+                        continue;
+                    }
+                    response[i].GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                    response[i].GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
+                }
+
+                response = response.OrderBy(c => c.EnrollDate).ToList();
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("UpgradeForChildren")]
+        public async Task<IActionResult> UpgradeForChildren(List<Guid> childrenIds)
+        {
+            try
+            {
+                await _staffService.UpgradeChildren(childrenIds);
+                return Ok(new { message = "Children upgraded successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

@@ -30,5 +30,11 @@ namespace Infrastructure.Repositories
             var gradeLevel = await _context.GradeLevels.FirstOrDefaultAsync(g => g.ID == id);
             return gradeLevel;
         }
+
+        public async Task<GradeLevel> GetGradeLevelByNameAsync(string name)
+        {
+            var gradeLevel = await _context.GradeLevels.FirstOrDefaultAsync(g => g.Name == name);
+            return gradeLevel;
+        }
     }
 }

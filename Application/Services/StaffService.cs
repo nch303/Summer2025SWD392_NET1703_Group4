@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using AutoMapper.Configuration.Annotations;
 using Domain.Entities;
 using Domain.Interfaces;
 using System;
@@ -18,10 +19,11 @@ namespace Application.Services
         private readonly IClassChildrenService _classChildrenService;
         private readonly IAccountRepository _accountRepository;
         private readonly IChildrenGradeService _childrengradeService;
+        private readonly IGradeLevelService _gradeLevelService;
 
         public StaffService(IStaffRepository staffRepository, IClassService classService, IEARepository eARepository
             , IChildrenService childrenService, IClassChildrenService classChildrenService, IAccountRepository accountRepository
-            , IChildrenGradeService childrenGradeService)
+            , IChildrenGradeService childrenGradeService, IGradeLevelService gradeLevelService)
         {
             _staffRepository = staffRepository;
             _classService = classService;
@@ -30,6 +32,7 @@ namespace Application.Services
             _classChildrenService = classChildrenService;
             _accountRepository = accountRepository;
             _childrengradeService = childrenGradeService;
+            _gradeLevelService = gradeLevelService;
         }
 
         public async Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds)
@@ -60,7 +63,7 @@ namespace Application.Services
             //Check the amount of children to be assigned
             if ((OldClass.MaxChildren - OldClass.Quantity) < childrenIds.Count)
             {
-                throw new Exception("This class just has " + (OldClass.MaxChildren - OldClass.Quantity) + " slots for children.");
+                throw new Exception("This class just has " + OldClass.MaxChildren + " slots for children.");
             }
 
             var children = await _staffRepository.AssignChildrenListToClassAsync(classId, childrenIds);
@@ -69,7 +72,7 @@ namespace Application.Services
             foreach (var childId in childrenIds)
             {
                 var childrenGrades = await _childrengradeService.GetChildrenGradesByChildrenIdAsync(childId);
-                childrenGrades[childrenGrades.Count - 1].Status = "Enrolled";
+                childrenGrades[childrenGrades.Count - 1].Status = "Active";
             }
 
             return children;
@@ -85,6 +88,12 @@ namespace Application.Services
 
             if (oldClass == null || newClass == null)
                 throw new Exception("One of the classes does not exist.");
+
+            //Check the amount of children to be assigned
+            if (oldClass.MaxChildren - oldClass.Quantity <= 0)
+            {
+                throw new Exception("This class just has " + oldClass.MaxChildren + " slots for children.");
+            }
 
             if (oldClass.GradeLevelID != newClass.GradeLevelID)
                 throw new Exception("Classes must have the same GradeLevel.");
@@ -146,10 +155,76 @@ namespace Application.Services
                 }
             }
 
-
-
             var result = await _staffRepository.AssignTeacherToClassAsync(classId, teacherId);
             return result;
+        }
+
+        public async Task UpgradeChildren(List<Guid> childrenIds)
+        {
+            var newChildrenGrade = new ChildrenGrade();
+            var gradeLevels = await _gradeLevelService.GetAllGradeLevelsAsync();
+            if (gradeLevels.Count == 0)
+            {
+                throw new Exception("No grade levels found.");
+            }
+
+            var currentGrade = new GradeLevel();
+            var newGradeLevel = new GradeLevel();
+            
+            var childrenGrades = await _staffRepository.UpgradeChildren(childrenIds);
+            if (childrenGrades.Count == 0)
+            {
+                throw new Exception("Children are not eligible to move up to grade level.");
+            }
+
+            var childrenGradeResult = new List<ChildrenGrade>();
+            for (int i = 1; i <= childrenGrades.Count; i++)
+            {
+                childrenGradeResult.Add(childrenGrades[childrenGrades.Count - i]);
+            }
+            
+            var currentAcademicYear = childrenGrades[0].AcademicYear;
+            
+            var years = currentAcademicYear!.Split('-');
+
+            int startYear = int.Parse(years[0]);
+            int endYear = int.Parse(years[1]);
+
+            string nextAcademicYear = $"{startYear + 1}-{endYear + 1}";
+            foreach (var childGrade in childrenGradeResult)
+            {
+                currentGrade = await _gradeLevelService.GetGradeLevelByIdAsync(childGrade.GradeLevelID);
+                switch (currentGrade!.Name)
+                {
+                    case "Mầm":
+                        newGradeLevel = await _gradeLevelService.GetGradeLevelByNameAsync("Chồi");
+                        break;
+                    case "Chồi":
+                        newGradeLevel = await _gradeLevelService.GetGradeLevelByNameAsync("Lá");
+                        break;
+                    case "Lá":
+                        childGrade.Status = "Graduated";
+                        await _childrengradeService.UpdateChildrenGradeAsync(childGrade);
+                        break;
+                }
+
+                if(childGrade.Status != "Graduated")
+                {
+                    newChildrenGrade = new ChildrenGrade
+                    {
+                        ChildrenID = childGrade.ChildrenID,
+                        GradeLevelID = newGradeLevel.ID,
+                        AcademicYear = nextAcademicYear,
+                        Status = "Inactive"
+                    };
+                }
+
+                //Update the current children grade status to "Completed"
+                childGrade.Status = "Completed";
+                await _childrengradeService.UpdateChildrenGradeAsync(childGrade);
+
+                await _childrengradeService.CreateChildrenGradeAsync(newChildrenGrade);
+            }
         }
     }
 }

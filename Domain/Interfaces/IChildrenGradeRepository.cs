@@ -13,6 +13,6 @@ namespace Infrastructure.Repositories
         Task<List<ChildrenGrade>> GetChildrenGradesByChildrenIdAsync(Guid childrenId);
         Task<ChildrenGrade> CreateChildrenGradeAsync(ChildrenGrade childrenGrade);
         Task<ChildrenGrade> UpdateChildrenGradeAsync(ChildrenGrade childrenGrade);
-
+        Task<List<ChildrenGrade>> GetActiveChildrenGradeAsync();
     }
 }

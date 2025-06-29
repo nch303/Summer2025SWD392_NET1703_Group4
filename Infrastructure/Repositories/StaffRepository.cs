@@ -24,7 +24,7 @@ namespace Infrastructure.Repositories
             var classChildren = childrenIds.Select(id => new ClassChildren
             {
                 ClassID = classId,
-                ChildrenID = id, 
+                ChildrenID = id,
                 Status = "Active"
             }).ToList();
 
@@ -66,7 +66,7 @@ namespace Infrastructure.Repositories
 
         public async Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId)
         {
-            var classTeacher =  new ClassTeacher
+            var classTeacher = new ClassTeacher
             {
                 ClassID = classId,
                 TeacherID = teacherId
@@ -89,6 +89,14 @@ namespace Infrastructure.Repositories
                 .AnyAsync(ct => ct.TeacherID == teacherId &&
                                 ct.Classes!.AcademicYear == academicYear &&
                                 ct.Classes!.EnrichmentProgramId == null);
+        }
+
+        public async Task<List<ChildrenGrade>> UpgradeChildren(List<Guid> childrenIds)
+        {
+            var childrenGrades = await _context.ChildrenGrades
+                .Where(cg => childrenIds.Contains(cg.ChildrenID) && cg.Status == "Active")
+                .ToListAsync();
+            return childrenGrades;
         }
     }
 }

@@ -32,5 +32,15 @@ namespace Application.Services
             }
             return gradelevel;
         }
+
+        public async Task<GradeLevel> GetGradeLevelByNameAsync(string name)
+        {
+            var gradelevel = await _repository.GetGradeLevelByNameAsync(name);
+            if (gradelevel == null)
+            {
+                throw new KeyNotFoundException($"Grade level with name {name} not found.");
+            }
+            return gradelevel;
+        }
     }
 }

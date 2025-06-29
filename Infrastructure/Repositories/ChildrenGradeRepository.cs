@@ -62,7 +62,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<ChildrenGrade>> GetChildrenGradesByChildrenIdAsync(Guid childrenId)
         {
-            var childrengrade =  await _context.ChildrenGrades
+            var childrengrade = await _context.ChildrenGrades
                 .Include(cg => cg.GradeLevels)
                 .Where(cg => cg.ChildrenID == childrenId)
                 .ToListAsync();
@@ -88,6 +88,16 @@ namespace Infrastructure.Repositories
             _context.ChildrenGrades.Update(existingGrade);
             await _context.SaveChangesAsync();
             return existingGrade;
+        }
+
+        public async Task<List<ChildrenGrade>> GetActiveChildrenGradeAsync()
+        {
+            var childrenGrades = await _context.ChildrenGrades
+                .Include(cg => cg.GradeLevels)
+                .Include(cg => cg.Childrens)
+                .Where(cg => cg.Status == "Active")
+                .ToListAsync();
+            return childrenGrades;
         }
     }
 }
