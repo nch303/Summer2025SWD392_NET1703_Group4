@@ -47,6 +47,7 @@ import AccountListPage from '../pages/admin-accounts-management/AccountListPage'
 import StudentsManagement from '../pages/admin-students-management/StudentsManagement';
 import AdminSyllabus from '../pages/admin/AdminSyllabus';
 import TuitionFeeManagement from '../pages/admin/TuitionFeeManagement';
+import TeachersManagement from '../pages/admin-teachers-management/TeachersManagement';
 
 // Teacher Pages
 import TeacherDashboard from '../pages/teacher/TeacherDashboard';
@@ -203,7 +204,6 @@ function App() {
           }>
             <Route index element={<AdminPage />} />
             <Route path="syllabus" element={<AdminSyllabus />} />
-            <Route path="teachers" element={<div>Teachers Management</div>} />
             <Route path="courses" element={<div>Courses Management</div>} />
             <Route path="classes/list" element={<ClassManagement />} />
             <Route path="news" element={<AdminNews />} />
@@ -216,6 +216,7 @@ function App() {
             <Route path="enrichment" element={<AdminEnrichment />} />
             <Route path="students" element={<StudentsManagement />} />
             <Route path="enrichment-participants" element={<EnrichmentParticipants />} />
+            <Route path="teachers" element={<TeachersManagement />} />
           </Route>
 
           {/* Teacher Routes */}
