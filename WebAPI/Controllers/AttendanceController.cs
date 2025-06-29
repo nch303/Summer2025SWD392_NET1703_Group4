@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{classId}/get-all-class-attendance")]
-        [Authorize(Roles = "Teacher")]
+        [Authorize]
         public async Task<IActionResult> GetAllClassAttendance(int classId)
         {
             try
