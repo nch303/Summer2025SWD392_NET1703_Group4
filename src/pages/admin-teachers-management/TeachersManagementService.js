@@ -8,10 +8,17 @@ import api from '../../config/axiosConfig';
  */
 export const fetchTeachers = async (pageNumber = 1, pageSize = 10) => {
   try {
-    const response = await api.get('/api/Account/get-list-of-teachers', {
-      params: { pageNumber, pageSize }
-    });
-    return response.data;
+    const response = await api.get('/api/Account/get-list-of-teachers');
+    
+    // Ensure response.data is an array
+    const teacherArray = Array.isArray(response.data) ? response.data : [];
+    
+    return {
+      data: teacherArray,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      totalCount: teacherArray.length
+    };
   } catch (error) {
     console.error('Error fetching teachers:', error);
     throw error;
@@ -26,7 +33,14 @@ export const fetchTeachers = async (pageNumber = 1, pageSize = 10) => {
  */
 export const updateTeacher = async (teacherId, teacherData) => {
   try {
-    const response = await api.put(`/api/Account/${teacherId}`, teacherData);
+    const response = await api.put(`/api/Account/${teacherId}`, {
+      fullName: teacherData.fullName,
+      email: teacherData.email,
+      password: teacherData.password || "",
+      phoneNumber: teacherData.phoneNumber,
+      address: teacherData.address || "",
+      roleId: 3 // Assuming 3 is Teacher role ID
+    });
     return response.data;
   } catch (error) {
     console.error('Error updating teacher:', error);
@@ -73,10 +87,35 @@ export const restoreTeacher = async (teacherId) => {
  */
 export const searchTeachers = async (keyword, pageNumber = 1, pageSize = 10) => {
   try {
+    // Sử dụng cả role và roleId để đảm bảo API chỉ trả về teacher
     const response = await api.get('/api/Account/Search', {
-      params: { keyword, pageNumber, pageSize, role: 'Teacher' }
+      params: { 
+        keyword, 
+        pageNumber, 
+        pageSize, 
+        role: 'Teacher',
+        roleId: 3 // Thêm roleId để đảm bảo chỉ lấy giáo viên
+      }
     });
-    return response.data;
+    
+    // Lọc lại kết quả trả về để chỉ lấy teacher (phòng trường hợp API không lọc đúng)
+    let teacherData = response.data;
+    
+    // Nếu API trả về data không đúng định dạng, xử lý dữ liệu
+    if (teacherData && teacherData.data) {
+      // Lọc lại chỉ lấy giáo viên từ kết quả trả về
+      const filteredTeachers = teacherData.data.filter(
+        account => account.roleName === 'Teacher' || account.roleId === 3
+      );
+      
+      return {
+        ...teacherData,
+        data: filteredTeachers,
+        totalCount: filteredTeachers.length
+      };
+    }
+    
+    return teacherData;
   } catch (error) {
     console.error('Error searching teachers:', error);
     throw error;
