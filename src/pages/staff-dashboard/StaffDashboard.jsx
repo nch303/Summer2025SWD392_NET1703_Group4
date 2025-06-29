@@ -163,6 +163,7 @@ const StaffDashboard = () => {
               </div>
               <Statistic
                 title="Lớp học đang hoạt động"
+                className="staff-dashboard-ant-statistic-content"
                 value={stats.totalClasses}
                 suffix={
                   <Tag color="blue">

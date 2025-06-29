@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { 
   Card, Button, Spin, Avatar, Tag, Typography, Input, Radio,
   Row, Col, message, Modal, Tabs, Badge, Table, Alert, 
-  Progress, Collapse, Empty, Tooltip, DatePicker
+  Progress, Collapse, Empty, Tooltip, DatePicker, Popconfirm
 } from 'antd';
 import { 
   UserOutlined, InfoCircleOutlined, CheckCircleOutlined, 
   CalendarOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined, 
-  BookOutlined, ScheduleOutlined
+  BookOutlined, ScheduleOutlined, DeleteOutlined, WarningOutlined
 } from '@ant-design/icons';
 import './StaffClassPage.css';
-import { getAllClasses, getClassAttendance } from './StaffClassService';
+import { getAllClasses, getClassAttendance, getStudentsByClassId, kickStudentFromClass, openClass, finishClass } from './StaffClassService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 
@@ -32,6 +32,11 @@ const StaffClassPage = () => {
   const [selectedGradeLevel, setSelectedGradeLevel] = useState('all');
   const [activeTab, setActiveTab] = useState('1');
   const [activeDate, setActiveDate] = useState('');
+  const [students, setStudents] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+  const [kickingStudent, setKickingStudent] = useState(false);
+  const [openingClass, setOpeningClass] = useState(false);
+  const [finishingClass, setFinishingClass] = useState(false);
 
   // Fetch data
   useEffect(() => {
@@ -160,6 +165,17 @@ const StaffClassPage = () => {
       } finally {
         setAttendanceLoading(false);
       }
+      
+      // Fetch students list
+      setStudentsLoading(true);
+      try {
+        const studentData = await getStudentsByClassId(classItem.id);
+        setStudents(studentData);
+      } catch (err) {
+        message.error('Failed to load students list');
+      } finally {
+        setStudentsLoading(false);
+      }
     }
   };
 
@@ -179,6 +195,21 @@ const StaffClassPage = () => {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     return dayjs(dateString).format('DD/MM/YYYY');
+  };
+
+  // Format date function for student age calculation
+  const calculateAge = (birthday) => {
+    if (!birthday) return "N/A";
+    const birthDate = new Date(birthday);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return `${age} tuổi`;
   };
 
   // Render attendance table columns
@@ -206,6 +237,151 @@ const StaffClassPage = () => {
       key: 'notes',
       render: (text) => text || <Text type="secondary" italic>Không có ghi chú</Text>,
     }
+  ];
+
+  // Handle kicking student
+  const handleKickStudent = async (childId, studentName) => {
+    if (!selectedClass || !childId) return;
+    
+    setKickingStudent(true);
+    try {
+      const response = await kickStudentFromClass(childId, selectedClass.id);
+      message.success(response.message || 'Đã xóa học sinh khỏi lớp thành công');
+      
+      // Refresh student list
+      const updatedStudents = await getStudentsByClassId(selectedClass.id);
+      setStudents(updatedStudents);
+      
+      // Also update the class data since the student count has changed
+      fetchClassList();
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Không thể xóa học sinh khỏi lớp');
+    } finally {
+      setKickingStudent(false);
+    }
+  };
+
+  // Add handler for opening a class
+  const handleOpenClass = async (classId, e) => {
+    if (e) e.stopPropagation(); // Prevent triggering row click
+    
+    setOpeningClass(true);
+    try {
+      const response = await openClass(classId);
+      message.success(response.message || 'Lớp học đã được mở thành công');
+      
+      // Refresh the class list
+      fetchClassList();
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Không thể mở lớp học');
+    } finally {
+      setOpeningClass(false);
+    }
+  };
+
+  // Add handler for finishing a class
+  const handleFinishClass = async (classId, e) => {
+    if (e) e.stopPropagation(); // Prevent triggering row click
+    
+    setFinishingClass(true);
+    try {
+      const response = await finishClass([classId]); // API expects an array of class IDs
+      message.success(response.message || 'Lớp học đã được kết thúc thành công');
+      
+      // Refresh the class list
+      fetchClassList();
+    } catch (error) {
+      message.error(error.response?.data?.message || 'Không thể kết thúc lớp học');
+    } finally {
+      setFinishingClass(false);
+    }
+  };
+
+  // Student table columns
+  const studentColumns = [
+    {
+      title: 'Họ tên',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Avatar 
+            src={record.avatar} 
+            icon={!record.avatar && <UserOutlined />} 
+            size="large" 
+          />
+          <span style={{ fontWeight: 500 }}>{text}</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Giới tính',
+      dataIndex: 'gender',
+      key: 'gender',
+      width: 100,
+      render: (gender) => (
+        <Tag color={gender === 'Male' ? 'blue' : 'pink'}>
+          {gender === 'Male' ? 'Nam' : 'Nữ'}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'birthday',
+      key: 'birthday',
+      width: 150,
+      render: (birthday) => (
+        <div>
+          <div>{formatDate(birthday)}</div>
+          <small style={{ color: '#8c8c8c' }}>{calculateAge(birthday)}</small>
+        </div>
+      ),
+    },
+    {
+      title: 'Địa chỉ',
+      dataIndex: 'city',
+      key: 'city',
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      width: 120,
+      render: (status) => (
+        <Tag color={status === 'Active' ? 'green' : 'volcano'}>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Thao tác',
+      key: 'action',
+      width: 180,
+      align: 'center',
+      render: (_, record) => (
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+          <Popconfirm
+            title="Xóa học sinh khỏi lớp"
+            description={`Bạn có chắc chắn muốn xóa học sinh "${record.name}" khỏi lớp học này không?`}
+            onConfirm={() => handleKickStudent(record.id, record.name)}
+            okText="Có"
+            cancelText="Không"
+            okButtonProps={{ danger: true }}
+            maskClosable={false}
+          >
+            <Button 
+              type="danger"
+              icon={<DeleteOutlined />}
+              size="small"
+              loading={kickingStudent}
+              className="kick-student-btn"
+            >
+              Xóa
+            </Button>
+          </Popconfirm>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -343,7 +519,7 @@ const StaffClassPage = () => {
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
-                            <div className="teacher-tags">
+                            <div className="staff-teacher-tags">
                               {teacherNames && teacherNames.length > 0 ? (
                                 teacherNames.map((name, idx) => (
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -357,19 +533,69 @@ const StaffClassPage = () => {
                         {
                           title: 'Thao tác',
                           key: 'action',
-                          width: 100,
+                          width: 180,
+                          align: 'center',
                           render: (_, record) => (
-                            <Button
-                              type="primary"
-                              icon={<InfoCircleOutlined />}
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                showClassDetail(record);
-                              }}
-                            >
-                              Chi tiết
-                            </Button>
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                              <Button
+                                type="primary"
+                                icon={<InfoCircleOutlined />}
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  showClassDetail(record);
+                                }}
+                              >
+                                Chi tiết
+                              </Button>
+                              
+                              {record.status === 'Available' && (
+                                <Popconfirm
+                                  description={
+                                    <div>
+                                      <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontWeight: 'bold' }}>Cảnh báo:</span>
+                                      </div>
+                                      <p>Hãy đảm bảo năm học đã kết thúc trước khi thực hiện thao tác này.</p>
+                                      <p>Bạn có chắc chắn muốn kết thúc lớp học này không?</p>
+                                    </div>
+                                  }
+                                  onConfirm={(e) => handleFinishClass(record.id, e)}
+                                  okText="Có, kết thúc lớp"
+                                  cancelText="Hủy"
+                                  okButtonProps={{ 
+                                    style: { backgroundColor: '#faad14', borderColor: '#faad14' },
+                                    loading: finishingClass
+                                  }}
+                                  icon={<WarningOutlined style={{ color: '#faad14' }} />}
+                                  maskClosable={false}
+                                >
+                                  <Button
+                                    type="default"
+                                    danger
+                                    className="finish-class-btn"
+                                    icon={<CloseOutlined />}
+                                    size="small"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    Kết thúc
+                                  </Button>
+                                </Popconfirm>
+                              )}
+                              
+                              {record.status !== 'Available' && (
+                                <Button
+                                  type="success"
+                                  className="open-class-btn"
+                                  icon={<CheckCircleOutlined />}
+                                  size="small"
+                                  onClick={(e) => handleOpenClass(record.id, e)}
+                                  loading={openingClass}
+                                >
+                                  Mở lớp
+                                </Button>
+                              )}
+                            </div>
                           )
                         }
                       ]}
@@ -448,7 +674,7 @@ const StaffClassPage = () => {
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
-                            <div className="teacher-tags">
+                            <div className="staff-teacher-tags">
                               {teacherNames && teacherNames.length > 0 ? (
                                 teacherNames.map((name, idx) => (
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -462,19 +688,69 @@ const StaffClassPage = () => {
                         {
                           title: 'Thao tác',
                           key: 'action',
-                          width: 100,
+                          width: 180,
+                          align: 'center',
                           render: (_, record) => (
-                            <Button
-                              type="primary"
-                              icon={<InfoCircleOutlined />}
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                showClassDetail(record);
-                              }}
-                            >
-                              Chi tiết
-                            </Button>
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                              <Button
+                                type="primary"
+                                icon={<InfoCircleOutlined />}
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  showClassDetail(record);
+                                }}
+                              >
+                                Chi tiết
+                              </Button>
+                              
+                              {record.status === 'Available' && (
+                                <Popconfirm
+                                  description={
+                                    <div>
+                                      <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontWeight: 'bold' }}>Cảnh báo:</span>
+                                      </div>
+                                      <p>Hãy đảm bảo năm học đã kết thúc trước khi thực hiện thao tác này.</p>
+                                      <p>Bạn có chắc chắn muốn kết thúc lớp học này không?</p>
+                                    </div>
+                                  }
+                                  onConfirm={(e) => handleFinishClass(record.id, e)}
+                                  okText="Có, kết thúc lớp"
+                                  cancelText="Hủy"
+                                  okButtonProps={{ 
+                                    style: { backgroundColor: '#faad14', borderColor: '#faad14' },
+                                    loading: finishingClass
+                                  }}
+                                  icon={<WarningOutlined style={{ color: '#faad14' }} />}
+                                  maskClosable={false}
+                                >
+                                  <Button
+                                    type="default"
+                                    danger
+                                    className="finish-class-btn"
+                                    icon={<CloseOutlined />}
+                                    size="small"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    Kết thúc
+                                  </Button>
+                                </Popconfirm>
+                              )}
+                              
+                              {record.status !== 'Available' && (
+                                <Button
+                                  type="success"
+                                  className="open-class-btn"
+                                  icon={<CheckCircleOutlined />}
+                                  size="small"
+                                  onClick={(e) => handleOpenClass(record.id, e)}
+                                  loading={openingClass}
+                                >
+                                  Mở lớp
+                                </Button>
+                              )}
+                            </div>
                           )
                         }
                       ]}
@@ -598,18 +874,18 @@ const StaffClassPage = () => {
                               </span>
                             }
                             variant="borderless"
-                            className="class-detail-card teacher-section"
+                            className="class-detail-card staff-teacher-section"
                           >
                             {selectedClass.teacherNames && selectedClass.teacherNames.length > 0 ? (
-                              <div className="teachers-assigned-list">
+                              <div className="staff-teachers-assigned-list">
                                 {selectedClass.teacherNames.map((name, idx) => (
-                                  <div className="teacher-card" key={idx}>
+                                  <div className="staff-teacher-card" key={idx}>
                                     <Avatar 
                                       icon={<UserOutlined />} 
-                                      className="teacher-avatar"
+                                      className="staff-teacher-avatar"
                                       size={64}
                                     />
-                                    <div className="teacher-name">{name}</div>
+                                    <div className="staff-teacher-name">{name}</div>
                                     <Tag color="blue">Giáo viên</Tag>
                                   </div>
                                 ))}
@@ -804,6 +1080,58 @@ const StaffClassPage = () => {
                           <Alert
                             message="Lớp học chưa có học sinh"
                             description="Lớp học này hiện chưa có học sinh nào được phân công. Điểm danh sẽ khả dụng khi có học sinh trong lớp."
+                            type="info"
+                            showIcon
+                          />
+                        )}
+                      </Spin>
+                    </div>
+                  )
+                },
+                {
+                  key: "3",
+                  label: (
+                    <span className="tab-label">
+                      <TeamOutlined /> Học sinh
+                    </span>
+                  ),
+                  disabled: selectedClass.quantity === 0,
+                  children: (
+                    <div className="class-detail-tab-content">
+                      <Spin spinning={studentsLoading}>
+                        {selectedClass.quantity > 0 ? (
+                          <>
+                            {students && students.length > 0 ? (
+                              <div className="staff-students-container">
+                                <Card
+                                  title={
+                                    <span className="detail-card-title">
+                                      <FontAwesomeIcon icon="user-graduate" /> Danh sách học sinh
+                                    </span>
+                                  }
+                                  extra={<Badge count={students.length} style={{ backgroundColor: '#1890ff' }} />}
+                                  className="class-detail-card"
+                                >
+                                  <Table 
+                                    dataSource={students} 
+                                    columns={studentColumns}
+                                    rowKey="id"
+                                    pagination={{ pageSize: 5 }}
+                                    className="staff-students-table enhanced"
+                                  />
+                                </Card>
+                              </div>
+                            ) : (
+                              <Empty 
+                                description="Không có học sinh nào trong lớp này" 
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <Alert
+                            message="Lớp học chưa có học sinh"
+                            description="Lớp học này hiện chưa có học sinh nào được phân công."
                             type="info"
                             showIcon
                           />

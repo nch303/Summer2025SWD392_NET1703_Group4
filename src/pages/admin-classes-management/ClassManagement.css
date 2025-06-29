@@ -432,19 +432,19 @@
 }
 
 /* Teacher and Student Cards */
-.teacher-card, .student-card {
+.admin-teacher-card, .admin-student-card {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   border-radius: 8px;
   transition: all 0.3s;
   height: 100%;
 }
 
-.teacher-card:hover, .student-card:hover {
+.admin-teacher-card:hover, .admin-student-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.teacher-card-content, .student-card-content {
+.admin-teacher-card-content, .admin-student-card-content {
   display: flex;
   align-items: center;
 }
@@ -642,7 +642,7 @@
   margin-top: 16px;
 }
 
-.teacher-card {
+.admin-teacher-card {
   position: relative;
   overflow: hidden;
 }
@@ -754,7 +754,7 @@
   margin-top: 16px;
 }
 
-.student-card {
+.admin-student-card {
   position: relative;
   border-radius: 10px;
   transition: all 0.3s;
@@ -763,7 +763,7 @@
   overflow: hidden;
 }
 
-.student-card:hover {
+.admin-student-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0,0,0,0.1);
 }
@@ -785,33 +785,33 @@
   z-index: 1;
 }
 
-.student-card-inner {
+.admin-student-card-inner {
   display: flex;
   align-items: center;
   padding: 16px;
   padding-left: 24px;
 }
 
-.student-avatar {
+.admin-student-avatar {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   border: 3px solid white;
   margin-right: 16px;
 }
 
-.student-card-details {
+.admin-student-card-details {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.student-card-name {
+.admin-student-card-name {
   font-size: 16px;
   margin-bottom: 8px;
   display: block;
   line-height: 1.4;
 }
 
-.student-card-badges {
+.admin-student-card-badges {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

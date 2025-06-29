@@ -366,6 +366,11 @@
   border-radius: 3px;
 }
 
+.staff-dashboard-ant-statistic-content{
+  font-size: 24px;
+  font-weight: 600;
+}
+
 .dashboard-sections .ant-list::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
