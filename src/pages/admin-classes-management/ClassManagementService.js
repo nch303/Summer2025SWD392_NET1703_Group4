@@ -119,3 +119,9 @@ export const restoreClass = async (id) => {
     throw error;
   }
 };
+
+// Updated isEnrichmentClass function
+const isEnrichmentClass = (classItem) => {
+  // Check if the class has an enrichment program ID or name
+  return classItem.enrichmentProgramId || classItem.enrichmentProgramID || classItem.epName;
+};

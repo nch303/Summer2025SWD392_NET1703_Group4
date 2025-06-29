@@ -122,10 +122,11 @@ const ProfilePage = () => {
       if (formData.phoneNumber !== currentUser?.phoneNumber) changedFields.push('phoneNumber');
       if (formData.address !== currentUser?.address) changedFields.push('address');
       
-      // Call the API to update the user profile
+      // Call the API to update the user profile with address included
       await updateUserProfile({
         fullName: formData.fullName,
-        phoneNumber: formData.phoneNumber
+        phoneNumber: formData.phoneNumber,
+        address: formData.address
       });
       
       // Update user state in context with form data
@@ -464,33 +465,6 @@ const ProfilePage = () => {
                           </div>
                         )}
                       </div>
-                    </div>
-                  </div>
-                  
-                  <div className="form-section">
-                    <h3 className="section-title">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z" />
-                      </svg>
-                      Thông tin khác
-                    </h3>
-                    
-                    <div className="form-group">
-                      <label htmlFor="bio">Giới thiệu bản thân</label>
-                      {isEditing ? (
-                        <textarea
-                          id="bio"
-                          name="bio"
-                          rows="4"
-                          value={formData.bio}
-                          onChange={handleChange}
-                          placeholder="Viết một vài điều về bạn..."
-                        ></textarea>
-                      ) : (
-                        <div className="profile-data profile-bio">
-                          <span>{currentUser?.bio || "—"}</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </form>

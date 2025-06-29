@@ -28,6 +28,19 @@
 .section-title {
   position: relative;
   margin-bottom: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.section-title:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.section-title-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .section-underline {
@@ -64,9 +77,11 @@
 /* Main card */
 .class-list-card {
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
 }
 
 .card-header {
@@ -93,18 +108,33 @@
   background-color: #f0f0f0;
 }
 
-/* Filter section */
+/* Filter sections styling */
 .filter-section {
-  padding: 0 24px 24px;
   background-color: #fafafa;
   border-radius: 4px;
-  margin: 0 24px 24px;
+  margin: 0 24px 16px;
+  padding: 16px;
 }
 
-.search-input,
-.status-select,
-.refresh-button {
-  width: 100%;
+.regular-class-section .filter-section {
+  background-color: rgba(230, 247, 255, 0.5);
+  border: 1px solid #d6e4ff;
+}
+
+.enrichment-class-section .filter-section {
+  background-color: rgba(246, 255, 237, 0.5);
+  border: 1px solid #d9f7be;
+}
+
+.reset-all-filters {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+.reset-button {
+  min-width: 200px;
 }
 
 /* Table styling */
@@ -114,14 +144,16 @@
 
 .classes-table {
   min-width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 /* Enhanced table header styling */
 .classes-table .ant-table-thead > tr > th {
-  background-color: #f0f7ff !important;
+  background-color: #e6f1ff !important;
   color: #262626;
   font-weight: 600;
-  padding: 16px 16px;
+  padding: 18px 16px;
   border-bottom: 2px solid #1890ff;
 }
 
@@ -132,15 +164,17 @@
 }
 
 .table-row {
-  transition: all 0.3s;
+  transition: background-color 0.2s;
 }
 
 .table-row:hover {
-  background-color: #f5f8ff !important;
+  background-color: #f0f7ff !important;
+  border-left: 3px solid #1890ff;
 }
 
 .table-row td {
   padding: 16px !important;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 /* Better alternate row colors */
@@ -149,7 +183,13 @@
 }
 
 .classes-table .ant-table-tbody > tr:nth-child(even) {
-  background-color: #fafafa;
+  background-color: #f7f9fc;
+}
+
+/* Improve cell text clarity */
+.table-row td {
+  font-size: 14px;
+  color: #333;
 }
 
 .status-tag-table {
@@ -877,4 +917,274 @@
 
 .create-select .ant-select-selection-item {
   font-weight: 500;
+}
+
+/* Day selector styling */
+.day-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.day-label {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.day-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: #1890ff;
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.day-name {
+  font-weight: 500;
+}
+
+/* Make checkboxes larger */
+.ant-checkbox-wrapper .ant-checkbox {
+  transform: scale(1.2);
+}
+
+/* Add this to match the create form styling */
+.edit-select {
+  width: 100%;
+}
+
+.edit-select .ant-select-selection-item {
+  font-weight: 500;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.current-value-display {
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  background-color: #f6f8fa;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+}
+
+.current-value-display strong {
+  color: #1890ff;
+}
+
+/* Custom dropdown styling */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.edit-form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.custom-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-display {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.custom-dropdown-display:hover {
+  border-color: #40a9ff;
+}
+
+.dropdown-arrow {
+  color: #999;
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.custom-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1050;
+  margin-top: 4px;
+}
+
+.custom-dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.custom-dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.custom-dropdown-item.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+/* Class List Section */
+.class-list-section {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 0;
+}
+
+.class-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  margin-bottom: 16px;
+}
+
+.class-section {
+  margin-bottom: 24px;
+}
+
+.class-section .section-title {
+  padding: 0 24px;
+  margin-bottom: 16px;
+}
+
+.class-section .section-title h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.class-section .section-underline {
+  height: 2px;
+  width: 40px;
+  background-color: #1890ff;
+  margin-top: 4px;
+}
+
+/* Regular Classes Section */
+.regular-class-section {
+  margin-bottom: 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  border-top: 3px solid #1890ff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.regular-class-section .section-title {
+  background-color: #e6f7ff;
+  padding: 12px 24px;
+  border-bottom: 1px solid #91d5ff;
+}
+
+.regular-class-section .section-title h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0050b3;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.regular-class-section .section-title h5 .anticon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Enrichment Classes Section */
+.enrichment-class-section {
+  margin-bottom: 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  border-top: 3px solid #52c41a;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.enrichment-class-section .section-title {
+  background-color: #f6ffed;
+  padding: 12px 24px;
+  border-bottom: 1px solid #b7eb8f;
+}
+
+.enrichment-class-section .section-title h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #389e0d;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.enrichment-class-section .section-title h5 .anticon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Table styling improvements */
+.regular-table .ant-table-thead > tr > th {
+  background-color: #e6f7ff !important;
+  border-bottom: 2px solid #1890ff;
+}
+
+.enrichment-table .ant-table-thead > tr > th {
+  background-color: #f6ffed !important;
+  border-bottom: 2px solid #52c41a;
+}
+
+/* Table row hover effects */
+.regular-table .table-row:hover {
+  background-color: #e6f7ff !important;
+  border-left: 3px solid #1890ff;
+}
+
+.enrichment-table .table-row:hover {
+  background-color: #f6ffed !important;
+  border-left: 3px solid #52c41a;
+}
+
+/* Empty table placeholder */
+.ant-empty-description {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.reset-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.collapse-icon {
+  font-size: 16px;
+  transition: transform 0.3s;
 }

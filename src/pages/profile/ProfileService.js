@@ -70,13 +70,15 @@ export const changePassword = async (passwordData) => {
  * @param {Object} profileData - Object containing profile data to update
  * @param {string} profileData.fullName - User's full name
  * @param {string} profileData.phoneNumber - User's phone number
+ * @param {string} profileData.address - User's address
  * @returns {Promise} - Promise resolving to API response
  */
 export const updateUserProfile = async (profileData) => {
   try {
     const response = await api.put('/api/Account/update-user-profile', {
       fullName: profileData.fullName,
-      phoneNumber: profileData.phoneNumber
+      phoneNumber: profileData.phoneNumber,
+      address: profileData.address
     });
     
     console.log('Profile update response:', response.data);
