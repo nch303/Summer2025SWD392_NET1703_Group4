@@ -76,7 +76,7 @@ namespace Application.Services
 
         }
 
-        public async Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId)
+        public async Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId, int oldClassId)
         {
             var assignment = await _classChildrenService.GetCurrentAssignment(childId);
 
@@ -89,7 +89,8 @@ namespace Application.Services
             if (oldClass.GradeLevelID != newClass.GradeLevelID)
                 throw new Exception("Classes must have the same GradeLevel.");
 
-            var result = await _staffRepository.ReassignChildToNewClassAsync(childId, newClassId);
+            var result = await _staffRepository.ReassignChildToNewClassAsync(childId, newClassId, oldClassId);
+
             return result;
         }
 

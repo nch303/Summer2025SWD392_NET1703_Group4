@@ -138,11 +138,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("reassign-child")]
-        public async Task<IActionResult> ReAssignChildToNewClass(int newClassId, Guid childID)
+        public async Task<IActionResult> ReAssignChildToNewClass(Guid childID, int newClassId, int oldClassId)
         {
             try
             {
-                var reassign = await _staffService.ReassignChildToNewClassAsync(childID, newClassId);
+                var reassign = await _staffService.ReassignChildToNewClassAsync(childID, newClassId, oldClassId);
                 return Ok("Re-assign children successfully!!!");
             }
             catch (Exception ex)
@@ -258,6 +258,27 @@ namespace WebAPI.Controllers
                 else
                 {
                     return BadRequest(new { message = "Failed to remove child from the class." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("KickEnrichmentClassChildren/{childId}/{classId}")]
+        public async Task<IActionResult> KickEnrichmentClassChildren(Guid childId, int classId)
+        {
+            try
+            {
+                var result = await _classChildrenService.KickEnrichmentClassChildren(childId, classId);
+                if (result)
+                {
+                    return Ok(new { message = "Child has been removed from the enrichment class successfully." });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Failed to remove child from the enrichment class." });
                 }
             }
             catch (Exception ex)

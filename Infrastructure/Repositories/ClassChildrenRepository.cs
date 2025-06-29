@@ -18,9 +18,12 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<ClassChildren> GetCurrentAssignment(Guid childID)
+        public async Task<List<ClassChildren>> GetCurrentAssignment(Guid childID)
         {
-            var assignment = await _context.ClassChildrens.FirstOrDefaultAsync(cc => cc.ChildrenID == childID);
+            var assignment = await _context.ClassChildrens
+                .Include(a => a.Classes)
+                .Where(cc => cc.ChildrenID == childID)
+                .ToListAsync();
             return assignment!;
         }
 
@@ -96,6 +99,49 @@ namespace Infrastructure.Repositories
             _context.ClassChildrens.Remove(classChildren);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> KickEnrichmentClassChildren(Guid childId, int classId)
+        {
+            var classChildren = await _context.ClassChildrens.FirstOrDefaultAsync(cc => cc.ChildrenID == childId && cc.ClassID == classId);
+            if (classChildren != null)
+            {
+                var attendance = await _context.Attendances.Where(a => a.ClassChildrenID == classChildren.ID).ToListAsync();
+                if (attendance.Count != 0)
+                {
+                    _context.Attendances.RemoveRange(attendance);
+                }
+                _context.ClassChildrens.Remove(classChildren);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<ClassChildren>> GetEnrichmentClassChildrenWithParentIdChildrenIdAsync(Guid parentId, Guid childrenId)
+        {
+            var enrichmentChildren = await _context.ClassChildrens
+                .Include(cc => cc.Childrens)
+                    .ThenInclude(c => c.Parents)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.EnrichmentPrograms)
+                    .ThenInclude(ep => ep!.InvoiceDetails)
+                .Where(cc => cc.Childrens!.Parents!.Id == parentId && cc.Classes!.EnrichmentPrograms != null && cc.ChildrenID == childrenId)
+                .ToListAsync();
+            return enrichmentChildren;
+        }
+
+        public async Task<List<ClassChildren>> GetEnrichmentClassChildrenWithParentIdAsync(Guid parentId)
+        {
+            var enrichmentChildren = await _context.ClassChildrens
+                .Include(cc => cc.Childrens)
+                    .ThenInclude(c => c.Parents)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.EnrichmentPrograms)
+                    .ThenInclude(ep => ep!.InvoiceDetails)
+                .Where(cc => cc.Childrens!.Parents!.Id == parentId && cc.Classes!.EnrichmentPrograms != null)
+                .ToListAsync();
+            return enrichmentChildren;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClassChildrenController: ControllerBase
+    public class ClassChildrenController : ControllerBase
     {
         private readonly IClassChildrenService _classChildrenService;
         private IMapper _mapper;
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers
                 response.Teachers = teacherResponses;
 
             }
-            
+
             return Ok(responses);
         }
 
@@ -119,5 +119,61 @@ namespace WebAPI.Controllers
             return Ok(responses);
         }
 
+        [HttpGet("GetEnrichmentClassChildren/{parentId}/{childrenId}")]
+        public async Task<IActionResult> GetEnrichmentClassChildrenWithParentIdChildrenIdAsync(Guid parentId, Guid childrenId)
+        {
+            var allChildren = await _classChildrenService.GetEnrichmentClassChildrenWithParentIdChildrenIdAsync(parentId, childrenId);
+            var responses = _mapper.Map<List<GetAllClassChildrenResponse>>(allChildren);
+            foreach (var response in responses)
+            {
+                //Gan ApplicationID cho ChildResponse
+                var application = await _eaService.GetApplicatioinByChildID(response.ChildrenResponse.ID);
+                response.ChildrenResponse.ApplicationID = application?.ID ?? Guid.Empty;
+                //Gan GradeLevel cho ChildResponse
+                var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
+                if (grade.Count == 0)
+                {
+                    response.ChildrenResponse.GradeLevelID = 0;
+                    response.ChildrenResponse.GradeLevelName = string.Empty;
+                    continue;
+                }
+                response.ChildrenResponse.GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                response.ChildrenResponse.GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
+                //Gan Teachers cho Class
+                var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
+                var teacherResponses = _mapper.Map<List<AccountResponse>>(teachers);
+                response.Teachers = teacherResponses;
+            }
+            return Ok(responses);
+        }
+
+        [HttpGet("GetEnrichmentClassChildren/{parentId}")]
+        public async Task<IActionResult> GetEnrichmentClassChildrenWithParentIdAsync(Guid parentId)
+        {
+            var allChildren = await _classChildrenService.GetEnrichmentClassChildrenWithParentIdAsync(parentId);
+            var responses = _mapper.Map<List<GetAllClassChildrenResponse>>(allChildren);
+            foreach (var response in responses)
+            {
+                //Gan ApplicationID cho ChildResponse
+                var application = await _eaService.GetApplicatioinByChildID(response.ChildrenResponse.ID);
+                response.ChildrenResponse.ApplicationID = application?.ID ?? Guid.Empty;
+                //Gan GradeLevel cho ChildResponse
+                var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response.ChildrenResponse.ID);
+                if (grade.Count == 0)
+                {
+                    response.ChildrenResponse.GradeLevelID = 0;
+                    response.ChildrenResponse.GradeLevelName = string.Empty;
+                    continue;
+                }
+                response.ChildrenResponse.GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                response.ChildrenResponse.GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
+                //Gan Teachers cho Class
+                var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
+                var teacherResponses = _mapper.Map<List<AccountResponse>>(teachers);
+                response.Teachers = teacherResponses;
+            }
+            return Ok(responses);
+
+        }
     }
 }

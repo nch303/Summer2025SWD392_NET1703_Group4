@@ -10,7 +10,7 @@ namespace Domain.Interfaces
     public interface IStaffRepository
     {
         Task<List<ClassChildren>> AssignChildrenListToClassAsync(int classId, List<Guid> childrenIds);
-        Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId);
+        Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId, int oldClassId);
         Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId);
         Task<bool> IsTeacherAssignedInAcademicYearAsync(Guid teacherId, string academicYear);
     }

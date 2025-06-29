@@ -15,5 +15,8 @@ namespace Application.Interfaces
         Task<List<ClassChildren>> GetByParentIdAsync(Guid parentId);
         Task<List<ClassChildren>> GetByChildIdAsync(Guid childId);
         Task<bool> KickClassChildren(Guid childId, int classId);
+        Task<bool> KickEnrichmentClassChildren(Guid childId, int classId);
+        Task<List<ClassChildren>> GetEnrichmentClassChildrenWithParentIdChildrenIdAsync(Guid parentId, Guid childrenId);
+        Task<List<ClassChildren>> GetEnrichmentClassChildrenWithParentIdAsync(Guid parentId);
     }
 }
