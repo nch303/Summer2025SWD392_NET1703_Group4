@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Space, Button, Tag, Card, Input, Select, Row, Col, Typography, Spin, Modal, Descriptions, List, Avatar, Empty, Divider, Progress, Tabs, Statistic, Form, InputNumber, notification, Badge, Alert } from 'antd';
-import { SearchOutlined, PlusOutlined, ReloadOutlined, UserOutlined, BookOutlined, ScheduleOutlined, TeamOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, StopOutlined, InfoCircleOutlined, EditOutlined, SaveOutlined, MailOutlined, PhoneOutlined, HomeOutlined, DeleteOutlined, UndoOutlined } from '@ant-design/icons';
+import { Table, Space, Button, Tag, Card, Input, Select, Row, Col, Typography, Spin, Modal, Descriptions, List, Avatar, Empty, Divider, Progress, Tabs, Statistic, Form, InputNumber, notification, Badge, Alert, Checkbox } from 'antd';
+import { SearchOutlined, PlusOutlined, ReloadOutlined, UserOutlined, BookOutlined, ScheduleOutlined, TeamOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, StopOutlined, InfoCircleOutlined, EditOutlined, SaveOutlined, MailOutlined, PhoneOutlined, HomeOutlined, DeleteOutlined, UndoOutlined, TrophyOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 import { getAllClasses, getClassDetail, updateClass, getStudentDetail, getTeacherDetail, createClass, getAllSyllabi, getAllGradeLevels, getAllEnrichmentPrograms, deleteClass, restoreClass } from './ClassManagementService';
 import './ClassManagement.css';
 
@@ -59,6 +59,32 @@ const ClassManagement = () => {
   const [restoringClass, setRestoringClass] = useState(null);
   const [restoreLoading, setRestoreLoading] = useState(false);
 
+  // Add this state near the top with other state declarations
+  const [classTypeSelection, setClassTypeSelection] = useState(null); // 'grade' or 'enrichment' or null
+
+  // First add a state to track the current syllabus name
+  const [currentSyllabusName, setCurrentSyllabusName] = useState("");
+
+  // First add these states to manage the custom dropdown
+  const [showSyllabusDropdown, setShowSyllabusDropdown] = useState(false);
+  const [selectedSyllabusId, setSelectedSyllabusId] = useState(null);
+  const [selectedSyllabusName, setSelectedSyllabusName] = useState("");
+  const syllabusDropdownRef = React.useRef(null);
+
+  // State cho bộ lọc lớp thường
+  const [regularStatusFilter, setRegularStatusFilter] = useState('All');
+  const [regularGradeLevelFilter, setRegularGradeLevelFilter] = useState('All');
+  const [regularSearchText, setRegularSearchText] = useState('');
+
+  // State cho bộ lọc lớp enrichment
+  const [enrichmentStatusFilter, setEnrichmentStatusFilter] = useState('All');
+  const [enrichmentProgramFilter, setEnrichmentProgramFilter] = useState('All');
+  const [enrichmentSearchText, setEnrichmentSearchText] = useState('');
+
+  // Add these state variables for tracking collapse state
+  const [regularClassesCollapsed, setRegularClassesCollapsed] = useState(true);
+  const [enrichmentClassesCollapsed, setEnrichmentClassesCollapsed] = useState(true);
+
   useEffect(() => {
     fetchClasses();
     loadFormOptions(); // This will load grade levels and enrichment programs for filters
@@ -67,13 +93,25 @@ const ClassManagement = () => {
   // Update form when editing class changes
   useEffect(() => {
     if (editingClass) {
+      // Get the syllabus name for display
+      const syllabusName = editingClass.syllabusName || "Unknown Syllabus";
+      
+      // Set form values 
       form.setFieldsValue({
         name: editingClass.name,
-        syllabusID: editingClass.syllabusID || 3, // Default to 3 if not available
+        syllabusID: editingClass.syllabusID, // Use the existing syllabusID
         maxChildren: editingClass.maxChildren,
       });
+      
+      // Set current syllabus name for display
+      setCurrentSyllabusName(syllabusName);
+      
+      // Make sure syllabi are loaded for the dropdown
+      if (syllabi.length === 0) {
+        loadFormOptions();
+      }
     }
-  }, [editingClass, form]);
+  }, [editingClass, form, syllabi.length]);
 
   const fetchClasses = async () => {
     try {
@@ -120,30 +158,74 @@ const ClassManagement = () => {
     setSelectedClass(null);
   };
 
-  // New function to show edit modal with stopPropagation to prevent row expansion
+  // Update the showEditModal function to find and set the current syllabus name
   const showEditModal = (classData, e) => {
-    // Stop event propagation to prevent row expansion
     if (e) {
       e.stopPropagation();
     }
+    
+    // Make sure syllabi are loaded
+    if (syllabi.length === 0) {
+      loadFormOptions();
+    }
+    
+    // Set initial syllabus selection
+    setSelectedSyllabusId(classData.syllabusID);
+    setSelectedSyllabusName(classData.syllabusName || "Select syllabus");
+    
+    // Set form values for other fields
+    form.setFieldsValue({
+      name: classData.name,
+      maxChildren: classData.maxChildren,
+    });
+    
     setEditingClass(classData);
     setEditVisible(true);
   };
 
-  // New function to handle edit modal close
+  // Update the handleEditModalClose function to reset the syllabus name
   const handleEditModalClose = () => {
     setEditVisible(false);
     setEditingClass(null);
+    setCurrentSyllabusName("");
     form.resetFields();
   };
 
-  // New function to handle form submission
+  // Add handler for syllabus selection
+  const handleSyllabusSelect = (id, name) => {
+    setSelectedSyllabusId(id);
+    setSelectedSyllabusName(name);
+    setShowSyllabusDropdown(false);
+  };
+
+  // Add effect to close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (syllabusDropdownRef.current && !syllabusDropdownRef.current.contains(event.target)) {
+        setShowSyllabusDropdown(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Update handleUpdateClass to include the selected syllabus
   const handleUpdateClass = async (values) => {
     if (!editingClass) return;
     
     try {
       setEditLoading(true);
-      await updateClass(editingClass.id, values);
+      
+      // Combine form values with selected syllabus
+      const updatedValues = {
+        ...values,
+        syllabusID: selectedSyllabusId
+      };
+      
+      await updateClass(editingClass.id, updatedValues);
       
       // Show success notification
       notification.success({
@@ -157,6 +239,8 @@ const ClassManagement = () => {
       // Close modal
       setEditVisible(false);
       setEditingClass(null);
+      setSelectedSyllabusId(null);
+      setSelectedSyllabusName("");
       form.resetFields();
       setEditLoading(false);
     } catch (error) {
@@ -234,7 +318,59 @@ const ClassManagement = () => {
   const availableClasses = classes.filter(c => c.status === 'Available').length;
   const fullClasses = classes.filter(c => c.status === 'Full').length;
 
-  const columns = [
+  // Helper function to determine if a class is an enrichment class
+  const isEnrichmentClass = (classItem) => {
+    return classItem.enrichmentProgramId || classItem.enrichmentProgramID || classItem.epName;
+  };
+
+  // Separate regular classes and enrichment classes
+  const regularClasses = filteredClasses.filter(classItem => !isEnrichmentClass(classItem));
+  const enrichmentClasses = filteredClasses.filter(classItem => isEnrichmentClass(classItem));
+
+  // Lọc lớp thường
+  const filteredRegularClasses = classes
+    .filter(classItem => !isEnrichmentClass(classItem))
+    .filter((classItem) => {
+      // Tìm kiếm theo tên
+      const matchesSearch = classItem.name?.toLowerCase().includes(regularSearchText.toLowerCase());
+      
+      // Lọc theo trạng thái
+      const matchesStatus = regularStatusFilter === 'All' || classItem.status === regularStatusFilter;
+      
+      // Lọc theo cấp lớp
+      const gradeId = parseInt(regularGradeLevelFilter);
+      const matchesGradeLevel = 
+        regularGradeLevelFilter === 'All' || 
+        (classItem.gradeLevelID && parseInt(classItem.gradeLevelID) === gradeId) || 
+        (classItem.gradeLevelId && parseInt(classItem.gradeLevelId) === gradeId) ||
+        (classItem.gradeLevelName && gradeLevels.some(g => g.id === gradeId && g.name === classItem.gradeLevelName));
+      
+      return matchesSearch && matchesStatus && matchesGradeLevel;
+    });
+
+  // Lọc lớp enrichment
+  const filteredEnrichmentClasses = classes
+    .filter(classItem => isEnrichmentClass(classItem))
+    .filter((classItem) => {
+      // Tìm kiếm theo tên
+      const matchesSearch = classItem.name?.toLowerCase().includes(enrichmentSearchText.toLowerCase());
+      
+      // Lọc theo trạng thái
+      const matchesStatus = enrichmentStatusFilter === 'All' || classItem.status === enrichmentStatusFilter;
+      
+      // Lọc theo chương trình enrichment
+      const enrichmentId = parseInt(enrichmentProgramFilter);
+      const matchesEnrichment = 
+        enrichmentProgramFilter === 'All' || 
+        (classItem.enrichmentProgramId && parseInt(classItem.enrichmentProgramId) === enrichmentId) || 
+        (classItem.enrichmentProgramID && parseInt(classItem.enrichmentProgramID) === enrichmentId) ||
+        (classItem.epName && enrichmentPrograms.some(e => e.id === enrichmentId && e.name === classItem.epName));
+      
+      return matchesSearch && matchesStatus && matchesEnrichment;
+    });
+
+  // Columns for Regular Classes
+  const regularColumns = [
     {
       title: () => <div className="column-title">#</div>,
       key: 'index',
@@ -247,7 +383,7 @@ const ClassManagement = () => {
       title: () => <div className="column-title">Class Name</div>,
       dataIndex: 'name',
       key: 'name',
-      width: '25%',
+      width: '20%',
       sorter: (a, b) => a.name.localeCompare(b.name),
       render: (text) => <Text strong>{text}</Text>,
     },
@@ -257,8 +393,8 @@ const ClassManagement = () => {
       width: '20%',
       render: (_, record) => (
         <>
-          <div><Text strong>Grade:</Text> {record.gradeLevelName}</div>
-          <div><Text type="secondary"><Text strong>Syllabus:</Text> {record.syllabusName}</Text></div>
+          <div><Text strong>Grade:</Text> {record.gradeLevelName || 'Not specified'}</div>
+          <div><Text type="secondary"><Text strong>Syllabus:</Text> {record.syllabusName || 'Not specified'}</Text></div>
         </>
       ),
     },
@@ -290,7 +426,7 @@ const ClassManagement = () => {
       title: () => <div className="column-title">Status</div>,
       dataIndex: 'status',
       key: 'status',
-      width: '10%',
+      width: '15%',
       render: (status) => (
         <Tag 
           color={getStatusColor(status)}
@@ -313,72 +449,159 @@ const ClassManagement = () => {
       title: () => <div className="column-title">Actions</div>,
       key: 'actions',
       width: '20%',
-      render: (_, record) => {
-        // Enhanced check for deleted status to cover all possible variations
-        const isDeleted = 
-          record.isDeleted === true || 
-          record.deleted === true || 
-          record.isDeleted === 1 ||
-          record.deleted === 1 ||
-          record.status === "Deleted" || 
-          record.Status === "Deleted";
-        
-        console.log(`Class ${record.name} (ID: ${record.id}) - isDeleted: ${isDeleted}, status: ${record.status}`);
-        
-        return (
-          <div onClick={e => e.stopPropagation()}>
-            <Space size="middle" className="action-buttons">
-              <Button 
-                type="primary" 
-                icon={<FileTextOutlined />}
-                onClick={() => showClassDetail(record.id)}
-                size="middle"
-              >
-                View
-              </Button>
-              <Button
-                icon={<EditOutlined />}
-                size="middle"
-                onClick={e => {
-                  e.stopPropagation();
-                  showEditModal(record, e);
-                }}
-              >
-                Edit
-              </Button>
-              {isDeleted ? (
-                <Button
-                  type="primary"
-                  icon={<UndoOutlined />}
-                  size="middle"
-                  onClick={e => {
-                    e.stopPropagation();
-                    console.log(`Restore button clicked for ID: ${record.id}`);
-                    showRestoreConfirm(record);
-                  }}
-                  style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
-                >
-                  Restore
-                </Button>
-              ) : (
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  size="middle"
-                  onClick={e => {
-                    e.stopPropagation();
-                    showDeleteConfirm(record);
-                  }}
-                >
-                  Delete
-                </Button>
-              )}
-            </Space>
-          </div>
-        );
-      }
+      render: (_, record) => renderActionButtons(record),
     },
   ];
+
+  // Columns for Enrichment Classes
+  const enrichmentColumns = [
+    {
+      title: () => <div className="column-title">#</div>,
+      key: 'index',
+      width: '5%',
+      render: (_, __, index) => (
+        <div className="student-index">{index + 1}</div>
+      ),
+    },
+    {
+      title: () => <div className="column-title">Class Name</div>,
+      dataIndex: 'name',
+      key: 'name',
+      width: '20%',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text) => <Text strong>{text}</Text>,
+    },
+    {
+      title: () => <div className="column-title">Enrichment Program / Syllabus</div>,
+      key: 'enrichmentAndSyllabus',
+      width: '25%',
+      render: (_, record) => (
+        <>
+          <div><Text strong>Program:</Text> {record.epName || 'Not specified'}</div>
+          <div><Text type="secondary"><Text strong>Syllabus:</Text> {record.syllabusName || 'Not specified'}</Text></div>
+          {record.timetable && (
+            <div><Text type="secondary"><Text strong>Schedule:</Text> Days {record.timetable}</Text></div>
+          )}
+        </>
+      ),
+    },
+    {
+      title: () => <div className="column-title">Capacity</div>,
+      key: 'capacity',
+      width: '15%',
+      render: (_, record) => (
+        <div className="capacity-column">
+          <Progress 
+            percent={Math.round((record.quantity / record.maxChildren) * 100)} 
+            size="small" 
+            status={record.quantity >= record.maxChildren ? "exception" : "active"}
+            format={() => `${record.quantity}/${record.maxChildren}`}
+            strokeColor={{
+              '0%': '#52c41a',
+              '100%': '#95de64',
+            }}
+            strokeWidth={8}
+          />
+          <Text type="secondary" className="capacity-text">
+            {Math.round((record.quantity / record.maxChildren) * 100)}% Full
+          </Text>
+        </div>
+      ),
+      sorter: (a, b) => (a.quantity / a.maxChildren) - (b.quantity / b.maxChildren),
+    },
+    {
+      title: () => <div className="column-title">Status</div>,
+      dataIndex: 'status',
+      key: 'status',
+      width: '15%',
+      render: (status) => (
+        <Tag 
+          color={getStatusColor(status)}
+          icon={status === 'Available' ? <CheckCircleOutlined /> : status === 'Full' ? <CloseCircleOutlined /> : <InfoCircleOutlined />}
+          className="status-tag-table"
+        >
+          {status}
+        </Tag>
+      ),
+      filters: [
+        { text: 'Available', value: 'Available' },
+        { text: 'Unavailable', value: 'Unavailable' },
+        { text: 'Full', value: 'Full' },
+        { text: 'Closed', value: 'Closed' },
+        { text: 'Deleted', value: 'Deleted' },
+      ],
+      onFilter: (value, record) => record.status === value,
+    },
+    {
+      title: () => <div className="column-title">Actions</div>,
+      key: 'actions',
+      width: '20%',
+      render: (_, record) => renderActionButtons(record),
+    },
+  ];
+
+  // Helper function for action buttons to avoid code duplication
+  const renderActionButtons = (record) => {
+    // Enhanced check for deleted status to cover all possible variations
+    const isDeleted = 
+      record.isDeleted === true || 
+      record.deleted === true || 
+      record.isDeleted === 1 ||
+      record.deleted === 1 ||
+      record.status === "Deleted" || 
+      record.Status === "Deleted";
+    
+    return (
+      <div onClick={e => e.stopPropagation()}>
+        <Space size="middle" className="action-buttons">
+          <Button 
+            type="primary" 
+            icon={<FileTextOutlined />}
+            onClick={() => showClassDetail(record.id)}
+            size="middle"
+          >
+            View
+          </Button>
+          <Button
+            icon={<EditOutlined />}
+            size="middle"
+            onClick={e => {
+              e.stopPropagation();
+              showEditModal(record, e);
+            }}
+          >
+            Edit
+          </Button>
+          {isDeleted ? (
+            <Button
+              type="primary"
+              icon={<UndoOutlined />}
+              size="middle"
+              onClick={e => {
+                e.stopPropagation();
+                showRestoreConfirm(record);
+              }}
+              style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
+            >
+              Restore
+            </Button>
+          ) : (
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              size="middle"
+              onClick={e => {
+                e.stopPropagation();
+                showDeleteConfirm(record);
+              }}
+            >
+              Delete
+            </Button>
+          )}
+        </Space>
+      </div>
+    );
+  };
 
   // Add this function to fetch student details
   const fetchStudentDetail = async (id) => {
@@ -465,12 +688,48 @@ const ClassManagement = () => {
   const handleCreateModalClose = () => {
     setCreateVisible(false);
     createForm.resetFields();
+    setClassTypeSelection(null);
+  };
+
+  const formatTimetableValue = (selectedDays) => {
+    if (!selectedDays || selectedDays.length === 0) return "";
+    return selectedDays.sort().join(',');
   };
 
   const handleCreateClass = async (values) => {
     try {
+      // Check if both gradeLevelID and enrichmentProgramId are provided
+      if (values.gradeLevelID && values.enrichmentProgramId) {
+        notification.error({
+          message: 'Validation Error',
+          description: 'You can only select either Grade Level OR Enrichment Program, not both.',
+        });
+        return;
+      }
+      
+      // Check if enrichmentProgramId is selected but no timetable days are selected
+      if (values.enrichmentProgramId && (!values.timetable || values.timetable.length === 0)) {
+        notification.error({
+          message: 'Validation Error',
+          description: 'Please select at least one day for the class timetable.',
+        });
+        return;
+      }
+      
+      // Format timetable value (only if enrichmentProgramId is selected)
+      const formattedValues = {
+        ...values,
+      };
+      
+      if (values.enrichmentProgramId) {
+        formattedValues.timetable = formatTimetableValue(values.timetable);
+      } else {
+        // For regular classes (with gradeLevelID), don't include timetable
+        formattedValues.timetable = "";
+      }
+      
       setCreateLoading(true);
-      await createClass(values);
+      await createClass(formattedValues);
       
       // Show success notification
       notification.success({
@@ -484,6 +743,7 @@ const ClassManagement = () => {
       // Close modal
       setCreateVisible(false);
       createForm.resetFields();
+      setClassTypeSelection(null);
     } catch (error) {
       console.error('Failed to create class:', error);
       
@@ -604,6 +864,80 @@ const ClassManagement = () => {
     }
   };
 
+  // Xử lý lọc cho lớp thường
+  const handleRegularSearch = (value) => {
+    setRegularSearchText(value);
+  };
+
+  const handleRegularStatusFilter = (value) => {
+    setRegularStatusFilter(value);
+  };
+
+  const handleRegularGradeLevelFilter = (value) => {
+    setRegularGradeLevelFilter(value);
+  };
+
+  // Xử lý lọc cho lớp enrichment
+  const handleEnrichmentSearch = (value) => {
+    setEnrichmentSearchText(value);
+  };
+
+  const handleEnrichmentStatusFilter = (value) => {
+    setEnrichmentStatusFilter(value);
+  };
+
+  const handleEnrichmentProgramFilter = (value) => {
+    setEnrichmentProgramFilter(value);
+  };
+
+  // Cập nhật hàm reset filter
+  const handleResetFilters = () => {
+    // Reset filters cho lớp thường
+    setRegularSearchText('');
+    setRegularStatusFilter('All');
+    setRegularGradeLevelFilter('All');
+    
+    // Reset filters cho lớp enrichment
+    setEnrichmentSearchText('');
+    setEnrichmentStatusFilter('All');
+    setEnrichmentProgramFilter('All');
+    
+    // Reload dữ liệu
+    fetchClasses();
+    loadFormOptions();
+  };
+
+  // New function to reset regular class filters
+  const handleRegularResetFilters = () => {
+    setRegularSearchText('');
+    setRegularStatusFilter('All');
+    setRegularGradeLevelFilter('All');
+    
+    // Reload data
+    fetchClasses();
+    loadFormOptions();
+  };
+
+  // New function to reset enrichment class filters
+  const handleEnrichmentResetFilters = () => {
+    setEnrichmentSearchText('');
+    setEnrichmentStatusFilter('All');
+    setEnrichmentProgramFilter('All');
+    
+    // Reload data
+    fetchClasses();
+    loadFormOptions();
+  };
+
+  // Add these functions to toggle collapse states
+  const toggleRegularSection = () => {
+    setRegularClassesCollapsed(!regularClassesCollapsed);
+  };
+
+  const toggleEnrichmentSection = () => {
+    setEnrichmentClassesCollapsed(!enrichmentClassesCollapsed);
+  };
+
   return (
     <div className="class-management-container">
       <div className="page-header">
@@ -645,8 +979,8 @@ const ClassManagement = () => {
         </Col>
       </Row>
       
-      <Card className="class-list-card">
-        <div className="card-header">
+      <div className="class-list-section">
+        <div className="class-list-header">
           <div className="section-title">
             <Title level={4}>Class List</Title>
             <div className="section-underline"></div>
@@ -664,120 +998,222 @@ const ClassManagement = () => {
         
         <Divider className="header-divider" />
         
-        <div className="filter-section">
-          <Row gutter={[16, 16]} align="middle">
-            <Col xs={24} sm={24} md={12} lg={6}>
-              <Input
-                placeholder="Search by class name"
-                prefix={<SearchOutlined />}
-                allowClear
-                value={searchText}
-                onChange={(e) => handleSearch(e.target.value)}
-                className="search-input"
-                size="large"
-              />
-            </Col>
-            <Col xs={24} sm={12} md={6} lg={4}>
-              <Select
-                value={statusFilter}
-                style={{ width: '100%' }}
-                onChange={handleStatusFilter}
-                className="status-select"
-                size="large"
-                placeholder="Filter by status"
-              >
-                <Option value="All">All Statuses</Option>
-                <Option value="Available">
-                  <CheckCircleOutlined style={{ color: 'green' }} /> Available
-                </Option>
-                <Option value="Unavailable">
-                  <CloseCircleOutlined style={{ color: 'orange' }} /> Unavailable
-                </Option>
-                <Option value="Full">
-                  <ExclamationCircleOutlined style={{ color: 'orange' }} /> Full
-                </Option>
-                <Option value="Closed">
-                  <StopOutlined style={{ color: 'red' }} /> Closed
-                </Option>
-                <Option value="Deleted">
-                  <DeleteOutlined style={{ color: 'red' }} /> Deleted
-                </Option>
-              </Select>
-            </Col>
-            <Col xs={24} sm={12} md={6} lg={4}>
-              <Select
-                value={gradeLevelFilter}
-                style={{ width: '100%' }}
-                onChange={(value) => {
-                  console.log('Selected Grade Level:', value, typeof value); // Debug log
-                  setGradeLevelFilter(value);
-                }}
-                className="grade-select"
-                size="large"
-                placeholder="Filter by grade"
-                loading={loadingOptions}
-              >
-                <Option value="All">All Grades</Option>
-                {gradeLevels.map(grade => (
-                  <Option key={grade.id} value={grade.id}>{grade.name}</Option>
-                ))}
-              </Select>
-            </Col>
-            <Col xs={24} sm={12} md={6} lg={4}>
-              <Select
-                value={enrichmentFilter}
-                style={{ width: '100%' }}
-                onChange={(value) => {
-                  console.log('Selected Enrichment:', value, typeof value); // Debug log
-                  setEnrichmentFilter(value);
-                }}
-                className="enrichment-select"
-                size="large"
-                placeholder="Filter by enrichment"
-                loading={loadingOptions}
-              >
-                <Option value="All">All Programs</Option>
-                {enrichmentPrograms.map(program => (
-                  <Option key={program.id} value={program.id}>
-                    {program.name} - {program.type}
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-            <Col xs={24} sm={12} md={6} lg={4}>
-              <Button 
-                icon={<ReloadOutlined />} 
-                onClick={handleRefresh}
-                className="refresh-button"
-                size="large"
-              >
-                Reset Filters
-              </Button>
-            </Col>
-          </Row>
+        {/* Regular Classes Section */}
+        <div className="regular-class-section">
+          <div className="section-title" onClick={toggleRegularSection} style={{ cursor: 'pointer' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Title level={5}><BookOutlined /> Regular Classes ({filteredRegularClasses.length})</Title>
+              {regularClassesCollapsed ? <DownOutlined /> : <UpOutlined />}
+            </div>
+          </div>
+          
+          {!regularClassesCollapsed && (
+            <>
+              <div className="filter-section">
+                <Row gutter={[16, 16]} align="middle">
+                  <Col xs={24} sm={12} md={7} lg={7}>
+                    <Input
+                      placeholder="Search by regular class name"
+                      prefix={<SearchOutlined />}
+                      allowClear
+                      value={regularSearchText}
+                      onChange={(e) => handleRegularSearch(e.target.value)}
+                      className="search-input"
+                      size="large"
+                    />
+                  </Col>
+                  <Col xs={24} sm={12} md={6} lg={6}>
+                    <Select
+                      value={regularStatusFilter}
+                      style={{ width: '100%' }}
+                      onChange={handleRegularStatusFilter}
+                      className="status-select"
+                      size="large"
+                      placeholder="Filter by status"
+                    >
+                      <Option value="All">All Statuses</Option>
+                      <Option value="Available">
+                        <CheckCircleOutlined style={{ color: 'green' }} /> Available
+                      </Option>
+                      <Option value="Unavailable">
+                        <CloseCircleOutlined style={{ color: 'orange' }} /> Unavailable
+                      </Option>
+                      <Option value="Full">
+                        <ExclamationCircleOutlined style={{ color: 'orange' }} /> Full
+                      </Option>
+                      <Option value="Closed">
+                        <StopOutlined style={{ color: 'red' }} /> Closed
+                      </Option>
+                      <Option value="Deleted">
+                        <DeleteOutlined style={{ color: 'red' }} /> Deleted
+                      </Option>
+                    </Select>
+                  </Col>
+                  <Col xs={24} sm={12} md={6} lg={6}>
+                    <Select
+                      value={regularGradeLevelFilter}
+                      style={{ width: '100%' }}
+                      onChange={handleRegularGradeLevelFilter}
+                      className="grade-select"
+                      size="large"
+                      placeholder="Filter by grade"
+                      loading={loadingOptions}
+                    >
+                      <Option value="All">All Grades</Option>
+                      {gradeLevels.map(grade => (
+                        <Option key={grade.id} value={grade.id}>{grade.name}</Option>
+                      ))}
+                    </Select>
+                  </Col>
+                  <Col xs={24} sm={12} md={5} lg={5}>
+                    <Button 
+                      icon={<ReloadOutlined />} 
+                      onClick={handleRegularResetFilters}
+                      style={{ width: '100%' }}
+                      size="large"
+                    >
+                      Reset
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+              
+              <div className="table-container">
+                <Spin spinning={loading}>
+                  <Table 
+                    columns={regularColumns} 
+                    dataSource={filteredRegularClasses} 
+                    rowKey="id"
+                    pagination={{ 
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `Total ${total} regular classes`,
+                      pageSizeOptions: ['10', '20', '50'],
+                    }}
+                    className="classes-table regular-table"
+                    rowClassName="table-row"
+                    onRow={(record) => ({
+                      onClick: () => showClassDetail(record.id)
+                    })}
+                    locale={{
+                      emptyText: <Empty description="No regular classes found" />
+                    }}
+                  />
+                </Spin>
+              </div>
+            </>
+          )}
         </div>
-        
-        <div className="table-container">
-          <Spin spinning={loading}>
-            <Table 
-              columns={columns} 
-              dataSource={filteredClasses} 
-              rowKey="id"
-              pagination={{ 
-                pageSize: 10,
-                showSizeChanger: true,
-                showTotal: (total) => `Total ${total} classes`,
-                pageSizeOptions: ['10', '20', '50'],
-              }}
-              className="classes-table"
-              rowClassName="table-row"
-              onRow={(record) => ({
-                onClick: () => showClassDetail(record.id), // Show class details on row click instead of expanding
-              })}
-            />
-          </Spin>
+
+        {/* Enrichment Classes Section */}
+        <div className="enrichment-class-section">
+          <div className="section-title" onClick={toggleEnrichmentSection} style={{ cursor: 'pointer' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Title level={5}><TrophyOutlined /> Enrichment Classes ({filteredEnrichmentClasses.length})</Title>
+              {enrichmentClassesCollapsed ? <DownOutlined /> : <UpOutlined />}
+            </div>
+          </div>
+          
+          {!enrichmentClassesCollapsed && (
+            <>
+              <div className="filter-section">
+                <Row gutter={[16, 16]} align="middle">
+                  <Col xs={24} sm={12} md={7} lg={7}>
+                    <Input
+                      placeholder="Search by enrichment class name"
+                      prefix={<SearchOutlined />}
+                      allowClear
+                      value={enrichmentSearchText}
+                      onChange={(e) => handleEnrichmentSearch(e.target.value)}
+                      className="search-input"
+                      size="large"
+                    />
+                  </Col>
+                  <Col xs={24} sm={12} md={6} lg={6}>
+                    <Select
+                      value={enrichmentStatusFilter}
+                      style={{ width: '100%' }}
+                      onChange={handleEnrichmentStatusFilter}
+                      className="status-select"
+                      size="large"
+                      placeholder="Filter by status"
+                    >
+                      <Option value="All">All Statuses</Option>
+                      <Option value="Available">
+                        <CheckCircleOutlined style={{ color: 'green' }} /> Available
+                      </Option>
+                      <Option value="Unavailable">
+                        <CloseCircleOutlined style={{ color: 'orange' }} /> Unavailable
+                      </Option>
+                      <Option value="Full">
+                        <ExclamationCircleOutlined style={{ color: 'orange' }} /> Full
+                      </Option>
+                      <Option value="Closed">
+                        <StopOutlined style={{ color: 'red' }} /> Closed
+                      </Option>
+                      <Option value="Deleted">
+                        <DeleteOutlined style={{ color: 'red' }} /> Deleted
+                      </Option>
+                    </Select>
+                  </Col>
+                  <Col xs={24} sm={12} md={6} lg={6}>
+                    <Select
+                      value={enrichmentProgramFilter}
+                      style={{ width: '100%' }}
+                      onChange={handleEnrichmentProgramFilter}
+                      className="enrichment-select"
+                      size="large"
+                      placeholder="Filter by enrichment program"
+                      loading={loadingOptions}
+                    >
+                      <Option value="All">All Programs</Option>
+                      {enrichmentPrograms.map(program => (
+                        <Option key={program.id} value={program.id}>
+                          {program.name} - {program.type}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                  <Col xs={24} sm={12} md={5} lg={5}>
+                    <Button 
+                      icon={<ReloadOutlined />} 
+                      onClick={handleEnrichmentResetFilters}
+                      style={{ width: '100%' }}
+                      size="large"
+                    >
+                      Reset
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+              
+              <div className="table-container">
+                <Spin spinning={loading}>
+                  <Table 
+                    columns={enrichmentColumns} 
+                    dataSource={filteredEnrichmentClasses} 
+                    rowKey="id"
+                    pagination={{ 
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `Total ${total} enrichment classes`,
+                      pageSizeOptions: ['10', '20', '50'],
+                    }}
+                    className="classes-table enrichment-table"
+                    rowClassName="table-row"
+                    onRow={(record) => ({
+                      onClick: () => showClassDetail(record.id)
+                    })}
+                    locale={{
+                      emptyText: <Empty description="No enrichment classes found" />
+                    }}
+                  />
+                </Spin>
+              </div>
+            </>
+          )}
         </div>
-      </Card>
+      </div>
 
       {/* Class Detail Modal */}
       <Modal
@@ -1012,7 +1448,7 @@ const ClassManagement = () => {
         footer={null}
         width={600}
         className="edit-class-modal"
-        maskClosable={false}
+        maskClosable={true}
         destroyOnClose={true}
       >
         <div className="edit-class-content">
@@ -1062,27 +1498,31 @@ const ClassManagement = () => {
                   />
                 </Form.Item>
                 
-                <Form.Item
-                  name="syllabusID"
-                  label="Syllabus ID"
-                  rules={[
-                    { 
-                      required: true, 
-                      message: 'Please enter the syllabus ID!' 
-                    },
-                    {
-                      type: 'number',
-                      message: 'Please enter a valid number!'
-                    }
-                  ]}
-                >
-                  <InputNumber 
-                    placeholder="Enter syllabus ID" 
-                    className="edit-input-number"
-                    min={1}
-                    size="large"
-                  />
-                </Form.Item>
+                <div className="form-group">
+                  <label className="edit-form-label">Syllabus</label>
+                  <div className="custom-dropdown-container" ref={syllabusDropdownRef}>
+                    <div 
+                      className="custom-dropdown-display" 
+                      onClick={() => setShowSyllabusDropdown(!showSyllabusDropdown)}
+                    >
+                      {selectedSyllabusName}
+                      <div className="dropdown-arrow">▼</div>
+                    </div>
+                    {showSyllabusDropdown && (
+                      <div className="custom-dropdown-list">
+                        {syllabi.map(syllabus => (
+                          <div 
+                            key={syllabus.id}
+                            className={`custom-dropdown-item ${syllabus.id === selectedSyllabusId ? 'selected' : ''}`}
+                            onClick={() => handleSyllabusSelect(syllabus.id, syllabus.name)}
+                          >
+                            {syllabus.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 
                 <Form.Item
                   name="maxChildren"
@@ -1345,7 +1785,7 @@ const ClassManagement = () => {
         footer={null}
         width={600}
         className="create-class-modal"
-        maskClosable={false}
+        maskClosable={true}
         destroyOnClose={true}
       >
         <div className="create-class-content">
@@ -1403,23 +1843,45 @@ const ClassManagement = () => {
               </Form.Item>
               
               <Form.Item
-                name="gradeLevelID"
-                label="Grade Level"
+                name="academicYear"
+                label="Academic Year"
                 rules={[
                   { 
                     required: true, 
-                    message: 'Please select a grade level!' 
+                    message: 'Please enter the academic year!' 
                   }
                 ]}
+              >
+                <Input
+                  placeholder="Enter academic year (e.g., 2024-2025)"
+                  className="create-input"
+                  size="large"
+                />
+              </Form.Item>
+              
+              <Form.Item
+                name="gradeLevelID"
+                label="Grade Level (select this OR Enrichment Program)"
               >
                 <Select
                   placeholder="Select grade level"
                   size="large"
                   className="create-select"
                   showSearch
+                  allowClear
+                  disabled={classTypeSelection === 'enrichment'}
                   filterOption={(input, option) =>
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
+                  onChange={(value) => {
+                    // Clear enrichmentProgramId when gradeLevelID is selected
+                    if (value) {
+                      createForm.setFieldValue('enrichmentProgramId', undefined);
+                      setClassTypeSelection('grade');
+                    } else {
+                      setClassTypeSelection(null);
+                    }
+                  }}
                 >
                   {gradeLevels.map(grade => (
                     <Option key={grade.id} value={grade.id}>{grade.name}</Option>
@@ -1453,25 +1915,35 @@ const ClassManagement = () => {
                   min={1}
                   max={100}
                   size="large"
-                  style={{ width: '100%' }}
                 />
               </Form.Item>
               
               <Form.Item
                 name="enrichmentProgramId"
-                label="Enrichment Program (Optional)"
+                label="Enrichment Program (select this OR Grade Level)"
               >
                 <Select
-                  placeholder="Select enrichment program (optional)"
+                  placeholder="Select enrichment program"
                   size="large"
                   className="create-select"
                   allowClear
                   showSearch
+                  disabled={classTypeSelection === 'grade'}
                   filterOption={(input, option) =>
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
+                  onChange={(value) => {
+                    // Clear gradeLevelID when enrichmentProgramId is selected
+                    if (value) {
+                      createForm.setFieldValue('gradeLevelID', undefined);
+                      setClassTypeSelection('enrichment');
+                    } else {
+                      setClassTypeSelection(null);
+                      // Clear timetable when enrichmentProgramId is cleared
+                      createForm.setFieldValue('timetable', []);
+                    }
+                  }}
                 >
-                  <Option value={0}>None</Option>
                   {enrichmentPrograms.map(program => (
                     <Option key={program.id} value={program.id}>
                       {program.name} - {program.type}
@@ -1479,6 +1951,82 @@ const ClassManagement = () => {
                   ))}
                 </Select>
               </Form.Item>
+              
+              {classTypeSelection === 'enrichment' && (
+                <Form.Item
+                  name="timetable"
+                  label="Class Days"
+                  rules={[
+                    { 
+                      required: true, 
+                      message: 'Please select at least one day for the class!',
+                      type: 'array',
+                      min: 1
+                    }
+                  ]}
+                >
+                  <Checkbox.Group style={{ width: '100%' }}>
+                    <Row gutter={[16, 16]}>
+                      <Col span={8}>
+                        <Checkbox value="2" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">2</span>
+                            <span className="day-name">Monday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                      <Col span={8}>
+                        <Checkbox value="3" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">3</span>
+                            <span className="day-name">Tuesday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                      <Col span={8}>
+                        <Checkbox value="4" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">4</span>
+                            <span className="day-name">Wednesday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                      <Col span={8}>
+                        <Checkbox value="5" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">5</span>
+                            <span className="day-name">Thursday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                      <Col span={8}>
+                        <Checkbox value="6" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">6</span>
+                            <span className="day-name">Friday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                      <Col span={8}>
+                        <Checkbox value="7" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">7</span>
+                            <span className="day-name">Saturday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                      <Col span={8}>
+                        <Checkbox value="8" className="day-checkbox">
+                          <div className="day-label">
+                            <span className="day-number">CN</span>
+                            <span className="day-name">Sunday</span>
+                          </div>
+                        </Checkbox>
+                      </Col>
+                    </Row>
+                  </Checkbox.Group>
+                </Form.Item>
+              )}
               
               <Form.Item className="form-actions">
                 <Button 
