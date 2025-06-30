@@ -85,9 +85,10 @@ const TeacherAttendanceAll = () => {
     
     // Convert to array format for table
     const processedData = Object.values(studentGroups).map((student, index) => {
-      const totalAttendances = student.totalPresent + student.totalAbsent;
-      const attendanceRate = totalAttendances > 0 
-        ? Math.round((student.totalPresent / totalAttendances) * 100) 
+      // Replace this calculation with one based on total dates
+      const totalDates = uniqueDates.length;
+      const attendanceRate = totalDates > 0 
+        ? Math.round((student.totalPresent / totalDates) * 100) 
         : 0;
       
       return {
@@ -99,7 +100,7 @@ const TeacherAttendanceAll = () => {
         attendanceRate,
         totalPresent: student.totalPresent,
         totalAbsent: student.totalAbsent,
-        totalAttendances
+        totalDates
       };
     });
     
@@ -175,7 +176,7 @@ const TeacherAttendanceAll = () => {
       fixed: 'right',
       className: 'teacher-attendance-rate-column',
       render: (rate, record) => (
-        <Tooltip title={`${record.totalPresent}/${record.totalAttendances} buổi (${rate}%)`}>
+        <Tooltip title={`${record.totalPresent}/${record.totalDates} buổi (${rate}%)`}>
           <Progress 
             percent={rate} 
             size="small" 
@@ -193,9 +194,9 @@ const TeacherAttendanceAll = () => {
     if (processedData.length === 0) return { presentRate: 0, absentRate: 0 };
     
     const totalPresent = processedData.reduce((sum, student) => sum + student.totalPresent, 0);
-    const totalAttendances = processedData.reduce((sum, student) => sum + student.totalAttendances, 0);
+    const totalPossibleAttendances = processedData.length * attendanceDates.length;
     
-    const presentRate = totalAttendances > 0 ? Math.round((totalPresent / totalAttendances) * 100) : 0;
+    const presentRate = totalPossibleAttendances > 0 ? Math.round((totalPresent / totalPossibleAttendances) * 100) : 0;
     const absentRate = 100 - presentRate;
     
     return { presentRate, absentRate };

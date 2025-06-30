@@ -65,3 +65,14 @@ export const finishClass = async (classIds) => {
     throw error;
   }
 };
+
+// Upgrade students
+export const upgradeStudents = async (childrenIds) => {
+  try {
+    const response = await api.put('/api/Staff/UpgradeForChildren', childrenIds);
+    return response.data;
+  } catch (error) {
+    console.error('Error upgrading students:', error);
+    throw error;
+  }
+};

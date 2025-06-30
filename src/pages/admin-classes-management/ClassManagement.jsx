@@ -1052,7 +1052,7 @@ const ClassManagement = () => {
                   <Col xs={24} sm={12} md={6} lg={6}>
                     <Select
                       value={regularGradeLevelFilter}
-                      style={{ width: '100%' }}
+                      style={{ width: '100%' , borderRadius: '10px' ,padding: 0}}
                       onChange={handleRegularGradeLevelFilter}
                       className="grade-select"
                       size="large"
