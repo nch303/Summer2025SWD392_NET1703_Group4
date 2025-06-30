@@ -13,7 +13,7 @@ export async function getAllClasses() {
 
 export async function getPaidChildren() {
   try {
-    const response = await api.get('/api/Staff/GetNotEnrolledChildren');
+    const response = await api.get('/api/Staff/GetInActiveChildrenGrades');
     return response.data;
   } catch (error) {
     console.error('Error fetching children:', error);

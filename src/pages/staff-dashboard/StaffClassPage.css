@@ -516,6 +516,11 @@
     border: 1px solid #ffd591;
   }
   
+  .class-status.finished {
+    background-color: #f0f0f0;
+    border: 1px solid #d9d9d9;
+  }
+  
   .status-icon {
     font-size: 32px;
     margin-right: 20px;
@@ -529,10 +534,26 @@
     color: #fa8c16;
   }
   
+  .class-status.finished .status-icon {
+    color: #8c8c8c;
+  }
+  
   .status-value {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 4px;
+  }
+  
+  .class-status.available .status-value {
+    color: #52c41a;
+  }
+  
+  .class-status.unavailable .status-value {
+    color: #fa8c16;
+  }
+  
+  .class-status.finished .status-value {
+    color: #595959;
   }
   
   .status-description {
@@ -756,4 +777,59 @@
     background-color: #fff1f0;
     color: #d9363e;
     border: 1px solid #d9363e;
+  }
+  
+  /* Add animation for the clock icon */
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+  
+  .class-status.finished .status-icon {
+    animation: pulse 2s infinite;
+  }
+  
+  /* Add to your CSS file */
+  .upgrade-alert {
+    margin-bottom: 16px;
+    border-left: 3px solid #1890ff;
+  }
+  
+  .upgrade-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+  }
+  
+  .upgrade-icon {
+    font-size: 16px;
+  }
+  
+  .student-selection-table .ant-table-selection-column {
+    width: 60px;
+  }
+  
+  /* Add the "ready for upgrade" style */
+  .ready-for-upgrade {
+    background-color: rgba(24, 144, 255, 0.05);
+  }
+  
+  .ready-for-upgrade td:first-child {
+    border-left: 3px solid #1890ff;
+  }
+  
+  .upgrade-btn-disabled {
+    cursor: not-allowed !important;
+    opacity: 0.6;
+  }
+  
+  .upgrade-btn {
+    transition: all 0.3s;
+  }
+  
+  .upgrade-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
   }

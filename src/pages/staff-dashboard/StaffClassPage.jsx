@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Card, Button, Spin, Avatar, Tag, Typography, Input, Radio,
   Row, Col, message, Modal, Tabs, Badge, Table, Alert, 
-  Progress, Collapse, Empty, Tooltip, DatePicker, Popconfirm
+  Progress, Collapse, Empty, Tooltip, DatePicker, Popconfirm, Checkbox, notification
 } from 'antd';
 import { 
   UserOutlined, InfoCircleOutlined, CheckCircleOutlined, 
@@ -10,9 +10,10 @@ import {
   BookOutlined, ScheduleOutlined, DeleteOutlined, WarningOutlined
 } from '@ant-design/icons';
 import './StaffClassPage.css';
-import { getAllClasses, getClassAttendance, getStudentsByClassId, kickStudentFromClass, openClass, finishClass } from './StaffClassService';
+import { getAllClasses, getClassAttendance, getStudentsByClassId, kickStudentFromClass, openClass, finishClass, upgradeStudents } from './StaffClassService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
+import { useCustomToast } from '../../components/toast/CustomToast';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -37,6 +38,10 @@ const StaffClassPage = () => {
   const [kickingStudent, setKickingStudent] = useState(false);
   const [openingClass, setOpeningClass] = useState(false);
   const [finishingClass, setFinishingClass] = useState(false);
+  const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+  const [upgradingStudents, setUpgradingStudents] = useState(false);
+  const [selectAllStudents, setSelectAllStudents] = useState(false);
+  const toast = useCustomToast();
 
   // Fetch data
   useEffect(() => {
@@ -246,7 +251,10 @@ const StaffClassPage = () => {
     setKickingStudent(true);
     try {
       const response = await kickStudentFromClass(childId, selectedClass.id);
-      message.success(response.message || 'Đã xóa học sinh khỏi lớp thành công');
+      toast.success('Đã xóa học sinh khỏi lớp thành công', {
+        title: 'Xóa học sinh thành công',
+        duration: 3000
+      });
       
       // Refresh student list
       const updatedStudents = await getStudentsByClassId(selectedClass.id);
@@ -255,7 +263,10 @@ const StaffClassPage = () => {
       // Also update the class data since the student count has changed
       fetchClassList();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Không thể xóa học sinh khỏi lớp');
+      toast.error(error.response?.data?.message || 'Không thể xóa học sinh khỏi lớp', {
+        title: 'Lỗi',
+        duration: 5000
+      });
     } finally {
       setKickingStudent(false);
     }
@@ -268,12 +279,18 @@ const StaffClassPage = () => {
     setOpeningClass(true);
     try {
       const response = await openClass(classId);
-      message.success(response.message || 'Lớp học đã được mở thành công');
+      toast.success(response.message || 'Lớp học đã được mở thành công', {
+        title: 'Mở lớp thành công',
+        duration: 3000
+      });
       
       // Refresh the class list
       fetchClassList();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Không thể mở lớp học');
+      toast.error(error.response?.data?.message || 'Không thể mở lớp học', {
+        title: 'Lỗi',
+        duration: 5000
+      });
     } finally {
       setOpeningClass(false);
     }
@@ -286,12 +303,18 @@ const StaffClassPage = () => {
     setFinishingClass(true);
     try {
       const response = await finishClass([classId]); // API expects an array of class IDs
-      message.success(response.message || 'Lớp học đã được kết thúc thành công');
+      toast.success(response.message || 'Lớp học đã được kết thúc thành công', {
+        title: 'Kết thúc lớp thành công',
+        duration: 3000
+      });
       
       // Refresh the class list
       fetchClassList();
     } catch (error) {
-      message.error(error.response?.data?.message || 'Không thể kết thúc lớp học');
+      toast.error(error.response?.data?.message || 'Không thể kết thúc lớp học', {
+        title: 'Lỗi',
+        duration: 5000
+      });
     } finally {
       setFinishingClass(false);
     }
@@ -299,6 +322,27 @@ const StaffClassPage = () => {
 
   // Student table columns
   const studentColumns = [
+    ...(selectedClass?.status === 'Finished' ? [{
+      title: <Checkbox 
+              checked={selectAllStudents} 
+              onChange={(e) => handleSelectAllStudentsToggle(e.target.checked)}
+            />,
+      dataIndex: 'selection',
+      key: 'selection',
+      width: 50,
+      render: (_, record) => {
+        // Disable checkbox for Graduated or Completed students
+        const isDisabled = record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed';
+        
+        return (
+        <Checkbox 
+          checked={selectedStudentIds.includes(record.id)}
+          onChange={() => toggleStudentSelection(record.id)}
+            disabled={isDisabled}
+        />
+        );
+      },
+    }] : []),
     {
       title: 'Họ tên',
       dataIndex: 'name',
@@ -344,45 +388,163 @@ const StaffClassPage = () => {
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'childrenGradeStatus',
+      key: 'childrenGradeStatus',
       width: 120,
-      render: (status) => (
-        <Tag color={status === 'Active' ? 'green' : 'volcano'}>
-          {status}
-        </Tag>
-      ),
+      render: (status) => {
+        let color = 'green';
+        let text = status;
+        
+        switch (status) {
+          case 'Graduated':
+            color = 'purple';
+            text = 'Đã tốt nghiệp';
+            break;
+          case 'Completed':
+            color = 'blue';
+            text = 'Đã hoàn thành';
+            break;
+          case 'Active':
+            color = 'green';
+            text = 'Đang học';
+            break;
+          default:
+            color = 'default';
+        }
+        
+        return <Tag color={color}>{text}</Tag>;
+      },
     },
     {
       title: 'Thao tác',
       key: 'action',
       width: 180,
       align: 'center',
-      render: (_, record) => (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-          <Popconfirm
-            title="Xóa học sinh khỏi lớp"
-            description={`Bạn có chắc chắn muốn xóa học sinh "${record.name}" khỏi lớp học này không?`}
-            onConfirm={() => handleKickStudent(record.id, record.name)}
-            okText="Có"
-            cancelText="Không"
-            okButtonProps={{ danger: true }}
-            maskClosable={false}
-          >
-            <Button 
-              type="danger"
-              icon={<DeleteOutlined />}
-              size="small"
-              loading={kickingStudent}
-              className="kick-student-btn"
+      render: (_, record) => {
+        // Hide delete button for Graduated or Completed students
+        if (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed') {
+          return null;
+        }
+        
+        return (
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+            <Popconfirm
+              title="Xóa học sinh khỏi lớp"
+              description={`Bạn có chắc chắn muốn xóa học sinh "${record.name}" khỏi lớp học này không?`}
+              onConfirm={() => handleKickStudent(record.id, record.name)}
+              okText="Có"
+              cancelText="Không"
+              okButtonProps={{ danger: true }}
+              maskClosable={false}
             >
-              Xóa
-            </Button>
-          </Popconfirm>
-        </div>
-      ),
+              <Button 
+                type="danger"
+                icon={<DeleteOutlined />}
+                size="small"
+                loading={kickingStudent}
+                className="kick-student-btn"
+              >
+                Xóa
+              </Button>
+            </Popconfirm>
+          </div>
+        );
+      },
     },
   ];
+
+  // Add this function to handle student upgrade
+  const handleUpgradeStudents = async () => {
+    if (selectedStudentIds.length === 0) {
+      toast.warning('Vui lòng chọn ít nhất một học sinh để nâng cấp', {
+        title: 'Chọn học sinh',
+        duration: 3000
+      });
+      return;
+    }
+    
+    setUpgradingStudents(true);
+    try {
+      const response = await upgradeStudents(selectedStudentIds);
+      toast.success(response.message || 'Học sinh đã được nâng cấp lên cấp lớp tiếp theo.', {
+        title: 'Nâng cấp thành công',
+        duration: 3000
+      });
+      
+      // Reset selection
+      setSelectedStudentIds([]);
+      setSelectAllStudents(false);
+      
+      // Refresh the class list to show updated data
+      fetchClassList();
+      
+      // Refresh the student list if needed
+      if (selectedClass) {
+        const updatedStudents = await getStudentsByClassId(selectedClass.id);
+        setStudents(updatedStudents);
+      }
+    } catch (error) {
+      // Check for the specific error message
+      if (error.response?.status === 400 && error.response?.data?.message === "Children are not eligible to move up to grade level.") {
+        toast.error('Học sinh không đủ điều kiện để nâng cấp lên cấp lớp tiếp theo.', {
+          title: 'Không thể nâng cấp',
+          duration: 5000
+        });
+      } else {
+        toast.error(error.response?.data?.message || 'Không thể nâng cấp học sinh', {
+          title: 'Lỗi',
+          duration: 5000
+        });
+      }
+    } finally {
+      setUpgradingStudents(false);
+    }
+  };
+
+  // Add this function to handle select all toggle
+  const handleSelectAllStudentsToggle = (checked) => {
+    setSelectAllStudents(checked);
+    if (checked) {
+      // Only select students who are eligible for upgrade (not Graduated or Completed)
+      const eligibleStudentIds = students
+        .filter(student => 
+          student.childrenGradeStatus !== 'Graduated' && 
+          student.childrenGradeStatus !== 'Completed'
+        )
+        .map(student => student.id);
+      
+      setSelectedStudentIds(eligibleStudentIds);
+    } else {
+      setSelectedStudentIds([]);
+    }
+  };
+
+  // Add this function to toggle individual student selection
+  const toggleStudentSelection = (studentId) => {
+    const student = students.find(s => s.id === studentId);
+    
+    // Don't allow selection of students with Graduated or Completed status
+    if (student.childrenGradeStatus === 'Graduated' || student.childrenGradeStatus === 'Completed') {
+      return;
+    }
+    
+    if (selectedStudentIds.includes(studentId)) {
+      setSelectedStudentIds(selectedStudentIds.filter(id => id !== studentId));
+      setSelectAllStudents(false);
+    } else {
+      setSelectedStudentIds([...selectedStudentIds, studentId]);
+      
+      // Check if all eligible students are now selected
+      const eligibleStudents = students.filter(s => 
+        s.childrenGradeStatus !== 'Graduated' && 
+        s.childrenGradeStatus !== 'Completed'
+      );
+      
+      if (selectedStudentIds.length + 1 === eligibleStudents.length) {
+        setSelectAllStudents(true);
+      }
+    }
+  };
 
   return (
     <div className="staff-class-container">
@@ -583,7 +745,7 @@ const StaffClassPage = () => {
                                 </Popconfirm>
                               )}
                               
-                              {record.status !== 'Available' && (
+                              {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
                                   className="open-class-btn"
@@ -738,7 +900,7 @@ const StaffClassPage = () => {
                                 </Popconfirm>
                               )}
                               
-                              {record.status !== 'Available' && (
+                              {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
                                   className="open-class-btn"
@@ -968,7 +1130,8 @@ const StaffClassPage = () => {
                             <div className={`class-status ${selectedClass.status.toLowerCase()}`}>
                               <div className="status-icon">
                                 <FontAwesomeIcon 
-                                  icon={selectedClass.status === 'Available' ? 'check-circle' : 'clock'} 
+                                  icon={selectedClass.status === 'Available' ? 'check-circle' : 
+                                        selectedClass.status === 'Finished' ? 'history' : 'clock'} 
                                 />
                               </div>
                               <div className="status-details">
@@ -976,6 +1139,8 @@ const StaffClassPage = () => {
                                 <div className="status-description">
                                   {selectedClass.status === 'Available' 
                                     ? 'Lớp học đang mở và có thể tiếp nhận học sinh.' 
+                                    : selectedClass.status === 'Finished'
+                                    ? 'Lớp học hiện tại không khả dụng. Năm học đã kết thúc.'
                                     : 'Lớp học hiện tại không khả dụng.'}
                                 </div>
                               </div>
@@ -1109,9 +1274,38 @@ const StaffClassPage = () => {
                                       <FontAwesomeIcon icon="user-graduate" /> Danh sách học sinh
                                     </span>
                                   }
-                                  extra={<Badge count={students.length} style={{ backgroundColor: '#1890ff' }} />}
+                                  extra={
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                      <Badge count={students.length} style={{ backgroundColor: '#1890ff' }} />
+                                      {selectedClass.status === 'Finished' && (
+                                        <Tooltip 
+                                          title={selectedStudentIds.length === 0 ? "Vui lòng chọn học sinh trước khi nâng cấp" : ""}
+                                        >
+                                          <Button
+                                            type="primary"
+                                            icon={<FontAwesomeIcon icon="level-up-alt" />}
+                                            onClick={handleUpgradeStudents}
+                                            disabled={selectedStudentIds.length === 0}
+                                            loading={upgradingStudents}
+                                            className={selectedStudentIds.length === 0 ? "upgrade-btn-disabled" : "upgrade-btn"}
+                                          >
+                                            Nâng cấp {selectedStudentIds.length > 0 ? `(${selectedStudentIds.length})` : ''}
+                                          </Button>
+                                        </Tooltip>
+                                      )}
+                                    </div>
+                                  }
                                   className="class-detail-card"
                                 >
+                                  {selectedClass.status === 'Finished' && (
+                                    <Alert
+                                      message="Lớp học đã kết thúc"
+                                      description="Bạn có thể chọn học sinh để nâng cấp lên lớp tiếp theo."
+                                      type="info"
+                                      showIcon
+                                      style={{ marginBottom: '16px' }}
+                                    />
+                                  )}
                                   <Table 
                                     dataSource={students} 
                                     columns={studentColumns}
@@ -1145,6 +1339,9 @@ const StaffClassPage = () => {
           </div>
         )}
       </Modal>
+
+      {/* Add toast container */}
+      <toast.ToastContainer position="top-right" />
     </div>
   );
 };
