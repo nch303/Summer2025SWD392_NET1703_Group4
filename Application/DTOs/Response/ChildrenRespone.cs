@@ -23,5 +23,6 @@ namespace Application.DTOs.Response
         public int GradeLevelID { get; set; }
         public string? GradeLevelName { get; set; }
         public string? Status { get; set; }
+        public string? ChildrenGradeStatus { get; set; }
     }
 }

@@ -19,10 +19,12 @@ namespace WebAPI.Controllers
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IEAService _eaService;
         private readonly IClassChildrenService _classChildrenService;
+        private readonly IClassService _classService;
 
         public ChildrenController(IChildrenService childrenService, IMapper mapper, IAccountService accountService
             , ICloudinaryService cloudinaryService, IChildrenGradeService childrenGradeService
-            , IEAService eAService, IClassChildrenService classChildrenService)
+            , IEAService eAService, IClassChildrenService classChildrenService
+            , IClassService classService)
         {
             _childrenService = childrenService;
             _mapper = mapper;
@@ -31,6 +33,7 @@ namespace WebAPI.Controllers
             _childrenGradeService = childrenGradeService;
             _eaService = eAService;
             _classChildrenService = classChildrenService;
+            _classService = classService;
         }
 
         [HttpPost]
@@ -280,6 +283,33 @@ namespace WebAPI.Controllers
             {
                 var children = await _classChildrenService.GetChildrenByClassIdAsync(classId);
                 var response = _mapper.Map<List<ChildrenResponse>>(children);
+                for (int i = 0; i < response.Count; i++)
+                {
+                    var parent = await _accountService.GetAccountByIdAsync(response[i].ParentID);
+                    response[i].ParentName = parent.FullName;
+                    response[i].PhoneNumber = parent.PhoneNumber;
+                    //Gan ApplicationID cho ChildResponse
+                    var application = await _eaService.GetApplicatioinByChildID(response[i].ID);
+                    response[i].ApplicationID = application?.ID ?? Guid.Empty;
+                    //Gan GradeLevel cho ChildResponse
+                    var grade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
+                    if (grade.Count == 0)
+                    {
+                        response[i].GradeLevelID = 0;
+                        response[i].GradeLevelName = string.Empty;
+                        continue;
+                    }
+
+
+                    //Gan ChildrenGradeStatus cho ChildResponse
+                    var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
+                    var classOfChildren = await _classService.GetClass(classId);
+                    var childrenGradeByClassId = childrenGrade.Where(cg => cg.GradeLevelID == classOfChildren.GradeLevelID).FirstOrDefault();
+
+                    response[i].GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
+                    response[i].GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
+                    response[i].ChildrenGradeStatus = childrenGradeByClassId?.Status;
+                }
                 return Ok(response);
             }
             catch (Exception ex)

@@ -205,6 +205,14 @@ namespace Application.Services
                     case "Lá":
                         childGrade.Status = "Graduated";
                         await _childrengradeService.UpdateChildrenGradeAsync(childGrade);
+
+                        //Update status of children to "Graduated"
+                        var child = await _childrenService.GetChildByIdAsync(childGrade.ChildrenID);
+                        if (child != null)
+                        {
+                            child.Status = "Graduated";
+                            await _childrenService.UpdateChildAsync(child);
+                        }
                         break;
                 }
 
@@ -217,13 +225,13 @@ namespace Application.Services
                         AcademicYear = nextAcademicYear,
                         Status = "Inactive"
                     };
+
+                    //Update the current children grade status to "Completed"
+                    childGrade.Status = "Completed";
+                    await _childrengradeService.UpdateChildrenGradeAsync(childGrade);
+
+                    await _childrengradeService.CreateChildrenGradeAsync(newChildrenGrade);
                 }
-
-                //Update the current children grade status to "Completed"
-                childGrade.Status = "Completed";
-                await _childrengradeService.UpdateChildrenGradeAsync(childGrade);
-
-                await _childrengradeService.CreateChildrenGradeAsync(newChildrenGrade);
             }
         }
     }
