@@ -287,12 +287,12 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("GetActiveChildrenGrades")]
-        public async Task<IActionResult> GetActiveChildrenGradesAsync()
+        [HttpGet("GetInActiveChildrenGrades")]
+        public async Task<IActionResult> GetInActiveChildrenGradesAsync()
         {
             try
             {
-                var childrenGrades = await _childrenGradeService.GetActiveChildrenGradeAsync();
+                var childrenGrades = await _childrenGradeService.GetInActiveChildrenGradeAsync();
                 var children = new List<Children>();
                 foreach (var grade in childrenGrades)
                 {

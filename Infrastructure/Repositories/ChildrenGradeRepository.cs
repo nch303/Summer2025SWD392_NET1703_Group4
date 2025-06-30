@@ -90,12 +90,12 @@ namespace Infrastructure.Repositories
             return existingGrade;
         }
 
-        public async Task<List<ChildrenGrade>> GetActiveChildrenGradeAsync()
+        public async Task<List<ChildrenGrade>> GetInActiveChildrenGradeAsync()
         {
             var childrenGrades = await _context.ChildrenGrades
                 .Include(cg => cg.GradeLevels)
                 .Include(cg => cg.Childrens)
-                .Where(cg => cg.Status == "Active")
+                .Where(cg => cg.Status == "Inactive")
                 .ToListAsync();
             return childrenGrades;
         }
