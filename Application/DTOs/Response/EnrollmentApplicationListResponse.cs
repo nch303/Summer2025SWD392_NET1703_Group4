@@ -20,6 +20,7 @@ namespace Application.DTOs.Response
         public string? ChildrenName { get; set; }
         public string? GradeLevelName { get; set; }
         public DateTime ApprovalDate { get; set; }
+        public ClassResponse? ClassResponse { get; set; }
     }
 }
 

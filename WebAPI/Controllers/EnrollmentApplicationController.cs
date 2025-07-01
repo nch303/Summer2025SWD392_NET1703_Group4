@@ -3,6 +3,7 @@ using Application.DTOs.Response;
 using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using Azure.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +20,18 @@ namespace WebAPI.Controllers
         private readonly IAccountService _accountService;
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IChildrenService _childrenService;
+        private readonly IClassService _classService;
 
         public EnrollmentApplicationController(IEAService eAService, IMapper mapper, IAccountService accountService
-            , IChildrenGradeService childrenGradeService, IChildrenService childrenService)
+            , IChildrenGradeService childrenGradeService, IChildrenService childrenService
+            , IClassService classService)
         {
             _eAService = eAService;
             _mapper = mapper;
             _accountService = accountService;
             _childrenGradeService = childrenGradeService;
             _childrenService = childrenService;
+            _classService = classService;
         }
 
         [HttpPost("submit-application")]
@@ -61,6 +65,14 @@ namespace WebAPI.Controllers
                 var parent = await _accountService.GetCurrentAccount();
                 var applications = await _eAService.ViewListApplicationAsync(parent.Id);
                 var responseList = _mapper.Map<List<EnrollmentApplicationListResponse>>(applications);
+                var classOfChildren = new List<Class>();
+                var currentClass = new Class();
+                foreach (var response in responseList)
+                {
+                    classOfChildren = await _classService.GetClassesByChildIdAsync(response.ChildrenID);
+                    currentClass = classOfChildren.FirstOrDefault(c => c.AcademicYear == response.AcademicYear || c.GradeLevelID == response.GradeLevelID);
+                    response.ClassResponse = _mapper.Map<ClassResponse>(currentClass);
+                }
                 responseList.Reverse();
 
                 return Ok(responseList);

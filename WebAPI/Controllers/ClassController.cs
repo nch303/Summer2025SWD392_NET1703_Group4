@@ -72,6 +72,7 @@ namespace WebAPI.Controllers
             try
             {
                 var newClass = _mapper.Map<Class>(request);
+                newClass.Status = "Unavailable"; // Default status
                 var created = await _classService.CreatClass(newClass);
                 var response = _mapper.Map<ClassResponse>(created);
                 return Ok(response);
