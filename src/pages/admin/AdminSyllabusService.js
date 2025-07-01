@@ -44,24 +44,13 @@ export const createSyllabusDetails = async (syllabusId, detailsData) => {
   }
 };
 
-// Cập nhật thông tin giáo trình
-export const updateSyllabus = async (id, syllabusData) => {
-  try {
-    const response = await api.put(`/api/Syllabus/${id}`, syllabusData);
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating syllabus with ID ${id}:`, error);
-    throw error;
-  }
-};
-
 // Xóa giáo trình
-export const deleteSyllabus = async (id) => {
+export const deleteSyllabus = async (syllabusId) => {
   try {
-    const response = await api.delete(`/api/Syllabus/${id}`);
+    const response = await api.delete(`/api/Syllabus/${syllabusId}`);
     return response.data;
   } catch (error) {
-    console.error(`Error deleting syllabus with ID ${id}:`, error);
+    console.error(`Error deleting syllabus with ID ${syllabusId}:`, error.response?.data || error.message);
     throw error;
   }
 };
@@ -77,7 +66,7 @@ export const getSyllabusDetails = async (syllabusId) => {
   }
 };
 
-// Add function to update multiple syllabi at once
+// Update multiple syllabi
 export const updateMultipleSyllabi = async (syllabusDataArray) => {
   try {
     const response = await api.put('/update-syllabus', syllabusDataArray);
@@ -88,13 +77,14 @@ export const updateMultipleSyllabi = async (syllabusDataArray) => {
   }
 };
 
-// Add function to update a specific syllabus detail
-export const updateSyllabusDetail = async (id, detailData) => {
+// Update syllabus detail - sửa lại đúng API endpoint từ screenshot của bạn
+export const updateSyllabusDetail = async (detailId, detailData) => {
   try {
-    const response = await api.put(`/api/SyllabusDetail/${id}/update-syllabus`, detailData);
+    console.log(`Updating syllabus detail with ID ${detailId}:`, detailData);
+    const response = await api.put(`/api/SyllabusDetail/${detailId}/update-syllabus`, detailData);
     return response.data;
   } catch (error) {
-    console.error(`Error updating syllabus detail with ID ${id}:`, error);
+    console.error(`Error updating syllabus detail with ID ${detailId}:`, error);
     throw error;
   }
 };

@@ -11,7 +11,7 @@ import {
   InfoCircleOutlined, CheckOutlined, UploadOutlined, FileExcelOutlined,
   LoadingOutlined, CloseOutlined
 } from '@ant-design/icons';
-import { getAllSyllabi, createSyllabus, createSyllabusDetails, updateSyllabus, deleteSyllabus, getSyllabusDetails } from './AdminSyllabusService';
+import { getAllSyllabi, createSyllabus, createSyllabusDetails, deleteSyllabus, getSyllabusDetails, updateMultipleSyllabi, updateSyllabusDetail } from './AdminSyllabusService';
 import * as XLSX from 'xlsx'; 
 import './AdminSyllabus.css';
 
@@ -54,6 +54,7 @@ const AdminSyllabus = () => {
   const [syllabusDetails, setSyllabusDetails] = useState([]);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [editingSyllabusDetails, setEditingSyllabusDetails] = useState([]);
 
   useEffect(() => {
     fetchSyllabi();
@@ -76,8 +77,8 @@ const AdminSyllabus = () => {
   const fetchSyllabi = async () => {
     try {
       setLoading(true);
-      const data = await getAllSyllabi();
-      setSyllabi(data);
+      const data = await getAllSyllabi(); // dữ liệu đã được backend lọc
+      setSyllabi(data); // không cần filter isDeleted nữa
     } catch (error) {
       message.error('Failed to fetch syllabi');
       console.error(error);
@@ -91,7 +92,8 @@ const AdminSyllabus = () => {
   };
 
   const filteredSyllabi = syllabi.filter(syllabus => 
-    syllabus.name.toLowerCase().includes(searchText.toLowerCase())
+    syllabus.name.toLowerCase().includes(searchText.toLowerCase()) && 
+    syllabus.isDeleted === false
   );
 
   const showAddModal = () => {
@@ -107,13 +109,38 @@ const AdminSyllabus = () => {
     setModalVisible(true);
   };
 
-  const showEditModal = (syllabus) => {
+  const showEditModal = async (syllabus) => {
     setEditingSyllabus(syllabus);
     setModalTitle('Edit Syllabus');
+    setCurrentStep(0);
+    setTotalSlots(syllabus.slotAmount);
+    
     form.setFieldsValue({
       name: syllabus.name,
       slotAmount: syllabus.slotAmount,
     });
+    
+    try {
+      // Fetch syllabus details
+      setDetailsLoading(true);
+      const details = await getSyllabusDetails(syllabus.id);
+      
+      // Set details in the form for step 2
+      detailsForm.setFieldsValue({
+        details: details.map(detail => ({
+          content: detail.content,
+          duration: detail.duration
+        }))
+      });
+      
+      setEditingSyllabusDetails(details);
+      setDetailsCount(details.length);
+      setDetailsLoading(false);
+    } catch (error) {
+      message.error('Failed to fetch syllabus details');
+      console.error(error);
+    }
+    
     setModalVisible(true);
   };
 
@@ -124,23 +151,16 @@ const AdminSyllabus = () => {
   const handleModalSubmit = async () => {
     if (currentStep === 0) {
       try {
-        // Just validate the form without creating the syllabus
         const values = await form.validateFields();
-        
+  
         if (editingSyllabus) {
-          // Only for editing we'll update immediately
-          setSubmitting(true);
-          const formData = {
-            ...values,
-            slotAmount: Number(values.slotAmount)
-          };
-          await updateSyllabus(editingSyllabus.id, formData);
-          setSubmitting(false);
-          setModalVisible(false);
-          fetchSyllabi();
-          addToast('success', 'Syllabus Updated', `"${values.name}" has been successfully updated.`);
+          // For editing: Save values for next step without API call
+          setStep1Values(values);
+          setTotalSlots(Number(values.slotAmount));
+          message.success('Basic information validated. Please edit details in the next step.');
+          setCurrentStep(1);
         } else {
-          // For new syllabus, save the form values
+          // For new syllabus: Save form values
           setStep1Values(values);
           setTotalSlots(Number(values.slotAmount));
           message.success('Basic information validated. Please add details in the next step.');
@@ -151,66 +171,95 @@ const AdminSyllabus = () => {
         console.error('Form validation failed:', error);
       }
     } else {
-      // Handle step 2 - create both syllabus and details
+      // Step 2: Update both syllabus and details
       try {
-        // First validate the details form
         const detailValues = await detailsForm.validateFields();
-        
-        // Use the values we already saved from step 1 instead of revalidating
+  
+        // Validate basic info
         if (!step1Values.name || isNaN(Number(step1Values.slotAmount))) {
           message.error('Invalid syllabus information. Please go back to step 1.');
           return;
         }
-        
-        // Format data EXACTLY as the API expects
-        const syllabusData = {
-          name: step1Values.name,
-          slotAmount: Number(step1Values.slotAmount)
-        };
-        
-        console.log('Sending syllabus data:', syllabusData); // Debug what's being sent
-        
-        // Show loading state
+  
         setSubmitting(true);
-        
-        // Create syllabus first
-        const syllabusResponse = await createSyllabus(syllabusData);
-        const newId = syllabusResponse.id;
-        
-        // Then create details
-        await createSyllabusDetails(newId, detailValues.details.map(detail => ({
-          content: detail.content,
-          duration: Number(detail.duration)
-        })));
-        
-        // Hide loading state
-        setSubmitting(false);
-        
-        // Reset all form data and state variables
+  
+        if (editingSyllabus) {
+          // Prepare syllabus data
+          const syllabusData = [{
+            id: editingSyllabus.id,
+            name: step1Values.name,
+            slotAmount: Number(step1Values.slotAmount)
+          }];
+  
+          // Update syllabus
+          await updateMultipleSyllabi(syllabusData);
+  
+          // 🔍 Ensure slot ID list is available
+          if (!editingSyllabusDetails || editingSyllabusDetails.length === 0) {
+            message.error('Missing slot IDs. Please reopen the edit form.');
+            setSubmitting(false);
+            return;
+          }
+  
+          // Update each slot detail
+          const detailsPromises = detailValues.details.map((detail, index) => {
+            // Lấy đúng ID của SyllabusDetail từ mảng đã fetch
+            const detailId = editingSyllabusDetails[index]?.id;
+            if (!detailId) {
+              console.error(`Missing detail ID for index ${index}`);
+              return Promise.resolve(); // skip if no id
+            }
+            console.log(`Updating detail ${detailId} with content: ${detail.content}, duration: ${detail.duration}`);
+            
+            // Gọi updateSyllabusDetail với detailId
+            return updateSyllabusDetail(detailId, {
+              content: detail.content,
+              duration: Number(detail.duration)
+            });
+          });
+  
+          await Promise.all(detailsPromises);
+  
+          setSubmitting(false);
+          setModalVisible(false);
+          fetchSyllabi();
+          addToast('success', 'Syllabus Updated', `"${step1Values.name}" has been successfully updated.`);
+        } else {
+          // Create new syllabus
+          const syllabusData = {
+            name: step1Values.name,
+            slotAmount: Number(step1Values.slotAmount)
+          };
+  
+          const syllabusResponse = await createSyllabus(syllabusData);
+          const newId = syllabusResponse.id;
+  
+          await createSyllabusDetails(newId, detailValues.details.map(detail => ({
+            content: detail.content,
+            duration: Number(detail.duration)
+          })));
+  
+          setSubmitting(false);
+          setModalVisible(false);
+          fetchSyllabi();
+          addToast('success', 'Syllabus Created Successfully', `"${step1Values.name}" with ${step1Values.slotAmount} slots has been created.`);
+        }
+  
+        // Reset state
         form.resetFields();
         detailsForm.resetFields();
-        setStep1Values({name: '', slotAmount: 1});
+        setStep1Values({ name: '', slotAmount: 1 });
         setDetailsCount(0);
         setTotalSlots(0);
         setCurrentStep(0);
-
-        // Close modal and refresh data
-        setModalVisible(false);
-        fetchSyllabi();
-        
-        // Show success notification
-        addToast('success', 'Syllabus Created Successfully', `"${step1Values.name}" with ${step1Values.slotAmount} slots has been created.`);
       } catch (error) {
         setSubmitting(false);
-        console.error('Creation failed:', error);
-        if (error.response && error.response.data) {
-          message.error(`Failed to create syllabus: ${JSON.stringify(error.response.data)}`);
-        } else {
-          message.error('Failed to create syllabus. Please check all fields are filled correctly.');
-        }
+        console.error('Operation failed:', error);
+        message.error('Failed to update syllabus. Please check all fields are filled correctly.');
       }
     }
   };
+  
 
   // Function to count total details in the form
   const updateDetailsCount = () => {
@@ -224,21 +273,31 @@ const AdminSyllabus = () => {
   };
 
   const handleDelete = (syllabusId) => {
-    confirm({
-      title: 'Are you sure you want to delete this syllabus?',
+    Modal.confirm({
+      title: 'Delete Syllabus',
       icon: <ExclamationCircleOutlined />,
-      content: 'This action cannot be undone.',
-      okText: 'Yes',
+      content: `Are you sure you want to delete syllabus with ID ${syllabusId}?`,
+      okText: 'Delete',
       okType: 'danger',
-      cancelText: 'No',
-      onOk: async () => {
-        try {
-          await deleteSyllabus(syllabusId);
-          message.success('Syllabus deleted successfully');
-          fetchSyllabi();
-        } catch (error) {
-          message.error('Failed to delete syllabus');
-        }
+      cancelText: 'Cancel',
+      onOk: () => {
+        // Sử dụng fetch trực tiếp thay vì qua service
+        fetch(`/api/Syllabus/${syllabusId}`, {
+          method: 'DELETE',
+        })
+        .then(response => {
+          if (response.ok) {
+            message.success('Syllabus deleted successfully');
+            // Làm mới dữ liệu
+            fetchSyllabi();
+          } else {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+        })
+        .catch(error => {
+          console.error('Delete error:', error);
+          message.error(`Failed to delete: ${error.message}`);
+        });
       },
     });
   };
@@ -431,21 +490,32 @@ const AdminSyllabus = () => {
               onClick={() => showEditModal(record)}
             />
           </Tooltip>
-          <Tooltip title="Delete">
-            <Popconfirm
-              title="Are you sure you want to delete this syllabus?"
-              onConfirm={() => handleDelete(record.id)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button
-                type="primary"
-                danger
-                icon={<DeleteOutlined />}
-                size="small"
-              />
-            </Popconfirm>
-          </Tooltip>
+          <Popconfirm
+            title="Delete Syllabus"
+            description={`Are you sure you want to delete "${record.name}"?`}
+            onConfirm={async () => {
+              try {
+                await fetch(`https://localhost:7216/api/Syllabus/${record.id}`, {
+                  method: 'DELETE',
+                });
+                addToast('success', 'Syllabus Deleted', `"${record.name}" has been successfully deleted.`);
+                fetchSyllabi();
+              } catch (error) {
+                console.error('Delete error:', error);
+                addToast('error', 'Delete Failed', `Failed to delete syllabus: ${error.message}`);
+              }
+            }}
+            okText="Yes"
+            cancelText="No"
+            okButtonProps={{ danger: true }}
+          >
+            <Button
+              type="primary" 
+              danger 
+              icon={<DeleteOutlined />}
+              size="small"
+            />
+          </Popconfirm>
         </Space>
       ),
     },
@@ -620,7 +690,7 @@ const AdminSyllabus = () => {
                   icon={<PlusOutlined />}
                   className="admin-syllabus-action-button"
                 >
-                  {editingSyllabus ? 'Update Syllabus' : 'Continue to Details'}
+                  {editingSyllabus ? 'Continue to Details' : 'Continue to Details'}
                 </Button>
               </div>
             </Form>
@@ -837,7 +907,7 @@ const AdminSyllabus = () => {
                 className="admin-syllabus-action-button"
                 icon={<CheckOutlined />}
               >
-                Create Syllabus
+                {editingSyllabus ? 'Update Syllabus' : 'Create Syllabus'}
               </Button>
             </div>
           </div>
