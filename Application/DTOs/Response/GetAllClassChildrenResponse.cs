@@ -15,5 +15,6 @@ namespace Application.DTOs.Response
         public ClassResponse ClassResponse { get; set; }
         public List<AttendanceResponse> AttendanceResponses { get; set; }
         public List<AccountResponse> Teachers {  get; set; }
+        public EnrichmentProgramResponse? EnrichmentProgramResponse { get; set; }
     }
 }

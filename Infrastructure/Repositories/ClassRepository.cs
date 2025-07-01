@@ -23,7 +23,6 @@ namespace Infrastructure.Repositories
         public async Task<Class> CreatClass(Class room)
         {
             room.Quantity = 0;
-            room.Status = "Available";
             await _context.Classes.AddAsync(room);
             await _context.SaveChangesAsync();
 

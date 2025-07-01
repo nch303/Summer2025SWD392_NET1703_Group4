@@ -15,14 +15,17 @@ namespace WebAPI.Controllers
         private readonly IEAService _eaService;
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IAccountService _accountService;
+        private readonly IEnrichProgramService _enrichmentService;
         public ClassChildrenController(IClassChildrenService classChildrenService, IMapper mapper, IEAService eaService
-            , IChildrenGradeService childrenGradeService, IAccountService accountService)
+            , IChildrenGradeService childrenGradeService, IAccountService accountService
+            , IEnrichProgramService enrichProgramService)
         {
             _classChildrenService = classChildrenService;
             _mapper = mapper;
             _eaService = eaService;
             _childrenGradeService = childrenGradeService;
             _accountService = accountService;
+            _enrichmentService = enrichProgramService;
         }
 
         [HttpGet]
@@ -171,6 +174,11 @@ namespace WebAPI.Controllers
                 var teachers = await _accountService.GetTeacherByClassIdAsync(response.ClassResponse.ID);
                 var teacherResponses = _mapper.Map<List<AccountResponse>>(teachers);
                 response.Teachers = teacherResponses;
+
+                //Gan EnrichmentProgramResponse cho response
+                var enrichmentProgram = _enrichmentService.GetProgramByIdAsync(response.ClassResponse.EnrichmentProgramId);
+                var enrichmentProgramResponse = _mapper.Map<EnrichmentProgramResponse>(await enrichmentProgram);
+                response.EnrichmentProgramResponse = enrichmentProgramResponse;
             }
             return Ok(responses);
 
