@@ -359,7 +359,7 @@ const InvoiceDetailPage = () => {
                   <tr>
                     <th width="5%">#</th>
                     <th className="text-left" width="65%">Nội dung</th>
-                    <th className="text-right" width="30%">Đơn giá</th>
+                    <th className="text-center" width="30%">Đơn giá</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -598,7 +598,7 @@ const StaffAssignTeacherPage = () => {
                     <Avatar 
                       icon={<UserOutlined />} 
                       size={54}
-                      className="teacher-avatar" 
+                      className="staff-assign-teacher-avatar" 
                     />
                     <div className="teacher-drawer-info">
                       <h3 className="teacher-drawer-name">{teacher.fullName}</h3>
@@ -833,7 +833,7 @@ const StaffAssignTeacherPage = () => {
                   <div className="teachers-assigned-list">
                     {selectedClassDetail.teacherNames.map((name, idx) => (
                       <div className="teacher-card" key={idx}>
-                        <Avatar icon={<UserOutlined />} className="teacher-avatar" />
+                        <Avatar icon={<UserOutlined />} className="staff-assign-teacher-avatar" />
                         <div className="teacher-name">{name}</div>
                       </div>
                     ))}

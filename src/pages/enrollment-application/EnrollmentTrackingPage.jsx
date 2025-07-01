@@ -361,19 +361,32 @@ const EnrollmentTrackingPage = () => {
     const isProcessing = processingPayment[app.eaid];
     
     if (app.status === 'Enrolled') {
-      return (
-        <button 
-          className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!isProcessing) handlePayment(app);
-          }}
-          disabled={isProcessing}
-        >
-          <FontAwesomeIcon icon={isProcessing ? "spinner" : "credit-card"} spin={isProcessing} />
-          {isProcessing ? 'Đang xử lý...' : 'Thanh toán học phí'}
-        </button>
-      );
+      // Check if classResponse exists and has a status
+      if (app.classResponse && app.classResponse.status === 'Unavailable') {
+        return (
+          <button 
+            className="tracking-action-btn tracking-payment-btn"
+            disabled={true}
+          >
+            <FontAwesomeIcon icon="clock" />
+            Đợi mở lớp để thanh toán
+          </button>
+        );
+      } else {
+        return (
+          <button 
+            className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!isProcessing) handlePayment(app);
+            }}
+            disabled={isProcessing}
+          >
+            <FontAwesomeIcon icon={isProcessing ? "spinner" : "credit-card"} spin={isProcessing} />
+            {isProcessing ? 'Đang xử lý...' : 'Thanh toán học phí'}
+          </button>
+        );
+      }
     }
     
     return null;
@@ -842,19 +855,29 @@ const EnrollmentTrackingPage = () => {
                 Đóng
               </button>
               {applicationDetail && (applicationDetail.status === 'Enrolled') && (
-                <button 
-                  className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
-                  onClick={() => {
-                    if (!processingPayment[selectedApplication.eaid]) {
-                      handlePayment(selectedApplication);
-                    }
-                  }}
-                  disabled={processingPayment[selectedApplication.eaid]}
-                >
-                  <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
-                                   spin={processingPayment[selectedApplication.eaid]} />
-                  {processingPayment[selectedApplication.eaid] ? 'Đang xử lý...' : 'Thanh toán học phí'}
-                </button>
+                selectedApplication && selectedApplication.classResponse && selectedApplication.classResponse.status === 'Unavailable' ? (
+                  <button 
+                    className="tracking-action-btn tracking-payment-btn"
+                    disabled={true}
+                  >
+                    <FontAwesomeIcon icon="clock" />
+                    Đợi mở lớp để thanh toán
+                  </button>
+                ) : (
+                  <button 
+                    className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
+                    onClick={() => {
+                      if (!processingPayment[selectedApplication.eaid]) {
+                        handlePayment(selectedApplication);
+                      }
+                    }}
+                    disabled={processingPayment[selectedApplication.eaid]}
+                  >
+                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
+                                    spin={processingPayment[selectedApplication.eaid]} />
+                    {processingPayment[selectedApplication.eaid] ? 'Đang xử lý...' : 'Thanh toán học phí'}
+                  </button>
+                )
               )}
             </div>
           </div>

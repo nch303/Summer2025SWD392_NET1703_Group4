@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getAllEnrichmentProgramsForParent, registerForProgram, getChildrenByParentId } from './EnrichmentProgramService';
+import { getAllEnrichmentProgramsForParent, registerForProgram, getChildrenByParentId, getEnrichmentClassRegistrations, createPaymentUrl } from './EnrichmentProgramService';
 import { useUser } from '../../contexts/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { formatDate } from '../../utils/formatDate';
@@ -9,8 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EnrichmentProgram = () => {
   const [programs, setPrograms] = useState([]);
+  const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(false);
   const [error, setError] = useState(null);
+  const [historyError, setHistoryError] = useState(null);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('default');
@@ -20,7 +23,9 @@ const EnrichmentProgram = () => {
   const [children, setChildren] = useState([]);
   const [selectedChildIds, setSelectedChildIds] = useState([]);
   const [registerLoading, setRegisterLoading] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
   const { currentUser } = useUser();
+  const [activeTab, setActiveTab] = useState('programs'); // 'programs' or 'history'
 
   const containerRef = useRef(null);
   const modalRef = useRef(null);
@@ -50,6 +55,59 @@ const EnrichmentProgram = () => {
 
     fetchPrograms();
   }, []);
+
+  // Fetch registration history when tab changes to history
+  useEffect(() => {
+    if (activeTab === 'history' && currentUser?.id) {
+      fetchRegistrationHistory();
+    }
+  }, [activeTab, currentUser]);
+
+  const fetchRegistrationHistory = async () => {
+    if (!currentUser?.id) return;
+    
+    try {
+      setLoadingHistory(true);
+      const data = await getEnrichmentClassRegistrations(currentUser.id);
+      setRegistrations(data || []);
+      setHistoryError(null);
+    } catch (err) {
+      setHistoryError('Không thể tải dữ liệu đăng ký lớp học. Vui lòng thử lại sau.');
+      console.error('Error fetching registrations:', err);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  const handlePayment = async (registration) => {
+    if (processingPayment) return;
+    
+    try {
+      setProcessingPayment(true);
+      
+      const paymentData = {
+        orderType: "Enrichment Program Payment",
+        amount: registration.classResponse.enrichmentProgramFee || 0,
+        orderDescription: `Thanh toán lớp ${registration.classResponse.epName}`,
+        name: registration.childrenResponse.name,
+        childrenID: registration.childrenResponse.id,
+        enrichmentPrograms: [registration.classResponse.enrichmentProgramId]
+      };
+      
+      const response = await createPaymentUrl(paymentData);
+      
+      if (response && response.url) {
+        window.location.href = response.url;
+      } else {
+        toast.error('Không thể tạo đường dẫn thanh toán. Vui lòng thử lại sau.');
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      toast.error('Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại sau.');
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
 
   useEffect(() => {
     if (currentUser?.id) {
@@ -429,6 +487,193 @@ const EnrichmentProgram = () => {
     }
   };
 
+  const renderRegistrationStatus = (status) => {
+    switch (status) {
+      case 'Active':
+        return (
+          <span className="enrichment-registration-status active">
+            <FontAwesomeIcon icon="check-circle" /> Đang học
+          </span>
+        );
+      case 'Pending':
+        return (
+          <span className="enrichment-registration-status pending">
+            <FontAwesomeIcon icon="clock" /> Chờ xử lý
+          </span>
+        );
+      default:
+        return (
+          <span className="enrichment-registration-status">
+            <FontAwesomeIcon icon="info-circle" /> {status}
+          </span>
+        );
+    }
+  };
+
+  // Tab navigation
+  const renderTabNavigation = () => (
+    <div className="enrichment-tabs-navigation">
+      <button 
+        className="enrichment-tab-button active"
+        onClick={() => {}} // Already on this page
+      >
+        <FontAwesomeIcon icon="th-large" />
+        Chương Trình Học
+      </button>
+      <a 
+        href="/enrichment-history" 
+        className="enrichment-tab-button"
+      >
+        <FontAwesomeIcon icon="history" />
+        Lịch Sử Đăng Ký
+      </a>
+    </div>
+  );
+
+  // Render history tab content
+  const renderHistoryContent = () => {
+    if (loadingHistory) {
+      return (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      );
+    }
+    
+    if (historyError) {
+      return (
+        <div className="error-container">
+          <FontAwesomeIcon icon="exclamation-circle" className="error-icon" />
+          <p className="error-message">{historyError}</p>
+          <button className="retry-btn" onClick={fetchRegistrationHistory}>
+            <FontAwesomeIcon icon="sync" />
+            Thử lại
+          </button>
+        </div>
+      );
+    }
+    
+    if (registrations.length === 0) {
+      return (
+        <div className="empty-container">
+          <div className="empty-icon">
+            <FontAwesomeIcon icon="book" size="3x" />
+          </div>
+          <h3 className="empty-message">Chưa có đăng ký khóa học nào</h3>
+          <button
+            className="retry-btn"
+            onClick={() => setActiveTab('programs')}
+          >
+            <FontAwesomeIcon icon="plus-circle" />
+            Đăng ký khóa học mới
+          </button>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="enrichment-history-list">
+        {registrations.map((registration) => (
+          <div key={registration.id} className="enrichment-history-card">
+            <div className="enrichment-history-card-header">
+              <div className="enrichment-child-info">
+                <div className="enrichment-child-avatar-container">
+                  <img 
+                    src={registration.childrenResponse.avatar || "https://via.placeholder.com/80?text=Avatar"} 
+                    alt={registration.childrenResponse.name}
+                    className="enrichment-child-avatar"
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/80?text=Avatar";
+                    }}
+                  />
+                </div>
+                <div className="enrichment-child-details">
+                  <h3 className="enrichment-child-name">{registration.childrenResponse.name}</h3>
+                  <p className="enrichment-child-age">{calculateAge(registration.childrenResponse.birthday)} tuổi</p>
+                  <p className="enrichment-child-class">Lớp {registration.childrenResponse.gradeLevelName}</p>
+                </div>
+              </div>
+              <div className="enrichment-registration-status-container">
+                {renderRegistrationStatus(registration.status)}
+              </div>
+            </div>
+            
+            <div className="enrichment-history-card-body">
+              <div className="enrichment-program-details">
+                <h4 className="enrichment-program-name">
+                  <FontAwesomeIcon icon="star" className="enrichment-program-icon" />
+                  {registration.classResponse.epName}
+                </h4>
+                <div className="enrichment-program-info-grid">
+                  <div className="enrichment-info-item">
+                    <span className="enrichment-info-label">
+                      <FontAwesomeIcon icon="users" /> Lớp:
+                    </span>
+                    <span className="enrichment-info-value">{registration.classResponse.name}</span>
+                  </div>
+                  <div className="enrichment-info-item">
+                    <span className="enrichment-info-label">
+                      <FontAwesomeIcon icon="calendar-alt" /> Năm học:
+                    </span>
+                    <span className="enrichment-info-value">{registration.classResponse.academicYear}</span>
+                  </div>
+                  <div className="enrichment-info-item">
+                    <span className="enrichment-info-label">
+                      <FontAwesomeIcon icon="clock" /> Lịch học:
+                    </span>
+                    <span className="enrichment-info-value">
+                      {registration.classResponse.timetable ? 
+                        `Thứ ${registration.classResponse.timetable}` : 
+                        'Chưa có lịch'}
+                    </span>
+                  </div>
+                  <div className="enrichment-info-item">
+                    <span className="enrichment-info-label">
+                      <FontAwesomeIcon icon="check-circle" /> Trạng thái lớp:
+                    </span>
+                    <span className={`enrichment-info-value status-${registration.classResponse.status?.toLowerCase()}`}>
+                      {registration.classResponse.status === "Available" ? "Sẵn sàng" : 
+                       registration.classResponse.status === "Unavailable" ? "Chưa mở" : 
+                       registration.classResponse.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="enrichment-history-card-footer">
+              {registration.classResponse.status === "Available" ? (
+                <button 
+                  className="enrichment-payment-button"
+                  onClick={() => handlePayment(registration)}
+                  disabled={processingPayment}
+                >
+                  {processingPayment ? (
+                    <>
+                      <FontAwesomeIcon icon="spinner" spin />
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon="credit-card" />
+                      Thanh toán ngay
+                    </>
+                  )}
+                </button>
+              ) : (
+                <div className="enrichment-payment-notice">
+                  <FontAwesomeIcon icon="info-circle" />
+                  Đợi mở lớp để thanh toán
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="enrichment-program-container" ref={containerRef}>
       <ToastContainer 
@@ -456,6 +701,10 @@ const EnrichmentProgram = () => {
         </p>
       </div>
 
+      {/* Tab Navigation */}
+      {renderTabNavigation()}
+
+      {/* Tab Content */}
       <div className="enrichment-content-layout">
         {/* Sidebar */}
         <div className="enrichment-sidebar">
@@ -822,42 +1071,45 @@ const EnrichmentProgram = () => {
         </div>
       )}
 
-      <div className="program-benefits">
-        <h2 className="benefits-title">Lợi ích của chương trình học năng khiếu</h2>
-        <div className="benefits-grid">
-          <div className="benefit-item">
-            <div className="benefit-icon">
-              <FontAwesomeIcon icon="brain" />
+      {/* Program benefits section - only show on programs tab */}
+      {activeTab === 'programs' && (
+        <div className="program-benefits">
+          <h2 className="benefits-title">Lợi ích của chương trình học năng khiếu</h2>
+          <div className="benefits-grid">
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <FontAwesomeIcon icon="brain" />
+              </div>
+              <h3>Phát triển tư duy</h3>
+              <p>Kích thích sự phát triển não bộ và khả năng tư duy logic của trẻ.</p>
             </div>
-            <h3>Phát triển tư duy</h3>
-            <p>Kích thích sự phát triển não bộ và khả năng tư duy logic của trẻ.</p>
-          </div>
 
-          <div className="benefit-item">
-            <div className="benefit-icon">
-              <FontAwesomeIcon icon="hands-helping" />
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <FontAwesomeIcon icon="hands-helping" />
+              </div>
+              <h3>Kỹ năng xã hội</h3>
+              <p>Tăng cường khả năng giao tiếp và làm việc nhóm hiệu quả.</p>
             </div>
-            <h3>Kỹ năng xã hội</h3>
-            <p>Tăng cường khả năng giao tiếp và làm việc nhóm hiệu quả.</p>
-          </div>
 
-          <div className="benefit-item">
-            <div className="benefit-icon">
-              <FontAwesomeIcon icon="lightbulb" />
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <FontAwesomeIcon icon="lightbulb" />
+              </div>
+              <h3>Sáng tạo</h3>
+              <p>Khơi dậy tiềm năng sáng tạo và tư duy đổi mới ở trẻ.</p>
             </div>
-            <h3>Sáng tạo</h3>
-            <p>Khơi dậy tiềm năng sáng tạo và tư duy đổi mới ở trẻ.</p>
-          </div>
 
-          <div className="benefit-item">
-            <div className="benefit-icon">
-              <FontAwesomeIcon icon="award" />
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <FontAwesomeIcon icon="award" />
+              </div>
+              <h3>Phát triển tài năng</h3>
+              <p>Phát hiện và phát triển tài năng tiềm ẩn của trẻ từ sớm.</p>
             </div>
-            <h3>Phát triển tài năng</h3>
-            <p>Phát hiện và phát triển tài năng tiềm ẩn của trẻ từ sớm.</p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

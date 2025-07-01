@@ -70,7 +70,7 @@
   .notification-modal {
     position: absolute;
     top: calc(100% + 1rem);
-    right: -220px;
+    right: -190px;
     width: 320px;
     max-height: 80vh; /* Limit height based on viewport */
     background-color: white;
@@ -88,15 +88,15 @@
   
   /* Staff-specific positioning */
   .staff-user .notification-modal {
-    right: -190px;
+    right: -155px;
   }
 
   .teacher-user .notification-modal {
-    right: -165px;
+    right: -175px;
   }
 
   .admin-user .notification-modal {
-    right: -165px;
+    right: -225px;
   }
   
   @keyframes notification-appear {
