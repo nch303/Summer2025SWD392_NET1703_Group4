@@ -10,5 +10,8 @@ namespace Domain.Interfaces
     public interface ITypeProgramRepository
     {
         Task<TypeProgram>? GetTypeByID(int id);
+        Task<List<TypeProgram>>? GetAllTypes();
+        Task<TypeProgram> CreateAsync(TypeProgram typeProgram);
+
     }
 }

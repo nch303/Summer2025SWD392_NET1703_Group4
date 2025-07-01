@@ -19,5 +19,18 @@ namespace Infrastructure.Repositories
             var type = await _context.TypePrograms.Where(a => a.ID == id).FirstOrDefaultAsync();
             return type!;
         }
+
+        public async Task<List<TypeProgram>>? GetAllTypes()
+        {
+            var types = await _context.TypePrograms.ToListAsync();
+            return types!;
+        }
+
+        public async Task<TypeProgram> CreateAsync(TypeProgram typeProgram)
+        {
+            _context.TypePrograms.Add(typeProgram);
+            await _context.SaveChangesAsync();
+            return typeProgram;
+        }
     }
 }

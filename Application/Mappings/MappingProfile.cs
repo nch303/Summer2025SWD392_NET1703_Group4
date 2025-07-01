@@ -160,6 +160,8 @@ namespace Application.Mappings
             CreateMap<Attendance, AttendanceResponse>()
                  .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.ClassChildrens!.Childrens!.Name));
             CreateMap<UpdateAttendanceRequest, Attendance>();
+
+            CreateMap<TypeProgram, TypeProgramResponse>();
         }
     }
 }

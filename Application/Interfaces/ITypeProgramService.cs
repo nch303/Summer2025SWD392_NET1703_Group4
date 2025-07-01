@@ -10,5 +10,7 @@ namespace Application.Interfaces
     public interface ITypeProgramService
     {
         Task<string>? GetTypeNameByID(int id);
+        Task<List<TypeProgram>>? GetAllTypes();
+        Task<TypeProgram> CreateAsync(TypeProgram typeProgram);
     }
 }

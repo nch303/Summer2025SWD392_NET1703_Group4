@@ -43,7 +43,7 @@ builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<ISyllabusService, SyllabusService>();
 builder.Services.AddScoped<ISyllabusDetailService, SyllabusDetailService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
-
+builder.Services.AddScoped<ITypeProgramService, TypeProgramService>();
 
 
 // Add repositories
@@ -66,6 +66,7 @@ builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<ISyllabusRepository, SyllabusRepository>();
 builder.Services.AddScoped<ISyllabusDetailRepository, SyllabusDetailRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<ITypeProgramRepository, TypeProgramRepository>();
 
 // Add VnPay settings
 builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
