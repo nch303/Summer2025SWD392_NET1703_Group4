@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Task<List<GradeLevel>> GetAllGradeLevelsAsync();
         Task<GradeLevel?> GetGradeLevelByIdAsync(int id);
         Task<GradeLevel> GetGradeLevelByNameAsync(string name);
+        Task<GradeLevel> CreateAsync(GradeLevel gradeLevel);
     }
 }

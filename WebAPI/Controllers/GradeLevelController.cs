@@ -33,7 +33,27 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("create-grade-level")]
+        public async Task<IActionResult> CreateGradeLevel(string name, double fee)
+        {
+            try
+            {
+                var gradeLevel = new GradeLevel
+                {
+                    Name = name,
+                    Fee = fee
+                };
+                var createdGradeLevel = await _gradeLevelService.CreateAsync(gradeLevel);
+                var response = _mapper.Map<GradeLevelResponse>(createdGradeLevel);
+                return CreatedAtAction(nameof(GetAllGradeLevels), new { id = response.ID }, response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

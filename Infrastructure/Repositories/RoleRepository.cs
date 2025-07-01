@@ -27,8 +27,15 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Role>> GetAllAsync()
         {
-            var roles =  await _context.Roles.ToListAsync();
+            var roles = await _context.Roles.ToListAsync();
             return roles;
+        }
+
+        public async Task<Role> CreateAsync(Role role)
+        {
+            _context.Roles.Add(role);
+            await _context.SaveChangesAsync();
+            return role;
         }
     }
 }

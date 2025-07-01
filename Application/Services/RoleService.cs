@@ -36,5 +36,22 @@ namespace Application.Services
             }
             return roles;
         }
+
+        public async Task<Role> CreateAsync(Role role)
+        {
+            if (role == null)
+            {
+                throw new ArgumentNullException(nameof(role), "Role cannot be null.");
+            }
+            
+            var roles = await _roleRepository.GetAllAsync();
+
+            if (roles.Any(r => r.Name.Equals(role.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new InvalidOperationException($"Role with name {role.Name} already exists.");
+            }
+
+            return await _roleRepository.CreateAsync(role);
+        }
     }
 }

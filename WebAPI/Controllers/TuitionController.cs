@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
             {
                 //Check if tuition fee with the same name already exists
                 var existingTuitionFee = await _tuitionFeeService.GetTuitionFeeByNameAsync(request.Name);
-                if (existingTuitionFee != null)
+                if (existingTuitionFee != null && existingTuitionFee.GradeLevelID == request.GradeLevelID)
                 {
                     return BadRequest(new {message = $"Tuition fee with name '{request.Name}' already exists." });
                 }

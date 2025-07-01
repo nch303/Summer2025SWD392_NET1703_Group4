@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Response;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -29,11 +30,11 @@ namespace WebAPI.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { message = ex.Message });
             }
         }
 
-        [HttpGet]   
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -44,7 +45,23 @@ namespace WebAPI.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(string name)
+        {
+            try
+            {
+                var role = new Role { Name = name };
+                var createdRole = await _roleService.CreateAsync(role);
+                var createdRoleResponse = _mapper.Map<RoleResponse>(createdRole);
+                return Ok(createdRoleResponse);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
         }
     }

@@ -42,5 +42,21 @@ namespace Application.Services
             }
             return gradelevel;
         }
+
+        public async Task<GradeLevel> CreateAsync(GradeLevel gradeLevel)
+        {
+            if (gradeLevel == null)
+            {
+                throw new ArgumentNullException(nameof(gradeLevel), "Grade level cannot be null.");
+            }
+
+            var existingGradeLevel = await _repository.GetGradeLevelByNameAsync(gradeLevel.Name!);
+            if (existingGradeLevel != null)
+            {
+                throw new InvalidOperationException($"Grade level with name {gradeLevel.Name} already exists.");
+            }
+
+            return await _repository.CreateAsync(gradeLevel);
+        }
     }
 }

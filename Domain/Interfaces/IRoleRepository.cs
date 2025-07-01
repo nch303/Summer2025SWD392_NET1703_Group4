@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task<Role> GetById(int id);
         Task<List<Role>> GetAllAsync();
+        Task<Role> CreateAsync(Role role);
     }
 }
