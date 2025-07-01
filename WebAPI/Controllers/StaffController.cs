@@ -277,20 +277,24 @@ namespace WebAPI.Controllers
         {
             try
             {
+                var existingClass = await _classService.GetClass(classId);
                 var result = await _classChildrenService.KickClassChildren(childId, classId);
                 if (result)
                 {
-                    // Update the status of the child to "Not Enrolled"
-                    var child = await _childrenService.GetChildByIdAsync(childId);
-                    child!.Status = "Temporary";
-                    await _childrenService.UpdateChildAsync(child);
+                    if (existingClass.EnrichmentProgramId != null)
+                    { 
+                        // Update the status of the child to "Not Enrolled"
+                        var child = await _childrenService.GetChildByIdAsync(childId);
+                        child!.Status = "Temporary";
+                        await _childrenService.UpdateChildAsync(child);
 
-                    // Update the status of the enrollment application to "Rejected"
-                    var application = await _EAService.GetApplicatioinByChildID(childId);
-                    if (application != null)
-                    {
-                        application.Status = "Rejected";
-                        await _EAService.UpdateEnrollmentApplicationAsync(application);
+                        // Update the status of the enrollment application to "Rejected"
+                        var application = await _EAService.GetApplicatioinByChildID(childId);
+                        if (application != null)
+                        {
+                            application.Status = "Rejected";
+                            await _EAService.UpdateEnrollmentApplicationAsync(application);
+                        }
                     }
 
                     return Ok(new { message = "Child has been removed from the class successfully." });
