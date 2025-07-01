@@ -190,6 +190,32 @@ namespace WebAPI.Controllers
             try
             {
                 var openClass = await _classService.OpenClass(classId);
+
+                //Send notification to parents
+                var classChildren = await _classChildrenService.GetChildrenByClassIdAsync(classId);
+                var notificationMessage = "Class has been opened. Please check and progress the payment";
+
+                foreach (var classChild in classChildren)
+                {
+                    var child = await _childrenService.GetChildByIdAsync(classChild.ChildrenID);
+                    var classInfo = await _classService.GetClass(classId);
+
+                    if (child?.Parents != null && classInfo != null)
+                    {
+                        var accountIDs = new List<Guid>();
+                        accountIDs.Add(child.Parents.Id);
+
+                        var notification = new NotificationRequest
+                        {
+                            AccountIDs = accountIDs,
+                            Title = notificationMessage,
+                            Content = $"Dear {child.Parents.FullName},\n\nWe are pleased to inform you that class {classInfo.Name}, has been successfully opened.\n\nPlease check and progress the payment.\n\n- The School Staff"
+                        };
+
+                        await _notificationService.CreateNotificationAsync(notification);
+                    }
+                }
+
                 return Ok(new { message = "Class is now available" });
             }
             catch (Exception ex)

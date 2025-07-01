@@ -339,5 +339,24 @@ namespace Application.Services
         {
             return await _invoiceRepository.UpdateInvoiceAsync(invoice);
         }
+
+        public async Task<List<Invoice>> GetInvoiceByChildrenIdAndEnrichProgramIdAsync(Guid childrenId, int enrichmentProgramId)
+        {
+            var invoiceDetails = await _invoiceRepository.GetInvoiceDetailsByChildrenIdAndEnrichProgramIdAsync(childrenId, enrichmentProgramId);
+            var invoices = new List<Invoice>();
+     
+            foreach (var detail in invoiceDetails)
+            {
+                invoices.Add(await _invoiceRepository.GetByIdAsync(detail.InvoiceID));
+            }
+
+            var invoicesTemps = invoices.ToList();
+            foreach (var invoice in invoices)
+            {
+                if(invoice.Status != "Success")
+                    invoicesTemps.Remove(invoice);
+            }
+            return invoicesTemps;
+        }
     }
 }

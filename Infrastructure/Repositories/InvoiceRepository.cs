@@ -71,5 +71,13 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return invoice;
         }
+
+        public async Task<List<InvoiceDetail>> GetInvoiceDetailsByChildrenIdAndEnrichProgramIdAsync(Guid childrenId, int enrichmentProgramId)
+        {
+            var invoiceDetails = await _context.InvoiceDetails
+                .Where(id => id.ChildrenID == childrenId && id.ProgramID == enrichmentProgramId)
+                .ToListAsync();
+            return invoiceDetails;
+        }
     }
 }

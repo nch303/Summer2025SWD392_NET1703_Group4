@@ -15,5 +15,6 @@ namespace Domain.Interfaces
         Task<List<Invoice>> GetByAccountIdAsync(Guid accountId);
         Task<List<Invoice>> GetAllInvoiceAsync();
         Task<Invoice> UpdateInvoiceAsync(Invoice invoice);
+        Task<List<InvoiceDetail>> GetInvoiceDetailsByChildrenIdAndEnrichProgramIdAsync(Guid childrenId, int enrichmentProgramId);
     }
 }

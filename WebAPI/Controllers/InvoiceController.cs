@@ -163,5 +163,17 @@ namespace WebAPI.Controllers
             return Ok(invoiceResponse);
 
         }
+
+        [HttpGet("details/{childrenId}/{enrichmentProgramId}")]
+        public async Task<IActionResult> GetInvoiceDetailsByChildrenIdAndEnrichProgramIdAsync(Guid childrenId, int enrichmentProgramId)
+        {
+            var invoices = await _invoiceService.GetInvoiceByChildrenIdAndEnrichProgramIdAsync(childrenId, enrichmentProgramId);
+            if (invoices == null || invoices.Count == 0)
+            {
+                return NotFound(new { message = "No invoice details found for the given criteria." });
+            }
+            var invoiceResponses = _mapper.Map<List<InvoiceResponse>>(invoices);
+            return Ok(invoiceResponses);
+        }
     }
 }
