@@ -99,3 +99,49 @@ export const registerForProgram = async (enrichmentId, childrenIds) => {
     throw error;
   }
 };
+
+/**
+ * Get enrichment class registrations for a parent
+ * @param {string} parentId - The ID of the parent
+ * @returns {Promise<Array>} List of enrichment class registrations
+ */
+export const getEnrichmentClassRegistrations = async (parentId) => {
+  try {
+    const response = await api.get(`/api/ClassChildren/GetEnrichmentClassChildren/${parentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching enrichment class registrations:', error);
+    throw error;
+  }
+};
+
+/**
+ * Create payment for enrichment program
+ * @param {Object} paymentData - Payment data including amount, childrenID, and enrichment program IDs
+ * @returns {Promise<Object>} Payment URL response
+ */
+export const createPaymentUrl = async (paymentData) => {
+  try {
+    const response = await api.post('/api/vnpay/create-payment-url', paymentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating payment URL:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get invoice details for a child's enrollment in an enrichment program
+ * @param {string} childrenId - The ID of the child
+ * @param {number} enrichmentProgramId - The ID of the enrichment program
+ * @returns {Promise<Array>} List of invoice details
+ */
+export const getEnrichmentInvoiceDetails = async (childrenId, enrichmentProgramId) => {
+  try {
+    const response = await api.get(`/api/Invoice/details/${childrenId}/${enrichmentProgramId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching invoice details:', error);
+    throw error;
+  }
+};

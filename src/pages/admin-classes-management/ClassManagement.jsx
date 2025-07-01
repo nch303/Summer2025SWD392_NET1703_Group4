@@ -85,6 +85,20 @@ const ClassManagement = () => {
   const [regularClassesCollapsed, setRegularClassesCollapsed] = useState(true);
   const [enrichmentClassesCollapsed, setEnrichmentClassesCollapsed] = useState(true);
 
+  // Add this function near the top of the component to calculate current academic year
+  const getCurrentAcademicYear = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth(); // 0-11 (0 is January)
+    
+    // If current date is after June 1st (month 5), use next academic year
+    if (currentMonth >= 5) { // June (5) and later
+      return `${currentYear}-${currentYear + 1}`;
+    } else {
+      return `${currentYear - 1}-${currentYear}`;
+    }
+  };
+
   useEffect(() => {
     fetchClasses();
     loadFormOptions(); // This will load grade levels and enrichment programs for filters
@@ -1845,6 +1859,7 @@ const ClassManagement = () => {
               <Form.Item
                 name="academicYear"
                 label="Academic Year"
+                initialValue={getCurrentAcademicYear()}
                 rules={[
                   { 
                     required: true, 
@@ -1856,6 +1871,8 @@ const ClassManagement = () => {
                   placeholder="Enter academic year (e.g., 2024-2025)"
                   className="create-input"
                   size="large"
+                  readOnly
+                  style={{ backgroundColor: '#fff', color: 'rgba(0, 0, 0, 0.88)', cursor: 'default' }}
                 />
               </Form.Item>
               

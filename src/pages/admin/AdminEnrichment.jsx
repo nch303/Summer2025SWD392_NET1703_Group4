@@ -12,7 +12,7 @@ import './AdminEnrichment.css';
 import { 
   getAllEnrichmentPrograms, getEnrichmentProgramById, 
   createEnrichmentProgram, updateEnrichmentProgram, deleteEnrichmentProgram,
-  restoreEnrichmentProgram
+  restoreEnrichmentProgram, getAllProgramTypes
 } from './AdminEnrichmentService';
 
 const { Title, Text } = Typography;
@@ -21,6 +21,7 @@ const { Option } = Select;
 
 const AdminEnrichment = () => {
   const [programs, setPrograms] = useState([]);
+  const [programTypes, setProgramTypes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('add');
@@ -43,9 +44,20 @@ const AdminEnrichment = () => {
     }
   };
 
+  // Fetch all program types
+  const fetchProgramTypes = async () => {
+    try {
+      const data = await getAllProgramTypes();
+      setProgramTypes(data || []);
+    } catch (error) {
+      message.error('Failed to fetch program types');
+    }
+  };
+
   // Initial load
   useEffect(() => {
     fetchPrograms();
+    fetchProgramTypes();
   }, []);
 
   // Show modal for add/edit
@@ -319,17 +331,14 @@ const AdminEnrichment = () => {
           >
             <Select 
               placeholder="Select program type"
-              onChange={(value) => {
+              onChange={(value, option) => {
                 // Set the corresponding typeProgramID based on selected type
-                if (value === "Piano") {
-                  form.setFieldsValue({ typeProgramID: 1 });
-                } else if (value === "Boi") {
-                  form.setFieldsValue({ typeProgramID: 2 });
-                }
+                form.setFieldsValue({ typeProgramID: option.key });
               }}
             >
-              <Option value="Piano">Piano</Option>
-              <Option value="Boi">Boi</Option>
+              {programTypes.map(type => (
+                <Option key={type.id} value={type.name}>{type.name}</Option>
+              ))}
             </Select>
           </Form.Item>
           

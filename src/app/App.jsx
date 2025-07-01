@@ -34,7 +34,8 @@ import NotificationPage from '../pages/notification/NotificationPage';
 import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
 import NewsDetailPage from '../pages/news/NewsDetailPage';
 import EnrichmentProgram from '../pages/enrichment-program/EnrichmentProgram';
-import AdminEnrichment from '../pages/admin/AdminEnrichment';
+import EnrichmentHistory from '../pages/enrichment-program/EnrichmentHistory';
+import AdminEnrichment from '../pages/admin/AdminEnrichment'; 
 
 // Staff Pages
 import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
@@ -171,6 +172,11 @@ function App() {
             <Route path="/enrichment-program" element={
               <ProtectedRoute>
                 <EnrichmentProgram />
+              </ProtectedRoute>
+            } />
+            <Route path="/enrichment-history" element={
+              <ProtectedRoute>
+                <EnrichmentHistory />
               </ProtectedRoute>
             } />
             <Route path="/news" element={<NewsPage />} />

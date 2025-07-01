@@ -42,3 +42,35 @@ export const getAllClasses = async () => {
     throw error;
   }
 };
+
+/**
+ * Get invoice details for a child's enrollment in an enrichment program
+ * @param {string} childId - Child's UUID
+ * @param {number} enrichmentProgramId - Enrichment program ID
+ * @returns {Promise<Array>} List of invoice details
+ */
+export const getEnrichmentInvoiceDetails = async (childId, enrichmentProgramId) => {
+  try {
+    const response = await api.get(`/api/Invoice/details/${childId}/${enrichmentProgramId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching invoice details:', error);
+    throw error;
+  }
+};
+
+/**
+ * Kick a child from a class
+ * @param {string} childId - Child's UUID
+ * @param {number} classId - Class ID
+ * @returns {Promise<Object>} Response from the API
+ */
+export const kickChildFromClass = async (childId, classId) => {
+  try {
+    const response = await api.post(`/api/Staff/KickClassChildren/${childId}/${classId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error kicking child from class:', error);
+    throw error;
+  }
+};

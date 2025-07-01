@@ -30,6 +30,18 @@
   margin: 0 auto;
 }
 
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+} 
+
 /* Premium Actions */
 .invoice-premium-actions {
   display: flex;
@@ -405,6 +417,7 @@
 
 .premium-invoice-table .item-name {
   font-weight: 500;
+  text-align: left;
 }
 
 .premium-invoice-table .item-price {

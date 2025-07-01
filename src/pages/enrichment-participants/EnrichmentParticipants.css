@@ -203,3 +203,33 @@
     margin: 20px 0;
   }
 }
+
+/* Add to EnrichmentParticipants.css */
+.ant-tag-green {
+  background: rgba(82, 196, 26, 0.1);
+  border-color: #52c41a;
+}
+
+.ant-tag-orange {
+  background: rgba(250, 140, 22, 0.1);
+  border-color: #fa8c16;
+}
+
+.ant-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.ant-popconfirm-buttons .ant-btn-primary.ant-btn-dangerous {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.ant-popconfirm-buttons .ant-btn-primary.ant-btn-dangerous:hover {
+  background-color: #ff7875;
+  border-color: #ff7875;
+}

@@ -72,3 +72,14 @@ export const restoreEnrichmentProgram = async (program) => {
     throw error;
   }
 };
+
+// Get all program types
+export const getAllProgramTypes = async () => {
+  try {
+    const response = await api.get('/api/TypeProgram/GetAllTypes');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching program types:', error);
+    throw error;
+  }
+};

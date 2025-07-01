@@ -481,7 +481,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                               ))}
                             </div>
                           ) : (
-                            <div className="no-teachers-message">
+                            <div className="communication-book-no-teachers-message">
                               <FontAwesomeIcon icon="info-circle" />
                               <span>Chưa có thông tin giáo viên</span>
                             </div>

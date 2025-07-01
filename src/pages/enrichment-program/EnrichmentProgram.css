@@ -1580,3 +1580,344 @@ input[type="text"].enrichment-program-search-input {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Enrichment History Page Styles */
+.enrichment-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.enrichment-history-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.enrichment-history-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+}
+
+.enrichment-history-card-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.enrichment-child-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.enrichment-child-avatar-container {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #7b1fa2;
+  box-shadow: 0 3px 8px rgba(123, 31, 162, 0.2);
+}
+
+.enrichment-child-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.enrichment-child-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.enrichment-child-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.enrichment-child-age, .enrichment-child-class {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+.enrichment-registration-status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.enrichment-registration-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.enrichment-registration-status.active {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+}
+
+.enrichment-registration-status.pending {
+  background-color: rgba(241, 196, 15, 0.1);
+  color: #f1c40f;
+}
+
+.enrichment-history-card-body {
+  padding: 20px;
+}
+
+.enrichment-program-name {
+  font-size: 1.3rem;
+  color: #7b1fa2;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.enrichment-program-icon {
+  color: #ffc107;
+}
+
+.enrichment-program-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.enrichment-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.enrichment-info-label {
+  font-size: 0.8rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.enrichment-info-value {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.enrichment-info-value.status-available {
+  color: #2ecc71;
+}
+
+.enrichment-info-value.status-unavailable {
+  color: #e74c3c;
+}
+
+.enrichment-history-card-footer {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.enrichment-payment-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(123, 31, 162, 0.2);
+}
+
+.enrichment-payment-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(123, 31, 162, 0.3);
+}
+
+.enrichment-payment-button:disabled {
+  background: #b39ddb;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.enrichment-payment-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background-color: #fff3cd;
+  color: #856404;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .enrichment-history-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .enrichment-registration-status-container {
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .enrichment-program-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tab Navigation */
+.enrichment-tabs-navigation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+  gap: 10px;
+}
+
+.enrichment-tab-button {
+  padding: 12px 25px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+}
+
+.enrichment-tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.enrichment-tab-button.active {
+  background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(123, 31, 162, 0.3);
+}
+
+@media (max-width: 600px) {
+  .enrichment-tabs-navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .enrichment-tab-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.enrichment-program-description {
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.enrichment-section-subtitle {
+  font-size: 1.1rem;
+  color: #7b1fa2;
+  margin: 25px 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(123, 31, 162, 0.2);
+}
+
+.enrichment-teacher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.enrichment-teacher-item {
+  background-color: rgba(123, 31, 162, 0.03);
+  border-radius: 8px;
+  padding: 12px 15px;
+  border-left: 3px solid #7b1fa2;
+}
+
+.enrichment-teacher-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.enrichment-teacher-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.enrichment-teacher-contact span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.enrichment-info-value.fee {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.enrichment-payment-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.enrichment-payment-success svg {
+  font-size: 1.1rem;
+}

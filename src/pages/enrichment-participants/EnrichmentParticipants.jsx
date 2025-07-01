@@ -13,12 +13,18 @@ import {
   Empty,
   Avatar,
   Divider,
+  Button,
+  Popconfirm,
+  message,
 } from "antd";
 import {
   SearchOutlined,
   PieChartOutlined,
   BarChartOutlined,
   TeamOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DollarOutlined,
 } from "@ant-design/icons";
 import { Pie, Bar } from "react-chartjs-2";
 import dayjs from "dayjs";
@@ -38,6 +44,8 @@ import {
   getAllEnrichmentPrograms,
   getAllClasses,
   getStudentsByEnrichmentId,
+  getEnrichmentInvoiceDetails,
+  kickChildFromClass,
 } from "./EnrichmentParticipantsService";
 
 // Register ChartJS components
@@ -64,10 +72,13 @@ const EnrichmentParticipants = () => {
   const [filteredPrograms, setFilteredPrograms] = useState([]);
   const [students, setStudents] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [paymentStatuses, setPaymentStatuses] = useState({}); // Track payment status
+  const [processingKick, setProcessingKick] = useState({}); // Track kick status by student ID
 
   // Selection states
   const [selectedType, setSelectedType] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedClass, setSelectedClass] = useState(null); // To track class ID for kick function
 
   // Chart data state
   const [pieChartData, setPieChartData] = useState(null);
@@ -182,6 +193,7 @@ const EnrichmentParticipants = () => {
     // Reset selected program when type changes
     setSelectedProgram(null);
     setStudents([]);
+    setSelectedClass(null);
   }, [selectedType, programs, classes]);
 
   // Create bar chart data showing student distribution for programs of selected type
@@ -232,6 +244,36 @@ const EnrichmentParticipants = () => {
       try {
         const studentsData = await getStudentsByEnrichmentId(selectedProgram);
         setStudents(studentsData);
+        
+        // Find the class ID for this enrichment program
+        const classForProgram = classes.find(c => 
+          c.enrichmentProgramId === parseInt(selectedProgram)
+        );
+        if (classForProgram) {
+          setSelectedClass(classForProgram.id);
+        }
+        
+        // Reset payment statuses
+        setPaymentStatuses({});
+        
+        // Check payment status for each student
+        const statuses = {};
+        for (const student of studentsData) {
+          try {
+            const invoices = await getEnrichmentInvoiceDetails(
+              student.id,
+              selectedProgram
+            );
+            // Check if any invoice has "Success" status
+            const hasPaid = invoices.some((invoice) => invoice.status === "Success");
+            statuses[student.id] = hasPaid;
+          } catch (err) {
+            console.error(`Error fetching payment status for student ${student.id}:`, err);
+            statuses[student.id] = false;
+          }
+        }
+        setPaymentStatuses(statuses);
+        
       } catch (error) {
         console.error(
           `Error fetching students for program ID ${selectedProgram}:`,
@@ -243,7 +285,26 @@ const EnrichmentParticipants = () => {
     };
 
     fetchStudents();
-  }, [selectedProgram]);
+  }, [selectedProgram, classes]);
+
+  // Handle kicking a student from class
+  const handleKickStudent = async (studentId) => {
+    if (!selectedClass || processingKick[studentId]) return;
+    
+    setProcessingKick((prev) => ({ ...prev, [studentId]: true }));
+    try {
+      await kickChildFromClass(studentId, selectedClass);
+      message.success('Đã loại học sinh khỏi lớp học');
+      
+      // Remove student from the list
+      setStudents(students.filter(student => student.id !== studentId));
+    } catch (error) {
+      message.error('Không thể loại học sinh khỏi lớp học');
+      console.error('Error kicking student:', error);
+    } finally {
+      setProcessingKick((prev) => ({ ...prev, [studentId]: false }));
+    }
+  };
 
   // Filtered students based on search text
   const filteredStudents = students.filter(
@@ -298,6 +359,61 @@ const EnrichmentParticipants = () => {
           ? dayjs(date).format("DD/MM/YYYY")
           : "N/A",
       sorter: (a, b) => new Date(a.enrollDate) - new Date(b.enrollDate),
+    },
+    // New column for payment status
+    {
+      title: "Trạng thái thanh toán",
+      key: "paymentStatus",
+      render: (_, record) => {
+        if (paymentStatuses[record.id] === undefined) {
+          return <Spin size="small" />;
+        }
+        return paymentStatuses[record.id] ? (
+          <Tag color="green" icon={<CheckCircleOutlined />}>
+            Đã thanh toán
+          </Tag>
+        ) : (
+          <Tag color="orange" icon={<DollarOutlined />}>
+            Chưa thanh toán
+          </Tag>
+        );
+      },
+      filters: [
+        { text: "Đã thanh toán", value: true },
+        { text: "Chưa thanh toán", value: false },
+      ],
+      onFilter: (value, record) => paymentStatuses[record.id] === value,
+      width: "150px",
+    },
+    // Actions column
+    {
+      title: "Thao tác",
+      key: "action",
+      render: (_, record) => {
+        // Only show kick button if not paid
+        if (!paymentStatuses[record.id]) {
+          return (
+            <Popconfirm
+              title="Loại học sinh khỏi lớp?"
+              description="Bạn có chắc muốn loại học sinh này khỏi lớp không?"
+              onConfirm={() => handleKickStudent(record.id)}
+              okText="Đồng ý"
+              cancelText="Hủy"
+            >
+              <Button 
+                danger 
+                type="primary" 
+                loading={processingKick[record.id]}
+                icon={<CloseCircleOutlined />}
+              >
+                Loại khỏi lớp
+              </Button>
+            </Popconfirm>
+          );
+        }
+        return null;
+      },
+      width: "150px",
     },
   ];
 
