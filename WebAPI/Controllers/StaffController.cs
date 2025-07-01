@@ -5,6 +5,7 @@ using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace WebAPI.Controllers
 {
@@ -162,6 +163,19 @@ namespace WebAPI.Controllers
                     ClassName = assign.Classes!.Name,
                     TeacherName = assign.Teachers!.FullName
                 };
+
+                //Send notification to teacher
+                var teacherIds = new List<Guid> { teacherId };
+                var notificationMessage = "You have been successfully assigned to a class.";
+                var teacher = await _accountService.GetAccountByIdAsync(teacherId);
+                var notification = new NotificationRequest
+                {
+                    AccountIDs = teacherIds,
+                    Title = notificationMessage,
+                    Content = $"Dear {teacher.FullName},\n\nWe are pleased to inform you that you has been successfully assigned to the class \"{dto.ClassName}\".\n\n- The School Administration"
+                };
+
+                await _notificationService.CreateNotificationAsync(notification);
                 return Ok(dto);
             }
             catch (Exception ex)
