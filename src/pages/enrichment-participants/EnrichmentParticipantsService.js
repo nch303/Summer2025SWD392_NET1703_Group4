@@ -67,7 +67,7 @@ export const getEnrichmentInvoiceDetails = async (childId, enrichmentProgramId) 
  */
 export const kickChildFromClass = async (childId, classId) => {
   try {
-    const response = await api.post(`/api/Staff/KickClassChildren/${childId}/${classId}`);
+    const response = await api.delete(`/api/Staff/KickClassChildren/${childId}/${classId}`);
     return response.data;
   } catch (error) {
     console.error('Error kicking child from class:', error);

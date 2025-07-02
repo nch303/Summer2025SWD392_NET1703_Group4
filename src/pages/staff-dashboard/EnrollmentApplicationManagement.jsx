@@ -93,6 +93,7 @@ const EnrollmentApplicationManagement = () => {
       setApplicationDetail(detail);
       setSelectedApplication(application);
       setIsModalOpen(true);
+      document.body.style.overflow = 'hidden';
     } catch (err) {
       toast.error('Cannot load application detail. Please try again later.', {
         title: 'Error'
@@ -124,6 +125,7 @@ const EnrollmentApplicationManagement = () => {
     setNotificationAction(action);
     setSelectedApplication(application);
     setShowNotificationModal(true);
+    document.body.style.overflow = 'hidden';
   };
   
   const handleNotificationChange = (e) => {
@@ -160,6 +162,7 @@ const EnrollmentApplicationManagement = () => {
       if (isModalOpen) {
         setIsModalOpen(false);
       }
+      document.body.style.overflow = 'auto';
       
     } catch (err) {
       toast.error('An error occurred. Please try again later.', {
@@ -175,6 +178,7 @@ const EnrollmentApplicationManagement = () => {
     setIsModalOpen(false);
     setSelectedApplication(null);
     setApplicationDetail(null);
+    document.body.style.overflow = 'auto';
   };
   
   const formatDate = (dateString) => {
@@ -248,6 +252,17 @@ const EnrollmentApplicationManagement = () => {
   // Add pagination function
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+  
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+  
+  const handleNotificationClose = () => {
+    setShowNotificationModal(false);
+    document.body.style.overflow = 'auto';
+  };
   
   return (
     <div className="enrollment-management">
@@ -542,7 +557,15 @@ const EnrollmentApplicationManagement = () => {
       
       {isModalOpen && applicationDetail && (
         <div className="enrollment-detail-modal" onClick={closeModal}>
-          <div className="enrollment-detail-content" onClick={(e) => e.stopPropagation()}>
+          <div 
+            className="enrollment-detail-content" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ 
+              willChange: 'transform, opacity', 
+              contain: 'content',
+              overscrollBehavior: 'contain' 
+            }}
+          >
             <div className="enrollment-detail-header">
               <h2 className="enrollment-detail-title">
                   <FontAwesomeIcon icon={faFileAlt} /> Enrollment application detail
@@ -747,13 +770,13 @@ const EnrollmentApplicationManagement = () => {
       )}
       
       {showNotificationModal && (
-        <div className="enrollment-notification-modal" onClick={() => setShowNotificationModal(false)}>
+        <div className="enrollment-notification-modal" onClick={handleNotificationClose}>
           <div className="enrollment-notification-content" onClick={(e) => e.stopPropagation()}>
             <div className="enrollment-notification-header">
               <h2 className="enrollment-notification-title">
                 <FontAwesomeIcon icon={faBell} /> Send notification to parent
               </h2>
-              <button className="enrollment-notification-close" onClick={() => setShowNotificationModal(false)}>
+              <button className="enrollment-notification-close" onClick={handleNotificationClose}>
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
@@ -801,7 +824,7 @@ const EnrollmentApplicationManagement = () => {
                 <button 
                   type="button" 
                   className="enrollment-action-button reject"
-                  onClick={() => setShowNotificationModal(false)}
+                  onClick={handleNotificationClose}
                 >
                   <FontAwesomeIcon icon={faTimes} /> Cancel
                 </button>

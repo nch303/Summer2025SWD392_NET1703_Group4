@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
   const [classesInfo, setClassesInfo] = useState([]);
+  const [filteredClasses, setFilteredClasses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('personal');
@@ -13,6 +14,9 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
   const [selectedClassIndex, setSelectedClassIndex] = useState(0);
   const [hasAttendanceData, setHasAttendanceData] = useState(false);
   const [attendStats, setAttendStats] = useState({ attend: 0, absent: 0, late: 0 });
+  const [academicYears, setAcademicYears] = useState([]);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState('');
+  const [selectedMonths, setSelectedMonths] = useState({});
 
   useEffect(() => {
     if (isOpen && childId) {
@@ -45,7 +49,51 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
         checkTabsOverflow();
       }
     }
-  }, [activeTab, classesInfo]);
+  }, [activeTab, filteredClasses]);
+
+  // Extract unique academic years from classes
+  useEffect(() => {
+    if (classesInfo && classesInfo.length > 0) {
+      const years = [...new Set(classesInfo.map(item => item.classResponse.academicYear))].sort();
+      setAcademicYears(years);
+      
+      // Set the most recent year as default
+      if (years.length > 0 && !selectedAcademicYear) {
+        setSelectedAcademicYear(years[years.length - 1]);
+      }
+    }
+  }, [classesInfo]);
+
+  // Filter classes based on selected academic year
+  useEffect(() => {
+    if (selectedAcademicYear && classesInfo.length > 0) {
+      const filtered = classesInfo.filter(
+        item => item.classResponse.academicYear === selectedAcademicYear
+      );
+      setFilteredClasses(filtered);
+      
+      // Reset selected class index when filter changes
+      setSelectedClassIndex(0);
+    } else {
+      setFilteredClasses(classesInfo);
+    }
+  }, [selectedAcademicYear, classesInfo]);
+
+  // Navigate to previous academic year
+  const handlePrevYear = () => {
+    const currentIndex = academicYears.indexOf(selectedAcademicYear);
+    if (currentIndex > 0) {
+      setSelectedAcademicYear(academicYears[currentIndex - 1]);
+    }
+  };
+
+  // Navigate to next academic year
+  const handleNextYear = () => {
+    const currentIndex = academicYears.indexOf(selectedAcademicYear);
+    if (currentIndex < academicYears.length - 1) {
+      setSelectedAcademicYear(academicYears[currentIndex + 1]);
+    }
+  };
 
   // Kiểm tra overflow cho tabs
   const checkTabsOverflow = () => {
@@ -74,6 +122,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
       setIsLoading(true);
       const data = await getChildClassInfo(childId);
       setClassesInfo(data); // Lưu toàn bộ mảng dữ liệu thay vì chỉ phần tử đầu tiên
+      setFilteredClasses(data);
       setError('');
       setHasAttendanceData(data.some(item => item.attendanceResponses && item.attendanceResponses.length > 0));
       setAttendStats({
@@ -156,6 +205,38 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
 
     return groupedByMonth;
   };
+
+  // Handle month selection for a specific class
+  const handleMonthSelect = (classId, monthYear) => {
+    setSelectedMonths(prev => ({
+      ...prev,
+      [classId]: monthYear
+    }));
+  };
+
+  // Find most recent month for initial selection
+  useEffect(() => {
+    if (filteredClasses.length > 0) {
+      const newSelectedMonths = {};
+      
+      filteredClasses.forEach(classItem => {
+        if (classItem.attendanceResponses && classItem.attendanceResponses.length > 0) {
+          const grouped = groupAttendanceByMonth(classItem.attendanceResponses);
+          const months = Object.keys(grouped).sort((a, b) => {
+            const [monthA, yearA] = a.split('-').map(Number);
+            const [monthB, yearB] = b.split('-').map(Number);
+            return yearB - yearA || monthB - monthA;
+          });
+          
+          if (months.length > 0) {
+            newSelectedMonths[classItem.id] = months[0];
+          }
+        }
+      });
+      
+      setSelectedMonths(newSelectedMonths);
+    }
+  }, [filteredClasses]);
 
   // Sử dụng phần tử đầu tiên cho thông tin cá nhân vì thông tin này giống nhau ở tất cả các phần tử
   const childInfo = classesInfo.length > 0 ? classesInfo[0] : null;
@@ -382,63 +463,97 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                       <FontAwesomeIcon icon="chalkboard" />
                       Class information
                     </h5>
-                    <p>The child {childInfo.childrenResponse.name} is currently enrolled in {classesInfo.length} classes at the school. Select a class to view detailed information.</p>
+                    <p>The child {childInfo.childrenResponse.name} is currently enrolled in {filteredClasses.length} classes at the school. Select a class to view detailed information.</p>
                   </div>
 
+                  {academicYears.length > 0 && (
+                    <div className="academic-year-selector">
+                      <button 
+                        className="year-nav-button"
+                        onClick={handlePrevYear}
+                        disabled={academicYears.indexOf(selectedAcademicYear) === 0}
+                      >
+                        <FontAwesomeIcon icon="chevron-left" />
+                      </button>
+                      <div className="current-academic-year">
+                        <FontAwesomeIcon icon="calendar-alt" />
+                        <span>{selectedAcademicYear}</span>
+                      </div>
+                      <button 
+                        className="year-nav-button"
+                        onClick={handleNextYear}
+                        disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
+                      >
+                        <FontAwesomeIcon icon="chevron-right" />
+                      </button>
+                    </div>
+                  )}
+
                   <div className="class-selector">
-                    {classesInfo.map((classItem, index) => (
+                    {filteredClasses.map((classItem, index) => (
                       <div
                         key={classItem.id}
-                        className={`class-card-small ${selectedClassIndex === index ? 'active' : ''}`}
+                        className={`class-card-small ${selectedClassIndex === index ? 'active' : ''} ${classItem.classResponse.gradeLevelName ? 'regular-class' : 'enrichment-class'}`}
                         onClick={() => setSelectedClassIndex(index)}
                       >
                         <div className="class-card-name">{classItem.classResponse.name}</div>
                         <div className="class-card-grade">
-                          <FontAwesomeIcon icon="graduation-cap" />
-                          {classItem.classResponse.gradeLevelName}
+                          {classItem.classResponse.gradeLevelName ? (
+                            <>
+                              <FontAwesomeIcon icon="graduation-cap" />
+                              {classItem.classResponse.gradeLevelName}
+                            </>
+                          ) : (
+                            <>
+                              <FontAwesomeIcon icon="star" />
+                              Enrichment class
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
                   </div>
 
                   <div className="communication-book-section">
-                    {selectedClassIndex !== null && (
+                    {selectedClassIndex !== null && filteredClasses.length > 0 && (
                       <>
                         <div className="class-info-container">
                           <div className="class-info-header">
                             <div className="class-info-name">
-                              <h3>{classesInfo[selectedClassIndex].classResponse.name}</h3>
-                              <span className="class-grade-level">{classesInfo[selectedClassIndex].classResponse.gradeLevelName}</span>
+                              <h3>{filteredClasses[selectedClassIndex].classResponse.name}</h3>
+                              <span className="class-grade-level">{filteredClasses[selectedClassIndex].classResponse.gradeLevelName || 'Enrichment'}</span>
                             </div>
                             <div className="class-status-badge">
-                              {classesInfo[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}
+                              {filteredClasses[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}
                             </div>
                           </div>
 
                           <div className="communication-book-info-grid">
                             <div className="info-item">
                               <span className="info-label"><FontAwesomeIcon icon="school" /> Class name</span>
-                              <span className="info-value">{classesInfo[selectedClassIndex].classResponse.name}</span>
+                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.name}</span>
                             </div>
-                            <div className="info-item">
-                              <span className="info-label"><FontAwesomeIcon icon="graduation-cap" /> Grade level</span>
-                              <span className="info-value">{classesInfo[selectedClassIndex].classResponse.gradeLevelName}</span>
-                            </div>
+                            {filteredClasses[selectedClassIndex].classResponse.gradeLevelName && (
+                              <div className="info-item">
+                                <span className="info-label"><FontAwesomeIcon icon="graduation-cap" /> Grade level</span>
+                                <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.gradeLevelName}</span>
+                              </div>
+                            )}
                             <div className="info-item">
                               <span className="info-label"><FontAwesomeIcon icon="book" /> Syllabus</span>
-                              <span className="info-value">{classesInfo[selectedClassIndex].classResponse.syllabusName}</span>
+                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.syllabusName}</span>
                             </div>
                             <div className="info-item">
                               <span className="info-label"><FontAwesomeIcon icon="calendar" /> Academic year</span>
-                              <span className="info-value">{classesInfo[selectedClassIndex].classResponse.academicYear}</span>
+                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.academicYear}</span>
                             </div>
                             <div className="info-item">
                               <span className="info-label"><FontAwesomeIcon icon="users" /> Maximum number of students</span>
-                              <span className="info-value">{classesInfo[selectedClassIndex].classResponse.maxChildren} students</span>
+                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.maxChildren} students</span>
                             </div>
                             <div className="info-item">
                               <span className="info-label"><FontAwesomeIcon icon="flag" /> Status</span>
-                              <span className="info-value">{classesInfo[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}</span>
+                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}</span>
                             </div>
                           </div>
 
@@ -446,19 +561,19 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                             <div className="capacity-bar">
                               <div
                                 className="capacity-filled"
-                                style={{ width: `${(classesInfo[selectedClassIndex].classResponse.quantity / classesInfo[selectedClassIndex].classResponse.maxChildren) * 100}%` }}
+                                style={{ width: `${(filteredClasses[selectedClassIndex].classResponse.quantity / filteredClasses[selectedClassIndex].classResponse.maxChildren) * 100}%` }}
                               ></div>
                             </div>
                             <div className="capacity-text">
-                              {classesInfo[selectedClassIndex].classResponse.quantity}/{classesInfo[selectedClassIndex].classResponse.maxChildren} students
+                              {filteredClasses[selectedClassIndex].classResponse.quantity}/{filteredClasses[selectedClassIndex].classResponse.maxChildren} students
                             </div>
                           </div>
 
                           {/* Phần giáo viên */}
                           <h5 className="communication-book-teacher-section-title">Teacher</h5>
-                          {classesInfo[selectedClassIndex].teachers && classesInfo[selectedClassIndex].teachers.length > 0 ? (
+                          {filteredClasses[selectedClassIndex].teachers && filteredClasses[selectedClassIndex].teachers.length > 0 ? (
                             <div className="communication-book-teachers-list">
-                              {classesInfo[selectedClassIndex].teachers.map((teacher) => (
+                              {filteredClasses[selectedClassIndex].teachers.map((teacher) => (
                                 <div key={teacher.id} className="communication-book-teacher-card">
                                   <div className="communication-book-teacher-avatar">
                                     <FontAwesomeIcon icon="user-tie" />
@@ -502,6 +617,29 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                     <p>Attendance information for the child {childInfo.childrenResponse.name} in the classes. Attendance data helps track the child's learning progress.</p>
                   </div>
 
+                  {academicYears.length > 0 && (
+                    <div className="academic-year-selector">
+                      <button 
+                        className="year-nav-button"
+                        onClick={handlePrevYear}
+                        disabled={academicYears.indexOf(selectedAcademicYear) === 0}
+                      >
+                        <FontAwesomeIcon icon="chevron-left" />
+                      </button>
+                      <div className="current-academic-year">
+                        <FontAwesomeIcon icon="calendar-alt" />
+                        <span>{selectedAcademicYear}</span>
+                      </div>
+                      <button 
+                        className="year-nav-button"
+                        onClick={handleNextYear}
+                        disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
+                      >
+                        <FontAwesomeIcon icon="chevron-right" />
+                      </button>
+                    </div>
+                  )}
+
                   {hasAttendanceData && (
                     <div className="attendance-statistics">
                       <div className="attendance-stat-card stat-attend">
@@ -515,64 +653,97 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                     </div>
                   )}
 
-                  {classesInfo.some(item => item.attendanceResponses && item.attendanceResponses.length > 0) ? (
+                  {filteredClasses.some(item => item.attendanceResponses && item.attendanceResponses.length > 0) ? (
                     <div className="attendance-records">
-                      {classesInfo.map((classItem) => (
-                        classItem.attendanceResponses && classItem.attendanceResponses.length > 0 && (
+                      {filteredClasses.map((classItem) => {
+                        if (!classItem.attendanceResponses || classItem.attendanceResponses.length === 0) return null;
+                        
+                        const groupedAttendance = groupAttendanceByMonth(classItem.attendanceResponses);
+                        const availableMonths = Object.keys(groupedAttendance).sort((a, b) => {
+                          const [monthA, yearA] = a.split('-').map(Number);
+                          const [monthB, yearB] = b.split('-').map(Number);
+                          return yearB - yearA || monthB - monthA;
+                        });
+                        
+                        const selectedMonth = selectedMonths[classItem.id] || (availableMonths.length > 0 ? availableMonths[0] : null);
+                        
+                        const monthNames = ["", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+                                          "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+                        
+                        // Format month year for display
+                        let selectedMonthDisplay = '';
+                        if (selectedMonth) {
+                          const [month, year] = selectedMonth.split('-').map(Number);
+                          selectedMonthDisplay = `${monthNames[month]} ${year}`;
+                        }
+                        
+                        return (
                           <div key={classItem.id} className="class-attendance-block">
                             <h5 className="class-attendance-title">
-                              <FontAwesomeIcon icon="chalkboard" />
-                              Class: {classItem.classResponse.name}
+                              <div className="class-title-content">
+                                <FontAwesomeIcon icon="chalkboard" />
+                                <span>Class: {classItem.classResponse.name}</span>
+                              </div>
+                              <div className={`class-type-badge ${classItem.classResponse.gradeLevelName ? 'regular' : 'enrichment'}`}>
+                                <FontAwesomeIcon icon={classItem.classResponse.gradeLevelName ? "graduation-cap" : "star"} />
+                                <span>{classItem.classResponse.gradeLevelName || "Enrichment"}</span>
+                              </div>
                             </h5>
-
-                            {/* Phần code điểm danh hiện tại */}
-                            {Object.entries(groupAttendanceByMonth(classItem.attendanceResponses))
-                              .sort((a, b) => {
-                                const [monthA, yearA] = a[0].split('-').map(Number);
-                                const [monthB, yearB] = b[0].split('-').map(Number);
-                                return yearB - yearA || monthB - monthA;
-                              })
-                              .map(([monthYear, records]) => {
-                                const [month, year] = monthYear.split('-');
-                                const monthNames = ["", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-                                  "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
-
-                                return (
-                                  <div key={monthYear} className="attendance-month">
-                                    <h5 className="month-header">
-                                      <FontAwesomeIcon icon="calendar-alt" />
-                                      {monthNames[parseInt(month)]} {year}
-                                    </h5>
-                                    <div className="attendance-table">
-                                      <table>
-                                        <thead>
-                                          <tr>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Note</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {records.map(record => (
-                                            <tr key={record.id} className={`attendance-${record.status.toLowerCase()}`}>
-                                              <td>{formatDate(record.date)}</td>
-                                              <td>
-                                                <span className={`attendance-status ${record.status.toLowerCase()}`}>
-                                                  {mapAttendanceStatus(record.status)}
-                                                </span>
-                                              </td>
-                                              <td>{record.notes || 'No note'}</td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-                                );
-                              })}
+                            
+                            <div className="month-selector">
+                              <div className="month-selector-buttons">
+                                {availableMonths.map(monthYear => {
+                                  const [month, year] = monthYear.split('-').map(Number);
+                                  const isSelected = selectedMonth === monthYear;
+                                  
+                                  return (
+                                    <button 
+                                      key={monthYear}
+                                      className={`month-button ${isSelected ? 'active' : ''}`}
+                                      onClick={() => handleMonthSelect(classItem.id, monthYear)}
+                                    >
+                                      {monthNames[month]} {year}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                            
+                            {selectedMonth && groupedAttendance[selectedMonth] && (
+                              <div className="attendance-month">
+                                <div className="current-month-indicator">
+                                  <FontAwesomeIcon icon="calendar-alt" />
+                                  <span>Attendance for {selectedMonthDisplay}</span>
+                                </div>
+                                <div className="attendance-table">
+                                  <table>
+                                    <thead>
+                                      <tr>
+                                        <th width="25%">Date</th>
+                                        <th width="25%">Status</th>
+                                        <th>Note</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {groupedAttendance[selectedMonth].map(record => (
+                                        <tr key={record.id} className={`attendance-${record.status.toLowerCase()}`}>
+                                          <td>{formatDate(record.date)}</td>
+                                          <td>
+                                            <span className={`attendance-status ${record.status.toLowerCase()}`}>
+                                              {mapAttendanceStatus(record.status)}
+                                            </span>
+                                          </td>
+                                          <td>{record.notes || 'No note'}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        )
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="no-attendance-message">

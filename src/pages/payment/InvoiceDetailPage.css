@@ -321,7 +321,7 @@
   z-index: 2;
 }
 
-.section-title {
+.invoice-detail-section-title {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -330,12 +330,12 @@
   border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
-.section-title i {
+.invoice-detail-section-title i {
   color: var(--primary-color);
   font-size: 1.2rem;
 }
 
-.section-title h3 {
+.invoice-detail-section-title h3 {
   margin: 0;
   font-size: 1.3rem;
   color: var(--text-dark);

@@ -645,7 +645,7 @@
 }
 
 .form-section.parent-info::before {
-  content: 'Thông tin phụ huynh';
+  content: 'Parent Information';
   position: absolute;
   top: -10px;
   left: 20px;
@@ -663,7 +663,7 @@
 }
 
 .form-section.child-info::before {
-  content: 'Thông tin học sinh';
+  content: 'Child Information';
   position: absolute;
   top: -10px;
   left: 20px;
@@ -1209,7 +1209,7 @@
 }
 
 .grade-radio-label.recommended::after {
-  content: "Phù hợp";
+  content: "Recommended";
   position: absolute;
   top: -10px;
   left: 50%;

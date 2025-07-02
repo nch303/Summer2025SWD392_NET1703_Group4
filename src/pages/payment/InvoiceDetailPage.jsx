@@ -323,7 +323,7 @@ const InvoiceDetailPage = () => {
           
           {/* Customer information */}
           <div className="invoice-customer-section">
-            <div className="section-title">
+            <div className="invoice-detail-section-title">
               <i className="fas fa-user-circle"></i>
               <h3>Customer information</h3>
             </div>
@@ -349,7 +349,7 @@ const InvoiceDetailPage = () => {
           
           {/* Invoice items table */}
           <div className="invoice-items-section">
-            <div className="section-title">
+            <div className="invoice-detail-section-title">
               <i className="fas fa-file-invoice-dollar"></i>
               <h3>Payment details</h3>
             </div>

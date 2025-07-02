@@ -593,7 +593,7 @@
   margin-bottom: 0;
 }
 
-.section-title {
+.profile-section-title {
   display: flex;
   align-items: center;
   font-size: 1.2rem;
@@ -602,7 +602,7 @@
   font-weight: 600;
 }
 
-.section-title svg {
+.profile-section-title svg {
   width: 20px;
   height: 20px;
   margin-right: 10px;
