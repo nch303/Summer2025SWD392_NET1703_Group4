@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   Card, Button, Spin, Avatar, Tag, Typography, Input, Radio,
-  Row, Col, message, Modal, Tabs, Badge, Table, Alert, 
+  Row, Col, message, Modal, Tabs, Badge, Table, Alert,
   Progress, Collapse, Empty, Tooltip, DatePicker, Popconfirm, Checkbox, notification
 } from 'antd';
-import { 
-  UserOutlined, InfoCircleOutlined, CheckCircleOutlined, 
-  CalendarOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined, 
+import {
+  UserOutlined, InfoCircleOutlined, CheckCircleOutlined,
+  CalendarOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined,
   BookOutlined, ScheduleOutlined, DeleteOutlined, WarningOutlined
 } from '@ant-design/icons';
 import './StaffClassPage.css';
@@ -55,30 +55,30 @@ const StaffClassPage = () => {
       // Filter out deleted classes
       const activeClasses = data ? data.filter(c => c.status !== 'Deleted') : [];
       setClasses(activeClasses);
-      
+
       // Extract unique academic years
       const years = [...new Set(activeClasses.map(c => c.academicYear))].sort();
       setAcademicYears(years);
-      
+
       // Extract unique grade levels, but group all enrichment classes
       const regularGrades = [...new Set(activeClasses
         .filter(c => c.gradeLevelName)
         .map(c => c.gradeLevelName))];
-      
-      // Add a single "Năng khiếu" option instead of individual enrichment programs
+
+      // Add a single "Enrichment" option instead of individual enrichment programs
       const hasEnrichmentClasses = activeClasses.some(c => c.epName);
-      
+
       // Set grade levels with any regular grades plus a single "Năng khiếu" option if needed
       setGradeLevels([
         ...regularGrades,
-        ...(hasEnrichmentClasses ? ["Năng khiếu"] : [])
+        ...(hasEnrichmentClasses ? ["Enrichment"] : [])
       ]);
-      
+
       // If no academic year is selected yet, select the most recent one
       if (selectedAcademicYear === 'all' && years.length > 0) {
         setSelectedAcademicYear(years[0]);
       }
-      
+
       organizeClasses(activeClasses, selectedAcademicYear, selectedGradeLevel);
     } catch (err) {
       message.error('Failed to load class list');
@@ -89,17 +89,17 @@ const StaffClassPage = () => {
 
   const organizeClasses = (classData, academicYear, gradeLevel) => {
     let filteredClasses = classData;
-    
+
     // Filter by academic year if selected
     if (academicYear !== 'all') {
       filteredClasses = filteredClasses.filter(c => c.academicYear === academicYear);
     }
-    
+
     // Filter by grade level if selected
     if (gradeLevel !== 'all') {
       filteredClasses = filteredClasses.filter(c => {
-        if (gradeLevel === "Năng khiếu") {
-          // Show all enrichment classes for the "Năng khiếu" filter
+        if (gradeLevel === "Enrichment") {
+          // Show all enrichment classes for the "Enrichment" filter
           return c.epName !== null;
         } else {
           // Show regular classes with the specific grade level
@@ -107,13 +107,13 @@ const StaffClassPage = () => {
         }
       });
     }
-    
+
     // Organize classes into just two categories
     const organizedClasses = {
       regularClasses: [],
       enrichmentClasses: []
     };
-    
+
     filteredClasses.forEach(classItem => {
       if (classItem.epName) {
         // It's an enrichment class (has epName)
@@ -123,7 +123,7 @@ const StaffClassPage = () => {
         organizedClasses.regularClasses.push(classItem);
       }
     });
-    
+
     setClassesByCategory(organizedClasses);
   };
 
@@ -141,14 +141,14 @@ const StaffClassPage = () => {
     setSelectedClass(classItem);
     setDetailModalVisible(true);
     setActiveTab('1'); // Reset to info tab
-    
+
     // If the class has students, fetch attendance records
     if (classItem.quantity > 0) {
       setAttendanceLoading(true);
       try {
         const data = await getClassAttendance(classItem.id);
         setAttendanceRecords(data);
-        
+
         // Group attendance records by date
         const grouped = {};
         data.forEach(record => {
@@ -158,9 +158,9 @@ const StaffClassPage = () => {
           }
           grouped[date].push(record);
         });
-        
+
         setGroupedAttendance(grouped);
-        
+
         // Set initial activeDate if there are attendance records
         if (Object.keys(grouped).length > 0) {
           setActiveDate(Object.keys(grouped)[0]);
@@ -170,7 +170,7 @@ const StaffClassPage = () => {
       } finally {
         setAttendanceLoading(false);
       }
-      
+
       // Fetch students list
       setStudentsLoading(true);
       try {
@@ -186,12 +186,12 @@ const StaffClassPage = () => {
 
   // Format timetable from numbers to day names
   const formatSchedule = (timetable) => {
-    if (!timetable) return "Chưa có lịch học";
-    
+    if (!timetable) return "No schedule";
+
     return timetable.split(',').map(day => {
       const dayNum = day.trim();
-      if (dayNum === '1') return 'Chủ Nhật';
-      if (dayNum >= '2' && dayNum <= '7') return `Thứ ${dayNum}`;
+      if (dayNum === '1') return 'Sunday';
+      if (dayNum >= '2' && dayNum <= '7') return `Day ${dayNum}`;
       return dayNum; // In case it's not a number from 1-7
     }).join(', ');
   };
@@ -209,62 +209,62 @@ const StaffClassPage = () => {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    
-    return `${age} tuổi`;
+
+    return `${age} years old`;
   };
 
   // Render attendance table columns
   const attendanceColumns = [
     {
-      title: 'Họ tên học sinh',
+      title: 'Student name',
       dataIndex: 'childrenName',
       key: 'childrenName',
       render: (text) => <span style={{ fontWeight: 500 }}>{text}</span>,
     },
     {
-      title: 'Trạng thái',
+      title: 'Status',
       dataIndex: 'status',
       key: 'status',
       width: 120,
       render: (status) => (
         <Tag color={status === 'Attend' ? 'green' : 'red'}>
-          {status === 'Attend' ? 'Có mặt' : 'Vắng mặt'}
+          {status === 'Attend' ? 'Present' : 'Absent'}
         </Tag>
       ),
     },
     {
-      title: 'Ghi chú',
+      title: 'Notes',
       dataIndex: 'notes',
       key: 'notes',
-      render: (text) => text || <Text type="secondary" italic>Không có ghi chú</Text>,
+      render: (text) => text || <Text type="secondary" italic>No notes</Text>,
     }
   ];
 
   // Handle kicking student
   const handleKickStudent = async (childId, studentName) => {
     if (!selectedClass || !childId) return;
-    
+
     setKickingStudent(true);
     try {
       const response = await kickStudentFromClass(childId, selectedClass.id);
-      toast.success('Đã xóa học sinh khỏi lớp thành công', {
-        title: 'Xóa học sinh thành công',
+      toast.success('Student removed from class successfully', {
+        title: 'Student removed successfully',
         duration: 3000
       });
-      
+
       // Refresh student list
       const updatedStudents = await getStudentsByClassId(selectedClass.id);
       setStudents(updatedStudents);
-      
+
       // Also update the class data since the student count has changed
       fetchClassList();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Không thể xóa học sinh khỏi lớp', {
-        title: 'Lỗi',
+      toast.error(error.response?.data?.message || 'Cannot remove student from class', {
+        title: 'Error',
         duration: 5000
       });
     } finally {
@@ -275,20 +275,20 @@ const StaffClassPage = () => {
   // Add handler for opening a class
   const handleOpenClass = async (classId, e) => {
     if (e) e.stopPropagation(); // Prevent triggering row click
-    
+
     setOpeningClass(true);
     try {
       const response = await openClass(classId);
-      toast.success(response.message || 'Lớp học đã được mở thành công', {
-        title: 'Mở lớp thành công',
+      toast.success(response.message || 'Class opened successfully', {
+        title: 'Class opened successfully',
         duration: 3000
       });
-      
+
       // Refresh the class list
       fetchClassList();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Không thể mở lớp học', {
-        title: 'Lỗi',
+      toast.error(error.response?.data?.message || 'Cannot open class', {
+        title: 'Error',
         duration: 5000
       });
     } finally {
@@ -299,20 +299,20 @@ const StaffClassPage = () => {
   // Add handler for finishing a class
   const handleFinishClass = async (classId, e) => {
     if (e) e.stopPropagation(); // Prevent triggering row click
-    
+
     setFinishingClass(true);
     try {
       const response = await finishClass([classId]); // API expects an array of class IDs
-      toast.success(response.message || 'Lớp học đã được kết thúc thành công', {
-        title: 'Kết thúc lớp thành công',
+      toast.success(response.message || 'Class finished successfully', {
+        title: 'Class finished successfully',
         duration: 3000
       });
-      
+
       // Refresh the class list
       fetchClassList();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Không thể kết thúc lớp học', {
-        title: 'Lỗi',
+      toast.error(error.response?.data?.message || 'Cannot finish class', {
+        title: 'Error',
         duration: 5000
       });
     } finally {
@@ -323,54 +323,54 @@ const StaffClassPage = () => {
   // Student table columns
   const studentColumns = [
     ...(selectedClass?.status === 'Finished' ? [{
-      title: <Checkbox 
-              checked={selectAllStudents} 
-              onChange={(e) => handleSelectAllStudentsToggle(e.target.checked)}
-            />,
+      title: <Checkbox
+        checked={selectAllStudents}
+        onChange={(e) => handleSelectAllStudentsToggle(e.target.checked)}
+      />,
       dataIndex: 'selection',
       key: 'selection',
       width: 50,
       render: (_, record) => {
         // Disable checkbox for Graduated or Completed students
         const isDisabled = record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed';
-        
+
         return (
-        <Checkbox 
-          checked={selectedStudentIds.includes(record.id)}
-          onChange={() => toggleStudentSelection(record.id)}
+          <Checkbox
+            checked={selectedStudentIds.includes(record.id)}
+            onChange={() => toggleStudentSelection(record.id)}
             disabled={isDisabled}
-        />
+          />
         );
       },
     }] : []),
     {
-      title: 'Họ tên',
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Avatar 
-            src={record.avatar} 
-            icon={!record.avatar && <UserOutlined />} 
-            size="large" 
+          <Avatar
+            src={record.avatar}
+            icon={!record.avatar && <UserOutlined />}
+            size="large"
           />
           <span style={{ fontWeight: 500 }}>{text}</span>
         </div>
       ),
     },
     {
-      title: 'Giới tính',
+      title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
       width: 100,
       render: (gender) => (
         <Tag color={gender === 'Male' ? 'blue' : 'pink'}>
-          {gender === 'Male' ? 'Nam' : 'Nữ'}
+          {gender === 'Male' ? 'Male' : 'Female'}
         </Tag>
       ),
     },
     {
-      title: 'Ngày sinh',
+      title: 'Birthday',
       dataIndex: 'birthday',
       key: 'birthday',
       width: 150,
@@ -382,41 +382,41 @@ const StaffClassPage = () => {
       ),
     },
     {
-      title: 'Địa chỉ',
+      title: 'Address',
       dataIndex: 'city',
       key: 'city',
     },
     {
-      title: 'Trạng thái',
+      title: 'Status',
       dataIndex: 'childrenGradeStatus',
       key: 'childrenGradeStatus',
       width: 120,
       render: (status) => {
         let color = 'green';
         let text = status;
-        
+
         switch (status) {
           case 'Graduated':
             color = 'purple';
-            text = 'Đã tốt nghiệp';
+            text = 'Graduated';
             break;
           case 'Completed':
             color = 'blue';
-            text = 'Đã hoàn thành';
+            text = 'Completed';
             break;
           case 'Active':
             color = 'green';
-            text = 'Đang học';
+            text = 'Active';
             break;
           default:
             color = 'default';
         }
-        
+
         return <Tag color={color}>{text}</Tag>;
       },
     },
     {
-      title: 'Thao tác',
+      title: 'Action',
       key: 'action',
       width: 180,
       align: 'center',
@@ -425,26 +425,26 @@ const StaffClassPage = () => {
         if (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed') {
           return null;
         }
-        
+
         return (
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
             <Popconfirm
-              title="Xóa học sinh khỏi lớp"
-              description={`Bạn có chắc chắn muốn xóa học sinh "${record.name}" khỏi lớp học này không?`}
+              title="Remove student from class"
+              description={`Are you sure you want to remove student "${record.name}" from this class?`}
               onConfirm={() => handleKickStudent(record.id, record.name)}
-              okText="Có"
-              cancelText="Không"
+              okText="Yes"
+              cancelText="No"
               okButtonProps={{ danger: true }}
               maskClosable={false}
             >
-              <Button 
+              <Button
                 type="danger"
                 icon={<DeleteOutlined />}
                 size="small"
                 loading={kickingStudent}
                 className="kick-student-btn"
               >
-                Xóa
+                Remove
               </Button>
             </Popconfirm>
           </div>
@@ -456,28 +456,28 @@ const StaffClassPage = () => {
   // Add this function to handle student upgrade
   const handleUpgradeStudents = async () => {
     if (selectedStudentIds.length === 0) {
-      toast.warning('Vui lòng chọn ít nhất một học sinh để nâng cấp', {
-        title: 'Chọn học sinh',
+      toast.warning('Please select at least one student to upgrade', {
+        title: 'Select student',
         duration: 3000
       });
       return;
     }
-    
+
     setUpgradingStudents(true);
     try {
       const response = await upgradeStudents(selectedStudentIds);
-      toast.success(response.message || 'Học sinh đã được nâng cấp lên cấp lớp tiếp theo.', {
-        title: 'Nâng cấp thành công',
+      toast.success(response.message || 'Students have been upgraded to the next grade level.', {
+        title: 'Upgrade successful',
         duration: 3000
       });
-      
+
       // Reset selection
       setSelectedStudentIds([]);
       setSelectAllStudents(false);
-      
+
       // Refresh the class list to show updated data
       fetchClassList();
-      
+
       // Refresh the student list if needed
       if (selectedClass) {
         const updatedStudents = await getStudentsByClassId(selectedClass.id);
@@ -486,13 +486,13 @@ const StaffClassPage = () => {
     } catch (error) {
       // Check for the specific error message
       if (error.response?.status === 400 && error.response?.data?.message === "Children are not eligible to move up to grade level.") {
-        toast.error('Học sinh không đủ điều kiện để nâng cấp lên cấp lớp tiếp theo.', {
-          title: 'Không thể nâng cấp',
+        toast.error('Students are not eligible to move up to the next grade level.', {
+          title: 'Cannot upgrade',
           duration: 5000
         });
       } else {
-        toast.error(error.response?.data?.message || 'Không thể nâng cấp học sinh', {
-          title: 'Lỗi',
+        toast.error(error.response?.data?.message || 'Cannot upgrade students', {
+          title: 'Error',
           duration: 5000
         });
       }
@@ -507,12 +507,12 @@ const StaffClassPage = () => {
     if (checked) {
       // Only select students who are eligible for upgrade (not Graduated or Completed)
       const eligibleStudentIds = students
-        .filter(student => 
-          student.childrenGradeStatus !== 'Graduated' && 
+        .filter(student =>
+          student.childrenGradeStatus !== 'Graduated' &&
           student.childrenGradeStatus !== 'Completed'
         )
         .map(student => student.id);
-      
+
       setSelectedStudentIds(eligibleStudentIds);
     } else {
       setSelectedStudentIds([]);
@@ -522,24 +522,24 @@ const StaffClassPage = () => {
   // Add this function to toggle individual student selection
   const toggleStudentSelection = (studentId) => {
     const student = students.find(s => s.id === studentId);
-    
+
     // Don't allow selection of students with Graduated or Completed status
     if (student.childrenGradeStatus === 'Graduated' || student.childrenGradeStatus === 'Completed') {
       return;
     }
-    
+
     if (selectedStudentIds.includes(studentId)) {
       setSelectedStudentIds(selectedStudentIds.filter(id => id !== studentId));
       setSelectAllStudents(false);
     } else {
       setSelectedStudentIds([...selectedStudentIds, studentId]);
-      
+
       // Check if all eligible students are now selected
-      const eligibleStudents = students.filter(s => 
-        s.childrenGradeStatus !== 'Graduated' && 
+      const eligibleStudents = students.filter(s =>
+        s.childrenGradeStatus !== 'Graduated' &&
         s.childrenGradeStatus !== 'Completed'
       );
-      
+
       if (selectedStudentIds.length + 1 === eligibleStudents.length) {
         setSelectAllStudents(true);
       }
@@ -549,22 +549,22 @@ const StaffClassPage = () => {
   return (
     <div className="staff-class-container">
       <div className="staff-class-page-header">
-        <Title level={2} className="staff-class-page-title">Quản lý lớp học</Title>
+        <Title level={2} className="staff-class-page-title">Class management</Title>
       </div>
-      
+
       <Spin spinning={loading}>
         <Row gutter={[24, 24]}>
           {/* Class list section */}
           <Col span={24}>
-            <Card 
+            <Card
               className="staff-class-card"
               extra={
                 <div className="card-header-actions">
                   {/* Bộ lọc theo năm học */}
                   <div className="academic-year-filter">
-                    <span className="filter-label">Năm học:</span>
-                    <Button 
-                      icon={<FontAwesomeIcon icon="chevron-left" />} 
+                    <span className="filter-label">Academic year:</span>
+                    <Button
+                      icon={<FontAwesomeIcon icon="chevron-left" />}
                       size="small"
                       onClick={() => {
                         const currentIndex = academicYears.indexOf(selectedAcademicYear);
@@ -575,10 +575,10 @@ const StaffClassPage = () => {
                       disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                     />
                     <span className="academic-year-display">
-                      {selectedAcademicYear || 'Tất cả'}
+                      {selectedAcademicYear || 'All'}
                     </span>
-                    <Button 
-                      icon={<FontAwesomeIcon icon="chevron-right" />} 
+                    <Button
+                      icon={<FontAwesomeIcon icon="chevron-right" />}
                       size="small"
                       onClick={() => {
                         const currentIndex = academicYears.indexOf(selectedAcademicYear);
@@ -589,20 +589,20 @@ const StaffClassPage = () => {
                       disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
                     />
                   </div>
-                  
+
                   {/* Bộ lọc theo cấp lớp */}
                   <div className="grade-level-filter">
-                    <Radio.Group 
+                    <Radio.Group
                       value={selectedGradeLevel}
                       onChange={handleGradeLevelChange}
                       buttonStyle="solid"
                       size="small"
                       optionType="button"
                     >
-                      <Radio.Button value="all">Tất cả</Radio.Button>
+                      <Radio.Button value="all">All</Radio.Button>
                       {gradeLevels.map(grade => (
-                        <Radio.Button 
-                          key={grade} 
+                        <Radio.Button
+                          key={grade}
                           value={grade}
                         >
                           {grade}
@@ -617,15 +617,15 @@ const StaffClassPage = () => {
               {classesByCategory.regularClasses?.length > 0 && (
                 <div className="class-section">
                   <div className="class-section-header">
-                    <FontAwesomeIcon icon="graduation-cap" className="section-icon" /> 
-                    <span className="section-title">Lớp học chính khóa</span>
+                    <FontAwesomeIcon icon="graduation-cap" className="section-icon" />
+                    <span className="section-title">Regular classes</span>
                     <Tag color="blue" className="section-count">
-                      {classesByCategory.regularClasses.length} lớp
+                      {classesByCategory.regularClasses.length} classes
                     </Tag>
                   </div>
-                  
+
                   <div className="class-list-container">
-                    <Table 
+                    <Table
                       dataSource={classesByCategory.regularClasses}
                       rowKey="id"
                       rowClassName="regular-row"
@@ -635,19 +635,19 @@ const StaffClassPage = () => {
                       })}
                       columns={[
                         {
-                          title: 'Tên lớp',
+                          title: 'Class name',
                           dataIndex: 'name',
                           key: 'name',
                           render: (text) => <span className="class-name-cell">{text}</span>
                         },
                         {
-                          title: 'Cấp lớp',
+                          title: 'Grade level',
                           dataIndex: 'gradeLevelName',
                           key: 'gradeLevelName',
                           render: (text) => text || <span className="text-muted">-</span>
                         },
                         {
-                          title: 'Trạng thái',
+                          title: 'Status',
                           dataIndex: 'status',
                           key: 'status',
                           width: 120,
@@ -658,7 +658,7 @@ const StaffClassPage = () => {
                           )
                         },
                         {
-                          title: 'Sĩ số',
+                          title: 'Quantity',
                           dataIndex: 'quantity',
                           key: 'quantity',
                           width: 200,
@@ -667,8 +667,8 @@ const StaffClassPage = () => {
                               <span className={quantity >= record.maxChildren ? 'capacity-full' : ''}>
                                 {quantity}/{record.maxChildren}
                               </span>
-                              <Progress 
-                                percent={(quantity / record.maxChildren) * 100} 
+                              <Progress
+                                percent={(quantity / record.maxChildren) * 100}
                                 showInfo={false}
                                 size="small"
                                 status={quantity >= record.maxChildren ? "exception" : "active"}
@@ -677,7 +677,7 @@ const StaffClassPage = () => {
                           )
                         },
                         {
-                          title: 'Giáo viên',
+                          title: 'Teacher',
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
@@ -687,13 +687,13 @@ const StaffClassPage = () => {
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
                                 ))
                               ) : (
-                                <Text type="secondary" italic>Chưa có</Text>
+                                <Text type="secondary" italic>No teacher</Text>
                               )}
                             </div>
                           )
                         },
                         {
-                          title: 'Thao tác',
+                          title: 'Action',
                           key: 'action',
                           width: 180,
                           align: 'center',
@@ -708,24 +708,24 @@ const StaffClassPage = () => {
                                   showClassDetail(record);
                                 }}
                               >
-                                Chi tiết
+                                Detail
                               </Button>
-                              
+
                               {record.status === 'Available' && (
                                 <Popconfirm
                                   description={
                                     <div>
                                       <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span style={{ fontWeight: 'bold' }}>Cảnh báo:</span>
+                                        <span style={{ fontWeight: 'bold' }}>Warning:</span>
                                       </div>
-                                      <p>Hãy đảm bảo năm học đã kết thúc trước khi thực hiện thao tác này.</p>
-                                      <p>Bạn có chắc chắn muốn kết thúc lớp học này không?</p>
+                                      <p>Please ensure the academic year has ended before performing this action.</p>
+                                      <p>Are you sure you want to finish this class?</p>
                                     </div>
                                   }
                                   onConfirm={(e) => handleFinishClass(record.id, e)}
-                                  okText="Có, kết thúc lớp"
-                                  cancelText="Hủy"
-                                  okButtonProps={{ 
+                                  okText="Yes, finish class"
+                                  cancelText="Cancel"
+                                  okButtonProps={{
                                     style: { backgroundColor: '#faad14', borderColor: '#faad14' },
                                     loading: finishingClass
                                   }}
@@ -740,11 +740,11 @@ const StaffClassPage = () => {
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    Kết thúc
+                                    Finish
                                   </Button>
                                 </Popconfirm>
                               )}
-                              
+
                               {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
@@ -754,7 +754,7 @@ const StaffClassPage = () => {
                                   onClick={(e) => handleOpenClass(record.id, e)}
                                   loading={openingClass}
                                 >
-                                  Mở lớp
+                                  Open
                                 </Button>
                               )}
                             </div>
@@ -767,20 +767,20 @@ const StaffClassPage = () => {
                   </div>
                 </div>
               )}
-              
+
               {/* Enrichment Classes */}
               {classesByCategory.enrichmentClasses?.length > 0 && (
                 <div className="class-section">
                   <div className="class-section-header enrichment">
-                    <FontAwesomeIcon icon="star" className="section-icon" /> 
-                    <span className="section-title">Lớp học năng khiếu</span>
+                    <FontAwesomeIcon icon="star" className="section-icon" />
+                    <span className="section-title">Enrichment classes</span>
                     <Tag color="purple" className="section-count">
-                      {classesByCategory.enrichmentClasses.length} lớp
+                      {classesByCategory.enrichmentClasses.length} classes
                     </Tag>
                   </div>
-                  
+
                   <div className="class-list-container">
-                    <Table 
+                    <Table
                       dataSource={classesByCategory.enrichmentClasses}
                       rowKey="id"
                       rowClassName="enrichment-row"
@@ -790,19 +790,19 @@ const StaffClassPage = () => {
                       })}
                       columns={[
                         {
-                          title: 'Tên lớp',
+                          title: 'Class name',
                           dataIndex: 'name',
                           key: 'name',
                           render: (text) => <span className="class-name-cell">{text}</span>
                         },
                         {
-                          title: 'Chương trình',
+                          title: 'Program',
                           dataIndex: 'epName',
                           key: 'epName',
                           render: (text) => text || <span className="text-muted">-</span>
                         },
                         {
-                          title: 'Trạng thái',
+                          title: 'Status',
                           dataIndex: 'status',
                           key: 'status',
                           width: 120,
@@ -813,7 +813,7 @@ const StaffClassPage = () => {
                           )
                         },
                         {
-                          title: 'Sĩ số',
+                          title: 'Quantity',
                           dataIndex: 'quantity',
                           key: 'quantity',
                           width: 200,
@@ -822,8 +822,8 @@ const StaffClassPage = () => {
                               <span className={quantity >= record.maxChildren ? 'capacity-full' : ''}>
                                 {quantity}/{record.maxChildren}
                               </span>
-                              <Progress 
-                                percent={(quantity / record.maxChildren) * 100} 
+                              <Progress
+                                percent={(quantity / record.maxChildren) * 100}
                                 showInfo={false}
                                 size="small"
                                 status={quantity >= record.maxChildren ? "exception" : "active"}
@@ -832,7 +832,7 @@ const StaffClassPage = () => {
                           )
                         },
                         {
-                          title: 'Giáo viên',
+                          title: 'Teacher',
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
@@ -842,13 +842,13 @@ const StaffClassPage = () => {
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
                                 ))
                               ) : (
-                                <Text type="secondary" italic>Chưa có</Text>
+                                <Text type="secondary" italic>No teacher</Text>
                               )}
                             </div>
                           )
                         },
                         {
-                          title: 'Thao tác',
+                          title: 'Action',
                           key: 'action',
                           width: 180,
                           align: 'center',
@@ -863,24 +863,24 @@ const StaffClassPage = () => {
                                   showClassDetail(record);
                                 }}
                               >
-                                Chi tiết
+                                Detail
                               </Button>
-                              
+
                               {record.status === 'Available' && (
                                 <Popconfirm
                                   description={
                                     <div>
                                       <div style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span style={{ fontWeight: 'bold' }}>Cảnh báo:</span>
+                                        <span style={{ fontWeight: 'bold' }}>Warning:</span>
                                       </div>
-                                      <p>Hãy đảm bảo năm học đã kết thúc trước khi thực hiện thao tác này.</p>
-                                      <p>Bạn có chắc chắn muốn kết thúc lớp học này không?</p>
+                                      <p>Please ensure the academic year has ended before performing this action.</p>
+                                      <p>Are you sure you want to finish this class?</p>
                                     </div>
                                   }
                                   onConfirm={(e) => handleFinishClass(record.id, e)}
-                                  okText="Có, kết thúc lớp"
-                                  cancelText="Hủy"
-                                  okButtonProps={{ 
+                                  okText="Yes, finish class"
+                                  cancelText="Cancel"
+                                  okButtonProps={{
                                     style: { backgroundColor: '#faad14', borderColor: '#faad14' },
                                     loading: finishingClass
                                   }}
@@ -895,11 +895,11 @@ const StaffClassPage = () => {
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    Kết thúc
+                                    Finish
                                   </Button>
                                 </Popconfirm>
                               )}
-                              
+
                               {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
@@ -909,7 +909,7 @@ const StaffClassPage = () => {
                                   onClick={(e) => handleOpenClass(record.id, e)}
                                   loading={openingClass}
                                 >
-                                  Mở lớp
+                                  Open
                                 </Button>
                               )}
                             </div>
@@ -922,11 +922,11 @@ const StaffClassPage = () => {
                   </div>
                 </div>
               )}
-              
+
               {Object.keys(classesByCategory.regularClasses || {}).length === 0 &&
-               Object.keys(classesByCategory.enrichmentClasses || {}).length === 0 && (
-                <Empty description="Không tìm thấy lớp học phù hợp với điều kiện lọc" />
-              )}
+                Object.keys(classesByCategory.enrichmentClasses || {}).length === 0 && (
+                  <Empty description="No class found" />
+                )}
             </Card>
           </Col>
         </Row>
@@ -973,7 +973,7 @@ const StaffClassPage = () => {
             </div>
 
             {/* Tabs with enhanced styling */}
-            <Tabs 
+            <Tabs
               activeKey={activeTab}
               onChange={setActiveTab}
               className="class-detail-tabs"
@@ -983,7 +983,7 @@ const StaffClassPage = () => {
                   key: "1",
                   label: (
                     <span className="tab-label">
-                      <InfoCircleOutlined /> Thông tin lớp học
+                      <InfoCircleOutlined /> Class information
                     </span>
                   ),
                   children: (
@@ -995,26 +995,26 @@ const StaffClassPage = () => {
                             <Row gutter={[16, 16]}>
                               <Col span={16}>
                                 <div className="detail-item">
-                                  <div className="detail-label">Chương trình học:</div>
+                                  <div className="detail-label">Learning program:</div>
                                   <div className="detail-value">{selectedClass.syllabusName}</div>
                                 </div>
                               </Col>
-                              
+
                               {selectedClass.epName && (
                                 <Col span={12}>
                                   <div className="detail-item">
-                                    <div className="detail-label">Chương trình năng khiếu:</div>
+                                    <div className="detail-label">Enrichment program:</div>
                                     <div className="detail-value">
                                       <Tag color="purple">{selectedClass.epName}</Tag>
                                     </div>
                                   </div>
                                 </Col>
                               )}
-                              
+
                               {selectedClass.timetable && (
                                 <Col span={24}>
                                   <div className="detail-item">
-                                    <div className="detail-label">Lịch học:</div>
+                                    <div className="detail-label">Schedule:</div>
                                     <div className="detail-value highlight schedule-display">
                                       {formatSchedule(selectedClass.timetable).split(', ').map((day, index) => (
                                         <Tag key={index} color="blue" className="schedule-day-tag">
@@ -1027,12 +1027,12 @@ const StaffClassPage = () => {
                               )}
                             </Row>
                           </Card>
-                          
+
                           {/* Teacher section with enhanced visuals */}
                           <Card
                             title={
                               <span className="detail-card-title">
-                                <FontAwesomeIcon icon="chalkboard-teacher" /> Giáo viên phụ trách
+                                <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                               </span>
                             }
                             variant="borderless"
@@ -1042,33 +1042,33 @@ const StaffClassPage = () => {
                               <div className="staff-teachers-assigned-list">
                                 {selectedClass.teacherNames.map((name, idx) => (
                                   <div className="staff-teacher-card" key={idx}>
-                                    <Avatar 
-                                      icon={<UserOutlined />} 
+                                    <Avatar
+                                      icon={<UserOutlined />}
                                       className="staff-teacher-avatar"
                                       size={64}
                                     />
                                     <div className="staff-teacher-name">{name}</div>
-                                    <Tag color="blue">Giáo viên</Tag>
+                                    <Tag color="blue">Teacher</Tag>
                                   </div>
                                 ))}
                               </div>
                             ) : (
                               <div className="no-teachers">
-                                <Empty 
-                                  description="Chưa có giáo viên được phân công" 
-                                  image={Empty.PRESENTED_IMAGE_SIMPLE} 
+                                <Empty
+                                  description="No teacher assigned"
+                                  image={Empty.PRESENTED_IMAGE_SIMPLE}
                                 />
                               </div>
                             )}
                           </Card>
                         </Col>
-                        
+
                         {/* Right column: Capacity visualization */}
                         <Col span={10}>
                           <Card
                             title={
                               <span className="detail-card-title">
-                                <FontAwesomeIcon icon="users" /> Sĩ số lớp học
+                                <FontAwesomeIcon icon="users" /> Class capacity
                               </span>
                             }
                             variant="borderless"
@@ -1076,7 +1076,7 @@ const StaffClassPage = () => {
                           >
                             <div className="capacity-visualization">
                               <div className="capacity-donut">
-                                <Progress 
+                                <Progress
                                   type="circle"
                                   percent={Math.round((selectedClass.quantity / selectedClass.maxChildren) * 100)}
                                   format={percent => `${percent}%`}
@@ -1087,41 +1087,41 @@ const StaffClassPage = () => {
                               <div className="capacity-stats">
                                 <div className="capacity-stat-item">
                                   <div className="capacity-stat-value">{selectedClass.quantity}</div>
-                                  <div className="capacity-stat-label">Hiện có</div>
+                                  <div className="capacity-stat-label">Currently</div>
                                 </div>
                                 <div className="capacity-stat-divider">/</div>
                                 <div className="capacity-stat-item">
                                   <div className="capacity-stat-value">{selectedClass.maxChildren}</div>
-                                  <div className="capacity-stat-label">Tối đa</div>
+                                  <div className="capacity-stat-label">Maximum</div>
                                 </div>
                               </div>
-                              
+
                               {selectedClass.quantity >= selectedClass.maxChildren && (
                                 <Alert
-                                  message="Lớp học đã đạt số lượng tối đa"
+                                  message="Class has reached the maximum capacity"
                                   type="warning"
                                   showIcon
                                   icon={<FontAwesomeIcon icon="exclamation-triangle" />}
                                   className="capacity-warning-alert"
                                 />
                               )}
-                              
+
                               <div className="capacity-description">
                                 <p>
-                                  Lớp học này hiện có <strong>{selectedClass.quantity}</strong> học sinh, 
-                                  {selectedClass.quantity < selectedClass.maxChildren ? 
-                                    ` còn có thể tiếp nhận thêm ${selectedClass.maxChildren - selectedClass.quantity} học sinh.` : 
-                                    ' đã đạt số lượng tối đa.'}
+                                  This class currently has <strong>{selectedClass.quantity}</strong> students,
+                                  {selectedClass.quantity < selectedClass.maxChildren ?
+                                    ` can still accept ${selectedClass.maxChildren - selectedClass.quantity} more students.` :
+                                    ' has reached the maximum capacity.'}
                                 </p>
                               </div>
                             </div>
                           </Card>
-                          
+
                           {/* Class status card */}
                           <Card
                             title={
                               <span className="detail-card-title">
-                                <FontAwesomeIcon icon="clipboard-list" /> Trạng thái
+                                <FontAwesomeIcon icon="clipboard-list" /> Status
                               </span>
                             }
                             variant="borderless"
@@ -1129,19 +1129,19 @@ const StaffClassPage = () => {
                           >
                             <div className={`class-status ${selectedClass.status.toLowerCase()}`}>
                               <div className="status-icon">
-                                <FontAwesomeIcon 
-                                  icon={selectedClass.status === 'Available' ? 'check-circle' : 
-                                        selectedClass.status === 'Finished' ? 'history' : 'clock'} 
+                                <FontAwesomeIcon
+                                  icon={selectedClass.status === 'Available' ? 'check-circle' :
+                                    selectedClass.status === 'Finished' ? 'history' : 'clock'}
                                 />
                               </div>
                               <div className="status-details">
                                 <div className="status-value">{selectedClass.status}</div>
                                 <div className="status-description">
-                                  {selectedClass.status === 'Available' 
-                                    ? 'Lớp học đang mở và có thể tiếp nhận học sinh.' 
+                                  {selectedClass.status === 'Available'
+                                    ? 'Class is open and can accept students.'
                                     : selectedClass.status === 'Finished'
-                                    ? 'Lớp học hiện tại không khả dụng. Năm học đã kết thúc.'
-                                    : 'Lớp học hiện tại không khả dụng.'}
+                                      ? 'Class is currently unavailable. The academic year has ended.'
+                                      : 'Class is currently unavailable.'}
                                 </div>
                               </div>
                             </div>
@@ -1155,7 +1155,7 @@ const StaffClassPage = () => {
                   key: "2",
                   label: (
                     <span className="tab-label">
-                      <CalendarOutlined /> Điểm danh
+                      <CalendarOutlined /> Attendance
                     </span>
                   ),
                   disabled: selectedClass.quantity === 0,
@@ -1167,7 +1167,7 @@ const StaffClassPage = () => {
                             {Object.keys(groupedAttendance).length > 0 ? (
                               <div className="attendance-container">
                                 <div className="attendance-date-selector">
-                                  <Radio.Group 
+                                  <Radio.Group
                                     buttonStyle="solid"
                                     defaultValue={activeDate}
                                     onChange={(e) => setActiveDate(e.target.value)}
@@ -1180,9 +1180,9 @@ const StaffClassPage = () => {
                                     ))}
                                   </Radio.Group>
                                 </div>
-                                
+
                                 {Object.entries(groupedAttendance).map(([date, records]) => (
-                                  <div 
+                                  <div
                                     key={date}
                                     className="attendance-date-section"
                                     style={{ display: activeDate === date ? 'block' : 'none' }}
@@ -1198,7 +1198,7 @@ const StaffClassPage = () => {
                                               <div className="summary-count">
                                                 {records.filter(r => r.status === 'Attend').length}
                                               </div>
-                                              <div className="summary-label">Có mặt</div>
+                                              <div className="summary-label">Present</div>
                                             </div>
                                           </Card>
                                         </Col>
@@ -1211,20 +1211,20 @@ const StaffClassPage = () => {
                                               <div className="summary-count">
                                                 {records.filter(r => r.status === 'Absent').length}
                                               </div>
-                                              <div className="summary-label">Vắng mặt</div>
+                                              <div className="summary-label">Absent</div>
                                             </div>
                                           </Card>
                                         </Col>
                                       </Row>
                                     </div>
-                                    
+
                                     <div className="attendance-table-container">
                                       <h3 className="attendance-date-title">
-                                        <CalendarOutlined /> Điểm danh ngày {formatDate(date)}
+                                        <CalendarOutlined /> Attendance on {formatDate(date)}
                                       </h3>
-                                      
-                                      <Table 
-                                        dataSource={records} 
+
+                                      <Table
+                                        dataSource={records}
                                         columns={attendanceColumns}
                                         rowKey="id"
                                         pagination={false}
@@ -1235,16 +1235,16 @@ const StaffClassPage = () => {
                                 ))}
                               </div>
                             ) : (
-                              <Empty 
-                                description="Không có dữ liệu điểm danh cho lớp học này" 
+                              <Empty
+                                description="No attendance data for this class"
                                 image={Empty.PRESENTED_IMAGE_SIMPLE}
                               />
                             )}
                           </>
                         ) : (
                           <Alert
-                            message="Lớp học chưa có học sinh"
-                            description="Lớp học này hiện chưa có học sinh nào được phân công. Điểm danh sẽ khả dụng khi có học sinh trong lớp."
+                            message="Class has no students"
+                            description="This class currently has no students assigned. Attendance will be available when there are students in the class."
                             type="info"
                             showIcon
                           />
@@ -1257,7 +1257,7 @@ const StaffClassPage = () => {
                   key: "3",
                   label: (
                     <span className="tab-label">
-                      <TeamOutlined /> Học sinh
+                      <TeamOutlined /> Students
                     </span>
                   ),
                   disabled: selectedClass.quantity === 0,
@@ -1271,15 +1271,15 @@ const StaffClassPage = () => {
                                 <Card
                                   title={
                                     <span className="detail-card-title">
-                                      <FontAwesomeIcon icon="user-graduate" /> Danh sách học sinh
+                                      <FontAwesomeIcon icon="user-graduate" /> List of students
                                     </span>
                                   }
                                   extra={
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                       <Badge count={students.length} style={{ backgroundColor: '#1890ff' }} />
                                       {selectedClass.status === 'Finished' && (
-                                        <Tooltip 
-                                          title={selectedStudentIds.length === 0 ? "Vui lòng chọn học sinh trước khi nâng cấp" : ""}
+                                        <Tooltip
+                                          title={selectedStudentIds.length === 0 ? "Please select students before upgrading" : ""}
                                         >
                                           <Button
                                             type="primary"
@@ -1289,7 +1289,7 @@ const StaffClassPage = () => {
                                             loading={upgradingStudents}
                                             className={selectedStudentIds.length === 0 ? "upgrade-btn-disabled" : "upgrade-btn"}
                                           >
-                                            Nâng cấp {selectedStudentIds.length > 0 ? `(${selectedStudentIds.length})` : ''}
+                                            Upgrade {selectedStudentIds.length > 0 ? `(${selectedStudentIds.length})` : ''}
                                           </Button>
                                         </Tooltip>
                                       )}
@@ -1299,15 +1299,15 @@ const StaffClassPage = () => {
                                 >
                                   {selectedClass.status === 'Finished' && (
                                     <Alert
-                                      message="Lớp học đã kết thúc"
-                                      description="Bạn có thể chọn học sinh để nâng cấp lên lớp tiếp theo."
+                                      message="Class has ended"
+                                      description="You can select students to upgrade to the next grade level."
                                       type="info"
                                       showIcon
                                       style={{ marginBottom: '16px' }}
                                     />
                                   )}
-                                  <Table 
-                                    dataSource={students} 
+                                  <Table
+                                    dataSource={students}
                                     columns={studentColumns}
                                     rowKey="id"
                                     pagination={{ pageSize: 5 }}
@@ -1316,16 +1316,16 @@ const StaffClassPage = () => {
                                 </Card>
                               </div>
                             ) : (
-                              <Empty 
-                                description="Không có học sinh nào trong lớp này" 
+                              <Empty
+                                description="No students in this class"
                                 image={Empty.PRESENTED_IMAGE_SIMPLE}
                               />
                             )}
                           </>
                         ) : (
                           <Alert
-                            message="Lớp học chưa có học sinh"
-                            description="Lớp học này hiện chưa có học sinh nào được phân công."
+                            message="Class has no students"
+                            description="This class currently has no students assigned."
                             type="info"
                             showIcon
                           />

@@ -20,7 +20,7 @@ const ChildrenManagement = () => {
     key: 'name',
     direction: 'asc'
   });
-  
+
   const childrenPerPage = 5;
   const toast = useCustomToast();
   const [fetchTrigger, setFetchTrigger] = useState(0);
@@ -56,7 +56,7 @@ const ChildrenManagement = () => {
         setChildren(data);
         setTotalPages(Math.ceil(data.length / childrenPerPage));
       } catch (error) {
-        toast.error('Không thể tải danh sách học sinh. Vui lòng thử lại sau.');
+        toast.error('Cannot load student list. Please try again later.');
         console.error('Error fetching children:', error);
       } finally {
         setLoading(false);
@@ -94,8 +94,8 @@ const ChildrenManagement = () => {
 
   // Apply filters and sorting
   const filteredChildren = children
-    .filter(child => 
-      child.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    .filter(child =>
+      child.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (child.parentName && child.parentName.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     .filter(child => selectedGender === '' || child.gender === selectedGender)
@@ -113,7 +113,7 @@ const ChildrenManagement = () => {
   const indexOfLastChild = currentPage * childrenPerPage;
   const indexOfFirstChild = indexOfLastChild - childrenPerPage;
   const currentChildren = filteredChildren.slice(indexOfFirstChild, indexOfLastChild);
-  
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Reset filters
@@ -127,9 +127,10 @@ const ChildrenManagement = () => {
   // Get gender display
   const getGenderDisplay = (gender) => {
     switch (gender?.toLowerCase()) {
-      case 'male': return 'Nam';
-      case 'female': return 'Nữ';
-      default: return 'Khác';
+      case 'male': return 'Male';
+      case 'female': return 'Female';
+      case 'other': return 'Other';
+      default: return 'Other';
     }
   };
 
@@ -140,94 +141,94 @@ const ChildrenManagement = () => {
 
   return (
     <div className="staff-children-page">
-      <ProcessingSpinner isVisible={loading} message="Đang tải danh sách học sinh..." />
-      
+      <ProcessingSpinner isVisible={loading} message="Loading student list..." />
+
       <div className="staff-children-filters">
         <div className="staff-children-filter-row">
           <div className="staff-children-filter-group staff-children-search-group">
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm theo tên hoặc phụ huynh..." 
-              className="staff-children-search-input" 
+            <input
+              type="text"
+              placeholder="Search by name or parent..."
+              className="staff-children-search-input"
               value={searchTerm}
               onChange={handleSearch}
             />
           </div>
-          
+
           <div className="staff-children-filter-group">
-            <label htmlFor="genderFilter">Giới tính:</label>
-            <select 
-              id="genderFilter" 
-              className="staff-children-filter-select" 
+            <label htmlFor="genderFilter">Gender:</label>
+            <select
+              id="genderFilter"
+              className="staff-children-filter-select"
               value={selectedGender}
               onChange={handleGenderFilter}
             >
-              <option value="">Tất cả</option>
-              <option value="Male">Nam</option>
-              <option value="Female">Nữ</option>
-              <option value="Other">Khác</option>
+              <option value="">All</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
             </select>
           </div>
-          
-          <button 
+
+          <button
             className="staff-children-filter-reset-button"
             onClick={handleResetFilters}
           >
-            <i className="fas fa-sync-alt"></i> Làm mới
+            <i className="fas fa-sync-alt"></i> Refresh
           </button>
         </div>
       </div>
-      
+
       <div className="staff-children-stats">
         <div className="staff-children-stat-card">
-          <div className="staff-children-stat-title">Tổng số học sinh</div>
+          <div className="staff-children-stat-title">Total students</div>
           <div className="staff-children-stat-value">{children.length}</div>
         </div>
         <div className="staff-children-stat-card">
-          <div className="staff-children-stat-title">Học sinh nam</div>
+          <div className="staff-children-stat-title">Male students</div>
           <div className="staff-children-stat-value">
             {children.filter(child => child.gender === 'Male').length}
           </div>
         </div>
         <div className="staff-children-stat-card">
-          <div className="staff-children-stat-title">Học sinh nữ</div>
+          <div className="staff-children-stat-title">Female students</div>
           <div className="staff-children-stat-value">
             {children.filter(child => child.gender === 'Female').length}
           </div>
         </div>
       </div>
-      
+
       <div className="staff-children-table-container">
         {currentChildren.length > 0 ? (
           <table className="staff-children-table">
             <thead>
               <tr>
                 <th onClick={() => requestSort('name')}>
-                  Họ tên 
+                  Name
                   {sortConfig.key === 'name' && (
                     <i className={`fas fa-sort-${sortConfig.direction === 'asc' ? 'up' : 'down'}`}></i>
                   )}
                 </th>
-                <th>Ảnh đại diện</th>
+                <th>Avatar</th>
                 <th onClick={() => requestSort('birthday')}>
-                  Ngày sinh / Tuổi
+                  Birthday / Age
                   {sortConfig.key === 'birthday' && (
                     <i className={`fas fa-sort-${sortConfig.direction === 'asc' ? 'up' : 'down'}`}></i>
                   )}
                 </th>
                 <th onClick={() => requestSort('gender')}>
-                  Giới tính
+                  Gender
                   {sortConfig.key === 'gender' && (
                     <i className={`fas fa-sort-${sortConfig.direction === 'asc' ? 'up' : 'down'}`}></i>
                   )}
                 </th>
                 <th onClick={() => requestSort('city')}>
-                  Thành phố
+                  City
                   {sortConfig.key === 'city' && (
                     <i className={`fas fa-sort-${sortConfig.direction === 'asc' ? 'up' : 'down'}`}></i>
                   )}
                 </th>
-                <th>Thao tác</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -236,9 +237,9 @@ const ChildrenManagement = () => {
                   <td className="staff-children-child-name">{child.name}</td>
                   <td className="staff-children-child-avatar">
                     {child.avatar ? (
-                      <img 
-                        src={child.avatar} 
-                        alt={`Avatar của ${child.name}`} 
+                      <img
+                        src={child.avatar}
+                        alt={`Avatar of ${child.name}`}
                         onError={(e) => { e.target.src = '/images/default-avatar.png'; }}
                       />
                     ) : (
@@ -250,30 +251,30 @@ const ChildrenManagement = () => {
                   <td>
                     <div className="staff-children-birth-info">
                       <div>{formatDate(child.birthday)}</div>
-                      <div className="staff-children-age">{calculateAge(child.birthday)} tuổi</div>
+                      <div className="staff-children-age">{calculateAge(child.birthday)} years</div>
                     </div>
                   </td>
                   <td>{getGenderDisplay(child.gender)}</td>
-                  <td>{child.city || 'Chưa cập nhật'}</td>
+                  <td>{child.city || 'Not specified'}</td>
                   <td className="staff-children-actions-cell">
-                    <button 
-                      className="staff-children-action-btn staff-children-view-btn" 
+                    <button
+                      className="staff-children-action-btn staff-children-view-btn"
                       onClick={() => handleViewDetails(child)}
-                      title="Xem chi tiết"
+                      title="View details"
                     >
                       <i className="fas fa-eye"></i>
                     </button>
-                    <Link 
-                      to={`/staff/children/edit/${child.id}`} 
+                    <Link
+                      to={`/staff/children/edit/${child.id}`}
                       className="staff-children-action-btn staff-children-edit-btn"
-                      title="Chỉnh sửa"
+                      title="Edit"
                     >
                       <i className="fas fa-edit"></i>
                     </Link>
-                    <button 
-                      className="staff-children-action-btn staff-children-delete-btn" 
-                      onClick={() => {/* Handle delete */}}
-                      title="Xóa"
+                    <button
+                      className="staff-children-action-btn staff-children-delete-btn"
+                      onClick={() => {/* Handle delete */ }}
+                      title="Delete"
                     >
                       <i className="fas fa-trash"></i>
                     </button>
@@ -285,48 +286,48 @@ const ChildrenManagement = () => {
         ) : (
           <div className="staff-children-no-data">
             {loading ? (
-              <p>Đang tải dữ liệu...</p>
+              <p>Loading data...</p>
             ) : (
               <>
                 <i className="fas fa-child"></i>
-                <p>Không tìm thấy học sinh nào.</p>
+                <p>No students found.</p>
               </>
             )}
           </div>
         )}
       </div>
-      
+
       {filteredChildren.length > 0 && (
         <div className="staff-children-pagination">
-          <button 
-            onClick={() => paginate(1)} 
+          <button
+            onClick={() => paginate(1)}
             disabled={currentPage === 1}
             className="staff-children-pagination-button staff-children-first-page"
           >
             <i className="fas fa-angle-double-left"></i>
           </button>
-          <button 
-            onClick={() => paginate(currentPage - 1)} 
+          <button
+            onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
             className="staff-children-pagination-button"
           >
             <i className="fas fa-angle-left"></i>
           </button>
-          
+
           <div className="staff-children-pagination-info">
             <span className="staff-children-current-page">{currentPage}</span>
             <span className="staff-children-total-pages">/ {totalPages}</span>
           </div>
-          
-          <button 
-            onClick={() => paginate(currentPage + 1)} 
+
+          <button
+            onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
             className="staff-children-pagination-button"
           >
             <i className="fas fa-angle-right"></i>
           </button>
-          <button 
-            onClick={() => paginate(totalPages)} 
+          <button
+            onClick={() => paginate(totalPages)}
             disabled={currentPage === totalPages}
             className="staff-children-pagination-button staff-children-last-page"
           >
@@ -334,7 +335,7 @@ const ChildrenManagement = () => {
           </button>
         </div>
       )}
-      
+
       {/* Child detail modal */}
       {selectedChild && (
         <ChildDetailModal

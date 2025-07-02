@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Row, Col, Typography, Tag, Spin, Empty, Badge, Statistic, Input, 
-  Segmented, Button, Tooltip, Progress, Tabs, Skeleton, Avatar, Dropdown 
+import {
+  Card, Row, Col, Typography, Tag, Spin, Empty, Badge, Statistic, Input,
+  Segmented, Button, Tooltip, Progress, Tabs, Skeleton, Avatar, Dropdown
 } from 'antd';
-import { 
-  TeamOutlined, ReadOutlined, BookOutlined, SearchOutlined, 
-  AppstoreOutlined, UnorderedListOutlined, FilterOutlined, 
+import {
+  TeamOutlined, ReadOutlined, BookOutlined, SearchOutlined,
+  AppstoreOutlined, UnorderedListOutlined, FilterOutlined,
   EllipsisOutlined, FileTextOutlined, UserOutlined, CalendarOutlined,
   PieChartOutlined
 } from '@ant-design/icons';
@@ -46,7 +46,7 @@ const TeacherClass = () => {
   // Hàm tìm kiếm/lọc lớp học
   const handleSearch = (value) => {
     setSearchValue(value);
-    const filtered = classes.filter(classItem => 
+    const filtered = classes.filter(classItem =>
       classItem.name.toLowerCase().includes(value.toLowerCase()) ||
       classItem.syllabusName.toLowerCase().includes(value.toLowerCase()) ||
       classItem.gradeLevelName.toLowerCase().includes(value.toLowerCase())
@@ -75,22 +75,22 @@ const TeacherClass = () => {
       items: [
         {
           key: '1',
-          label: <Link to={`/teacher/classes/${classId}`}>Xem chi tiết lớp học</Link>,
+          label: <Link to={`/teacher/classes/${classId}`}>View class details</Link>,
           icon: <TeamOutlined />,
         },
         {
           key: '2',
-          label: <span>Xem giáo trình</span>,
+          label: <span>View syllabus</span>,
           icon: <BookOutlined />,
         },
         {
           key: '3',
-          label: <Link to={`/teacher/classes/${classId}/view-all-attendance`}>Lịch sử điểm danh</Link>,
+          label: <Link to={`/teacher/classes/${classId}/view-all-attendance`}>Attendance history</Link>,
           icon: <FileTextOutlined />,
         },
         {
           key: '4',
-          label: <span>Báo cáo tiến độ</span>,
+          label: <span>Progress report</span>,
           icon: <PieChartOutlined />,
         },
       ],
@@ -102,8 +102,8 @@ const TeacherClass = () => {
     <Row gutter={[24, 24]}>
       {filteredClasses.map((classItem) => (
         <Col key={classItem.id} xs={24} sm={12} md={8} lg={8}>
-          <Card 
-            className="class-card" 
+          <Card
+            className="class-card"
             hoverable
             actions={[
               <div key="students">
@@ -112,7 +112,7 @@ const TeacherClass = () => {
               </div>,
               <Link to={`/teacher/classes/${classItem.id}/check-attendance`} key="attendance">
                 <FileTextOutlined />
-                <Text>Điểm danh</Text>
+                <Text>Attendance</Text>
               </Link>,
               <Dropdown menu={moreMenu(classItem.id)} trigger={['click']}>
                 <Button type="text">
@@ -139,18 +139,18 @@ const TeacherClass = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="class-details">
                 <div className="class-info-row">
-                  <Text type="secondary">Giáo trình:</Text>
+                  <Text type="secondary">Syllabus:</Text>
                   <Text strong ellipsis>{classItem.syllabusName}</Text>
                 </div>
-                
+
                 <div className="class-info-row">
-                  <Text type="secondary">Sĩ số:</Text>
+                  <Text type="secondary">Number of students:</Text>
                   <div className="student-progress">
-                    <Progress 
-                      percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
+                    <Progress
+                      percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)}
                       size="small"
                       format={() => `${classItem.quantity}/${classItem.maxChildren}`}
                       status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
@@ -176,7 +176,7 @@ const TeacherClass = () => {
                 {classItem.name.charAt(0).toUpperCase()}
               </Avatar>
             </div>
-            
+
             <div className="list-card-middle">
               <div className="list-card-title">
                 <Title level={4}>{classItem.name}</Title>
@@ -189,7 +189,7 @@ const TeacherClass = () => {
                   {classItem.syllabusName}
                 </Tag>
                 <Tag icon={<TeamOutlined />} color="success">
-                  {classItem.quantity}/{classItem.maxChildren} học sinh
+                  {classItem.quantity}/{classItem.maxChildren} students
                 </Tag>
                 <Tag icon={<UserOutlined />} color="warning">
                   {classItem.gradeLevelName}
@@ -201,23 +201,23 @@ const TeacherClass = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="list-card-right">
-              <Progress 
-                type="circle" 
-                percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)} 
+              <Progress
+                type="circle"
+                percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)}
                 width={50}
                 format={() => `${Math.round((classItem.quantity / classItem.maxChildren) * 100)}%`}
                 status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
               />
             </div>
-            
+
             <div className="list-card-actions">
               <Link to={`/teacher/classes/${classItem.id}`}>
-                <Button type="primary" icon={<TeamOutlined />}>Xem lớp</Button>
+                <Button type="primary" icon={<TeamOutlined />}>View class</Button>
               </Link>
               <Link to={`/teacher/classes/${classItem.id}/check-attendance`}>
-                <Button icon={<FileTextOutlined />}>Điểm danh</Button>
+                <Button icon={<FileTextOutlined />}>Attendance</Button>
               </Link>
             </div>
           </div>
@@ -225,7 +225,7 @@ const TeacherClass = () => {
       ))}
     </div>
   );
-  
+
   // Render empty state
   const renderEmpty = () => (
     <div className="empty-state">
@@ -234,15 +234,15 @@ const TeacherClass = () => {
         imageStyle={{ height: 160 }}
         description={
           <span>
-            {searchValue 
-              ? "Không tìm thấy lớp học phù hợp với từ khóa" 
-              : "Bạn chưa được phân công lớp học nào"}
+            {searchValue
+              ? "No class found matching the keyword"
+              : "You haven't been assigned any class"}
           </span>
         }
       >
         {searchValue && (
           <Button type="primary" onClick={() => handleSearch('')}>
-            Xem tất cả lớp học
+            View all classes
           </Button>
         )}
       </Empty>
@@ -261,7 +261,7 @@ const TeacherClass = () => {
               </div>
               <div className="dashboard-info">
                 <div className="dashboard-value">{classes.length}</div>
-                <div className="dashboard-label">Tổng số lớp</div>
+                <div className="dashboard-label">Total number of classes</div>
               </div>
             </div>
           </Card>
@@ -274,7 +274,7 @@ const TeacherClass = () => {
               </div>
               <div className="dashboard-info">
                 <div className="dashboard-value">{totalStudents}</div>
-                <div className="dashboard-label">Tổng số học sinh</div>
+                <div className="dashboard-label">Total number of students</div>
               </div>
             </div>
           </Card>
@@ -287,7 +287,7 @@ const TeacherClass = () => {
               </div>
               <div className="dashboard-info">
                 <div className="dashboard-value">{activeClasses}</div>
-                <div className="dashboard-label">Lớp đang hoạt động</div>
+                <div className="dashboard-label">Active classes</div>
               </div>
             </div>
           </Card>
@@ -300,19 +300,19 @@ const TeacherClass = () => {
   const tabItems = [
     {
       key: 'all',
-      label: 'Tất cả lớp học',
-      children: filteredClasses.length === 0 ? 
-        renderEmpty() : 
+      label: 'All classes',
+      children: filteredClasses.length === 0 ?
+        renderEmpty() :
         (viewType === 'grid' ? renderGridView() : renderListView())
     },
     {
       key: 'active',
-      label: 'Lớp đang hoạt động',
+      label: 'Active classes',
       children: null // Replace with actual content when needed
     },
     {
       key: 'full',
-      label: 'Lớp đầy',
+      label: 'Full classes',
       children: null // Replace with actual content when needed
     }
   ];
@@ -322,16 +322,16 @@ const TeacherClass = () => {
       <div className="class-header">
         <div className="header-top">
           <div className="header-left">
-            <Title level={2}>Lớp học của tôi</Title>
-            <Text>Quản lý và xem thông tin các lớp học được phân công</Text>
+            <Title level={2}>My classes</Title>
+            <Text>Manage and view information about the classes assigned to me</Text>
           </div>
         </div>
-        
+
         {!loading && classes.length > 0 && (
           <div className="header-actions">
             <div className="search-filter">
               <Search
-                placeholder="Tìm kiếm lớp học..."
+                placeholder="Search classes..."
                 allowClear
                 enterButton={<SearchOutlined />}
                 size="large"
@@ -339,29 +339,29 @@ const TeacherClass = () => {
                 onChange={e => handleSearch(e.target.value)}
                 style={{ width: 300 }}
               />
-              
+
               <Dropdown menu={{
                 items: [
                   {
                     key: '1',
-                    label: 'Tất cả lớp học',
+                    label: 'All classes',
                   },
                   {
                     key: '2',
-                    label: 'Lớp đang hoạt động',
+                    label: 'Active classes',
                   },
                   {
                     key: '3',
-                    label: 'Lớp đã đầy',
+                    label: 'Full classes',
                   },
                 ],
               }} trigger={['click']}>
                 <Button icon={<FilterOutlined />} size="large">
-                  Lọc
+                  Filter
                 </Button>
               </Dropdown>
             </div>
-            
+
             <Segmented
               options={[
                 {
@@ -393,9 +393,9 @@ const TeacherClass = () => {
         <>
           {classes.length > 0 && renderDashboard()}
 
-          <Tabs 
-            defaultActiveKey="all" 
-            className="class-tabs" 
+          <Tabs
+            defaultActiveKey="all"
+            className="class-tabs"
             items={tabItems}
           />
         </>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Button, Spin, Avatar, Tag, Typography, Input, 
-  Row, Col, message, Modal, Divider, Badge, Alert, 
+import {
+  Card, Button, Spin, Avatar, Tag, Typography, Input,
+  Row, Col, message, Modal, Divider, Badge, Alert,
   Progress, Checkbox, Collapse, Empty, Tooltip, Drawer, notification,
   Select, Radio
 } from 'antd';
-import { 
-  UserOutlined, InfoCircleOutlined, CheckCircleOutlined, 
+import {
+  UserOutlined, InfoCircleOutlined, CheckCircleOutlined,
   WarningOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined
 } from '@ant-design/icons';
 import './StaffAssignTeacherPage.css';
@@ -49,11 +49,11 @@ const StaffAssignTeacherPage = () => {
       // Filter out deleted classes
       const activeClasses = data ? data.filter(c => c.status !== 'Deleted') : [];
       setClasses(activeClasses);
-      
+
       // Extract unique academic years
       const years = [...new Set(activeClasses.map(c => c.academicYear))].sort();
       setAcademicYears(years);
-      
+
       // Extract unique grade levels
       const grades = [...new Set(activeClasses
         .filter(c => c.gradeLevelName) // Only classes with grade level
@@ -61,42 +61,42 @@ const StaffAssignTeacherPage = () => {
       // Add enrichment as a "grade level" for filtering
       const hasEnrichment = activeClasses.some(c => c.epName);
       if (hasEnrichment) {
-        grades.push('Năng khiếu');
+        grades.push('Enrichment');
       }
       setGradeLevels(grades);
-      
+
       // If no academic year is selected yet, select the most recent one
       if (selectedAcademicYear === 'all' && years.length > 0) {
         setSelectedAcademicYear(years[0]);
       }
-      
+
       // Filter classes by selected filters
       let filteredClasses = activeClasses;
-      
+
       // Filter by academic year if selected
       if (selectedAcademicYear !== 'all') {
         filteredClasses = filteredClasses.filter(c => c.academicYear === selectedAcademicYear);
       }
-      
+
       // Filter by grade level if selected
       if (selectedGradeLevel !== 'all') {
-        if (selectedGradeLevel === 'Năng khiếu') {
+        if (selectedGradeLevel === 'Enrichment') {
           filteredClasses = filteredClasses.filter(c => c.epName);
         } else {
           filteredClasses = filteredClasses.filter(c => c.gradeLevelName === selectedGradeLevel);
         }
       }
-      
+
       // Organize classes by grade level or enrichment program
       const organizedClasses = {};
-      
+
       filteredClasses.forEach(classItem => {
         if (classItem.epName) {
           // Tất cả lớp năng khiếu vào cùng một danh mục
-          if (!organizedClasses["Năng khiếu"]) {
-            organizedClasses["Năng khiếu"] = [];
+          if (!organizedClasses["Enrichment"]) {
+            organizedClasses["Enrichment"] = [];
           }
-          organizedClasses["Năng khiếu"].push(classItem);
+          organizedClasses["Enrichment"].push(classItem);
         } else if (classItem.gradeLevelName) {
           // It's a regular class with a grade level
           if (!organizedClasses[classItem.gradeLevelName]) {
@@ -105,13 +105,13 @@ const StaffAssignTeacherPage = () => {
           organizedClasses[classItem.gradeLevelName].push(classItem);
         } else {
           // Classes with neither (shouldn't happen with good data)
-          if (!organizedClasses["Khác"]) {
-            organizedClasses["Khác"] = [];
+          if (!organizedClasses["Other"]) {
+            organizedClasses["Other"] = [];
           }
-          organizedClasses["Khác"].push(classItem);
+          organizedClasses["Other"].push(classItem);
         }
       });
-      
+
       setClassesByGrade(organizedClasses);
     } catch (err) {
       message.error('Failed to load class list');
@@ -141,10 +141,10 @@ const StaffAssignTeacherPage = () => {
     setSelectedClass(classInfo);
     setSelectedTeacher(null);
     setSelectedTeacherId(null);
-    
+
     // Filter teachers if needed (in this case we don't filter by criteria)
     setFilteredTeachers(teachers);
-    
+
     // Open the drawer to show teachers
     setDrawerVisible(true);
   };
@@ -167,54 +167,54 @@ const StaffAssignTeacherPage = () => {
       message.error('Please select a class and a teacher');
       return;
     }
-    
+
     const teacherName = selectedTeacher?.fullName || 'Selected teacher';
     const className = selectedClass?.name || 'selected class';
-    
+
     setAssigning(true);
     try {
       const loadingMessage = message.loading(`Assigning ${teacherName} to ${className}...`, 0);
-      
+
       console.log(`Attempting to assign teacher ID: ${selectedTeacherId} to class ID: ${selectedClassId}`);
-      
+
       const assignData = {
         classId: selectedClassId,
         teacherId: selectedTeacherId
       };
-      
+
       await assignTeacher(assignData);
-      
+
       loadingMessage();
-      
+
       // Use message instead of notification to avoid React compatibility warning
       message.success({
         content: `Teacher "${teacherName}" successfully assigned to class "${className}"!`,
         duration: 5,
       });
-      
+
       // Reset UI state
       setSelectedTeacher(null);
       setSelectedTeacherId(null);
       setSelectedClass(null);
       setSelectedClassId(null);
       setDrawerVisible(false);
-      
+
       // Refresh data
       await fetchClassList();
       await fetchTeacherList();
-      
+
     } catch (err) {
       console.error('Assignment error:', err);
-      
+
       // Better error handling with specific message for "Class not found"
       let errorMessage = 'Failed to assign teacher';
-      
+
       if (err.message && err.message.includes('Class not found')) {
         errorMessage = `Cannot find class "${className}" (ID: ${selectedClassId}). The class may have been deleted or modified.`;
       } else if (err.message) {
         errorMessage = `Error: ${err.message}`;
       }
-      
+
       message.error({
         content: errorMessage,
         duration: 5,
@@ -244,21 +244,21 @@ const StaffAssignTeacherPage = () => {
       setFilteredTeachers(teachers);
       return;
     }
-    
+
     const filtered = teachers.filter(
-      teacher => 
+      teacher =>
         teacher.fullName?.toLowerCase().includes(value.toLowerCase()) ||
         teacher.email?.toLowerCase().includes(value.toLowerCase()) ||
         teacher.phoneNumber?.includes(value)
     );
-    
+
     setFilteredTeachers(filtered);
   };
 
   // Hàm chuyển đổi schedule dạng số thành "Thứ X"
   const formatSchedule = (timetable) => {
     if (!timetable) return null;
-    
+
     return timetable.split(',').map(day => {
       const dayNum = day.trim();
       if (dayNum === '1') return 'Chủ Nhật';
@@ -276,76 +276,76 @@ const StaffAssignTeacherPage = () => {
   const handleAcademicYearChange = (value) => {
     setSelectedAcademicYear(value);
     // Sau khi thay đổi năm học, cập nhật lại danh sách lớp đã được tổ chức
-    const filteredClasses = value === 'all' 
-      ? classes 
+    const filteredClasses = value === 'all'
+      ? classes
       : classes.filter(c => c.academicYear === value);
-    
+
     const organizedClasses = {};
-    
+
     filteredClasses.forEach(classItem => {
       if (classItem.epName) {
-        if (!organizedClasses["Năng khiếu"]) {
-          organizedClasses["Năng khiếu"] = [];
+        if (!organizedClasses["Enrichment"]) {
+          organizedClasses["Enrichment"] = [];
         }
-        organizedClasses["Năng khiếu"].push(classItem);
+        organizedClasses["Enrichment"].push(classItem);
       } else if (classItem.gradeLevelName) {
         if (!organizedClasses[classItem.gradeLevelName]) {
           organizedClasses[classItem.gradeLevelName] = [];
         }
         organizedClasses[classItem.gradeLevelName].push(classItem);
       } else {
-        if (!organizedClasses["Khác"]) {
-          organizedClasses["Khác"] = [];
+        if (!organizedClasses["Other"]) {
+          organizedClasses["Other"] = [];
         }
-        organizedClasses["Khác"].push(classItem);
+        organizedClasses["Other"].push(classItem);
       }
     });
-    
+
     setClassesByGrade(organizedClasses);
   };
 
   // Thêm hàm xử lý thay đổi cấp lớp
   const handleGradeLevelChange = (e) => {
     setSelectedGradeLevel(e.target.value);
-    
+
     // Cập nhật lại lớp học dựa trên bộ lọc mới
     let filteredClasses = classes;
-    
+
     // Filter by academic year if selected
     if (selectedAcademicYear !== 'all') {
       filteredClasses = filteredClasses.filter(c => c.academicYear === selectedAcademicYear);
     }
-    
+
     // Filter by grade level
     if (e.target.value !== 'all') {
-      if (e.target.value === 'Năng khiếu') {
+      if (e.target.value === 'Enrichment') {
         filteredClasses = filteredClasses.filter(c => c.epName);
       } else {
         filteredClasses = filteredClasses.filter(c => c.gradeLevelName === e.target.value);
       }
     }
-    
+
     // Organize classes
     const organizedClasses = {};
     filteredClasses.forEach(classItem => {
       if (classItem.epName) {
-        if (!organizedClasses["Năng khiếu"]) {
-          organizedClasses["Năng khiếu"] = [];
+        if (!organizedClasses["Enrichment"]) {
+          organizedClasses["Enrichment"] = [];
         }
-        organizedClasses["Năng khiếu"].push(classItem);
+        organizedClasses["Enrichment"].push(classItem);
       } else if (classItem.gradeLevelName) {
         if (!organizedClasses[classItem.gradeLevelName]) {
           organizedClasses[classItem.gradeLevelName] = [];
         }
         organizedClasses[classItem.gradeLevelName].push(classItem);
       } else {
-        if (!organizedClasses["Khác"]) {
-          organizedClasses["Khác"] = [];
+        if (!organizedClasses["Other"]) {
+          organizedClasses["Other"] = [];
         }
-        organizedClasses["Khác"].push(classItem);
+        organizedClasses["Other"].push(classItem);
       }
     });
-    
+
     setClassesByGrade(organizedClasses);
   };
 
@@ -361,12 +361,12 @@ const StaffAssignTeacherPage = () => {
           </div>
         )}
       </div>
-      
+
       <Spin spinning={loading}>
         <Row gutter={[24, 24]}>
           {/* Class selection section */}
           <Col span={24}>
-            <Card 
+            <Card
               title={
                 <div className="card-title-with-icon">
                   <AppstoreOutlined /> Classes by Category
@@ -377,9 +377,9 @@ const StaffAssignTeacherPage = () => {
                 <div className="card-header-actions">
                   {/* Bộ lọc theo năm học */}
                   <div className="academic-year-filter">
-                    <span className="filter-label">Năm học:</span>
-                    <Button 
-                      icon={<FontAwesomeIcon icon="chevron-left" />} 
+                    <span className="filter-label">Academic year:</span>
+                    <Button
+                      icon={<FontAwesomeIcon icon="chevron-left" />}
                       size="small"
                       onClick={() => {
                         const currentIndex = academicYears.indexOf(selectedAcademicYear);
@@ -390,10 +390,10 @@ const StaffAssignTeacherPage = () => {
                       disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                     />
                     <span className="academic-year-display">
-                      {selectedAcademicYear || 'Tất cả'}
+                      {selectedAcademicYear || 'All'}
                     </span>
-                    <Button 
-                      icon={<FontAwesomeIcon icon="chevron-right" />} 
+                    <Button
+                      icon={<FontAwesomeIcon icon="chevron-right" />}
                       size="small"
                       onClick={() => {
                         const currentIndex = academicYears.indexOf(selectedAcademicYear);
@@ -404,29 +404,29 @@ const StaffAssignTeacherPage = () => {
                       disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
                     />
                   </div>
-                  
+
                   {/* Bộ lọc theo cấp lớp */}
                   <div className="grade-level-filter">
-                    <Radio.Group 
+                    <Radio.Group
                       value={selectedGradeLevel}
                       onChange={handleGradeLevelChange}
                       buttonStyle="solid"
                       size="small"
                       optionType="button"
                     >
-                      <Radio.Button value="all">Tất cả</Radio.Button>
+                      <Radio.Button value="all">All</Radio.Button>
                       {gradeLevels.map(grade => (
-                        <Radio.Button 
-                          key={grade} 
+                        <Radio.Button
+                          key={grade}
                           value={grade}
-                          style={grade === 'Năng khiếu' ? {color: '#722ed1'} : {}}
+                          style={grade === 'Enrichment' ? { color: '#722ed1' } : {}}
                         >
                           {grade}
                         </Radio.Button>
                       ))}
                     </Radio.Group>
                   </div>
-                  
+
                   {/* Hiển thị lớp đã chọn */}
                   {selectedClass && (
                     <Tag color="blue" className="selected-class-tag">
@@ -437,33 +437,33 @@ const StaffAssignTeacherPage = () => {
               }
             >
               {Object.keys(classesByGrade).length > 0 ? (
-                <Collapse 
-                  defaultActiveKey={Object.keys(classesByGrade)} 
+                <Collapse
+                  defaultActiveKey={Object.keys(classesByGrade)}
                   className="teacher-grade-collapse"
                   bordered={false}
                   items={Object.entries(classesByGrade).map(([categoryName, classes]) => {
-                    const isEnrichment = categoryName.startsWith('Năng khiếu');
+                    const isEnrichment = categoryName.startsWith('Enrichment');
                     return {
                       key: categoryName,
                       label: (
-                        <span className={`teacher-category-header ${categoryName === 'Năng khiếu' ? 'enrichment-category' : ''}`}>
+                        <span className={`teacher-category-header ${categoryName === 'Enrichment' ? 'enrichment-category' : ''}`}>
                           <span className="teacher-category-icon">
-                            {categoryName === 'Năng khiếu' ? 
-                              <FontAwesomeIcon icon="star" /> : 
+                            {categoryName === 'Enrichment' ?
+                              <FontAwesomeIcon icon="star" /> :
                               <FontAwesomeIcon icon="graduation-cap" />
                             }
                           </span>
                           <span className="teacher-category-name">{categoryName}</span>
-                          <Tag color={categoryName === 'Năng khiếu' ? "purple" : "blue"} className="teacher-grade-count">
-                            {classes.length} {classes.length > 1 ? 'lớp' : 'lớp'}
+                          <Tag color={categoryName === 'Enrichment' ? "purple" : "blue"} className="teacher-grade-count">
+                            {classes.length} {classes.length > 1 ? 'classes' : 'class'}
                           </Tag>
                         </span>
                       ),
                       children: (
                         <div className="teacher-class-card-container">
                           {classes.map(classItem => (
-                            <Card 
-                              key={classItem.id} 
+                            <Card
+                              key={classItem.id}
                               className={`teacher-class-card ${selectedClassId === classItem.id ? 'teacher-selected-class' : ''}`}
                               hoverable
                               onClick={() => handleClassSelect(classItem)}
@@ -471,14 +471,14 @@ const StaffAssignTeacherPage = () => {
                               {selectedClassId === classItem.id && (
                                 <CheckCircleOutlined className="teacher-selected-icon" />
                               )}
-                              
+
                               <div className="teacher-class-card-header">
                                 <span className="teacher-class-name">{classItem.name}</span>
                                 <Tag color={classItem.status === 'Available' ? 'green' : 'orange'}>
                                   {classItem.status}
                                 </Tag>
                               </div>
-                              
+
                               <div className="teacher-class-info-compact">
                                 {/* Thông tin cơ bản quan trọng nhất */}
                                 <div className="teacher-class-main-info">
@@ -487,49 +487,49 @@ const StaffAssignTeacherPage = () => {
                                     <Tag color="purple" className="teacher-class-tag">{classItem.epName}</Tag>
                                   ) : null}
                                 </div>
-                                
+
                                 {/* Hiển thị giáo viên đã phân công - luôn hiển thị */}
                                 <div className="teacher-assigned-compact">
-                                  <Text type="secondary">Giáo viên:</Text>
+                                  <Text type="secondary">Teacher:</Text>
                                   <div className="teacher-tag-container-compact">
                                     {classItem.teacherNames && classItem.teacherNames.length > 0 ? (
                                       classItem.teacherNames.map((name, idx) => (
                                         <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
                                       ))
                                     ) : (
-                                      <Text type="secondary" italic>Chưa có</Text>
+                                      <Text type="secondary" italic>No teacher</Text>
                                     )}
                                   </div>
                                 </div>
-                                
+
                                 {/* Dung lượng lớp - hiển thị dạng progress */}
                                 <div className="teacher-capacity-compact">
                                   <div className="capacity-label-container">
-                                    <Text type="secondary">Sĩ số:</Text>
+                                    <Text type="secondary">Capacity:</Text>
                                     <Text className={classItem.quantity >= classItem.maxChildren ? 'capacity-full' : ''}>
                                       {classItem.quantity}/{classItem.maxChildren}
                                     </Text>
                                   </div>
-                                  <Progress 
-                                    percent={(classItem.quantity / classItem.maxChildren) * 100} 
+                                  <Progress
+                                    percent={(classItem.quantity / classItem.maxChildren) * 100}
                                     showInfo={false}
                                     size="small"
                                     status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
                                   />
                                 </div>
                               </div>
-                              
+
                               <div className="teacher-card-actions">
-                                <Button 
-                                  type="default" 
-                                  size="small" 
+                                <Button
+                                  type="default"
+                                  size="small"
                                   icon={<InfoCircleOutlined />}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     showClassDetail(classItem);
                                   }}
                                 >
-                                  Chi tiết
+                                  Details
                                 </Button>
                               </div>
                             </Card>
@@ -566,9 +566,9 @@ const StaffAssignTeacherPage = () => {
               )}
             </div>
             <div className="teacher-search-container">
-                <Input.Search
-                  placeholder="Search teachers..."
-                  allowClear
+              <Input.Search
+                placeholder="Search teachers"
+                allowClear
                 onChange={e => searchTeachers(e.target.value)}
                 style={{ width: 180 }}
               />
@@ -587,18 +587,18 @@ const StaffAssignTeacherPage = () => {
             {filteredTeachers.map(teacher => {
               const isSelected = selectedTeacherId === teacher.id;
               const isAssignedToClass = selectedClass?.teacherNames?.includes(teacher.fullName);
-              
+
               return (
-                <div 
-                  key={teacher.id} 
+                <div
+                  key={teacher.id}
                   className={`teacher-drawer-card ${isSelected ? 'teacher-selected' : ''} ${isAssignedToClass ? 'teacher-already-assigned' : ''}`}
                   onClick={() => !isAssignedToClass && handleTeacherSelect(teacher)}
                 >
                   <div className="teacher-drawer-content">
-                    <Avatar 
-                      icon={<UserOutlined />} 
+                    <Avatar
+                      icon={<UserOutlined />}
                       size={54}
-                      className="staff-assign-teacher-avatar" 
+                      className="staff-assign-teacher-avatar"
                     />
                     <div className="teacher-drawer-info">
                       <h3 className="teacher-drawer-name">{teacher.fullName}</h3>
@@ -609,12 +609,12 @@ const StaffAssignTeacherPage = () => {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="teacher-drawer-actions">
                     {isAssignedToClass ? (
                       <Tag color="green">Already Assigned</Tag>
                     ) : (
-                      <Checkbox 
+                      <Checkbox
                         checked={isSelected}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -639,7 +639,7 @@ const StaffAssignTeacherPage = () => {
         ) : (
           <Empty description="No teachers available" />
         )}
-        
+
         {/* Bottom actions in drawer */}
         {selectedTeacher && (
           <div className="teacher-drawer-footer-actions">
@@ -672,7 +672,7 @@ const StaffAssignTeacherPage = () => {
         {selectedTeacher && (
           <div className="teacher-detail-content">
             <div className="teacher-detail-header">
-              <Avatar 
+              <Avatar
                 icon={<UserOutlined />}
                 size={100}
                 className="teacher-detail-avatar"
@@ -682,9 +682,9 @@ const StaffAssignTeacherPage = () => {
                 <Tag color="blue">{selectedTeacher.roleName}</Tag>
               </div>
             </div>
-            
+
             <Divider />
-            
+
             <Row gutter={[16, 16]}>
               <Col span={12}>
                 <div className="teacher-detail-item">
@@ -726,7 +726,7 @@ const StaffAssignTeacherPage = () => {
         onCancel={() => setClassDetailModalVisible(false)}
         footer={[
           <Button key="close" onClick={() => setClassDetailModalVisible(false)}>
-            Đóng
+            Close
           </Button>,
           <Button
             key="assign"
@@ -736,7 +736,7 @@ const StaffAssignTeacherPage = () => {
               if (selectedClassDetail) handleClassSelect(selectedClassDetail);
             }}
           >
-            Phân công giáo viên
+            Assign teacher
           </Button>
         ]}
         width={700}
@@ -777,19 +777,19 @@ const StaffAssignTeacherPage = () => {
             <Card bordered={false} className="class-detail-card">
               <div className="class-detail-section">
                 <h3>
-                  <FontAwesomeIcon icon="info-circle" /> Thông tin cơ bản
+                  <FontAwesomeIcon icon="info-circle" /> Basic information
                 </h3>
                 <Row gutter={[24, 16]}>
                   <Col span={12}>
                     <div className="detail-item">
-                      <div className="detail-label">Chương trình học:</div>
+                      <div className="detail-label">Syllabus:</div>
                       <div className="detail-value">{selectedClassDetail.syllabusName}</div>
                     </div>
                   </Col>
                   {selectedClassDetail.timetable && (
                     <Col span={12}>
                       <div className="detail-item">
-                        <div className="detail-label">Lịch học:</div>
+                        <div className="detail-label">Schedule:</div>
                         <div className="detail-value highlight">
                           {formatSchedule(selectedClassDetail.timetable)}
                         </div>
@@ -802,16 +802,16 @@ const StaffAssignTeacherPage = () => {
               {/* Sĩ số lớp */}
               <div className="class-detail-section">
                 <h3>
-                  <FontAwesomeIcon icon="users" /> Sĩ số lớp học
+                  <FontAwesomeIcon icon="users" /> Class capacity
                 </h3>
                 <div className="capacity-summary">
                   <div className="capacity-numbers">
                     <span className="current-capacity">{selectedClassDetail.quantity}</span>
                     <span className="capacity-separator">/</span>
                     <span className="max-capacity">{selectedClassDetail.maxChildren}</span>
-                    <span className="capacity-label">học sinh</span>
+                    <span className="capacity-label">students</span>
                   </div>
-                  <Progress 
+                  <Progress
                     percent={(selectedClassDetail.quantity / selectedClassDetail.maxChildren) * 100}
                     status={selectedClassDetail.quantity >= selectedClassDetail.maxChildren ? "exception" : "active"}
                     strokeWidth={10}
@@ -819,7 +819,7 @@ const StaffAssignTeacherPage = () => {
                 </div>
                 {selectedClassDetail.quantity >= selectedClassDetail.maxChildren && (
                   <div className="capacity-warning">
-                    <FontAwesomeIcon icon="exclamation-triangle" /> Lớp học đã đạt số lượng tối đa
+                    <FontAwesomeIcon icon="exclamation-triangle" /> Class is at maximum capacity
                   </div>
                 )}
               </div>
@@ -827,7 +827,7 @@ const StaffAssignTeacherPage = () => {
               {/* Giáo viên */}
               <div className="class-detail-section">
                 <h3>
-                  <FontAwesomeIcon icon="chalkboard-teacher" /> Giáo viên phụ trách
+                  <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                 </h3>
                 {selectedClassDetail.teacherNames && selectedClassDetail.teacherNames.length > 0 ? (
                   <div className="teachers-assigned-list">
@@ -840,9 +840,9 @@ const StaffAssignTeacherPage = () => {
                   </div>
                 ) : (
                   <div className="no-teachers">
-                    <Empty 
-                      description="Chưa có giáo viên được phân công" 
-                      image={Empty.PRESENTED_IMAGE_SIMPLE} 
+                    <Empty
+                      description="No teacher assigned"
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
                     />
                   </div>
                 )}

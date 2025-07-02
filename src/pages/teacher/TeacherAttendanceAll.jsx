@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Table, Typography, Spin, Empty, Button, 
+import {
+  Card, Table, Typography, Spin, Empty, Button,
   Tooltip, Statistic, Row, Col, Progress
 } from 'antd';
-import { 
-  ArrowLeftOutlined, CalendarOutlined, 
+import {
+  ArrowLeftOutlined, CalendarOutlined,
   CheckCircleOutlined, CloseCircleOutlined
 } from '@ant-design/icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -31,14 +31,14 @@ const TeacherAttendanceAll = () => {
         setLoading(true);
         const data = await getAllClassAttendance(classId);
         setAttendanceData(data);
-        
+
         // Get class info
         if (currentUser?.id) {
           const classes = await getClassesByTeacherId(currentUser.id);
           const currentClass = classes.find(c => c.id.toString() === classId.toString());
           setClassInfo(currentClass);
         }
-        
+
         // Process data for table display
         processAttendanceData(data);
       } catch (error) {
@@ -70,27 +70,27 @@ const TeacherAttendanceAll = () => {
           totalAbsent: 0
         };
       }
-      
+
       const dateKey = date.split('T')[0];
       groups[classChildrenID].attendances[dateKey] = status;
-      
+
       if (status === 'Attend') {
         groups[classChildrenID].totalPresent += 1;
       } else {
         groups[classChildrenID].totalAbsent += 1;
       }
-      
+
       return groups;
     }, {});
-    
+
     // Convert to array format for table
     const processedData = Object.values(studentGroups).map((student, index) => {
       // Replace this calculation with one based on total dates
       const totalDates = uniqueDates.length;
-      const attendanceRate = totalDates > 0 
-        ? Math.round((student.totalPresent / totalDates) * 100) 
+      const attendanceRate = totalDates > 0
+        ? Math.round((student.totalPresent / totalDates) * 100)
         : 0;
-      
+
       return {
         key: student.classChildrenID,
         index: index + 1,
@@ -103,7 +103,7 @@ const TeacherAttendanceAll = () => {
         totalDates
       };
     });
-    
+
     setProcessedData(processedData);
   };
 
@@ -114,7 +114,7 @@ const TeacherAttendanceAll = () => {
   // Create dynamic columns based on attendance dates
   const columns = [
     {
-      title: 'STT',
+      title: 'ID',
       dataIndex: 'index',
       key: 'index',
       width: 60,
@@ -123,7 +123,7 @@ const TeacherAttendanceAll = () => {
       className: 'teacher-attendance-index-column'
     },
     {
-      title: 'Học sinh',
+      title: 'Student',
       dataIndex: 'childrenName',
       key: 'childrenName',
       width: 180,
@@ -168,7 +168,7 @@ const TeacherAttendanceAll = () => {
       }
     })),
     {
-      title: 'Tỉ lệ đi học',
+      title: 'Attendance rate',
       dataIndex: 'attendanceRate',
       key: 'attendanceRate',
       width: 150,
@@ -177,9 +177,9 @@ const TeacherAttendanceAll = () => {
       className: 'teacher-attendance-rate-column',
       render: (rate, record) => (
         <Tooltip title={`${record.totalPresent}/${record.totalDates} buổi (${rate}%)`}>
-          <Progress 
-            percent={rate} 
-            size="small" 
+          <Progress
+            percent={rate}
+            size="small"
             status={rate < 80 ? "exception" : "success"}
             format={percent => `${percent}%`}
           />
@@ -192,16 +192,16 @@ const TeacherAttendanceAll = () => {
   // Calculate overall statistics
   const calculateStats = () => {
     if (processedData.length === 0) return { presentRate: 0, absentRate: 0 };
-    
+
     const totalPresent = processedData.reduce((sum, student) => sum + student.totalPresent, 0);
     const totalPossibleAttendances = processedData.length * attendanceDates.length;
-    
+
     const presentRate = totalPossibleAttendances > 0 ? Math.round((totalPresent / totalPossibleAttendances) * 100) : 0;
     const absentRate = 100 - presentRate;
-    
+
     return { presentRate, absentRate };
   };
-  
+
   const stats = calculateStats();
 
   return (
@@ -209,10 +209,10 @@ const TeacherAttendanceAll = () => {
       <Card className="teacher-attendance-all-card">
         <div className="teacher-attendance-all-header">
           <div className="teacher-attendance-all-title-section">
-            <Title level={2}>Báo cáo điểm danh lớp học</Title>
+            <Title level={2}>Attendance report</Title>
             {classInfo && (
               <Paragraph className="teacher-attendance-all-class-info">
-                Lớp: <Text strong>{classInfo.name}</Text> | Sĩ số: <Text strong>{processedData.length}</Text>
+                Class: <Text strong>{classInfo.name}</Text> | Number of students: <Text strong>{processedData.length}</Text>
               </Paragraph>
             )}
           </div>
@@ -221,7 +221,7 @@ const TeacherAttendanceAll = () => {
         {loading ? (
           <div className="teacher-attendance-all-loading">
             <Spin size="large" />
-            <Text>Đang tải dữ liệu điểm danh...</Text>
+            <Text>Loading attendance data...</Text>
           </div>
         ) : processedData.length > 0 ? (
           <>
@@ -229,18 +229,18 @@ const TeacherAttendanceAll = () => {
               <Row gutter={24}>
                 <Col xs={24} md={8}>
                   <Card className="teacher-attendance-stat-card overall-rate">
-                    <Statistic 
-                      title="Tỉ lệ đi học chung" 
-                      value={stats.presentRate} 
-                      suffix="%" 
+                    <Statistic
+                      title="Attendance rate"
+                      value={stats.presentRate}
+                      suffix="%"
                       precision={0}
-                      valueStyle={{ 
+                      valueStyle={{
                         color: stats.presentRate < 80 ? '#ff4d4f' : '#3f8600'
                       }}
                     />
-                    <Progress 
-                      percent={stats.presentRate} 
-                      status={stats.presentRate < 80 ? "exception" : "success"} 
+                    <Progress
+                      percent={stats.presentRate}
+                      status={stats.presentRate < 80 ? "exception" : "success"}
                       showInfo={false}
                       className="teacher-attendance-stat-progress"
                     />
@@ -249,9 +249,9 @@ const TeacherAttendanceAll = () => {
                 <Col xs={24} md={8}>
                   <Card className="teacher-attendance-stat-card present-stat">
                     <Statistic
-                      title="Điểm danh đầy đủ"
+                      title="Full attendance"
                       value={processedData.filter(student => student.attendanceRate === 100).length}
-                      suffix={`/${processedData.length} học sinh`}
+                      suffix={`/${processedData.length} students`}
                       valueStyle={{ color: '#3f8600' }}
                       prefix={<CheckCircleOutlined />}
                     />
@@ -260,9 +260,9 @@ const TeacherAttendanceAll = () => {
                 <Col xs={24} md={8}>
                   <Card className="teacher-attendance-stat-card absent-stat">
                     <Statistic
-                      title="Cần chú ý"
+                      title="Need attention"
                       value={processedData.filter(student => student.attendanceRate < 80).length}
-                      suffix={`/${processedData.length} học sinh`}
+                      suffix={`/${processedData.length} students`}
                       valueStyle={{ color: '#cf1322' }}
                       prefix={<CloseCircleOutlined />}
                     />
@@ -270,19 +270,19 @@ const TeacherAttendanceAll = () => {
                 </Col>
               </Row>
             </div>
-            
-            <Card 
+
+            <Card
               title={
                 <div className="teacher-attendance-table-header">
-                  <Text strong>Bảng điểm danh theo ngày</Text>
+                  <Text strong>Attendance table by day</Text>
                   <Text type="secondary">
-                    <CalendarOutlined /> {attendanceDates.length} ngày điểm danh
+                    <CalendarOutlined /> {attendanceDates.length} days
                   </Text>
                 </div>
               }
               className="teacher-attendance-table-card"
             >
-              <Table 
+              <Table
                 dataSource={processedData}
                 columns={columns}
                 pagination={{ pageSize: 10 }}
@@ -294,17 +294,17 @@ const TeacherAttendanceAll = () => {
             </Card>
           </>
         ) : (
-          <Empty description="Không có dữ liệu điểm danh" />
+          <Empty description="No attendance data" />
         )}
 
         <div className="teacher-attendance-all-footer">
-          <Button 
-            icon={<ArrowLeftOutlined />} 
+          <Button
+            icon={<ArrowLeftOutlined />}
             onClick={handleBack}
             className="teacher-attendance-all-back-button"
             size="large"
           >
-            Quay lại
+            Back
           </Button>
         </div>
       </Card>

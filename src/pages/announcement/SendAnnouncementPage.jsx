@@ -26,7 +26,7 @@ const SendAnnouncementPage = () => {
         setAccounts(data || []);
       } catch (error) {
         console.error('Error fetching accounts:', error);
-        message.error('Không thể tải danh sách tài khoản');
+        message.error('Cannot load account list');
       } finally {
         setFetchingAccounts(false);
       }
@@ -78,7 +78,7 @@ const SendAnnouncementPage = () => {
     e.preventDefault();
     
     if (selectedAccountIds.length === 0) {
-      message.warning('Vui lòng chọn ít nhất một tài khoản để gửi thông báo');
+      message.warning('Please select at least one account to send announcement');
       return;
     }
 
@@ -91,7 +91,7 @@ const SendAnnouncementPage = () => {
       };
       
       await sendAnnouncement(data);
-      message.success('Gửi thông báo thành công');
+      message.success('Announcement sent successfully');
       
       // Lưu số lượng tài khoản đã gửi và hiện modal
       setSentCount(selectedAccountIds.length);
@@ -102,7 +102,7 @@ const SendAnnouncementPage = () => {
       setSelectedAccountIds([]);
     } catch (error) {
       console.error('Error sending announcement:', error);
-      message.error('Gửi thông báo thất bại');
+      message.error('Failed to send announcement');
     } finally {
       setLoading(false);
     }
@@ -161,27 +161,27 @@ const SendAnnouncementPage = () => {
         <div className="announcement-header">
           <h1 className="announcement-title">
             <FontAwesomeIcon icon="paper-plane" className="announcement-icon" /> 
-            Gửi thông báo
+            Send announcement
           </h1>
           <p className="announcement-subtitle">
-            Tạo và gửi thông báo đến các tài khoản người dùng trong hệ thống
+            Create and send announcements to users in the system
           </p>
         </div>
 
         <Divider className="section-divider">
-          <span className="divider-text">Nội dung thông báo</span>
+          <span className="divider-text">Announcement content</span>
         </Divider>
         
         <form className="announcement-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label">
               <FontAwesomeIcon icon="heading" className="label-icon" />
-              Tiêu đề thông báo
+              Announcement title
             </label>
             <Input
               className="announcement-input" 
               name="title" 
-              placeholder="Nhập tiêu đề thông báo" 
+              placeholder="Enter announcement title" 
               value={form.title} 
               onChange={handleChange}
               prefix={<FontAwesomeIcon icon="envelope" className="input-icon" />}
@@ -192,12 +192,12 @@ const SendAnnouncementPage = () => {
           <div className="form-group">
             <label className="form-label">
               <FontAwesomeIcon icon="file-alt" className="label-icon" /> 
-              Nội dung thông báo
+              Announcement content
             </label>
             <Input.TextArea 
               className="announcement-textarea" 
               name="content" 
-              placeholder="Nhập nội dung chi tiết của thông báo" 
+              placeholder="Enter detailed announcement content" 
               value={form.content} 
               onChange={handleChange}
               rows={4}
@@ -206,7 +206,7 @@ const SendAnnouncementPage = () => {
           </div>
           
           <Divider className="section-divider">
-            <span className="divider-text">Chọn người nhận</span>
+            <span className="divider-text">Select recipients</span>
           </Divider>
           
           <div className="account-selection-container">
@@ -224,7 +224,7 @@ const SendAnnouncementPage = () => {
               <div className="filters-container">
                 <div className="search-container">
                   <Input 
-                    placeholder="Tìm kiếm tài khoản..." 
+                    placeholder="Search account..." 
                     prefix={<FontAwesomeIcon icon="search" className="search-icon" />}
                     onChange={handleSearchChange}
                     className="search-input"
@@ -232,7 +232,7 @@ const SendAnnouncementPage = () => {
                 </div>
                 <div className="role-filter">
                   <Select 
-                    placeholder="Lọc theo vai trò" 
+                    placeholder="Filter by role" 
                     onChange={handleRoleChange} 
                     allowClear
                     className="role-select"
@@ -255,11 +255,11 @@ const SendAnnouncementPage = () => {
                 disabled={fetchingAccounts || filteredAccounts.length === 0}
                 className="select-all-checkbox"
               >
-                <span className="select-all-text">Chọn tất cả tài khoản</span>
+                <span className="select-all-text">Select all accounts</span>
               </Checkbox>
               <span className="account-count">
                 <Badge count={selectedAccountIds.length} style={{ backgroundColor: '#ff7e29' }} /> 
-                <span className="count-text">{selectedAccountIds.length} / {filteredAccounts.length} tài khoản được chọn</span>
+                <span className="count-text">{selectedAccountIds.length} / {filteredAccounts.length} accounts selected</span>
               </span>
             </div>
             
@@ -275,7 +275,7 @@ const SendAnnouncementPage = () => {
                     <div className="role-info">
                       <Tag color={getRoleTagColor(role)}>{role}</Tag>
                       <span className="role-count">
-                        {getSelectedCountByRole(role)} / {accounts.filter(acc => acc.roleName === role).length} được chọn
+                        {getSelectedCountByRole(role)} / {accounts.filter(acc => acc.roleName === role).length} selected
                       </span>
                     </div>
                   </Checkbox>
@@ -287,7 +287,7 @@ const SendAnnouncementPage = () => {
               {fetchingAccounts ? (
                 <div className="loading-accounts">
                   <Spin size="large" />
-                  <span>Đang tải danh sách tài khoản...</span>
+                  <span>Loading account list...</span>
                 </div>
               ) : filteredAccounts.length > 0 ? (
                 <div className="account-checkboxes">
@@ -300,7 +300,7 @@ const SendAnnouncementPage = () => {
                         <div className="account-info">
                           <span className="account-name">
                             <FontAwesomeIcon icon="user" className="account-icon" /> 
-                            {account.fullName || "Không có tên"}
+                            {account.fullName || "No name"}
                           </span>
                           {account.email && (
                             <span className="account-email">
@@ -320,7 +320,7 @@ const SendAnnouncementPage = () => {
               ) : (
                 <div className="no-accounts">
                   <FontAwesomeIcon icon="exclamation-circle" className="empty-icon" />
-                  {searchTerm ? "Không tìm thấy tài khoản phù hợp" : "Không có tài khoản nào"}
+                  {searchTerm ? "No matching account found" : "No account found"}
                 </div>
               )}
             </div>
@@ -334,18 +334,18 @@ const SendAnnouncementPage = () => {
             >
               {loading ? (
                 <>
-                  <Spin size="small" className="btn-spinner" /> Đang gửi...
+                  <Spin size="small" className="btn-spinner" /> Sending...
                 </>
               ) : (
                 <>
-                  <FontAwesomeIcon icon="paper-plane" className="btn-icon" /> Gửi thông báo
+                  <FontAwesomeIcon icon="paper-plane" className="btn-icon" /> Send announcement
                 </>
               )}
             </button>
             
             {selectedAccountIds.length > 0 && (
               <div className="selected-info">
-                Thông báo sẽ được gửi tới {selectedAccountIds.length} tài khoản
+                Announcement will be sent to {selectedAccountIds.length} accounts
               </div>
             )}
           </div>
@@ -353,7 +353,7 @@ const SendAnnouncementPage = () => {
       </Card>
 
       <Modal
-        title="Gửi thông báo thành công"
+        title="Announcement sent successfully"
         open={successModal}
         onOk={() => setSuccessModal(false)}
         onCancel={() => setSuccessModal(false)}
@@ -365,7 +365,7 @@ const SendAnnouncementPage = () => {
       >
         <div className="success-message">
           <FontAwesomeIcon icon="check-circle" style={{ color: '#52c41a', fontSize: '32px', marginBottom: '16px' }} />
-          <p>Đã gửi thông báo thành công đến {sentCount} tài khoản!</p>
+          <p>Announcement sent successfully to {sentCount} accounts!</p>
         </div>
       </Modal>
     </div>

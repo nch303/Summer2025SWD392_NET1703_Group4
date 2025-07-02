@@ -138,20 +138,22 @@
 .admin-syllabus-action-button {
   background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
   border: none;
-  border-radius: 8px;
-  padding: 0 24px;
+  border-radius: 6px;
+  padding: 0 20px;
   height: 40px;
   font-weight: 500;
   transition: all 0.3s;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.35);
+  min-width: 120px;
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
 }
 
 .admin-syllabus-action-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.45);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
   background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
 }
 
@@ -165,7 +167,7 @@
 .admin-syllabus-primary-button {
   background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   color: white;
   font-weight: 500;
   height: 40px;
@@ -175,12 +177,12 @@
   justify-content: center;
   gap: 8px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
 }
 
 .admin-syllabus-primary-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.45);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
   background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
 }
 
@@ -193,7 +195,13 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 24px;
+  padding: 16px 24px;
+  background: #f9f9f9;
+  border-top: 1px solid #f0f0f0;
+  border-radius: 0 0 10px 10px;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
 }
 
 /* Add these new styles for better step visualization */
@@ -215,12 +223,33 @@
 }
 
 .admin-syllabus-step-content {
-  margin-top: 24px;
-  padding: 30px;
+  margin-top: 0;
+  padding: 24px 30px;
   background-color: #fff;
+  border: none;
+  box-shadow: none;
+  overflow-y: auto;
+  flex: 1;
+  max-height: none;
+}
+
+/* Styling for webkit browsers scrollbar */
+.admin-syllabus-step-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-syllabus-step-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
   border-radius: 10px;
-  border: 1px solid #edf2f7;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.admin-syllabus-step-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.admin-syllabus-step-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 .admin-syllabus-step-title {
@@ -277,8 +306,9 @@
 /* Enhanced Action Buttons in Forms */
 .admin-syllabus-step-nav-buttons {
   display: flex;
-  justify-content: space-between;
-  margin-top: 40px;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
 }
 
 .admin-syllabus-progress-status {
@@ -659,4 +689,165 @@
 @keyframes shrink {
   from { width: 100%; }
   to { width: 0%; }
+}
+
+/* Update modal structure for fixed footer */
+.admin-syllabus-modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(81vh - 100px);
+}
+
+/* Adjust max-width for Ant Design modal */
+.admin-syllabus-container .ant-modal {
+  width: 90% !important;
+  max-width: 720px;
+}
+
+/* When modal is in step 1 */
+.admin-syllabus-container .ant-modal.step-1 {
+  max-width: 540px;
+}
+
+/* Consistent button styling */
+.admin-syllabus-container button.ant-btn,
+.admin-syllabus-modal-footer button.ant-btn,
+.admin-syllabus-step-nav-buttons button.ant-btn {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  transition: all 0.3s;
+}
+
+/* Primary buttons (blue) */
+.admin-syllabus-container button.ant-btn-primary,
+.admin-syllabus-modal-footer button.ant-btn-primary,
+.admin-syllabus-step-nav-buttons button.ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+}
+
+.admin-syllabus-container button.ant-btn-primary:hover,
+.admin-syllabus-modal-footer button.ant-btn-primary:hover,
+.admin-syllabus-step-nav-buttons button.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
+}
+
+/* Default buttons (gray/white) */
+.admin-syllabus-container button.ant-btn-default,
+.admin-syllabus-modal-footer button.ant-btn-default,
+.admin-syllabus-step-nav-buttons button.ant-btn-default {
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.admin-syllabus-container button.ant-btn-default:hover,
+.admin-syllabus-modal-footer button.ant-btn-default:hover,
+.admin-syllabus-step-nav-buttons button.ant-btn-default:hover {
+  color: #1890ff;
+  border-color: #1890ff;
+  background: #fff;
+}
+
+/* Override existing button styling */
+.admin-syllabus-action-button,
+.admin-syllabus-primary-button {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+  border-radius: 6px;
+  padding: 0 20px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+}
+
+/* Reset table action buttons to smaller size */
+.admin-syllabus-container .ant-table-wrapper button.ant-btn,
+.admin-syllabus-container table button.ant-btn {
+  min-width: unset;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure table icons are properly centered */
+.admin-syllabus-container table button.ant-btn .anticon {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Maintain spacing between table action buttons */
+.admin-syllabus-container .ant-table-wrapper .ant-space {
+  gap: 8px !important;
+}
+
+/* Color styling for action buttons in table */
+
+/* Info button - Blue */
+.admin-syllabus-container table button.ant-btn-primary:has(.anticon-info-circle) {
+  background: #1890ff;
+  color: white;
+}
+.admin-syllabus-container table button.ant-btn-primary:has(.anticon-info-circle):hover {
+  background: #40a9ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.5);
+}
+
+/* Edit button - Green */
+.admin-syllabus-container table button.ant-btn-primary:has(.anticon-edit) {
+  background: #52c41a;
+  color: white;
+}
+.admin-syllabus-container table button.ant-btn-primary:has(.anticon-edit):hover {
+  background: #73d13d;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.5);
+}
+
+/* Delete button - Red */
+.admin-syllabus-container table button.ant-btn-primary.ant-btn-dangerous,
+.admin-syllabus-container table button.ant-btn-primary:has(.anticon-delete) {
+  background: #ff4d4f;
+  color: white;
+}
+.admin-syllabus-container table button.ant-btn-primary.ant-btn-dangerous:hover,
+.admin-syllabus-container table button.ant-btn-primary:has(.anticon-delete):hover {
+  background: #ff7875;
+  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.5);
+}
+
+/* Reset gradient background for table buttons */
+.admin-syllabus-container table button.ant-btn-primary {
+  background: #1890ff; /* Solid color instead of gradient */
+}
+
+/* Add subtle transition effect */
+.admin-syllabus-container table button.ant-btn {
+  transition: all 0.2s ease;
+}
+.admin-syllabus-container table button.ant-btn:hover {
+  transform: translateY(-2px);
 }

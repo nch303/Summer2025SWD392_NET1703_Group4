@@ -22,20 +22,20 @@ const EnrollmentTrackingPage = () => {
   const [invoices, setInvoices] = useState({});
   const [processingPayment, setProcessingPayment] = useState({});
   const [feeDescription, setFeeDescription] = useState("");
-  
+
   const { showSpinner, hideSpinner } = useProcessingSpinner();
   const toast = useCustomToast();
-  
+
   useEffect(() => {
     fetchApplications();
   }, []);
-  
+
   const fetchApplications = async () => {
     try {
-      showSpinner('Đang tải thông tin đăng ký...');
+      showSpinner('Loading enrollment information...');
       const data = await getEnrollmentApplicationsProgress();
       setApplications(data || []);
-      
+
       // Fetch invoice details for applications with invoiceID
       const invoicePromises = data
         .filter(app => app.invoiceID)
@@ -46,7 +46,7 @@ const EnrollmentTrackingPage = () => {
             return { id: app.invoiceID, error: true };
           })
         );
-      
+
       if (invoicePromises.length > 0) {
         const invoiceResults = await Promise.all(invoicePromises);
         const invoiceMap = {};
@@ -57,11 +57,11 @@ const EnrollmentTrackingPage = () => {
         });
         setInvoices(invoiceMap);
       }
-      
+
       setError('');
     } catch (err) {
-      setError('Không thể tải thông tin đăng ký. Vui lòng thử lại sau.');
-      toast.error('Không thể tải thông tin đăng ký.');
+      setError('Cannot load enrollment information. Please try again later.');
+      toast.error('Cannot load enrollment information.');
       console.error('Error fetching applications:', err);
     } finally {
       hideSpinner();
@@ -75,7 +75,7 @@ const EnrollmentTrackingPage = () => {
       const data = await getEnrollmentApplicationDetail(eAId);
       setApplicationDetail(data);
     } catch (err) {
-      toast.error('Không thể tải thông tin chi tiết đơn đăng ký.');
+      toast.error('Cannot load enrollment application detail.');
       console.error('Error fetching application detail:', err);
     } finally {
       setLoadingDetail(false);
@@ -95,25 +95,25 @@ const EnrollmentTrackingPage = () => {
   const handleDetailClick = (application) => {
     // Store the current scroll position
     const scrollY = window.scrollY;
-    
+
     // Add styles directly to prevent scrolling and maintain page position
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollY}px`;
     document.body.style.width = '100%';
     document.body.classList.add('no-scroll');
-    
+
     setSelectedApplication(application);
     fetchApplicationDetail(application.eaid);
-    
+
     // Only fetch fee description if status is not Pending
     if (application.status !== 'Pending') {
       fetchFeeDescription(application.childrenID);
     } else {
       setFeeDescription(""); // Clear any previous fee description
     }
-    
+
     setShowDetailModal(true);
-    
+
     setTimeout(() => {
       setModalVisible(true);
     }, 10);
@@ -121,7 +121,7 @@ const EnrollmentTrackingPage = () => {
 
   const closeDetailModal = () => {
     setModalVisible(false);
-    
+
     setTimeout(() => {
       // Restore the scroll position when modal closes
       const scrollY = document.body.style.top;
@@ -130,7 +130,7 @@ const EnrollmentTrackingPage = () => {
       document.body.style.width = '';
       document.body.classList.remove('no-scroll');
       window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      
+
       setShowDetailModal(false);
       setSelectedApplication(null);
       setApplicationDetail(null);
@@ -158,7 +158,7 @@ const EnrollmentTrackingPage = () => {
       const img = new Image();
       img.src = applicationDetail.avatar;
     }
-    
+
     if (applicationDetail && applicationDetail.birthCertificate) {
       const img = new Image();
       img.src = applicationDetail.birthCertificate;
@@ -169,7 +169,7 @@ const EnrollmentTrackingPage = () => {
     setIsRefreshing(true);
     fetchApplications();
   };
-  
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'Pending': return 'tracking-pending';
@@ -180,7 +180,7 @@ const EnrollmentTrackingPage = () => {
       default: return 'tracking-pending';
     }
   };
-  
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'Pending': return 'clock';
@@ -191,39 +191,39 @@ const EnrollmentTrackingPage = () => {
       default: return 'clock';
     }
   };
-  
+
   const getStatusText = (status) => {
     switch (status) {
-      case 'Pending': return 'Đang xử lý';
-      case 'Approved': return 'Đã duyệt';
-      case 'Enrolled': return 'Đã xếp lớp';
-      case 'Paid': return 'Đã thanh toán';
-      case 'Rejected': return 'Đã từ chối';
-      default: return 'Đang xử lý';
+      case 'Pending': return 'Pending';
+      case 'Approved': return 'Approved';
+      case 'Enrolled': return 'Enrolled';
+      case 'Paid': return 'Paid';
+      case 'Rejected': return 'Rejected';
+      default: return 'Pending';
     }
   };
-  
+
   const formatDate = (dateString) => {
-    if (!dateString || dateString.includes('0001-01-01')) return 'Chưa có';
+    if (!dateString || dateString.includes('0001-01-01')) return 'No date';
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN');
+    return date.toLocaleDateString('en-US');
   };
-  
+
   const filteredAndSortedApplications = useMemo(() => {
     // Filter by status
-    let result = filterStatus === 'all' 
-      ? applications 
+    let result = filterStatus === 'all'
+      ? applications
       : applications.filter(app => app.status === filterStatus);
-    
+
     // Search by child name
     if (searchQuery.trim() !== '') {
       const lowerCaseQuery = searchQuery.toLowerCase().trim();
-      result = result.filter(app => 
+      result = result.filter(app =>
         app.childrenName.toLowerCase().includes(lowerCaseQuery) ||
         app.gradeLevelName.toLowerCase().includes(lowerCaseQuery)
       );
     }
-    
+
     // Sort by selected order
     return [...result].sort((a, b) => {
       if (sortOrder === 'newest') {
@@ -238,91 +238,91 @@ const EnrollmentTrackingPage = () => {
       return 0;
     });
   }, [applications, filterStatus, searchQuery, sortOrder]);
-  
+
   const handlePayment = async (application) => {
     try {
       setProcessingPayment(prev => ({ ...prev, [application.eaid]: true }));
-      showSpinner('Đang tạo liên kết thanh toán...');
-      
+      showSpinner('Creating payment link...');
+
       const response = await createPaymentUrlForEnrollment(application.childrenID);
-      
+
       if (response && response.url) {
         const paymentWindow = window.open(response.url, '_blank');
-        
+
         // Start polling for status changes immediately
         let statusCheckInterval;
         let attempts = 0;
         const maxAttempts = 30; // Check for up to 5 minutes (10s * 30)
-        
+
         statusCheckInterval = setInterval(async () => {
           // Increment attempts counter
           attempts++;
-          
+
           try {
             // Directly check application status from the server
             const updatedApplication = await getEnrollmentApplicationDetail(application.eaid);
-            
+
             // If payment status has changed or window is closed
-            if ((updatedApplication && updatedApplication.status === 'Paid') || 
-                (paymentWindow && paymentWindow.closed)) {
-              
+            if ((updatedApplication && updatedApplication.status === 'Paid') ||
+              (paymentWindow && paymentWindow.closed)) {
+
               // Clear the interval and update UI
               clearInterval(statusCheckInterval);
               hideSpinner();
               setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
-              
+
               // Refresh all data
               fetchApplications();
-              
+
               // Check if modal is open and refresh that data too
               if (selectedApplication && selectedApplication.eaid === application.eaid) {
                 fetchApplicationDetail(application.eaid);
               }
-              
+
               // Show success message if paid
               if (updatedApplication && updatedApplication.status === 'Paid') {
-                toast.success('Thanh toán thành công!');
+                toast.success('Payment successful!');
               }
-              
+
               return;
             }
-            
+
             // Stop checking after max attempts
             if (attempts >= maxAttempts) {
               clearInterval(statusCheckInterval);
               hideSpinner();
               setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
-              toast.info('Vui lòng làm mới trang để cập nhật trạng thái thanh toán');
+              toast.info('Please refresh the page to update the payment status');
             }
           } catch (err) {
             console.error('Error checking payment status:', err);
           }
         }, 10000); // Check every 10 seconds
-        
+
         // Still monitor window close event for immediate feedback
         const checkWindowClosed = setInterval(() => {
           if (paymentWindow && paymentWindow.closed) {
             clearInterval(checkWindowClosed);
             hideSpinner();
-            
+
             // Show loading message
-            toast.info('Đang cập nhật trạng thái thanh toán...');
-            
+            toast.info('Updating payment status...');
+
             // Immediate check for status update
             getEnrollmentApplicationDetail(application.eaid)
               .then(updatedData => {
                 if (updatedData && updatedData.status === 'Paid') {
-                  toast.success('Thanh toán thành công!');
+                  toast.success('Payment successful!');
                 }
-                
+
                 // Refresh all data
                 fetchApplications();
-                
+
                 // Update modal if open
                 if (selectedApplication && selectedApplication.eaid === application.eaid) {
                   fetchApplicationDetail(application.eaid);
                 }
-                
+
                 setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
               })
               .catch(err => {
@@ -338,43 +338,43 @@ const EnrollmentTrackingPage = () => {
         setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
       }
     } catch (err) {
-      let errorMessage = 'Đã xảy ra lỗi khi tạo liên kết thanh toán.';
-      
+      let errorMessage = 'An error occurred while creating payment link.';
+
       if (err.response && err.response.data && err.response.data.message) {
-        errorMessage = `Lỗi: ${err.response.data.message}`;
+        errorMessage = `Error: ${err.response.data.message}`;
       } else if (err.message) {
-        errorMessage = `Lỗi: ${err.message}`;
+        errorMessage = `Error: ${err.message}`;
       }
-      
+
       toast.error(errorMessage);
       console.error('Payment error details:', err);
       hideSpinner();
       setProcessingPayment(prev => ({ ...prev, [application.eaid]: false }));
     }
   };
-  
+
   const renderPaymentButton = (app) => {
     if (app.status === 'Rejected') {
       return null;
     }
-    
+
     const isProcessing = processingPayment[app.eaid];
-    
+
     if (app.status === 'Enrolled') {
       // Check if classResponse exists and has a status
       if (app.classResponse && app.classResponse.status === 'Unavailable') {
         return (
-          <button 
+          <button
             className="tracking-action-btn tracking-payment-btn"
             disabled={true}
           >
             <FontAwesomeIcon icon="clock" />
-            Đợi mở lớp để thanh toán
+            Wait for class to open to pay
           </button>
         );
       } else {
         return (
-          <button 
+          <button
             className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
             onClick={(e) => {
               e.stopPropagation();
@@ -383,93 +383,93 @@ const EnrollmentTrackingPage = () => {
             disabled={isProcessing}
           >
             <FontAwesomeIcon icon={isProcessing ? "spinner" : "credit-card"} spin={isProcessing} />
-            {isProcessing ? 'Đang xử lý...' : 'Thanh toán học phí'}
+            {isProcessing ? 'Processing...' : 'Pay tuition fee'}
           </button>
         );
       }
     }
-    
+
     return null;
   }
-  
+
   return (
     <div className="tracking-container">
       <toast.ToastContainer position="top-right" />
-      
+
       <div className="tracking-layout">
         <div className="tracking-sidebar">
           <div className="tracking-sidebar-header">
             <FontAwesomeIcon icon="filter" className="tracking-sidebar-icon" />
-            <h3>Trạng thái</h3>
+            <h3>Status</h3>
           </div>
-          
+
           <div className="tracking-status-tabs">
-            <button 
+            <button
               className={`tracking-tab-btn ${filterStatus === 'all' ? 'active' : ''}`}
               onClick={() => setFilterStatus('all')}
             >
               <span className="tracking-tab-icon">
                 <FontAwesomeIcon icon="list" />
               </span>
-              <span className="tracking-tab-text">Tất cả</span>
+              <span className="tracking-tab-text">All</span>
             </button>
-            <button 
+            <button
               className={`tracking-tab-btn ${filterStatus === 'Pending' ? 'active' : ''}`}
               onClick={() => setFilterStatus('Pending')}
             >
               <span className="tracking-tab-icon tracking-pending">
                 <FontAwesomeIcon icon="clock" />
               </span>
-              <span className="tracking-tab-text">Đang xử lý</span>
+              <span className="tracking-tab-text">Pending</span>
             </button>
-            <button 
+            <button
               className={`tracking-tab-btn ${filterStatus === 'Approved' ? 'active' : ''}`}
               onClick={() => setFilterStatus('Approved')}
             >
               <span className="tracking-tab-icon tracking-approved">
                 <FontAwesomeIcon icon="check-circle" />
               </span>
-              <span className="tracking-tab-text">Đã duyệt</span>
+              <span className="tracking-tab-text">Approved</span>
             </button>
-            <button 
+            <button
               className={`tracking-tab-btn ${filterStatus === 'Paid' ? 'active' : ''}`}
               onClick={() => setFilterStatus('Paid')}
             >
               <span className="tracking-tab-icon tracking-paid">
                 <FontAwesomeIcon icon="money-check-alt" />
               </span>
-              <span className="tracking-tab-text">Đã thanh toán</span>
+              <span className="tracking-tab-text">Paid</span>
             </button>
-            <button 
+            <button
               className={`tracking-tab-btn ${filterStatus === 'Enrolled' ? 'active' : ''}`}
               onClick={() => setFilterStatus('Enrolled')}
             >
               <span className="tracking-tab-icon tracking-enrolled">
                 <FontAwesomeIcon icon="user-check" />
               </span>
-              <span className="tracking-tab-text">Đã xếp lớp</span>
+              <span className="tracking-tab-text">Enrolled</span>
             </button>
-            <button 
+            <button
               className={`tracking-tab-btn ${filterStatus === 'Rejected' ? 'active' : ''}`}
               onClick={() => setFilterStatus('Rejected')}
             >
               <span className="tracking-tab-icon tracking-rejected">
                 <FontAwesomeIcon icon="times-circle" />
               </span>
-              <span className="tracking-tab-text">Đã từ chối</span>
+              <span className="tracking-tab-text">Rejected</span>
             </button>
           </div>
         </div>
-        
+
         <div className="tracking-content-area">
           <div className="tracking-paper">
             <div className="tracking-header">
               <div className="tracking-header-content">
                 <FontAwesomeIcon icon="tasks" className="tracking-header-icon" />
-                <h1>Theo dõi tiến trình đăng ký</h1>
+                <h1>Tracking enrollment progress</h1>
               </div>
             </div>
-            
+
             {error && (
               <div className="tracking-message tracking-error-message">
                 <div className="tracking-message-icon">
@@ -478,7 +478,7 @@ const EnrollmentTrackingPage = () => {
                 <span>{error}</span>
               </div>
             )}
-            
+
             <div className="tracking-content">
               {/* Search and filter bar */}
               <div className="tracking-search-and-filter">
@@ -486,13 +486,13 @@ const EnrollmentTrackingPage = () => {
                   <FontAwesomeIcon icon="search" className="tracking-search-icon" />
                   <input
                     type="text"
-                    placeholder="Tìm kiếm theo tên trẻ..."
+                    placeholder="Search by child name..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="tracking-search-input"
                   />
                   {searchQuery && (
-                    <button 
+                    <button
                       className="tracking-clear-search"
                       onClick={() => setSearchQuery('')}
                     >
@@ -500,32 +500,32 @@ const EnrollmentTrackingPage = () => {
                     </button>
                   )}
                 </div>
-                
+
                 <div className="tracking-sort-dropdown">
                   <label htmlFor="sortOrder">
-                    <FontAwesomeIcon icon="sort" /> Sắp xếp:
+                    <FontAwesomeIcon icon="sort" /> Sort by:
                   </label>
-                  <select 
-                    id="sortOrder" 
+                  <select
+                    id="sortOrder"
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
                     className="tracking-sort-select"
                   >
-                    <option value="newest">Mới nhất</option>
-                    <option value="oldest">Cũ nhất</option>
-                    <option value="nameAsc">Tên A-Z</option>
-                    <option value="nameDesc">Tên Z-A</option>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="nameAsc">Name A-Z</option>
+                    <option value="nameDesc">Name Z-A</option>
                   </select>
                 </div>
               </div>
-              
+
               {/* Applications list */}
               {filteredAndSortedApplications.length > 0 ? (
                 <div className="tracking-applications-list">
                   {filteredAndSortedApplications.map((app) => (
-                    <div 
-                      key={app.eaid} 
-                      className="tracking-application-card" 
+                    <div
+                      key={app.eaid}
+                      className="tracking-application-card"
                       data-status={app.status}
                     >
                       <div className={`tracking-application-status ${getStatusColor(app.status)}`}>
@@ -534,7 +534,7 @@ const EnrollmentTrackingPage = () => {
                         </div>
                         <span className="tracking-status-text">{getStatusText(app.status)}</span>
                       </div>
-                      
+
                       <div className="tracking-application-info">
                         <h3 className="tracking-child-name">{app.childrenName}</h3>
                         <div className="tracking-application-details">
@@ -548,30 +548,29 @@ const EnrollmentTrackingPage = () => {
                           </p>
                         </div>
                       </div>
-                      
+
                       <div className="tracking-application-timeline">
-                        <div 
-                          className={`tracking-timeline-step ${app.status !== 'Rejected' ? 'active' : ''}`} 
+                        <div
+                          className={`tracking-timeline-step ${app.status !== 'Rejected' ? 'active' : ''}`}
                           data-status="Pending"
                         >
                           <div className="tracking-step-number">1</div>
                           <div className="tracking-step-icon">
                             <FontAwesomeIcon icon={app.status !== 'Rejected' ? "check" : "clipboard-list"} />
                           </div>
-                          <div className="tracking-step-label">Đăng ký</div>
+                          <div className="tracking-step-label">Register</div>
                         </div>
-                        
-                        <div 
-                          className={`tracking-timeline-connector ${
-                            (app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled') 
-                              ? 'active' 
+
+                        <div
+                          className={`tracking-timeline-connector ${(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled')
+                              ? 'active'
                               : app.status === 'Pending' ? 'half-active' : ''
-                          }`}
-                          data-from="Register" 
+                            }`}
+                          data-from="Register"
                           data-to="Approved"
                         ></div>
-                        
-                        <div 
+
+                        <div
                           className={`tracking-timeline-step ${(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled') ? 'active' : ''}`}
                           data-status="Approved"
                         >
@@ -579,20 +578,19 @@ const EnrollmentTrackingPage = () => {
                           <div className="tracking-step-icon">
                             <FontAwesomeIcon icon={(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled') ? "check" : "check-circle"} />
                           </div>
-                          <div className="tracking-step-label">Phê duyệt</div>
+                          <div className="tracking-step-label">Approved</div>
                         </div>
-                        
-                        <div 
-                          className={`tracking-timeline-connector ${
-                            (app.status === 'Paid' || app.status === 'Enrolled') 
-                              ? 'active' 
+
+                        <div
+                          className={`tracking-timeline-connector ${(app.status === 'Paid' || app.status === 'Enrolled')
+                              ? 'active'
                               : app.status === 'Approved' ? 'half-active' : ''
-                          }`}
-                          data-from="Approved" 
+                            }`}
+                          data-from="Approved"
                           data-to="Paid"
                         ></div>
-                        
-                        <div 
+
+                        <div
                           className={`tracking-timeline-step ${(app.status === 'Enrolled' || app.status === 'Paid') ? 'active' : ''}`}
                           data-status="Enrolled"
                         >
@@ -600,20 +598,19 @@ const EnrollmentTrackingPage = () => {
                           <div className="tracking-step-icon">
                             <FontAwesomeIcon icon={(app.status === 'Enrolled' || app.status === 'Paid') ? "check" : "user-check"} />
                           </div>
-                          <div className="tracking-step-label">Xếp lớp</div>
+                          <div className="tracking-step-label">Enrolled</div>
                         </div>
-                        
-                        <div 
-                          className={`tracking-timeline-connector ${
-                            app.status === 'Paid' 
-                              ? 'active' 
+
+                        <div
+                          className={`tracking-timeline-connector ${app.status === 'Paid'
+                              ? 'active'
                               : app.status === 'Enrolled' ? 'half-active' : ''
-                          }`}
-                          data-from="Enrolled" 
+                            }`}
+                          data-from="Enrolled"
                           data-to="Paid"
                         ></div>
-                        
-                        <div 
+
+                        <div
                           className={`tracking-timeline-step ${app.status === 'Paid' ? 'active' : ''}`}
                           data-status="Paid"
                         >
@@ -621,18 +618,18 @@ const EnrollmentTrackingPage = () => {
                           <div className="tracking-step-icon">
                             <FontAwesomeIcon icon={app.status === 'Paid' ? "check" : "money-check-alt"} />
                           </div>
-                          <div className="tracking-step-label">Thanh toán</div>
+                          <div className="tracking-step-label">Payment</div>
                         </div>
                       </div>
-                      
+
                       <div className="tracking-application-actions">
                         {renderPaymentButton(app)}
-                        <button 
+                        <button
                           className="tracking-action-btn tracking-detail-btn"
                           onClick={() => handleDetailClick(app)}
                         >
                           <FontAwesomeIcon icon="info-circle" />
-                          Chi tiết
+                          Detail
                         </button>
                       </div>
                     </div>
@@ -645,9 +642,9 @@ const EnrollmentTrackingPage = () => {
                       <div className="tracking-no-data-icon">
                         <FontAwesomeIcon icon="filter" />
                       </div>
-                      <h3>Không tìm thấy kết quả</h3>
-                      <p>Không tìm thấy đơn đăng ký phù hợp với điều kiện tìm kiếm.</p>
-                      <button 
+                      <h3>No results found</h3>
+                      <p>No applications match your search criteria.</p>
+                      <button
                         className="tracking-btn-secondary"
                         onClick={() => {
                           setFilterStatus('all');
@@ -655,7 +652,7 @@ const EnrollmentTrackingPage = () => {
                         }}
                       >
                         <FontAwesomeIcon icon="undo" />
-                        Xóa bộ lọc
+                        Clear filters
                       </button>
                     </>
                   ) : (
@@ -663,11 +660,11 @@ const EnrollmentTrackingPage = () => {
                       <div className="tracking-no-data-icon">
                         <FontAwesomeIcon icon="clipboard" />
                       </div>
-                      <h3>Không có đơn đăng ký nào</h3>
-                      <p>Bạn chưa có đơn đăng ký nhập học nào. Đăng ký nhập học cho con bạn ngay.</p>
+                      <h3>No applications found</h3>
+                      <p>You don't have any enrollment applications. Register your child now.</p>
                       <Link to="/profile/children" className="tracking-btn-primary">
                         <FontAwesomeIcon icon="plus" />
-                        Đăng ký nhập học
+                        Enroll now
                       </Link>
                     </>
                   )}
@@ -677,29 +674,29 @@ const EnrollmentTrackingPage = () => {
           </div>
         </div>
       </div>
-      
+
       {showDetailModal && (
-        <div 
+        <div
           className={`tracking-modal-overlay ${modalVisible ? 'visible' : ''}`}
           onClick={closeDetailModal}
           ref={modalOverlayRef}
         >
-          <div 
-            className="tracking-modal-content" 
+          <div
+            className="tracking-modal-content"
             onClick={e => e.stopPropagation()}
           >
             <div className="tracking-modal-header">
-              <h2>Thông tin chi tiết đơn đăng ký</h2>
+              <h2>Enrollment application details</h2>
               <button className="tracking-modal-close-btn" onClick={closeDetailModal}>
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
-            
+
             <div className="tracking-modal-body">
               {loadingDetail ? (
                 <div className="tracking-modal-loading">
                   <div className="tracking-loading-spinner"></div>
-                  <p>Đang tải thông tin chi tiết...</p>
+                  <p>Loading detailed information...</p>
                 </div>
               ) : applicationDetail ? (
                 <div className="tracking-detail-content">
@@ -713,7 +710,7 @@ const EnrollmentTrackingPage = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="tracking-detail-main-info">
                       <h3>{applicationDetail.childrenName}</h3>
                       <div className={`tracking-detail-status ${getStatusColor(applicationDetail.status)}`}>
@@ -722,79 +719,79 @@ const EnrollmentTrackingPage = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="tracking-detail-sections">
                     <div className="tracking-detail-section">
                       <h4>
                         <FontAwesomeIcon icon="info-circle" />
-                        Thông tin cơ bản
+                        Basic information
                       </h4>
                       <div className="tracking-detail-grid">
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Ngày sinh:</span>
+                          <span className="tracking-detail-label">Birthday:</span>
                           <span className="tracking-detail-value">{formatDate(applicationDetail.birthday)}</span>
                         </div>
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Giới tính:</span>
+                          <span className="tracking-detail-label">Gender:</span>
                           <span className="tracking-detail-value">
-                            {applicationDetail.gender === 'Male' ? 'Nam' : 'Nữ'}
+                            {applicationDetail.gender === 'Male' ? 'Male' : 'Female'}
                           </span>
                         </div>
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Nơi sinh:</span>
+                          <span className="tracking-detail-label">Birthplace:</span>
                           <span className="tracking-detail-value">{applicationDetail.city}</span>
                         </div>
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Lớp đăng ký:</span>
+                          <span className="tracking-detail-label">Class:</span>
                           <span className="tracking-detail-value">{applicationDetail.gradeLevelName}</span>
                         </div>
                         {applicationDetail.status === 'Enrolled' && (
                           <div className="tracking-detail-item">
-                            <span className="tracking-detail-label">Ngày nhập học:</span>
+                            <span className="tracking-detail-label">Enrollment date:</span>
                             <span className="tracking-detail-value">{formatDate(applicationDetail.enrollDate)}</span>
                           </div>
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="tracking-detail-section">
                       <h4>
                         <FontAwesomeIcon icon="user" />
-                        Thông tin phụ huynh
+                        Parent information
                       </h4>
                       <div className="tracking-detail-grid">
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Họ và tên:</span>
+                          <span className="tracking-detail-label">Name:</span>
                           <span className="tracking-detail-value">{applicationDetail.parentName}</span>
                         </div>
                         <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Số điện thoại:</span>
+                          <span className="tracking-detail-label">Phone:</span>
                           <span className="tracking-detail-value">{applicationDetail.parentPhone}</span>
                         </div>
                         <div className="tracking-detail-item" style={{ gridColumn: "1 / -1" }}>
-                          <span className="tracking-detail-label">Địa chỉ:</span>
+                          <span className="tracking-detail-label">Address:</span>
                           <span className="tracking-detail-value">{applicationDetail.address}</span>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="tracking-detail-section">
                       <h4>
                         <FontAwesomeIcon icon="file-alt" />
-                        Giấy tờ
+                        Documents
                       </h4>
                       <div className="tracking-detail-documents">
                         <div className="tracking-detail-document">
-                          <p>Giấy khai sinh</p>
+                          <p>Birth certificate</p>
                           {applicationDetail.birthCertificate ? (
                             <div className="tracking-detail-document-preview">
-                              <img 
-                                src={applicationDetail.birthCertificate} 
-                                alt="Giấy khai sinh"
+                              <img
+                                src={applicationDetail.birthCertificate}
+                                alt="Birth certificate"
                                 onClick={() => window.open(applicationDetail.birthCertificate, '_blank')}
                                 className="document-image"
                                 onError={(e) => {
-                                  e.target.onerror = null; 
+                                  e.target.onerror = null;
                                   e.target.style.display = 'none';
                                 }}
                               />
@@ -805,20 +802,20 @@ const EnrollmentTrackingPage = () => {
                           ) : (
                             <div className="tracking-detail-document-missing">
                               <FontAwesomeIcon icon="file-excel" />
-                              <span>Chưa cung cấp</span>
+                              <span>Not provided</span>
                             </div>
                           )}
                         </div>
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Only show fee information if application status is not Pending */}
                   {feeDescription && applicationDetail && applicationDetail.status !== 'Pending' && (
                     <div className="tracking-detail-section">
                       <h4>
                         <FontAwesomeIcon icon="money-bill-wave" />
-                        Thông tin học phí
+                        Tuition fee information
                       </h4>
                       <div className="tracking-detail-fee-info">
                         {feeDescription.split('\n').map((line, index) => {
@@ -826,11 +823,12 @@ const EnrollmentTrackingPage = () => {
                           let formattedLine = line;
                           if (line.includes('(') && line.includes(')') && !line.includes('Tổng cộng:')) {
                             formattedLine = line.replace(/\((.*?)\)/, ': $1').replace(' đồng)', ' đồng');
+                            formattedLine = line.replace(/\((.*?)\)/, ': $1').replace(' đồng)', ' đồng');
                           }
-                          
+
                           return (
-                            <div 
-                              key={index} 
+                            <div
+                              key={index}
                               className={`tracking-detail-fee-line ${line.includes('Tổng cộng:') ? 'tracking-detail-fee-total' : ''}`}
                             >
                               {formattedLine}
@@ -844,27 +842,27 @@ const EnrollmentTrackingPage = () => {
               ) : (
                 <div className="tracking-detail-error">
                   <FontAwesomeIcon icon="exclamation-circle" />
-                  <p>Không thể tải thông tin chi tiết. Vui lòng thử lại sau.</p>
+                  <p>Cannot load detailed information. Please try again later.</p>
                 </div>
               )}
             </div>
-            
+
             <div className="tracking-modal-footer">
               <button className="tracking-btn-secondary" onClick={closeDetailModal}>
                 <FontAwesomeIcon icon="times" />
-                Đóng
+                Close
               </button>
               {applicationDetail && (applicationDetail.status === 'Enrolled') && (
                 selectedApplication && selectedApplication.classResponse && selectedApplication.classResponse.status === 'Unavailable' ? (
-                  <button 
+                  <button
                     className="tracking-action-btn tracking-payment-btn"
                     disabled={true}
                   >
                     <FontAwesomeIcon icon="clock" />
-                    Đợi mở lớp để thanh toán
+                    Wait for class to open to pay
                   </button>
                 ) : (
-                  <button 
+                  <button
                     className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
                     onClick={() => {
                       if (!processingPayment[selectedApplication.eaid]) {
@@ -873,9 +871,9 @@ const EnrollmentTrackingPage = () => {
                     }}
                     disabled={processingPayment[selectedApplication.eaid]}
                   >
-                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"} 
-                                    spin={processingPayment[selectedApplication.eaid]} />
-                    {processingPayment[selectedApplication.eaid] ? 'Đang xử lý...' : 'Thanh toán học phí'}
+                    <FontAwesomeIcon icon={processingPayment[selectedApplication.eaid] ? "spinner" : "credit-card"}
+                      spin={processingPayment[selectedApplication.eaid]} />
+                    {processingPayment[selectedApplication.eaid] ? 'Processing...' : 'Pay tuition fee'}
                   </button>
                 )
               )}

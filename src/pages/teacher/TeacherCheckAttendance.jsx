@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Row, Col, Typography, Button, Table, Spin, 
+import {
+  Card, Row, Col, Typography, Button, Table, Spin,
   Empty, Radio, Input, message, Space, Badge, Tag, Tooltip, Progress
 } from 'antd';
-import { 
-  CalendarOutlined, SaveOutlined, UndoOutlined, 
+import {
+  CalendarOutlined, SaveOutlined, UndoOutlined,
   CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined,
   ArrowLeftOutlined, InfoCircleOutlined
 } from '@ant-design/icons';
@@ -26,7 +26,7 @@ const TeacherCheckAttendance = () => {
   const [originalData, setOriginalData] = useState([]);
   const [saving, setSaving] = useState(false);
   const [todayDate, setTodayDate] = useState('');
-  
+
   useEffect(() => {
     fetchAttendanceData();
     // Format today's date
@@ -38,7 +38,7 @@ const TeacherCheckAttendance = () => {
       day: 'numeric'
     }));
   }, [classId]);
-  
+
   const fetchAttendanceData = async () => {
     try {
       setLoading(true);
@@ -50,11 +50,11 @@ const TeacherCheckAttendance = () => {
       setOriginalData(JSON.parse(JSON.stringify(data)));
       setLoading(false);
     } catch (error) {
-      message.error('Không thể tải dữ liệu điểm danh');
+      message.error('Cannot load attendance data');
       setLoading(false);
     }
   };
-  
+
   const handleStatusChange = (record, status) => {
     const newData = attendanceData.map(item => {
       if (item.id === record.id) {
@@ -64,7 +64,7 @@ const TeacherCheckAttendance = () => {
     });
     setAttendanceData(newData);
   };
-  
+
   const handleNotesChange = (record, notes) => {
     const newData = attendanceData.map(item => {
       if (item.id === record.id) {
@@ -74,16 +74,16 @@ const TeacherCheckAttendance = () => {
     });
     setAttendanceData(newData);
   };
-  
+
   const resetChanges = () => {
     setAttendanceData(JSON.parse(JSON.stringify(originalData)));
-    message.info('Đã hoàn tác các thay đổi');
+    message.info('Changes have been reverted');
   };
-  
+
   const handleBack = () => {
     navigate(-1);
   };
-  
+
   const saveAttendance = async () => {
     try {
       setSaving(true);
@@ -92,12 +92,12 @@ const TeacherCheckAttendance = () => {
         status: item.status,
         notes: item.notes || ''
       }));
-      
+
       await updateAttendanceRecords(recordsToUpdate);
-      
+
       setOriginalData(JSON.parse(JSON.stringify(attendanceData)));
-      
-      toast.success('Đã lưu điểm danh thành công!', {
+
+      toast.success('Attendance saved successfully!', {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -107,10 +107,10 @@ const TeacherCheckAttendance = () => {
         progress: undefined,
         className: 'teacher-toast-success'
       });
-      
+
       setSaving(false);
     } catch (error) {
-      toast.error('Không thể lưu dữ liệu điểm danh. Vui lòng thử lại.', {
+      toast.error('Cannot save attendance data. Please try again.', {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -123,22 +123,22 @@ const TeacherCheckAttendance = () => {
       setSaving(false);
     }
   };
-  
+
   const hasChanges = () => {
     return JSON.stringify(attendanceData) !== JSON.stringify(originalData);
   };
-  
+
   const getPresentCount = () => {
     return attendanceData.filter(item => item.status === 'Attend').length;
   };
-  
+
   const getAbsentCount = () => {
     return attendanceData.filter(item => item.status === 'Absent').length;
   };
-  
+
   const columns = [
     {
-      title: 'STT',
+      title: 'ID',
       dataIndex: 'index',
       key: 'index',
       width: 60,
@@ -146,7 +146,7 @@ const TeacherCheckAttendance = () => {
       render: (_, __, index) => index + 1
     },
     {
-      title: 'Học sinh',
+      title: 'Student',
       dataIndex: 'childrenName',
       key: 'childrenName',
       render: (name) => (
@@ -154,41 +154,41 @@ const TeacherCheckAttendance = () => {
       )
     },
     {
-      title: 'Trạng thái',
+      title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (status, record) => (
         <div className="teacher-status-selection">
-          <Radio.Group 
-            value={status} 
+          <Radio.Group
+            value={status}
             onChange={(e) => handleStatusChange(record, e.target.value)}
             buttonStyle="solid"
             className="teacher-status-radio-group"
           >
-            <Radio.Button 
-              value="Attend" 
+            <Radio.Button
+              value="Attend"
               className={`teacher-status-btn ${status === 'Attend' ? 'teacher-status-btn-attend-active' : ''}`}
             >
-              <CheckCircleOutlined /> Có mặt
+              <CheckCircleOutlined /> Present
             </Radio.Button>
-            <Radio.Button 
-              value="Absent" 
+            <Radio.Button
+              value="Absent"
               className={`teacher-status-btn ${status === 'Absent' ? 'teacher-status-btn-absent-active' : ''}`}
             >
-              <CloseCircleOutlined /> Vắng mặt
+              <CloseCircleOutlined /> Absent
             </Radio.Button>
           </Radio.Group>
         </div>
       )
     },
     {
-      title: 'Ghi chú',
+      title: 'Notes',
       dataIndex: 'notes',
       key: 'notes',
       render: (notes, record) => (
-        <TextArea 
-          placeholder="Nhập ghi chú (nếu có)"
-          value={notes} 
+        <TextArea
+          placeholder="Enter notes (optional)"
+          value={notes}
           onChange={(e) => handleNotesChange(record, e.target.value)}
           autoSize={{ minRows: 1, maxRows: 3 }}
           className="teacher-notes-input"
@@ -197,45 +197,45 @@ const TeacherCheckAttendance = () => {
       )
     }
   ];
-  
-  const attendancePercentage = attendanceData.length > 0 
-    ? Math.round((getPresentCount() / attendanceData.length) * 100) 
+
+  const attendancePercentage = attendanceData.length > 0
+    ? Math.round((getPresentCount() / attendanceData.length) * 100)
     : 0;
-  
+
   return (
     <div className="teacher-attendance-container">
       <Card className="teacher-attendance-page-card">
         <div className="teacher-attendance-header">
           <div className="teacher-attendance-title-section">
-            <Title level={2}>Điểm danh lớp học</Title>
+            <Title level={2}>Attendance</Title>
             <Paragraph className="teacher-attendance-description">
-              Điểm danh học sinh và ghi chú cho ngày hôm nay
+              Attendance of students and notes for today
             </Paragraph>
           </div>
-          
+
           <div className="teacher-attendance-date">
             <CalendarOutlined className="teacher-date-icon" />
             <Text strong>{todayDate}</Text>
           </div>
         </div>
-      
+
         {loading ? (
           <div className="teacher-loading-state">
             <Spin size="large" />
-            <Text>Đang tải dữ liệu điểm danh...</Text>
+            <Text>Loading attendance data...</Text>
           </div>
         ) : attendanceData.length > 0 ? (
           <>
             <div className="teacher-attendance-summary">
               <Card className="teacher-summary-card teacher-summary-card-percentage">
                 <div className="teacher-summary-header">
-                  <Text type="secondary" style={{ marginRight: '3px'}}>Tỉ lệ điểm danh</Text>
-                  <Tooltip title="Tỉ lệ học sinh có mặt trên tổng số học sinh">
+                  <Text type="secondary" style={{ marginRight: '3px' }}>Attendance rate</Text>
+                  <Tooltip title="Attendance rate of students">
                     <InfoCircleOutlined className="teacher-info-icon" />
                   </Tooltip>
                 </div>
-                <Progress 
-                  type="circle" 
+                <Progress
+                  type="circle"
                   percent={attendancePercentage}
                   size={80}
                   format={percent => `${percent}%`}
@@ -246,38 +246,38 @@ const TeacherCheckAttendance = () => {
                   className="teacher-attendance-progress"
                 />
               </Card>
-              
+
               <Card className="teacher-summary-card present">
                 <div className="teacher-summary-header">
-                  <Text type="secondary">Có mặt</Text>
+                  <Text type="secondary">Present</Text>
                   <Badge status="success" />
                 </div>
                 <div className="teacher-summary-value">
                   {getPresentCount()}/{attendanceData.length}
                 </div>
                 <div className="teacher-summary-subtitle">
-                  học sinh
+                  students
                 </div>
               </Card>
-              
+
               <Card className="teacher-summary-card absent">
                 <div className="teacher-summary-header">
-                  <Text type="secondary">Vắng mặt</Text>
+                  <Text type="secondary">Absent</Text>
                   <Badge status="error" />
                 </div>
                 <div className="teacher-summary-value">
                   {getAbsentCount()}/{attendanceData.length}
                 </div>
                 <div className="teacher-summary-subtitle">
-                  học sinh
+                  students
                 </div>
               </Card>
             </div>
-            
-            <Card 
+
+            <Card
               title={
                 <div className="teacher-table-header">
-                  <Text strong>Danh sách điểm danh</Text>
+                  <Text strong>Attendance list</Text>
                 </div>
               }
               className="teacher-attendance-card"
@@ -287,53 +287,53 @@ const TeacherCheckAttendance = () => {
                 columns={columns}
                 pagination={false}
                 className="teacher-attendance-table"
-                rowClassName={(record) => 
+                rowClassName={(record) =>
                   record.status === 'Attend' ? 'teacher-row-attend' : 'teacher-row-absent'
                 }
                 bordered
                 size="middle"
               />
             </Card>
-            
+
             <div className="teacher-attendance-actions">
-              <Button 
+              <Button
                 onClick={handleBack}
                 icon={<ArrowLeftOutlined />}
                 className="teacher-back-button"
                 size="large"
               >
-                Quay lại
+                Back
               </Button>
               <div className="teacher-action-spacer"></div>
-              <Button 
+              <Button
                 onClick={resetChanges}
                 icon={<UndoOutlined />}
                 disabled={!hasChanges()}
                 size="large"
               >
-                Hoàn tác
+                Revert
               </Button>
-              <Button 
-                type="primary" 
-                onClick={saveAttendance} 
+              <Button
+                type="primary"
+                onClick={saveAttendance}
                 loading={saving}
                 icon={<SaveOutlined />}
                 disabled={!hasChanges()}
                 size="large"
               >
-                Lưu điểm danh
+                Save attendance
               </Button>
             </div>
           </>
         ) : (
-          <Empty 
-            description="Không có dữ liệu điểm danh cho ngày hôm nay" 
+          <Empty
+            description="No attendance data for today"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         )}
       </Card>
-      
-      <ToastContainer 
+
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}

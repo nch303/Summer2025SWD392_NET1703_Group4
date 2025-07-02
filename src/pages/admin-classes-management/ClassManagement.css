@@ -1188,3 +1188,43 @@
   font-size: 16px;
   transition: transform 0.3s;
 }
+
+/* Update filter section to ensure rows use full width */
+.filter-section .ant-row {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Make each column flex item grow to fill available space */
+.filter-section .ant-row .ant-col {
+  flex: 1;
+  margin-right: 8px;
+}
+
+/* Remove margin from the last column */
+.filter-section .ant-row .ant-col:last-child {
+  margin-right: 0;
+}
+
+/* Ensure inputs and selects take up full width of their containers */
+.filter-section .search-input,
+.filter-section .status-select,
+.filter-section .grade-select,
+.filter-section .enrichment-select {
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .filter-section .ant-row {
+    flex-wrap: wrap;
+  }
+  
+  .filter-section .ant-row .ant-col {
+    flex-basis: 100%;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+}

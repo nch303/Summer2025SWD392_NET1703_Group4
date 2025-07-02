@@ -79,7 +79,7 @@ const EnrollmentApplicationManagement = () => {
       setFilteredApplications(data);
       setError('');
     } catch (err) {
-      setError('Không thể tải danh sách đơn nhập học. Vui lòng thử lại sau.');
+      setError('Cannot load enrollment application list. Please try again later.');
       console.error('Error fetching applications:', err);
     } finally {
       setLoading(false);
@@ -88,14 +88,14 @@ const EnrollmentApplicationManagement = () => {
   
   const handleViewDetail = async (application) => {
     try {
-      showSpinner('Đang tải thông tin chi tiết...');
+      showSpinner('Loading application detail...');
       const detail = await getApplicationDetail(application.id);
       setApplicationDetail(detail);
       setSelectedApplication(application);
       setIsModalOpen(true);
     } catch (err) {
-      toast.error('Không thể tải thông tin chi tiết. Vui lòng thử lại sau.', {
-        title: 'Lỗi'
+      toast.error('Cannot load application detail. Please try again later.', {
+        title: 'Error'
       });
       console.error('Error fetching application detail:', err);
     } finally {
@@ -108,11 +108,11 @@ const EnrollmentApplicationManagement = () => {
     let content = '';
     
     if (action === 'approve') {
-      title = 'Đơn nhập học đã được phê duyệt';
-      content = `Kính gửi Phụ huynh,\n\nĐơn nhập học của bé ${application.childrenName} đã được phê duyệt thành công. Nhà trường sẽ liên hệ với quý phụ huynh để hoàn tất các thủ tục tiếp theo.\n\nTrân trọng,\nTrường mầm non Little Stars.`;
+      title = 'Enrollment application approved';
+      content = `Dear Parent,\n\nThe enrollment application of ${application.childrenName} has been approved successfully. The school will contact you to complete the next procedures.\n\nSincerely,\nLittle Stars Kindergarten.`;
     } else {
-      title = 'Đơn nhập học chưa được phê duyệt';
-      content = `Kính gửi Phụ huynh,\n\nĐơn nhập học của bé ${application.childrenName} hiện chưa được phê duyệt. Vui lòng liên hệ với nhà trường để biết thêm chi tiết.\n\nTrân trọng,\nTrường mầm non Little Stars.`;
+      title = 'Enrollment application not approved';
+      content = `Dear Parent,\n\nThe enrollment application of ${application.childrenName} has not been approved yet. Please contact the school for more details.\n\nSincerely,\nLittle Stars Kindergarten.`;
     }
     
     setNotification({
@@ -138,19 +138,19 @@ const EnrollmentApplicationManagement = () => {
     e.preventDefault();
     
     try {
-      showSpinner('Đang xử lý...');
+      showSpinner('Processing...');
       
       await createNotification(notification);
       
       if (notificationAction === 'approve') {
         await approveApplication(selectedApplication.id);
-        toast.success('Đã phê duyệt đơn nhập học và gửi thông báo thành công!', {
-          title: 'Thành công'
+        toast.success('Enrollment application approved and notification sent successfully!', {
+          title: 'Success'
         });
       } else {
         await rejectApplication(selectedApplication.id);
-        toast.success('Đã từ chối đơn nhập học và gửi thông báo thành công!', {
-          title: 'Thành công'
+        toast.success('Enrollment application rejected and notification sent successfully!', {
+          title: 'Success'
         });
       }
       
@@ -162,8 +162,8 @@ const EnrollmentApplicationManagement = () => {
       }
       
     } catch (err) {
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.', {
-        title: 'Lỗi'
+      toast.error('An error occurred. Please try again later.', {
+        title: 'Error'
       });
       console.error('Error processing application:', err);
     } finally {
@@ -191,28 +191,28 @@ const EnrollmentApplicationManagement = () => {
       case 'approved':
         return <span className="status-badge approved">
           <FontAwesomeIcon icon={faCheckCircle} />
-          Đã duyệt
+            Approved
         </span>;
       case 'rejected':
       case 'reject':
         return <span className="status-badge rejected">
           <FontAwesomeIcon icon={faBan} />
-          Từ chối
+          Rejected
         </span>;
       case 'paid':
         return <span className="status-badge paid">
           <FontAwesomeIcon icon={faMoneyBillWave} />
-          Đã thanh toán
+          Paid
         </span>;
       case 'enrolled':
         return <span className="status-badge enrolled">
           <FontAwesomeIcon icon={faUserGraduate} />
-          Đã nhập học
+          Enrolled
         </span>;
       default:
         return <span className="status-badge pending">
           <FontAwesomeIcon icon={faClock} />
-          Chờ duyệt
+          Pending
         </span>;
     }
   };
@@ -254,12 +254,12 @@ const EnrollmentApplicationManagement = () => {
       <toast.ToastContainer position="top-right" />
       
       <div className="enrollment-management__header">
-        <h1 className="enrollment-management__title">Quản lý đơn nhập học</h1>
+        <h1 className="enrollment-management__title">Enrollment application management</h1>
         <div className="enrollment-management__search">
           <FontAwesomeIcon icon={faSearch} className="enrollment-management__search-icon" />
           <input
             type="text"
-            placeholder="Tìm kiếm theo tên trẻ, phụ huynh, số điện thoại..."
+            placeholder="Search by child name, parent name, phone number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -269,11 +269,11 @@ const EnrollmentApplicationManagement = () => {
       {!loading && !error && (
         <div className="dashboard-stats-container">
           <div className="dashboard-stats-header">
-            <h3 className="dashboard-stats-title">Thống kê đơn nhập học</h3>
+            <h3 className="dashboard-stats-title">Enrollment application statistics</h3>
             <button 
               className="dashboard-stats-toggle" 
               onClick={toggleStats}
-              title={statsCollapsed ? "Mở rộng" : "Thu gọn"}
+              title={statsCollapsed ? "Expand" : "Collapse"}
             >
               <FontAwesomeIcon icon={statsCollapsed ? faChevronDown : faChevronUp} />
             </button>
@@ -282,68 +282,68 @@ const EnrollmentApplicationManagement = () => {
           <div className={`dashboard-stats ${statsCollapsed ? 'collapsed' : ''}`}>
             <div className="stat-card total">
               <div className="stat-card__header">
-                <h3 className="stat-card__title">Tổng đơn</h3>
+                <h3 className="stat-card__title">Total applications</h3>
                 <div className="stat-card__icon">
                   <FontAwesomeIcon icon={faFileAlt} />
                 </div>
               </div>
               <p className="stat-card__value">{getTotalApplications()}</p>
-              <p className="stat-card__description">Tổng số đơn nhập học</p>
+              <p className="stat-card__description">Total applications</p>
             </div>
             
             <div className="stat-card pending">
               <div className="stat-card__header">
-                <h3 className="stat-card__title">Chờ duyệt</h3>
+                <h3 className="stat-card__title">Pending</h3>
                 <div className="stat-card__icon">
                   <FontAwesomeIcon icon={faClipboardList} />
                 </div>
               </div>
               <p className="stat-card__value">{getPendingApplications()}</p>
-              <p className="stat-card__description">Đơn đang chờ xử lý</p>
+              <p className="stat-card__description">Applications pending</p>
             </div>
             
             <div className="stat-card approved">
               <div className="stat-card__header">
-                <h3 className="stat-card__title">Đã duyệt</h3>
+                <h3 className="stat-card__title">Approved</h3>
                 <div className="stat-card__icon">
                   <FontAwesomeIcon icon={faCheck} />
                 </div>
               </div>
               <p className="stat-card__value">{getApprovedApplications()}</p>
-              <p className="stat-card__description">Đơn đã được phê duyệt</p>
+              <p className="stat-card__description">Applications approved</p>
             </div>
             
             <div className="stat-card rejected">
               <div className="stat-card__header">
-                <h3 className="stat-card__title">Từ chối</h3>
+                <h3 className="stat-card__title">Rejected</h3>
                 <div className="stat-card__icon">
                   <FontAwesomeIcon icon={faBan} />
                 </div>
               </div>
               <p className="stat-card__value">{getRejectedApplications()}</p>
-              <p className="stat-card__description">Đơn đã bị từ chối</p>
+              <p className="stat-card__description">Applications rejected</p>
             </div>
             
             <div className="stat-card paid">
               <div className="stat-card__header">
-                <h3 className="stat-card__title">Đã thanh toán</h3>
+                <h3 className="stat-card__title">Paid</h3>
                 <div className="stat-card__icon">
                   <FontAwesomeIcon icon={faMoneyBillWave} />
                 </div>
               </div>
               <p className="stat-card__value">{getPaidApplications()}</p>
-              <p className="stat-card__description">Đơn đã thanh toán học phí</p>
+              <p className="stat-card__description">Applications paid</p>
             </div>
             
             <div className="stat-card enrolled">
               <div className="stat-card__header">
-                <h3 className="stat-card__title">Đã nhập học</h3>
+                <h3 className="stat-card__title">Enrolled</h3>
                 <div className="stat-card__icon">
                   <FontAwesomeIcon icon={faUserGraduate} />
                 </div>
               </div>
               <p className="stat-card__value">{getEnrolledApplications()}</p>
-              <p className="stat-card__description">Đơn đã hoàn tất nhập học</p>
+              <p className="stat-card__description">Applications enrolled</p>
             </div>
           </div>
         </div>
@@ -361,19 +361,19 @@ const EnrollmentApplicationManagement = () => {
       {!loading && !error && (
         <div className="filter-section">
           <div className="filter-label">
-            <FontAwesomeIcon icon={faFilter} /> Lọc theo trạng thái:
+            <FontAwesomeIcon icon={faFilter} /> Filter by status:
           </div>
           <select 
             className="filter-select"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="all">Tất cả đơn</option>
-            <option value="pending">Chờ duyệt</option>
-            <option value="approved">Đã duyệt</option>
-            <option value="rejected">Từ chối</option>
-            <option value="paid">Đã thanh toán</option>
-            <option value="enrolled">Đã nhập học</option>
+            <option value="all">All applications</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="paid">Paid</option>
+            <option value="enrolled">Enrolled</option>
           </select>
         </div>
       )}
@@ -381,20 +381,20 @@ const EnrollmentApplicationManagement = () => {
       {loading ? (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Đang tải danh sách đơn nhập học...</p>
+          <p>Loading enrollment application list...</p>
         </div>
       ) : (
         <>
           {filteredApplications.length === 0 ? (
             <div className="empty-state">
               <FontAwesomeIcon icon={faFileAlt} size="4x" />
-              <p>Không có đơn nhập học nào</p>
+              <p>No enrollment application found</p>
               {statusFilter !== 'all' && (
                 <button 
                   className="action-button view"
                   onClick={() => setStatusFilter('all')}
                 >
-                  Xem tất cả đơn
+                  View all applications
                 </button>
               )}
             </div>
@@ -404,11 +404,11 @@ const EnrollmentApplicationManagement = () => {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Trẻ</th>
-                    <th>Phụ huynh</th>
-                    <th>Thời gian</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
+                    <th>Child</th>
+                    <th>Parent</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -474,7 +474,7 @@ const EnrollmentApplicationManagement = () => {
                                 openNotificationModal('approve', application);
                               }}
                             >
-                              <FontAwesomeIcon icon={faCheck} /> Duyệt
+                              <FontAwesomeIcon icon={faCheck} /> Approve
                             </button>
                             <button 
                               className="reject enrollment-action-button" 
@@ -483,7 +483,7 @@ const EnrollmentApplicationManagement = () => {
                                 openNotificationModal('reject', application);
                               }}
                             >
-                              <FontAwesomeIcon icon={faBan} /> Từ chối
+                              <FontAwesomeIcon icon={faBan} /> Reject
                             </button>
                           </>
                         )}
@@ -503,7 +503,7 @@ const EnrollmentApplicationManagement = () => {
             onClick={() => paginate(1)} 
             disabled={currentPage === 1}
             className="enrollment-pagination-button enrollment-first-page"
-            title="Trang đầu"
+            title="First page"
           >
             <FontAwesomeIcon icon={faAngleDoubleLeft} />
           </button>
@@ -511,7 +511,7 @@ const EnrollmentApplicationManagement = () => {
             onClick={() => paginate(currentPage - 1)} 
             disabled={currentPage === 1}
             className="enrollment-pagination-button"
-            title="Trang trước"
+            title="Previous page"
           >
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
@@ -525,7 +525,7 @@ const EnrollmentApplicationManagement = () => {
             onClick={() => paginate(currentPage + 1)} 
             disabled={currentPage === totalPages}
             className="enrollment-pagination-button"
-            title="Trang sau"
+            title="Next page"
           >
             <FontAwesomeIcon icon={faAngleRight} />
           </button>
@@ -533,7 +533,7 @@ const EnrollmentApplicationManagement = () => {
             onClick={() => paginate(totalPages)} 
             disabled={currentPage === totalPages}
             className="enrollment-pagination-button enrollment-last-page"
-            title="Trang cuối"
+            title="Last page"
           >
             <FontAwesomeIcon icon={faAngleDoubleRight} />
           </button>
@@ -545,7 +545,7 @@ const EnrollmentApplicationManagement = () => {
           <div className="enrollment-detail-content" onClick={(e) => e.stopPropagation()}>
             <div className="enrollment-detail-header">
               <h2 className="enrollment-detail-title">
-                <FontAwesomeIcon icon={faFileAlt} /> Chi tiết đơn nhập học
+                  <FontAwesomeIcon icon={faFileAlt} /> Enrollment application detail
               </h2>
               <button className="enrollment-detail-close" onClick={closeModal}>
                 <FontAwesomeIcon icon={faTimes} />
@@ -558,7 +558,7 @@ const EnrollmentApplicationManagement = () => {
                   <div className="enrollment-detail-section-icon child-info-icon">
                     <FontAwesomeIcon icon={faChild} />
                   </div>
-                  <h3 className="enrollment-detail-section-title">Thông tin trẻ</h3>
+                  <h3 className="enrollment-detail-section-title">Child information</h3>
                 </div>
                 
                 <div className="enrollment-detail-grid">
@@ -585,28 +585,28 @@ const EnrollmentApplicationManagement = () => {
                   <div>
                     <div className="enrollment-detail-item">
                       <div className="enrollment-detail-label">
-                        <FontAwesomeIcon icon={faCalendarAlt} /> Ngày sinh
+                        <FontAwesomeIcon icon={faCalendarAlt} /> Birthday
                       </div>
                       <div className="enrollment-detail-value">{formatDate(applicationDetail.birthday)}</div>
                     </div>
                     
                     <div className="enrollment-detail-item">
                       <div className="enrollment-detail-label">
-                        <FontAwesomeIcon icon={faVenusMars} /> Giới tính
+                        <FontAwesomeIcon icon={faVenusMars} /> Gender
                       </div>
                       <div className="enrollment-detail-value">{applicationDetail.gender === 'Male' ? 'Nam' : 'Nữ'}</div>
                     </div>
                     
                     <div className="enrollment-detail-item">
                       <div className="enrollment-detail-label">
-                        <FontAwesomeIcon icon={faMapMarkerAlt} /> Nơi sinh
+                        <FontAwesomeIcon icon={faMapMarkerAlt} /> Place of birth
                       </div>
                       <div className="enrollment-detail-value">{applicationDetail.city}</div>
                     </div>
                     
                     <div className="enrollment-detail-item">
                       <div className="enrollment-detail-label">
-                        <FontAwesomeIcon icon={faFileContract} /> Giấy khai sinh
+                        <FontAwesomeIcon icon={faFileContract} /> Birth certificate
                       </div>
                       <div className="enrollment-detail-value">
                         <a 
@@ -615,7 +615,7 @@ const EnrollmentApplicationManagement = () => {
                           rel="noopener noreferrer" 
                           className="enrollment-document-link"
                         >
-                          <FontAwesomeIcon icon={faFileAlt} /> Xem giấy khai sinh
+                          <FontAwesomeIcon icon={faFileAlt} /> View birth certificate
                         </a>
                       </div>
                     </div>
@@ -628,27 +628,27 @@ const EnrollmentApplicationManagement = () => {
                   <div className="enrollment-detail-section-icon parent-info-icon">
                     <FontAwesomeIcon icon={faUser} />
                   </div>
-                  <h3 className="enrollment-detail-section-title">Thông tin phụ huynh</h3>
+                  <h3 className="enrollment-detail-section-title">Parent information</h3>
                 </div>
                 
                 <div className="enrollment-detail-grid">
                   <div className="enrollment-detail-item">
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faUser} /> Họ và tên
+                      <FontAwesomeIcon icon={faUser} /> Full name
                     </div>
                     <div className="enrollment-detail-value">{applicationDetail.parentName}</div>
                   </div>
                   
                   <div className="enrollment-detail-item">
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faPhone} /> Số điện thoại
+                        <FontAwesomeIcon icon={faPhone} /> Phone
                     </div>
                     <div className="enrollment-detail-value">{applicationDetail.parentPhone}</div>
                   </div>
                   
                   <div className="enrollment-detail-item" style={{ gridColumn: "1 / -1" }}>
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faMapMarkerAlt} /> Địa chỉ
+                      <FontAwesomeIcon icon={faMapMarkerAlt} /> Address
                     </div>
                     <div className="enrollment-detail-value">{applicationDetail.address}</div>
                   </div>
@@ -660,13 +660,13 @@ const EnrollmentApplicationManagement = () => {
                   <div className="enrollment-detail-section-icon registration-info-icon">
                     <FontAwesomeIcon icon={faClipboardList} />
                   </div>
-                  <h3 className="enrollment-detail-section-title">Thông tin đăng ký</h3>
+                  <h3 className="enrollment-detail-section-title">Enrollment information</h3>
                 </div>
                 
                 <div className="enrollment-detail-grid">
                   <div className="enrollment-detail-item">
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faClipboardList} /> Lớp đăng ký
+                      <FontAwesomeIcon icon={faClipboardList} /> Class
                     </div>
                     <div className="enrollment-detail-value">
                       {applicationDetail.gradeLevelName || "Không có dữ liệu"}
@@ -675,7 +675,7 @@ const EnrollmentApplicationManagement = () => {
                   
                   <div className="enrollment-detail-item">
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faFileAlt} /> Học phí
+                      <FontAwesomeIcon icon={faFileAlt} /> Tuition fee
                     </div>
                     <div className="enrollment-detail-value">
                       {applicationDetail.gradeLevelFee ? `${applicationDetail.gradeLevelFee.toLocaleString('vi-VN')} VNĐ` : "0 VNĐ"}
@@ -684,40 +684,40 @@ const EnrollmentApplicationManagement = () => {
                   
                   <div className="enrollment-detail-item">
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faCalendarAlt} /> Ngày đăng ký
+                      <FontAwesomeIcon icon={faCalendarAlt} /> Enrollment date
                     </div>
                     <div className="enrollment-detail-value">{formatDate(applicationDetail.enrollDate)}</div>
                   </div>
                   
                   <div className="enrollment-detail-item">
                     <div className="enrollment-detail-label">
-                      <FontAwesomeIcon icon={faClipboardList} /> Trạng thái
+                      <FontAwesomeIcon icon={faClipboardList} /> Status
                     </div>
                     <div className="enrollment-detail-value">
                       {applicationDetail.status.toLowerCase() === 'approved' ? (
                         <span className="status-badge approved">
                           <FontAwesomeIcon icon={faCheckCircle} />
-                          Đã duyệt
+                          Approved
                         </span>
                       ) : applicationDetail.status.toLowerCase() === 'rejected' || applicationDetail.status.toLowerCase() === 'reject' ? (
                         <span className="status-badge rejected">
                           <FontAwesomeIcon icon={faBan} />
-                          Từ chối
+                          Rejected
                         </span>
                       ) : applicationDetail.status.toLowerCase() === 'paid' ? (
                         <span className="status-badge paid">
                           <FontAwesomeIcon icon={faMoneyBillWave} />
-                          Đã thanh toán
+                          Paid
                         </span>
                       ) : applicationDetail.status.toLowerCase() === 'enrolled' ? (
                         <span className="status-badge enrolled">
                           <FontAwesomeIcon icon={faUserGraduate} />
-                          Đã nhập học
+                          Enrolled
                         </span>
                       ) : (
                         <span className="status-badge pending">
                           <FontAwesomeIcon icon={faClock} />
-                          Chờ duyệt
+                            Pending
                         </span>
                       )}
                     </div>
@@ -732,13 +732,13 @@ const EnrollmentApplicationManagement = () => {
                   className="reject enrollment-action-button" 
                   onClick={() => openNotificationModal('reject', selectedApplication)}
                 >
-                  <FontAwesomeIcon icon={faBan} /> Từ chối đơn
+                  <FontAwesomeIcon icon={faBan} /> Reject
                 </button>
                 <button 
                   className="approve enrollment-action-button" 
                   onClick={() => openNotificationModal('approve', selectedApplication)}
                 >
-                  <FontAwesomeIcon icon={faCheck} /> Phê duyệt đơn
+                  <FontAwesomeIcon icon={faCheck} /> Approve
                 </button>
               </div>
             )}
@@ -751,7 +751,7 @@ const EnrollmentApplicationManagement = () => {
           <div className="enrollment-notification-content" onClick={(e) => e.stopPropagation()}>
             <div className="enrollment-notification-header">
               <h2 className="enrollment-notification-title">
-                <FontAwesomeIcon icon={faBell} /> Gửi thông báo đến phụ huynh
+                <FontAwesomeIcon icon={faBell} /> Send notification to parent
               </h2>
               <button className="enrollment-notification-close" onClick={() => setShowNotificationModal(false)}>
                 <FontAwesomeIcon icon={faTimes} />
@@ -762,18 +762,18 @@ const EnrollmentApplicationManagement = () => {
               <div className="enrollment-notification-body">
                 <div className="enrollment-notification-info">
                   <p>
-                    <strong>Gửi đến:</strong> {selectedApplication.parentName}
+                    <strong>To:</strong> {selectedApplication.parentName}
                   </p>
                   <p>
-                    <strong>Đơn cho bé:</strong> {selectedApplication.childrenName}
+                    <strong>Application for:</strong> {selectedApplication.childrenName}
                   </p>
                   <p>
-                    <strong>Hành động:</strong> {notificationAction === 'approve' ? 'Phê duyệt đơn' : 'Từ chối đơn'}
+                    <strong>Action:</strong> {notificationAction === 'approve' ? 'Approve' : 'Reject'}
                   </p>
                 </div>
                 
                 <div className="enrollment-notification-field">
-                  <label htmlFor="title">Tiêu đề thông báo</label>
+                  <label htmlFor="title">Notification title</label>
                   <input
                     type="text"
                     id="title"
@@ -785,7 +785,7 @@ const EnrollmentApplicationManagement = () => {
                 </div>
                 
                 <div className="enrollment-notification-field">
-                  <label htmlFor="content">Nội dung thông báo</label>
+                  <label htmlFor="content">Notification content</label>
                   <textarea
                     id="content"
                     name="content"
@@ -803,13 +803,13 @@ const EnrollmentApplicationManagement = () => {
                   className="enrollment-action-button reject"
                   onClick={() => setShowNotificationModal(false)}
                 >
-                  <FontAwesomeIcon icon={faTimes} /> Hủy
+                  <FontAwesomeIcon icon={faTimes} /> Cancel
                 </button>
                 <button 
                   type="submit" 
                   className={`enrollment-action-button ${notificationAction === 'approve' ? 'approve' : 'reject'}`}
                 >
-                  <FontAwesomeIcon icon={faPaperPlane} /> Gửi và {notificationAction === 'approve' ? 'phê duyệt' : 'từ chối'}
+                  <FontAwesomeIcon icon={faPaperPlane} /> Send and {notificationAction === 'approve' ? 'approve' : 'reject'}
                 </button>
               </div>
             </form>

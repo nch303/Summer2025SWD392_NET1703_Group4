@@ -341,17 +341,17 @@ const ClassManagement = () => {
   const regularClasses = filteredClasses.filter(classItem => !isEnrichmentClass(classItem));
   const enrichmentClasses = filteredClasses.filter(classItem => isEnrichmentClass(classItem));
 
-  // Lọc lớp thường
+  // Filter regular classes
   const filteredRegularClasses = classes
     .filter(classItem => !isEnrichmentClass(classItem))
     .filter((classItem) => {
-      // Tìm kiếm theo tên
+      // Search by name
       const matchesSearch = classItem.name?.toLowerCase().includes(regularSearchText.toLowerCase());
       
-      // Lọc theo trạng thái
+      // Filter by status
       const matchesStatus = regularStatusFilter === 'All' || classItem.status === regularStatusFilter;
       
-      // Lọc theo cấp lớp
+      // Filter by grade level
       const gradeId = parseInt(regularGradeLevelFilter);
       const matchesGradeLevel = 
         regularGradeLevelFilter === 'All' || 
@@ -362,17 +362,17 @@ const ClassManagement = () => {
       return matchesSearch && matchesStatus && matchesGradeLevel;
     });
 
-  // Lọc lớp enrichment
+  // Filter enrichment classes
   const filteredEnrichmentClasses = classes
     .filter(classItem => isEnrichmentClass(classItem))
     .filter((classItem) => {
-      // Tìm kiếm theo tên
+      // Search by name
       const matchesSearch = classItem.name?.toLowerCase().includes(enrichmentSearchText.toLowerCase());
       
-      // Lọc theo trạng thái
+      // Filter by status
       const matchesStatus = enrichmentStatusFilter === 'All' || classItem.status === enrichmentStatusFilter;
       
-      // Lọc theo chương trình enrichment
+      // Filter by enrichment program
       const enrichmentId = parseInt(enrichmentProgramFilter);
       const matchesEnrichment = 
         enrichmentProgramFilter === 'All' || 
@@ -878,7 +878,7 @@ const ClassManagement = () => {
     }
   };
 
-  // Xử lý lọc cho lớp thường
+  // Handle filtering for regular classes
   const handleRegularSearch = (value) => {
     setRegularSearchText(value);
   };
@@ -891,7 +891,7 @@ const ClassManagement = () => {
     setRegularGradeLevelFilter(value);
   };
 
-  // Xử lý lọc cho lớp enrichment
+  // Handle filtering for enrichment classes
   const handleEnrichmentSearch = (value) => {
     setEnrichmentSearchText(value);
   };
@@ -1025,7 +1025,7 @@ const ClassManagement = () => {
             <>
               <div className="filter-section">
                 <Row gutter={[16, 16]} align="middle">
-                  <Col xs={24} sm={12} md={7} lg={7}>
+                  <Col xs={24} sm={12} md={10} lg={10}>
                     <Input
                       placeholder="Search by regular class name"
                       prefix={<SearchOutlined />}
@@ -1036,7 +1036,7 @@ const ClassManagement = () => {
                       size="large"
                     />
                   </Col>
-                  <Col xs={24} sm={12} md={6} lg={6}>
+                  <Col xs={24} sm={12} md={5} lg={5}>
                     <Select
                       value={regularStatusFilter}
                       style={{ width: '100%' }}
@@ -1063,7 +1063,7 @@ const ClassManagement = () => {
                       </Option>
                     </Select>
                   </Col>
-                  <Col xs={24} sm={12} md={6} lg={6}>
+                  <Col xs={24} sm={12} md={5} lg={5}>
                     <Select
                       value={regularGradeLevelFilter}
                       style={{ width: '100%' , borderRadius: '10px' ,padding: 0}}
@@ -1079,7 +1079,7 @@ const ClassManagement = () => {
                       ))}
                     </Select>
                   </Col>
-                  <Col xs={24} sm={12} md={5} lg={5}>
+                  <Col xs={24} sm={12} md={4} lg={4}>
                     <Button 
                       icon={<ReloadOutlined />} 
                       onClick={handleRegularResetFilters}

@@ -118,15 +118,15 @@ const TuitionFeeManagement = () => {
       if (editingId) {
         await updateTuitionFee(editingId, formattedValues);
         // Use custom toast for success update
-        toast.success(`Cập nhật học phí "${formattedValues.name}" thành công!`, {
-          title: 'Thành công',
+        toast.success(`Update tuition fee "${formattedValues.name}" successfully!`, {
+          title: 'Success',
           duration: 3000
         });
       } else {
         await createTuitionFee(formattedValues);
         // Use custom toast for success create
-        toast.success(`Thêm khoản học phí mới "${formattedValues.name}" thành công!`, {
-          title: 'Thành công',
+        toast.success(`Add new tuition fee "${formattedValues.name}" successfully!`, {
+          title: 'Success',
           duration: 3000
         });
       }
@@ -143,11 +143,11 @@ const TuitionFeeManagement = () => {
       // Extract the error message from different possible locations
       const errorMessage = error.response?.data?.message || 
                            error.message || 
-                           'Đã xảy ra lỗi khi lưu thông tin học phí';
+                           'An error occurred while saving tuition fee information';
       
       // Use custom toast to show the specific error
       toast.error(errorMessage, {
-        title: 'Lỗi',
+        title: 'Error',
         duration: 4000
       });
       console.error('Submit error details:', error);
@@ -171,10 +171,10 @@ const TuitionFeeManagement = () => {
   const handleDelete = async (id) => {
     try {
       await deleteTuitionFee(id);
-      toast.success('Xóa học phí thành công');
+      toast.success('Tuition fee deleted successfully');
       fetchTuitionFees();
     } catch (error) {
-      toast.error('Lỗi khi xóa học phí');
+      toast.error('Error deleting tuition fee');
     }
   };
 
@@ -221,7 +221,7 @@ const TuitionFeeManagement = () => {
 
   // Update the helper function to format the description text with colons
   const formatDescription = (description) => {
-    if (!description) return 'Không có';
+    if (!description) return 'No';
     
     // Split by '+' to get individual fee items
     const items = description.split('+').map(item => item.trim());
@@ -371,7 +371,7 @@ const TuitionFeeManagement = () => {
   // Define table columns
   const columns = [
     {
-      title: 'Tháng/Năm',
+      title: 'Month/Year',
       dataIndex: 'name',
       key: 'name',
       defaultSortOrder: 'ascend',
@@ -390,7 +390,7 @@ const TuitionFeeManagement = () => {
       }
     },
     {
-      title: 'Các khoản phí',
+      title: 'Tuition fees',
       dataIndex: 'description',
       key: 'description',
       ellipsis: { showTitle: true },
@@ -401,30 +401,30 @@ const TuitionFeeManagement = () => {
       )
     },
     {
-      title: 'Hạn nộp',
+      title: 'Due date',
       dataIndex: 'date',
       key: 'date',
       render: (date) => moment(date).format('DD/MM/YYYY'),
       sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
     },
     {
-      title: 'Tổng (VND)',
+      title: 'Total (VND)',
       dataIndex: 'fee',
       key: 'fee',
       render: (fee) => new Intl.NumberFormat('vi-VN').format(fee),
       sorter: (a, b) => a.fee - b.fee,
     },
     {
-      title: 'Cấp lớp',
+      title: 'Grade level',
       dataIndex: 'gradeLevelID',
       key: 'gradeLevelID',
       render: (gradeLevelID) => {
         const gradeLevel = gradeLevels.find(level => level.id === gradeLevelID);
-        return gradeLevel ? gradeLevel.name : 'Không xác định';
+        return gradeLevel ? gradeLevel.name : 'Not specified';
       },
     },
     {
-      title: 'Thao tác',
+      title: 'Action',
       key: 'actions',
       render: (_, record) => (
         <Space>
@@ -433,10 +433,10 @@ const TuitionFeeManagement = () => {
             onClick={() => handleEdit(record)}
           />
           <Popconfirm
-            title="Bạn có chắc chắn muốn xoá khoản phí này?"
+            title="Are you sure you want to delete this fee?"
             onConfirm={() => handleDelete(record.id)}
-            okText="Có"
-            cancelText="Không"
+            okText="Yes"
+            cancelText="No"
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -449,11 +449,11 @@ const TuitionFeeManagement = () => {
     <>
       <div className="admin-tuition-management">
         <div className="admin-tuition-header">
-          <Title level={2}>Quản lý học phí nhà trường</Title>
+          <Title level={2}>Tuition Fee Management</Title>
           <div className="admin-tuition-filter-container">
             <div className="admin-tuition-filter-groups">
               <div className="admin-tuition-filter-section">
-                <span className="filter-label">Năm học:</span>
+                <span className="filter-label">Academic Year:</span>
                 <div className="year-navigator">
                   <Button 
                     icon={<LeftOutlined />} 
@@ -466,7 +466,7 @@ const TuitionFeeManagement = () => {
                     disabled={selectedYear === null || availableYears.indexOf(selectedYear) === availableYears.length - 1}
                   />
                   <div className="year-display">
-                    {selectedYear || 'Tất cả'}
+                    {selectedYear || 'All'}
                   </div>
                   <Button 
                     icon={<RightOutlined />} 
@@ -482,7 +482,7 @@ const TuitionFeeManagement = () => {
               </div>
               
               <div className="admin-tuition-filter-section grade-section">
-                <span className="filter-label">Cấp lớp:</span>
+                <span className="filter-label">Grade Level:</span>
                 <div className="grade-level-selector">
                   {gradeLevels.map(level => (
                     <div 
@@ -511,7 +511,7 @@ const TuitionFeeManagement = () => {
             className="add-tuition-button"
             onClick={handleAddNew}
           >
-            Thêm khoản học phí mới
+            Add New Tuition Fee
           </Button>
         </div>
         
@@ -524,7 +524,7 @@ const TuitionFeeManagement = () => {
         />
         
         <Modal
-          title={editingId ? 'Cập nhật khoản phí' : 'Thêm khoản phí mới'}
+          title={editingId ? 'Update Fee' : 'Add New Fee'}
           open={modalVisible}
           onCancel={() => {
             setModalVisible(false);
@@ -538,16 +538,16 @@ const TuitionFeeManagement = () => {
             layout="vertical"
             onFinish={handleSubmit}
           >
-            <Form.Item label="Tháng/Năm" required style={{ marginBottom: 0 }}>
+            <Form.Item label="Month/Year" required style={{ marginBottom: 0 }}>
               <Space.Compact style={{ width: '100%' }}>
                 <Form.Item
                   noStyle
                   rules={[
-                    { required: true, message: 'Nhập tháng' }
+                    { required: true, message: 'Enter month' }
                   ]}
                 >
                   <InputNumber
-                    placeholder="Tháng"
+                    placeholder="Month"
                     min={1}
                     max={12}
                     value={monthInput}
@@ -565,11 +565,11 @@ const TuitionFeeManagement = () => {
                 <Form.Item
                   noStyle
                   rules={[
-                    { required: true, message: 'Nhập năm' }
+                    { required: true, message: 'Enter year' }
                   ]}
                 >
                   <InputNumber
-                    placeholder="Năm"
+                    placeholder="Year"
                     min={2020}
                     max={2050}
                     value={yearInput}
@@ -590,27 +590,27 @@ const TuitionFeeManagement = () => {
               <Form.Item
                 name="name"
                 hidden
-                rules={[{ required: true, message: 'Vui lòng nhập tháng/năm' }]}
+                rules={[{ required: true, message: 'Please enter month/year' }]}
               >
                 <Input />
               </Form.Item>
             </Form.Item>
             
             <Form.Item
-              label="Các khoản phí"
+              label="Fee Items"
               required
             >
               <div className="fee-items-container">
                 {feeItems.map((item, index) => (
                   <div key={index} className="fee-item-row">
                     <Input
-                      placeholder="Tên khoản phí"
+                      placeholder="Fee Name"
                       value={item.name}
                       onChange={(e) => handleFeeItemChange(index, 'name', e.target.value)}
                       style={{ width: '60%', marginRight: '8px' }}
                     />
                     <InputNumber
-                      placeholder="Số tiền"
+                      placeholder="Amount"
                       value={item.amount}
                       onChange={(value) => handleFeeItemChange(index, 'amount', value)}
                       formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -640,7 +640,7 @@ const TuitionFeeManagement = () => {
                   onClick={addFeeItem}
                   style={{ width: '100%', marginTop: '8px' }}
                 >
-                  Thêm khoản phí
+                  Add Fee Item
                 </Button>
               </div>
 
@@ -655,8 +655,8 @@ const TuitionFeeManagement = () => {
             
             <Form.Item
               name="date"
-              label="Hạn nộp"
-              rules={[{ required: true, message: 'Vui lòng chọn hạn nộp' }]}
+              label="Due Date"
+              rules={[{ required: true, message: 'Please select due date' }]}
             >
               <DatePicker 
                 style={{ width: '100%' }} 
@@ -677,7 +677,7 @@ const TuitionFeeManagement = () => {
             
             <Form.Item
               name="fee"
-              label="Tổng (VND)"
+              label="Total (VND)"
               initialValue={0}
             >
               <InputNumber 
@@ -689,8 +689,8 @@ const TuitionFeeManagement = () => {
             
             <Form.Item
               name="gradeLevelID"
-              label="Cấp lớp"
-              rules={[{ required: true, message: 'Vui lòng chọn cấp lớp' }]}
+              label="Grade Level"
+              rules={[{ required: true, message: 'Please select grade level' }]}
             >
               <Radio.Group>
                 <div className="grade-level-radio-group">
@@ -713,9 +713,9 @@ const TuitionFeeManagement = () => {
             
             <Form.Item>
               <Space className="admin-tuition-form-buttons">
-                <Button onClick={() => setModalVisible(false)}>Huỷ</Button>
+                <Button onClick={() => setModalVisible(false)}>Cancel</Button>
                 <Button type="primary" htmlType="submit">
-                  {editingId ? 'Cập nhật' : 'Tạo mới'}
+                  {editingId ? 'Update' : 'Create'}
                 </Button>
               </Space>
             </Form.Item>

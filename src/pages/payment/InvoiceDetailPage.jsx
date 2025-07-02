@@ -69,7 +69,7 @@ const InvoiceDetailPage = () => {
     onBeforePrint: () => setPrintLoading(true),
     onAfterPrint: () => {
       setPrintLoading(false);
-      toast.success('In hóa đơn thành công!');
+      toast.success('Invoice printed successfully!');
     }
   });
 
@@ -78,35 +78,35 @@ const InvoiceDetailPage = () => {
     return parsedLineItems.reduce((sum, item) => sum + (item.amount || 0), 0);
   };
 
-  // Thêm hàm xử lý riêng
+  // Add a custom function to handle going back
   const handleGoBack = () => {
     safeNavigate('/payment-history');
   };
 
-  // Thêm hàm xử lý tải PDF
+  // Add a custom function to handle downloading the PDF
   const handleDownloadPdf = async () => {
     try {
       setPdfLoading(true);
       const pdfBlob = await downloadInvoicePdf(invoiceId);
       
-      // Tạo URL tạm thời từ blob
+      // Create a temporary URL from the blob
       const pdfUrl = window.URL.createObjectURL(pdfBlob);
       
-      // Tạo thẻ a và trigger sự kiện click để tải xuống
+      // Create a temporary anchor tag and trigger the click event to download
       const link = document.createElement('a');
       link.href = pdfUrl;
       link.setAttribute('download', `invoice-${invoiceId}.pdf`);
       document.body.appendChild(link);
       link.click();
       
-      // Dọn dẹp URL tạm thời
+      // Clean up the temporary URL
       window.URL.revokeObjectURL(pdfUrl);
       document.body.removeChild(link);
       
-      toast.success('Đã tải xuống hóa đơn thành công!');
+      toast.success('Invoice downloaded successfully!');
     } catch (error) {
       console.error('Error downloading PDF:', error);
-      toast.error('Không thể tải xuống hóa đơn. Vui lòng thử lại sau.');
+      toast.error('Cannot download invoice. Please try again later.');
     } finally {
       setPdfLoading(false);
     }
@@ -121,7 +121,7 @@ const InvoiceDetailPage = () => {
       
       setLoading(true);
       try {
-        // Tách 2 API call để xử lý lỗi riêng biệt
+        // Separate the 2 API calls to handle errors separately
         try {
           const detailsData = await getInvoiceDetails(invoiceId, controller.signal);
           if (isMounted && detailsData && Array.isArray(detailsData) && detailsData.length > 0) {
@@ -134,7 +134,7 @@ const InvoiceDetailPage = () => {
             }
           }
         } catch (error) {
-          // Bỏ qua lỗi cancel
+          // Skip the cancel error
           if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
             console.error('Error fetching invoice details:', error);
           }
@@ -146,7 +146,7 @@ const InvoiceDetailPage = () => {
             setInvoiceInfo(invoiceData);
           }
         } catch (error) {
-          // Bỏ qua lỗi cancel
+          // Skip the cancel error
           if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
             console.error('Error fetching invoice info:', error);
           }
@@ -159,9 +159,9 @@ const InvoiceDetailPage = () => {
           return;
         }
         
-        // Dùng function form để tránh phụ thuộc vào toast
+        // Use the function form to avoid depending on toast
         if (isMounted) {
-          toast.error('Có lỗi xảy ra khi tải thông tin hóa đơn.');
+          toast.error('An error occurred while loading invoice information.');
         }
       } finally {
         if (isMounted) {
@@ -199,7 +199,7 @@ const InvoiceDetailPage = () => {
     
     if (status === 'success') {
       return {
-        label: 'Đã thanh toán',
+        label: 'Paid',
         icon: 'fa-check-circle',
         color: 'var(--success-color)',
         bgColor: 'rgba(76, 175, 80, 0.1)',
@@ -207,7 +207,7 @@ const InvoiceDetailPage = () => {
       };
     } else if (status === 'pending') {
       return {
-        label: 'Chờ thanh toán',
+        label: 'Pending',
         icon: 'fa-clock',
         color: 'var(--warning-color)',
         bgColor: 'rgba(255, 152, 0, 0.1)',
@@ -215,7 +215,7 @@ const InvoiceDetailPage = () => {
       };
     } else if (status === 'failed') {
       return {
-        label: 'Thanh toán thất bại',
+        label: 'Failed',
         icon: 'fa-times-circle',
         color: 'var(--danger-color)',
         bgColor: 'rgba(244, 67, 54, 0.1)',
@@ -236,12 +236,12 @@ const InvoiceDetailPage = () => {
 
   return (
     <div className="invoice-detail-page">
-      <ProcessingSpinner isVisible={loading} message="Đang tải thông tin hóa đơn..." />
+      <ProcessingSpinner isVisible={loading} message="Loading invoice information..." />
       
       <div className="invoice-detail-container">
         <div className={`invoice-premium-actions ${isVisible ? 'visible' : ''}`}>
           <button onClick={handleGoBack} className="invoice-back-button">
-            <i className="fas fa-arrow-left"></i> Trở lại
+            <i className="fas fa-arrow-left"></i> Back
           </button>
           <div className="invoice-actions-right">
             <button 
@@ -251,7 +251,7 @@ const InvoiceDetailPage = () => {
               disabled={loading || printLoading}
             >
               <i className={`fas ${printLoading ? 'fa-spinner fa-spin' : 'fa-print'}`}></i> 
-              {printLoading ? 'Đang in...' : 'In hóa đơn'}
+              {printLoading ? 'Printing...' : 'Print invoice'}
             </button>
             <button 
               type="button" 
@@ -260,7 +260,7 @@ const InvoiceDetailPage = () => {
               disabled={loading || pdfLoading}
             >
               <i className={`fas ${pdfLoading ? 'fa-spinner fa-spin' : 'fa-file-pdf'}`}></i> 
-              {pdfLoading ? 'Đang tải...' : 'Tải PDF'}
+              {pdfLoading ? 'Downloading...' : 'Download PDF'}
             </button>
           </div>
         </div>
@@ -270,15 +270,15 @@ const InvoiceDetailPage = () => {
           <div className="invoice-watermark">
             {status && status.label === 'Đã thanh toán' ? (
               <div className="paid-watermark">
-                <span>ĐÃ THANH TOÁN</span>
+                  <span>PAID</span>
               </div>
-            ) : status && status.label === 'Thanh toán thất bại' ? (
+            ) : status && status.label === 'Failed' ? (
               <div className="failed-watermark">
-                <span>THANH TOÁN THẤT BẠI</span>
+                <span>FAILED</span>
               </div>
-            ) : status && status.label === 'Chờ thanh toán' ? (
+            ) : status && status.label === 'Pending' ? (
               <div className="pending-watermark">
-                <span>CHỜ THANH TOÁN</span>
+                <span>PENDING</span>
               </div>
             ) : null}
           </div>
@@ -301,14 +301,14 @@ const InvoiceDetailPage = () => {
               </div>
             </div>
             <div className="invoice-premium-title">
-              <h2>HÓA ĐƠN</h2>
+              <h2>INVOICE</h2>
               <div className="invoice-premium-details">
                 <div className="invoice-detail-item">
-                  <span className="label">Mã hóa đơn:</span>
+                  <span className="label">Invoice ID:</span>
                   <span className="value">{invoiceInfo?.id || 'N/A'}</span>
                 </div>
                 <div className="invoice-detail-item">
-                  <span className="label">Ngày lập:</span>
+                  <span className="label">Date:</span>
                   <span className="value">{invoiceInfo?.date ? formatDate(invoiceInfo.date) : 'N/A'}</span>
                 </div>
               </div>
@@ -325,15 +325,15 @@ const InvoiceDetailPage = () => {
           <div className="invoice-customer-section">
             <div className="section-title">
               <i className="fas fa-user-circle"></i>
-              <h3>Thông tin khách hàng</h3>
+              <h3>Customer information</h3>
             </div>
             <div className="customer-info-grid">
               <div className="customer-info-item">
-                <span className="label">Học sinh:</span>
+                <span className="label">Child:</span>
                 <span className="value highlight">{invoiceInfo?.childrenName || 'N/A'}</span>
               </div>
               <div className="customer-info-item">
-                <span className="label">Phụ huynh:</span>
+                <span className="label">Parent:</span>
                 <span className="value">{invoiceInfo?.parentName || 'N/A'}</span>
               </div>
               <div className="customer-info-item">
@@ -341,7 +341,7 @@ const InvoiceDetailPage = () => {
                 <span className="value">{invoiceInfo?.parentEmail || 'N/A'}</span>
               </div>
               <div className="customer-info-item">
-                <span className="label">Số điện thoại:</span>
+                <span className="label">Phone:</span>
                 <span className="value">{invoiceInfo?.parentPhone || 'N/A'}</span>
               </div>
             </div>
@@ -351,15 +351,15 @@ const InvoiceDetailPage = () => {
           <div className="invoice-items-section">
             <div className="section-title">
               <i className="fas fa-file-invoice-dollar"></i>
-              <h3>Chi tiết thanh toán</h3>
+              <h3>Payment details</h3>
             </div>
             <div className="premium-table-container">
               <table className="premium-invoice-table">
                 <thead>
                   <tr>
                     <th width="5%">#</th>
-                    <th className="text-left" width="65%">Nội dung</th>
-                    <th className="text-center" width="30%">Đơn giá</th>
+                    <th className="text-left" width="65%">Content</th>
+                    <th className="text-center" width="30%">Price</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -385,7 +385,7 @@ const InvoiceDetailPage = () => {
                 </tbody>
                 <tfoot>
                   <tr className="total-row">
-                    <td colSpan="2" className="text-right"><strong>Tổng cộng:</strong></td>
+                    <td colSpan="2" className="text-right"><strong>Total:</strong></td>
                     <td className="text-right total-amount">
                       {parsedLineItems.length > 0 
                         ? formatCurrency(calculateTotal())
@@ -402,22 +402,22 @@ const InvoiceDetailPage = () => {
             <div className="footer-notes">
               <div className="note-item">
                 <i className="fas fa-info-circle"></i>
-                <p>Hóa đơn này là bằng chứng thanh toán chính thức từ Little Stars Preschool.</p>
+                <p>This invoice is a proof of payment from Little Stars Preschool.</p>
               </div>
               <div className="note-item">
                 <i className="fas fa-exclamation-triangle"></i>
-                <p>Học phí đã thanh toán không được hoàn trả trừ trường hợp đặc biệt được quy định trong điều khoản.</p>
+                <p>Tuition fees paid are not refundable except in special cases specified in the terms.</p>
               </div>
             </div>
             
             <div className="footer-signatures">
               <div className="signature-block">
                 <div className="signature-line"></div>
-                <p className="signature-title">Người lập hóa đơn</p>
+                <p className="signature-title">Invoice maker</p>
               </div>
               <div className="signature-block">
                 <div className="signature-line"></div>
-                <p className="signature-title">Phụ huynh</p>
+                <p className="signature-title">Parent</p>
               </div>
             </div>
             
@@ -431,7 +431,7 @@ const InvoiceDetailPage = () => {
             </div>
             
             <div className="footer-contact">
-              <p>© {new Date().getFullYear()} Little Stars Preschool - Tất cả các quyền được bảo lưu</p>
+              <p>© {new Date().getFullYear()} Little Stars Preschool - All rights reserved</p>
               <div className="social-icons">
                 <i className="fab fa-facebook"></i>
                 <i className="fab fa-instagram"></i>

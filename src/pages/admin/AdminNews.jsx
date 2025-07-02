@@ -182,7 +182,7 @@ const AdminNews = () => {
         
       } catch (error) {
         console.error("Failed to fetch news details:", error);
-        message.error("Không thể tải thông tin tin tức");
+        message.error("Could not load news information");
       } finally {
         setNewsLoading(false);
       }
@@ -240,12 +240,12 @@ const AdminNews = () => {
       try {
         if (isEdit) {
           await updateNews(values.id, formData);
-          message.success('Cập nhật tin tức thành công!');
+          message.success('News updated successfully!');
           // Refresh current page data
           fetchNews(pagination.current, pagination.pageSize);
         } else {
           await createNews(formData);
-          message.success('Thêm tin tức thành công!');
+          message.success('News added successfully!');
           // Go to page 1 only for new items
           fetchNews(1, pagination.pageSize);
         }
@@ -253,12 +253,12 @@ const AdminNews = () => {
         setIsModalVisible(false);
       } catch (error) {
         console.error('Error:', error);
-        message.error(`${isEdit ? 'Cập nhật' : 'Thêm'} tin tức thất bại: ${error.message || 'Lỗi không xác định'}`);
+        message.error(`Failed to update news: ${error.message || 'Unknown error'}`);
       } finally {
         setNewsLoading(false);
       }
     } catch (error) {
-      message.error('Thao tác thất bại: ' + error.message);
+      message.error('Operation failed: ' + error.message);
     }
   };
 

@@ -20,6 +20,15 @@ const { confirm } = Modal;
 const { Step } = Steps;
 const { Dragger } = Upload;
 
+// Silence antd compatibility warnings
+const originalConsoleWarn = console.warn;
+console.warn = function(msg) {
+  if (typeof msg === 'string' && msg.includes('[antd: compatible]')) {
+    return;
+  }
+  originalConsoleWarn.apply(console, arguments);
+};
+
 const AdminSyllabus = () => {
   const [toasts, setToasts] = useState([]);
   
@@ -61,18 +70,65 @@ const AdminSyllabus = () => {
   }, []);
 
   useEffect(() => {
-    if (currentStep === 0) {
-      form.setFieldsValue({
-        name: editingSyllabus ? editingSyllabus.name : step1Values.name,
-        slotAmount: editingSyllabus ? editingSyllabus.slotAmount : step1Values.slotAmount
-      });
-    } else if (currentStep === 1) {
-      detailsForm.setFieldsValue({
-        details: []
-      });
-      setTimeout(updateDetailsCount, 0);
+    if (modalVisible) {
+      if (currentStep === 0) {
+        // Only set form values when the modal is actually visible
+        form.setFieldsValue({
+          name: editingSyllabus ? editingSyllabus.name : step1Values.name,
+          slotAmount: editingSyllabus ? editingSyllabus.slotAmount : step1Values.slotAmount
+        });
+      } else if (currentStep === 1) {
+        // Initialize the details form with existing values if editing, or empty array if new
+        const initialDetails = editingSyllabus ? 
+          (editingSyllabusDetails || []).map(detail => ({
+            content: detail.content,
+            duration: detail.duration
+          })) : [];
+          
+        detailsForm.setFieldsValue({
+          details: initialDetails
+        });
+        
+        setTimeout(updateDetailsCount, 0);
+      }
     }
-  }, [currentStep, editingSyllabus, step1Values]);
+  }, [currentStep, editingSyllabus, editingSyllabusDetails, step1Values, modalVisible]);
+
+  // Add this effect to disable body scrolling when modal is open
+  useEffect(() => {
+    // Store original body styles to restore them properly
+    const originalStyles = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow
+    };
+
+    if (modalVisible) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = originalStyles.position;
+      document.body.style.top = originalStyles.top;
+      document.body.style.width = originalStyles.width;
+      document.body.style.overflow = originalStyles.overflow;
+      
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      }
+    }
+    
+    return () => {
+      document.body.style.position = originalStyles.position;
+      document.body.style.top = originalStyles.top;
+      document.body.style.width = originalStyles.width;
+      document.body.style.overflow = originalStyles.overflow;
+    };
+  }, [modalVisible]);
 
   const fetchSyllabi = async () => {
     try {
@@ -103,10 +159,14 @@ const AdminSyllabus = () => {
     setNewSyllabusId(null);
     setDetailsCount(0);
     setTotalSlots(0);
-    form.resetFields();
-    detailsForm.resetFields();
-    setStep1Values({name: '', slotAmount: 1});
-    setModalVisible(true);
+    
+    // Reset both forms before showing modal
+    setTimeout(() => {
+      form.resetFields();
+      detailsForm.resetFields();
+      setStep1Values({name: '', slotAmount: 1});
+      setModalVisible(true);
+    }, 0);
   };
 
   const showEditModal = async (syllabus) => {
@@ -115,6 +175,7 @@ const AdminSyllabus = () => {
     setCurrentStep(0);
     setTotalSlots(syllabus.slotAmount);
     
+    form.resetFields();
     form.setFieldsValue({
       name: syllabus.name,
       slotAmount: syllabus.slotAmount,
@@ -126,6 +187,7 @@ const AdminSyllabus = () => {
       const details = await getSyllabusDetails(syllabus.id);
       
       // Set details in the form for step 2
+      detailsForm.resetFields();
       detailsForm.setFieldsValue({
         details: details.map(detail => ({
           content: detail.content,
@@ -281,14 +343,14 @@ const AdminSyllabus = () => {
       okType: 'danger',
       cancelText: 'Cancel',
       onOk: () => {
-        // Sử dụng fetch trực tiếp thay vì qua service
+        // Using fetch directly instead of through service
         fetch(`/api/Syllabus/${syllabusId}`, {
           method: 'DELETE',
         })
         .then(response => {
           if (response.ok) {
             message.success('Syllabus deleted successfully');
-            // Làm mới dữ liệu
+            // Refresh data
             fetchSyllabi();
           } else {
             throw new Error(`HTTP error: ${response.status}`);
@@ -627,291 +689,299 @@ const AdminSyllabus = () => {
         open={modalVisible}
         onCancel={handleModalCancel}
         footer={null}
-        width={currentStep === 1 ? 800 : 600}
+        width={currentStep === 1 ? 720 : 540}
+        className={`admin-syllabus-modal ${currentStep === 0 ? 'step-1' : 'step-2'}`}
+        style={{ top: '5%' }}
       >
-        {currentStep === 0 ? (
-          <div className="admin-syllabus-step-content">
-            <div className="admin-syllabus-step-title">Step 1: Enter Syllabus Details</div>
-            <div className="admin-syllabus-step-description">
-              Enter the basic information for the syllabus. You'll add slot details in the next step before creating the syllabus.
-            </div>
-            
-        <Form
-          form={form}
-          layout="vertical"
-              initialValues={{ name: '', slotAmount: 1 }}
-        >
-          <Form.Item
-            name="name"
-            label="Syllabus Name"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter the syllabus name',
-              },
-            ]}
-          >
-                <Input placeholder="Enter syllabus name" id="syllabus-name-input" />
-              </Form.Item>
-              <Form.Item
-                name="slotAmount"
-                label="Slot Amount"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter the slot amount',
-                  },
-                  {
-                    validator: (_, value) => {
-                      const numValue = Number(value);
-                      if (isNaN(numValue)) {
-                        return Promise.reject('Slot amount must be a number');
-                      }
-                      if (numValue < 1) {
-                        return Promise.reject('Slot amount must be a positive number');
-                      }
-                      return Promise.resolve();
-                    }
-                  }
-                ]}
-              >
-                <Input type="number" min={1} placeholder="Enter slot amount" id="syllabus-slot-amount-input" />
-              </Form.Item>
-              
-              <div className="admin-syllabus-step-nav-buttons">
-                <Button 
-                  onClick={handleModalCancel}
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  type="primary"
-                  onClick={handleModalSubmit}
-                  icon={<PlusOutlined />}
-                  className="admin-syllabus-action-button"
-                >
-                  {editingSyllabus ? 'Continue to Details' : 'Continue to Details'}
-                </Button>
-              </div>
-            </Form>
-          </div>
-        ) : (
-          <div className="admin-syllabus-step-content">
-            <div className="admin-syllabus-step-title">
-              Step 2: Add Slot Details
-              <span className="admin-syllabus-detail-count-badge">
-                {detailsCount}/{totalSlots} slots added
-              </span>
-            </div>
-            
-            <div className="admin-syllabus-step-description">
-              Add content and duration for each slot in the syllabus. 
-              You need to add exactly {totalSlots} slots to complete this step.
-            </div>
-            
-            {/* Excel Import Option - Updated section */}
-            <div className="admin-syllabus-excel-import">
-              <Divider>
-                <Space>
-                  <FileExcelOutlined className="admin-syllabus-excel-icon" />
-                  <span style={{ fontWeight: 'bold' }}>Excel Import</span>
-                </Space>
-              </Divider>
-              
-              <div className="admin-syllabus-excel-actions">
-                <Button 
-                  type="primary"
-                  icon={<UploadOutlined />}
-                  className="admin-syllabus-excel-button"
-                  onClick={() => {
-                    // Show file chooser dialog directly
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = '.xlsx,.xls';
-                    input.onchange = (e) => {
-                      if (e.target.files.length > 0) {
-                        handleExcelImport(e.target.files[0]);
-                      }
-                    };
-                    input.click();
-                  }}
-                  style={{
-                    backgroundColor: '#52c41a',
-                    borderColor: '#52c41a'
-                  }}
-                >
-                  Import Excel File
-                </Button>
+        <div className="admin-syllabus-modal-content">
+          {currentStep === 0 ? (
+            <>
+              <div className="admin-syllabus-step-content">
+                <div className="admin-syllabus-step-title">Step 1: Enter Syllabus Details</div>
+                <div className="admin-syllabus-step-description">
+                  Enter the basic information for the syllabus. You'll add slot details in the next step before creating the syllabus.
+                </div>
                 
-                <Button 
-                  type="default"
-                  icon={<FileExcelOutlined />}
-                  className="admin-syllabus-excel-button"
-                  onClick={() => {
-                    // Create a simple template Excel file
-                    const worksheet = XLSX.utils.json_to_sheet([
-                      { content: 'Example content 1', duration: 60 },
-                      { content: 'Example content 2', duration: 45 }
-                    ]);
-                    const workbook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(workbook, worksheet, 'SyllabusDetails');
-                    XLSX.writeFile(workbook, 'syllabus_details_template.xlsx');
-                  }}
+                <Form
+                  form={form}
+                  layout="vertical"
+                  initialValues={{ name: '', slotAmount: 1 }}
                 >
-                  Download Template
-                </Button>
+                  <Form.Item
+                    name="name"
+                    label="Syllabus Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter the syllabus name',
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Enter syllabus name" id="syllabus-name-input" />
+                  </Form.Item>
+                  <Form.Item
+                    name="slotAmount"
+                    label="Slot Amount"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter the slot amount',
+                      },
+                      {
+                        validator: (_, value) => {
+                          const numValue = Number(value);
+                          if (isNaN(numValue)) {
+                            return Promise.reject('Slot amount must be a number');
+                          }
+                          if (numValue < 1) {
+                            return Promise.reject('Slot amount must be a positive number');
+                          }
+                          return Promise.resolve();
+                        }
+                      }
+                    ]}
+                  >
+                    <Input type="number" min={1} placeholder="Enter slot amount" id="syllabus-slot-amount-input" />
+                  </Form.Item>
+                </Form>
               </div>
-              
-              {/* Hide the actual upload component but make it accessible via the button */}
-              <Upload
-                {...excelUploadProps}
-                style={{ display: 'none' }}
-              >
-                <input id="excel-upload-input" type="file" style={{ display: 'none' }} />
-              </Upload>
-              
-              <Dragger {...excelUploadProps} className="admin-syllabus-excel-dragger">
-                <p className="ant-upload-drag-icon">
-                  <UploadOutlined style={{ color: '#52c41a', fontSize: '32px' }} />
-                </p>
-                <p className="ant-upload-text">Click or drag Excel file to this area to upload</p>
-                <p className="ant-upload-hint">
-                  Excel file should have columns named "content" and "duration"
-                </p>
-              </Dragger>
-              
-              <div className="admin-syllabus-excel-note">
-                <InfoCircleOutlined style={{ marginRight: 8 }} />
-                <Text>The Excel file should contain a list of syllabus details with "content" and "duration" columns.</Text>
+              <div className="admin-syllabus-modal-footer">
+                <div className="admin-syllabus-step-nav-buttons">
+                  <Button onClick={handleModalCancel}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="primary"
+                    onClick={handleModalSubmit}
+                    icon={<PlusOutlined />}
+                    className="admin-syllabus-action-button"
+                  >
+                    {editingSyllabus ? 'Continue to details' : 'Continue to details'}
+                  </Button>
+                </div>
               </div>
-            </div>
-            
-            <Divider>
-              <Space>
-                <PlusOutlined />
-                Or Add Details Manually
-              </Space>
-            </Divider>
-            
-            <div className="admin-syllabus-step-progress-container">
-              <Progress 
-                percent={Math.round((detailsCount/totalSlots) * 100)} 
-                format={() => `${detailsCount}/${totalSlots} slots`}
-                status={detailsCount > totalSlots ? "exception" : 
-                       detailsCount === totalSlots ? "success" : "active"}
-                strokeColor={{
-                  '0%': '#108ee9',
-                  '100%': '#87d068',
-                }}
-              />
-              
-              <div className="admin-syllabus-progress-status">
-                {detailsCount === totalSlots ? (
-                  <span className="admin-syllabus-details-complete">
-                    <CheckCircleOutlined className="admin-syllabus-progress-icon" /> All slots added! Ready to create.
+            </>
+          ) : (
+            <>
+              <div className="admin-syllabus-step-content">
+                <div className="admin-syllabus-step-title">
+                  Step 2: Add Slot Details
+                  <span className="admin-syllabus-detail-count-badge">
+                    {detailsCount}/{totalSlots} slots added
                   </span>
-                ) : (
-                  <span className="admin-syllabus-details-incomplete">
-                    <InfoCircleOutlined className="admin-syllabus-progress-icon" /> 
-                    {totalSlots - detailsCount} more slot{totalSlots - detailsCount !== 1 ? 's' : ''} needed
-                  </span>
-                )}
-              </div>
-            </div>
-            
-            <Form
-              form={detailsForm}
-              layout="vertical"
-              className="admin-syllabus-detail-form"
-              initialValues={{ details: [] }}
-              onValuesChange={updateDetailsCount}
-            >
-              <Form.List name="details">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, ...restField }) => (
-                      <Row key={key} gutter={16} align="middle" className="admin-syllabus-detail-item-row">
-                        <Col span={14}>
-                          <Form.Item
-                            {...restField}
-                            name={[name, 'content']}
-                            label={`Slot ${name + 1} Content`}
-                            rules={[{ required: true, message: 'Content is required' }]}
-                            style={{ marginBottom: 0 }}
-                          >
-                            <Input 
-                              placeholder="Enter content for this slot" 
-                              id={`syllabus-detail-content-${name}`}
-                              aria-label={`Content for slot ${name + 1}`}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                          <Form.Item
-                            {...restField}
-                            name={[name, 'duration']}
-                            label={`Slot ${name + 1} Duration`}
-                            rules={[{ required: true, message: 'Duration is required' }]}
-                            style={{ marginBottom: 0 }}
-                          >
-                            <Input 
-                              type="number" 
-                              min={1} 
-                              placeholder="Duration" 
-                              id={`syllabus-detail-duration-${name}`}
-                              aria-label={`Duration for slot ${name + 1}`}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col span={4} className="admin-syllabus-detail-remove-button">
-                          <Button
-                            type="text"
-                            icon={<MinusCircleOutlined />}
+                </div>
+                
+                <div className="admin-syllabus-step-description">
+                  Add content and duration for each slot in the syllabus. 
+                  You need to add exactly {totalSlots} slots to complete this step.
+                </div>
+                
+                {/* Excel Import Option - Updated section */}
+                <div className="admin-syllabus-excel-import">
+                  <Divider>
+                    <Space>
+                      <FileExcelOutlined className="admin-syllabus-excel-icon" />
+                      <span style={{ fontWeight: 'bold' }}>Excel Import</span>
+                    </Space>
+                  </Divider>
+                  
+                  <div className="admin-syllabus-excel-actions">
+                    <Button 
+                      type="primary"
+                      icon={<UploadOutlined />}
+                      className="admin-syllabus-excel-button"
+                      onClick={() => {
+                        // Show file chooser dialog directly
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = '.xlsx,.xls';
+                        input.onchange = (e) => {
+                          if (e.target.files.length > 0) {
+                            handleExcelImport(e.target.files[0]);
+                          }
+                        };
+                        input.click();
+                      }}
+                      style={{
+                        backgroundColor: '#52c41a',
+                        borderColor: '#52c41a'
+                      }}
+                    >
+                      Import Excel File
+                    </Button>
+                    
+                    <Button 
+                      type="default"
+                      icon={<FileExcelOutlined />}
+                      className="admin-syllabus-excel-button"
+                      onClick={() => {
+                        // Create a simple template Excel file
+                        const worksheet = XLSX.utils.json_to_sheet([
+                          { content: 'Example content 1', duration: 60 },
+                          { content: 'Example content 2', duration: 45 }
+                        ]);
+                        const workbook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workbook, worksheet, 'SyllabusDetails');
+                        XLSX.writeFile(workbook, 'syllabus_details_template.xlsx');
+                      }}
+                    >
+                      Download Template
+                    </Button>
+                  </div>
+                  
+                  {/* Hide the actual upload component but make it accessible via the button */}
+                  <Upload
+                    {...excelUploadProps}
+                    style={{ display: 'none' }}
+                  >
+                    <input id="excel-upload-input" type="file" style={{ display: 'none' }} />
+                  </Upload>
+                  
+                  <Dragger {...excelUploadProps} className="admin-syllabus-excel-dragger">
+                    <p className="ant-upload-drag-icon">
+                      <UploadOutlined style={{ color: '#52c41a', fontSize: '32px' }} />
+                    </p>
+                    <p className="ant-upload-text">Click or drag Excel file to this area to upload</p>
+                    <p className="ant-upload-hint">
+                      Excel file should have columns named "content" and "duration"
+                    </p>
+                  </Dragger>
+                  
+                  <div className="admin-syllabus-excel-note">
+                    <InfoCircleOutlined style={{ marginRight: 8 }} />
+                    <Text>The Excel file should contain a list of syllabus details with "content" and "duration" columns.</Text>
+                  </div>
+                </div>
+                
+                <Divider>
+                  <Space>
+                    <PlusOutlined />
+                    Or Add Details Manually
+                  </Space>
+                </Divider>
+                
+                <div className="admin-syllabus-step-progress-container">
+                  <Progress 
+                    percent={Math.round((detailsCount/totalSlots) * 100)} 
+                    format={() => `${detailsCount}/${totalSlots} slots`}
+                    status={detailsCount > totalSlots ? "exception" : 
+                           detailsCount === totalSlots ? "success" : "active"}
+                    strokeColor={{
+                      '0%': '#108ee9',
+                      '100%': '#87d068',
+                    }}
+                  />
+                  
+                  <div className="admin-syllabus-progress-status">
+                    {detailsCount === totalSlots ? (
+                      <span className="admin-syllabus-details-complete">
+                        <CheckCircleOutlined className="admin-syllabus-progress-icon" /> All slots added! Ready to create.
+                      </span>
+                    ) : (
+                      <span className="admin-syllabus-details-incomplete">
+                        <InfoCircleOutlined className="admin-syllabus-progress-icon" /> 
+                        {totalSlots - detailsCount} more slot{totalSlots - detailsCount !== 1 ? 's' : ''} needed
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <Form
+                  form={detailsForm}
+                  layout="vertical"
+                  className="admin-syllabus-detail-form"
+                  initialValues={{ details: [] }}
+                  onValuesChange={updateDetailsCount}
+                >
+                  <Form.List name="details">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map(({ key, name, ...restField }) => (
+                          <Row key={key} gutter={16} align="middle" className="admin-syllabus-detail-item-row">
+                            <Col span={14}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'content']}
+                                label={`Slot ${name + 1} Content`}
+                                rules={[{ required: true, message: 'Content is required' }]}
+                                style={{ marginBottom: 0 }}
+                              >
+                                <Input 
+                                  placeholder="Enter content for this slot" 
+                                  id={`syllabus-detail-content-${name}`}
+                                  aria-label={`Content for slot ${name + 1}`}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                              <Form.Item
+                                {...restField}
+                                name={[name, 'duration']}
+                                label={`Slot ${name + 1} Duration`}
+                                rules={[{ required: true, message: 'Duration is required' }]}
+                                style={{ marginBottom: 0 }}
+                              >
+                                <Input 
+                                  type="number" 
+                                  min={1} 
+                                  placeholder="Duration" 
+                                  id={`syllabus-detail-duration-${name}`}
+                                  aria-label={`Duration for slot ${name + 1}`}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col span={4} className="admin-syllabus-detail-remove-button">
+                              <Button
+                                type="text"
+                                icon={<MinusCircleOutlined />}
+                                onClick={() => {
+                                  remove(name);
+                                  setTimeout(updateDetailsCount, 0);
+                                }}
+                                aria-label={`Remove slot ${name + 1}`}
+                              />
+                            </Col>
+                          </Row>
+                        ))}
+                        <Form.Item>
+                          <Button 
+                            type="dashed" 
                             onClick={() => {
-                              remove(name);
+                              add();
                               setTimeout(updateDetailsCount, 0);
-                            }}
-                            aria-label={`Remove slot ${name + 1}`}
-                          />
-                        </Col>
-                      </Row>
-                    ))}
-                    <Form.Item>
-                      <Button 
-                        type="dashed" 
-                        onClick={() => {
-                          add();
-                          setTimeout(updateDetailsCount, 0);
-                        }} 
-                        block 
-                        icon={<PlusOutlined />}
-                        className="admin-syllabus-add-detail-button"
-                        disabled={detailsCount >= totalSlots}
-                      >
-                        Add Slot
-                      </Button>
-          </Form.Item>
-                  </>
-                )}
-              </Form.List>
-        </Form>
-
-            <div className="admin-syllabus-step-nav-buttons">
-              <Button onClick={() => setCurrentStep(0)}>
-                Back to Step 1
-              </Button>
-              <Button 
-                type="primary"
-                onClick={handleModalSubmit}
-                disabled={detailsCount !== totalSlots}
-                className="admin-syllabus-action-button"
-                icon={<CheckOutlined />}
-              >
-                {editingSyllabus ? 'Update Syllabus' : 'Create Syllabus'}
-              </Button>
-            </div>
-          </div>
-        )}
+                            }} 
+                            block 
+                            icon={<PlusOutlined />}
+                            className="admin-syllabus-add-detail-button"
+                            disabled={detailsCount >= totalSlots}
+                          >
+                            Add Slot
+                          </Button>
+                        </Form.Item>
+                      </>
+                    )}
+                  </Form.List>
+                </Form>
+              </div>
+              <div className="admin-syllabus-modal-footer">
+                <div className="admin-syllabus-step-nav-buttons">
+                  <Button onClick={() => setCurrentStep(0)}>
+                    Back to Step 1
+                  </Button>
+                  <Button 
+                    type="primary"
+                    onClick={handleModalSubmit}
+                    disabled={detailsCount !== totalSlots}
+                    className="admin-syllabus-action-button"
+                    icon={<CheckOutlined />}
+                  >
+                    {editingSyllabus ? 'Update Syllabus' : 'Create Syllabus'}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
         {submitting && (
           <div className="admin-syllabus-loading-cover">
             <Spin 

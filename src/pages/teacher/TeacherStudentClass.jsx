@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  Card, Table, Avatar, Tag, Typography, Input, Button, 
+import {
+  Card, Table, Avatar, Tag, Typography, Input, Button,
   Tooltip, Space, Empty, Spin, Tabs, Row, Col, Dropdown,
   Badge, Segmented, List, Statistic, Modal, Descriptions, Image, message
 } from 'antd';
-import { 
-  UserOutlined, SearchOutlined, FilterOutlined, 
+import {
+  UserOutlined, SearchOutlined, FilterOutlined,
   DownloadOutlined, EyeOutlined, MessageOutlined,
   CalendarOutlined, TeamOutlined, SortAscendingOutlined,
   UnorderedListOutlined, AppstoreOutlined, IdcardOutlined,
@@ -31,13 +31,13 @@ const TeacherStudentClass = () => {
   const [viewType, setViewType] = useState('table');
   const [searchValue, setSearchValue] = useState('');
   const { currentUser } = useUser();
-  
-  // Thêm state cho modal và thông tin chi tiết học sinh
+
+  // Add state for modal and student detail
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  // 1. First, add a function to ensure unique data
+  // 1. First, add a function to ensure unique data by checking for duplicate IDs
   const ensureUniqueData = (data) => {
     const seen = new Set();
     return data.filter((student) => {
@@ -50,22 +50,22 @@ const TeacherStudentClass = () => {
     });
   };
 
-  // 2. Update the useEffect to filter out duplicates
+  // 2. Update the useEffect to filter out duplicates and ensure unique data
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const studentsData = await getStudentsByClassId(classId);
-        
+
         // Apply the unique filter
         const uniqueStudentsData = ensureUniqueData(studentsData);
-        
+
         if (currentUser?.id) {
           const classes = await getClassesByTeacherId(currentUser.id);
           const currentClass = classes.find(c => c.id.toString() === classId.toString());
           setClassInfo(currentClass);
         }
-        
+
         setStudents(uniqueStudentsData);
         setFilteredStudents(uniqueStudentsData);
 
@@ -84,7 +84,7 @@ const TeacherStudentClass = () => {
     }
   }, [classId, currentUser]);
 
-  // Hàm xem chi tiết học sinh
+  // Function to view student detail
   const showStudentDetail = async (studentId) => {
     try {
       setDetailLoading(true);
@@ -98,7 +98,7 @@ const TeacherStudentClass = () => {
     }
   };
 
-  // Hàm đóng modal
+  // Function to close modal
   const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedStudent(null);
@@ -106,7 +106,7 @@ const TeacherStudentClass = () => {
 
   const handleSearch = (value) => {
     setSearchValue(value);
-    const filtered = students.filter(student => 
+    const filtered = students.filter(student =>
       student.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredStudents(filtered);
@@ -114,7 +114,7 @@ const TeacherStudentClass = () => {
 
   const columns = [
     {
-      title: 'STT',
+      title: 'ID',
       key: 'index',
       width: 70,
       align: 'center',
@@ -123,14 +123,14 @@ const TeacherStudentClass = () => {
       ),
     },
     {
-      title: 'Học sinh',
+      title: 'Student',
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
         <div className="student-name-cell">
-          <Avatar 
-            src={record.avatar} 
-            icon={!record.avatar || record.avatar === 'string' ? <UserOutlined /> : null} 
+          <Avatar
+            src={record.avatar}
+            icon={!record.avatar || record.avatar === 'string' ? <UserOutlined /> : null}
             size={40}
           />
           <div className="student-info">
@@ -141,41 +141,41 @@ const TeacherStudentClass = () => {
       ),
     },
     {
-      title: 'Ngày sinh',
+      title: 'Birthday',
       dataIndex: 'birthday',
       key: 'birthday',
       render: (date) => (
         <Space direction="vertical" size={0}>
           <Text>{formatBirthday(date)}</Text>
-          <Text type="secondary">{calculateAge(date)} tuổi</Text>
+          <Text type="secondary">{calculateAge(date)} years old</Text>
         </Space>
       ),
     },
     {
-      title: 'Giới tính',
+      title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
       render: (gender) => (
         <Tag color={gender === 'Male' ? 'blue' : gender === 'Female' ? 'pink' : 'default'}>
-          {gender === 'Male' ? 'Nam' : gender === 'Female' ? 'Nữ' : 'Khác'}
+          {gender === 'Male' ? 'Male' : gender === 'Female' ? 'Female' : 'Other'}
         </Tag>
       ),
     },
     {
-      title: 'Thành phố',
+      title: 'City',
       dataIndex: 'city',
       key: 'city',
       render: (city) => city === 'string' ? '-' : city,
     },
     {
-      title: 'Thao tác',
+      title: 'Action',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Tooltip title="Xem chi tiết">
+          <Tooltip title="View detail">
             <Button type="text" icon={<EyeOutlined />} onClick={() => showStudentDetail(record.id)} />
           </Tooltip>
-          <Tooltip title="Nhắn tin">
+          <Tooltip title="Send message">
             <Button type="text" icon={<MessageOutlined />} />
           </Tooltip>
         </Space>
@@ -187,7 +187,7 @@ const TeacherStudentClass = () => {
     <Row gutter={[24, 24]}>
       {filteredStudents.map(student => (
         <Col xs={24} sm={12} md={8} lg={6} key={student.id}>
-          <Card 
+          <Card
             className="student-card"
             hoverable
             actions={[
@@ -200,23 +200,23 @@ const TeacherStudentClass = () => {
             ]}
           >
             <div className="student-card-content">
-              <Badge.Ribbon 
-                text={student.gender === 'Male' ? 'Nam' : student.gender === 'Female' ? 'Nữ' : 'Khác'} 
+              <Badge.Ribbon
+                text={student.gender === 'Male' ? 'Male' : student.gender === 'Female' ? 'Female' : 'Other'}
                 color={student.gender === 'Male' ? 'blue' : student.gender === 'Female' ? 'pink' : 'default'}
               >
-                <Avatar 
-                  src={student.avatar} 
-                  icon={!student.avatar || student.avatar === 'string' ? <UserOutlined /> : null} 
+                <Avatar
+                  src={student.avatar}
+                  icon={!student.avatar || student.avatar === 'string' ? <UserOutlined /> : null}
                   size={80}
                   className="student-avatar"
                 />
               </Badge.Ribbon>
-              
+
               <div className="student-details">
                 <Title level={5} className="student-name">{student.name}</Title>
                 <div className="student-info-grid">
                   <Text type="secondary"><CalendarOutlined /> {formatBirthday(student.birthday)}</Text>
-                  <Text type="secondary"><IdcardOutlined /> {calculateAge(student.birthday)} tuổi</Text>
+                  <Text type="secondary"><IdcardOutlined /> {calculateAge(student.birthday)} years old</Text>
                   <Text type="secondary" className="student-city">
                     {student.city !== 'string' ? student.city : ''}
                   </Text>
@@ -229,7 +229,7 @@ const TeacherStudentClass = () => {
     </Row>
   );
 
-  // Modal xem chi tiết học sinh
+  // Modal to view student detail
   const studentDetailModal = (
     <Modal
       title={null}
@@ -247,14 +247,14 @@ const TeacherStudentClass = () => {
           <div className="tsc-loading-spinner">
             <Spin size="large" />
           </div>
-          <Text>Đang tải thông tin...</Text>
+          <Text>Loading...</Text>
         </div>
       ) : selectedStudent ? (
         <div className="tsc-modal-container">
           <div className="tsc-modal-header">
             <div className="tsc-modal-header-content">
-              <Avatar 
-                src={selectedStudent.avatar} 
+              <Avatar
+                src={selectedStudent.avatar}
                 icon={!selectedStudent.avatar || selectedStudent.avatar === 'string' ? <UserOutlined /> : null}
                 size={120}
                 className="tsc-student-avatar"
@@ -263,64 +263,64 @@ const TeacherStudentClass = () => {
                 <Title level={2} className="tsc-student-name">{selectedStudent.name}</Title>
                 <div className="tsc-student-tags">
                   <Tag color={selectedStudent.gender === 'Male' ? 'blue' : selectedStudent.gender === 'Female' ? 'pink' : 'default'}>
-                    {selectedStudent.gender === 'Male' ? 'Nam' : selectedStudent.gender === 'Female' ? 'Nữ' : 'Khác'}
+                    {selectedStudent.gender === 'Male' ? 'Male' : selectedStudent.gender === 'Female' ? 'Female' : 'Other'}
                   </Tag>
-                  <Tag color="green">{calculateAge(selectedStudent.birthday)} tuổi</Tag>
+                  <Tag color="green">{calculateAge(selectedStudent.birthday)} years old</Tag>
                   {selectedStudent.city !== 'string' && <Tag color="orange">{selectedStudent.city}</Tag>}
                 </div>
                 <Text className="tsc-student-id">ID: {selectedStudent.id.substring(0, 8)}</Text>
               </div>
             </div>
           </div>
-          
+
           <div className="tsc-modal-body">
             <Tabs defaultActiveKey="1" className="tsc-detail-tabs">
-              <TabPane tab={<span><IdcardOutlined /> Thông tin cá nhân</span>} key="1">
+              <TabPane tab={<span><IdcardOutlined /> Personal information</span>} key="1">
                 <div className="tab-content tsc-tab-statistics">
                   <Row gutter={[24, 16]}>
                     <Col span={12}>
-                      <Statistic 
-                        title="Ngày sinh" 
-                        value={formatBirthday(selectedStudent.birthday)} 
-                        prefix={<CalendarOutlined />} 
+                      <Statistic
+                        title="Birthday"
+                        value={formatBirthday(selectedStudent.birthday)}
+                        prefix={<CalendarOutlined />}
                       />
                     </Col>
                     <Col span={12}>
-                      <Statistic 
-                        title="Tuổi" 
-                        value={`${calculateAge(selectedStudent.birthday)} tuổi`}
-                        prefix={<IdcardOutlined />} 
+                      <Statistic
+                        title="Age"
+                        value={`${calculateAge(selectedStudent.birthday)} years old`}
+                        prefix={<IdcardOutlined />}
                       />
                     </Col>
                     <Col span={12}>
-                      <Statistic 
-                        title="Giới tính" 
-                        value={selectedStudent.gender === 'Male' ? 'Nam' : selectedStudent.gender === 'Female' ? 'Nữ' : 'Khác'} 
-                        prefix={<TeamOutlined />} 
+                      <Statistic
+                        title="Gender"
+                        value={selectedStudent.gender === 'Male' ? 'Male' : selectedStudent.gender === 'Female' ? 'Female' : 'Other'}
+                        prefix={<TeamOutlined />}
                       />
                     </Col>
                     <Col span={12}>
-                      <Statistic 
-                        title="Ngày nhập học" 
+                      <Statistic
+                        title="Enroll Date"
                         value={
-                          selectedStudent.enrollDate && selectedStudent.enrollDate !== '0001-01-01T00:00:00' 
-                          ? formatBirthday(selectedStudent.enrollDate) 
-                          : '—'
-                        } 
-                        prefix={<CalendarOutlined />} 
+                          selectedStudent.enrollDate && selectedStudent.enrollDate !== '0001-01-01T00:00:00'
+                            ? formatBirthday(selectedStudent.enrollDate)
+                            : '—'
+                        }
+                        prefix={<CalendarOutlined />}
                       />
                     </Col>
                     <Col span={24}>
-                      <Statistic 
-                        title="Thành phố" 
-                        value={selectedStudent.city !== 'string' ? selectedStudent.city : '—'} 
-                        prefix={<HomeOutlined />} 
+                      <Statistic
+                        title="City"
+                        value={selectedStudent.city !== 'string' ? selectedStudent.city : '—'}
+                        prefix={<HomeOutlined />}
                       />
                     </Col>
                   </Row>
                 </div>
               </TabPane>
-              <TabPane tab={<span><TeamOutlined /> Thông tin liên hệ</span>} key="2">
+              <TabPane tab={<span><TeamOutlined /> Contact information</span>} key="2">
                 <div className="tab-content">
                   <Row gutter={[24, 16]}>
                     <Col span={24}>
@@ -328,20 +328,20 @@ const TeacherStudentClass = () => {
                         <div className="tsc-contact-info">
                           <Avatar icon={<UserOutlined />} size={64} className="tsc-parent-avatar" />
                           <div className="tsc-parent-details">
-                            <Title level={4}>{selectedStudent.parentName || 'Chưa cập nhật'}</Title>
-                            <Text type="secondary">Phụ huynh</Text>
+                            <Title level={4}>{selectedStudent.parentName || 'Not updated'}</Title>
+                            <Text type="secondary">Parent</Text>
                             <Space direction="vertical" style={{ width: '100%', marginTop: '12px' }}>
                               <div className="tsc-contact-detail">
-                                <PhoneOutlined /> 
-                                <Text>{selectedStudent.phoneNumber || 'Chưa cập nhật'}</Text>
+                                <PhoneOutlined />
+                                <Text>{selectedStudent.phoneNumber || 'Not updated'}</Text>
                               </div>
                               <div className="tsc-contact-detail">
-                                <MailOutlined /> 
-                                <Text>{selectedStudent.email || 'Chưa cập nhật'}</Text>
+                                <MailOutlined />
+                                <Text>{selectedStudent.email || 'Not updated'}</Text>
                               </div>
                               <div className="tsc-contact-detail">
-                                <HomeOutlined /> 
-                                <Text>{selectedStudent.address || 'Chưa cập nhật'}</Text>
+                                <HomeOutlined />
+                                <Text>{selectedStudent.address || 'Not updated'}</Text>
                               </div>
                             </Space>
                           </div>
@@ -351,14 +351,14 @@ const TeacherStudentClass = () => {
                   </Row>
                 </div>
               </TabPane>
-              <TabPane tab={<span><FileTextOutlined /> Tài liệu</span>} key="3">
+              <TabPane tab={<span><FileTextOutlined /> Documents</span>} key="3">
                 <div className="tab-content tsc-documents-tab">
                   <List
                     className="tsc-doc-list"
                     itemLayout="horizontal"
                     dataSource={[
                       {
-                        title: 'Giấy khai sinh',
+                        title: 'Birth certificate',
                         image: selectedStudent.birthCertificate && selectedStudent.birthCertificate !== 'string'
                           ? selectedStudent.birthCertificate
                           : null
@@ -370,7 +370,7 @@ const TeacherStudentClass = () => {
                         <List.Item.Meta
                           avatar={<FileTextOutlined className="tsc-doc-icon" />}
                           title={item.title}
-                          description={item.image ? 'Đã cập nhật' : 'Chưa cập nhật'}
+                          description={item.image ? 'Updated' : 'Not updated'}
                         />
                         {item.image ? (
                           <div className="tsc-doc-preview">
@@ -383,7 +383,7 @@ const TeacherStudentClass = () => {
                           </div>
                         ) : (
                           <Button type="default" size="small" disabled>
-                            Chưa có
+                            No
                           </Button>
                         )}
                       </List.Item>
@@ -393,18 +393,18 @@ const TeacherStudentClass = () => {
               </TabPane>
             </Tabs>
           </div>
-          
+
           <div className="tsc-modal-footer">
             <Button className="tsc-action-button-default" onClick={handleModalClose}>
-              Đóng
+              Close
             </Button>
             <Button type="primary" icon={<MessageOutlined />} className="tsc-action-button-primary">
-              Liên hệ phụ huynh
+              Contact parent
             </Button>
           </div>
         </div>
       ) : (
-        <Empty description="Không có thông tin chi tiết" />
+        <Empty description="No detail information" />
       )}
     </Modal>
   );
@@ -415,27 +415,27 @@ const TeacherStudentClass = () => {
         <div className="back-button">
           <Link to="/teacher/classes">
             <Button icon={<ArrowLeftOutlined />} className="back-btn">
-              Quay lại danh sách lớp
+              Back to class list
             </Button>
           </Link>
         </div>
-        
+
         <div className="header-top">
           <div className="header-left">
-            <Title level={2}>Danh sách học sinh</Title>
+            <Title level={2}>Student list</Title>
             {classInfo && (
-              <Text>Lớp: <Text strong>{classInfo.name}</Text> | Sĩ số: <Text strong>{students.length}/{classInfo.maxChildren}</Text></Text>
+              <Text>Class: <Text strong>{classInfo.name}</Text> | Number of students: <Text strong>{students.length}/{classInfo.maxChildren}</Text></Text>
             )}
           </div>
           <div className="header-right">
             <Space>
               <Link to={`/teacher/classes/${classId}/view-all-attendance`}>
                 <Button type="primary" icon={<FileTextOutlined />} style={{ marginRight: '8px' }}>
-                  Xem điểm danh
+                  View attendance
                 </Button>
               </Link>
               <Button type="primary" icon={<DownloadOutlined />}>
-                Xuất danh sách
+                Export list
               </Button>
             </Space>
           </div>
@@ -444,7 +444,7 @@ const TeacherStudentClass = () => {
         <div className="header-actions">
           <div className="search-filter">
             <Search
-              placeholder="Tìm kiếm học sinh..."
+              placeholder="Search students..."
               allowClear
               enterButton={<SearchOutlined />}
               size="middle"
@@ -452,54 +452,54 @@ const TeacherStudentClass = () => {
               onChange={e => handleSearch(e.target.value)}
               style={{ width: 300 }}
             />
-            
+
             <Dropdown menu={{
               items: [
                 {
                   key: '1',
-                  label: 'Tất cả học sinh',
+                  label: 'All students',
                 },
                 {
                   key: '2',
-                  label: 'Nam',
+                  label: 'Male',
                 },
                 {
                   key: '3',
-                  label: 'Nữ',
+                  label: 'Female',
                 },
               ],
             }} trigger={['click']}>
               <Button icon={<FilterOutlined />}>
-                Lọc
+                Filter
               </Button>
             </Dropdown>
-            
+
             <Dropdown menu={{
               items: [
                 {
                   key: '1',
-                  label: 'Tên (A-Z)',
+                  label: 'Name (A-Z)',
                 },
                 {
                   key: '2',
-                  label: 'Tên (Z-A)',
+                  label: 'Name (Z-A)',
                 },
                 {
                   key: '3',
-                  label: 'Tuổi (tăng dần)',
+                  label: 'Age (ascending)',
                 },
                 {
                   key: '4',
-                  label: 'Tuổi (giảm dần)',
+                  label: 'Age (descending)',
                 },
               ],
             }} trigger={['click']}>
               <Button icon={<SortAscendingOutlined />}>
-                Sắp xếp
+                Sort
               </Button>
             </Dropdown>
           </div>
-          
+
           <Segmented
             options={[
               {
@@ -520,19 +520,19 @@ const TeacherStudentClass = () => {
       {loading ? (
         <div className="loading-container">
           <Spin size="large" />
-          <Text>Đang tải danh sách học sinh...</Text>
+          <Text>Loading student list...</Text>
         </div>
       ) : filteredStudents.length === 0 ? (
-        <Empty 
-          description="Không tìm thấy học sinh nào" 
-          image={Empty.PRESENTED_IMAGE_SIMPLE} 
+        <Empty
+          description="No student found matching the keyword"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
         />
       ) : (
         <div className="student-list-container">
           {viewType === 'table' ? (
-            <Table 
-              columns={columns} 
-              dataSource={filteredStudents} 
+            <Table
+              columns={columns}
+              dataSource={filteredStudents}
               rowKey={(record) => `student-${record.id}-${record.name}`}
               pagination={{ pageSize: 10 }}
               className="students-table"
@@ -542,7 +542,7 @@ const TeacherStudentClass = () => {
           )}
         </div>
       )}
-      
+
       {studentDetailModal}
     </div>
   );

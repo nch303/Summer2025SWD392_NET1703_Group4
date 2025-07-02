@@ -33,10 +33,10 @@ const AccountListPage = () => {
     total: 0
   });
 
-  // Thêm state để theo dõi nếu đang tìm kiếm
+  // Add state to track if currently searching
   const [isSearching, setIsSearching] = useState(false);
 
-  // Tạo biến debounceTimer ở ngoài component để tránh bị tạo lại mỗi khi render
+  // Create debounceTimer variable outside component to avoid recreating on each render
   let debounceTimer;
 
   const loadAccounts = async (page = pagination.current, pageSize = pagination.pageSize) => {

@@ -32,9 +32,9 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
   // Get gender display
   const getGenderDisplay = (gender) => {
     switch (gender?.toLowerCase()) {
-      case 'male': return 'Nam';
-      case 'female': return 'Nữ';
-      default: return 'Khác';
+      case 'male': return 'Male';
+      case 'female': return 'Female';
+      default: return 'Other';
     }
   };
   
@@ -51,9 +51,9 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
           <div className="staff-children-modal-header">
             <h2>
               <i className="fas fa-user-circle"></i>
-              Thông tin chi tiết học sinh
+              Student details
             </h2>
-            <button className="staff-children-close-modal" onClick={onClose} aria-label="Đóng">
+            <button className="staff-children-close-modal" onClick={onClose} aria-label="Close">
               <i className="fas fa-times"></i>
             </button>
           </div>
@@ -64,7 +64,7 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                 {child.avatar ? (
                   <img 
                     src={child.avatar} 
-                    alt={`Ảnh đại diện của ${child.name}`} 
+                    alt={`Avatar of ${child.name}`} 
                     className="staff-children-avatar-large"
                     onClick={() => openImageModal(child.avatar)}
                     onError={(e) => { e.target.src = '/images/default-avatar.png'; }}
@@ -93,22 +93,22 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                   <div className="staff-children-info-badge">
                     <i className="fas fa-birthday-cake"></i>
                     <div className="staff-children-info-badge-text">
-                      <span className="staff-children-badge-label">Ngày sinh</span>
+                      <span className="staff-children-badge-label">Birthday</span>
                       <span className="staff-children-badge-value">{formatDate(child.birthday)}</span>
                     </div>
                   </div>
                   <div className="staff-children-info-badge">
                     <i className="fas fa-child"></i>
                     <div className="staff-children-info-badge-text">
-                      <span className="staff-children-badge-label">Tuổi</span>
-                      <span className="staff-children-badge-value">{calculateAge(child.birthday)} tuổi</span>
+                      <span className="staff-children-badge-label">Age</span>
+                      <span className="staff-children-badge-value">{calculateAge(child.birthday)} years</span>
                     </div>
                   </div>
                   <div className="staff-children-info-badge">
                     <i className="fas fa-map-marker-alt"></i>
                     <div className="staff-children-info-badge-text">
-                      <span className="staff-children-badge-label">Thành phố</span>
-                      <span className="staff-children-badge-value">{child.city || 'Chưa cập nhật'}</span>
+                      <span className="staff-children-badge-label">City</span>
+                      <span className="staff-children-badge-value">{child.city || 'Not specified'}</span>
                     </div>
                   </div>
                   <div className="staff-children-info-badge">
@@ -125,20 +125,20 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
             <div className="staff-children-tabs">
               <div className="staff-children-tab active">
                 <i className="fas fa-info-circle"></i>
-                <span>Thông tin chi tiết</span>
+                <span>Detail</span>
               </div>
             </div>
             
             <div className="staff-children-info-section">
-              <h4><i className="fas fa-user-friends"></i> Thông tin phụ huynh</h4>
+              <h4><i className="fas fa-user-friends"></i> Parent information</h4>
               <div className="staff-children-info-cards">
                 <div className="staff-children-info-card">
                   <div className="staff-children-info-card-icon">
                     <i className="fas fa-user"></i>
                   </div>
                   <div className="staff-children-info-card-content">
-                    <div className="staff-children-info-card-label">Họ và tên</div>
-                    <div className="staff-children-info-card-value">{child.parentName || 'Chưa cập nhật'}</div>
+                    <div className="staff-children-info-card-label">Name</div>
+                    <div className="staff-children-info-card-value">{child.parentName || 'Not specified'}</div>
                   </div>
                 </div>
                 <div className="staff-children-info-card">
@@ -146,8 +146,8 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                     <i className="fas fa-phone-alt"></i>
                   </div>
                   <div className="staff-children-info-card-content">
-                    <div className="staff-children-info-card-label">Số điện thoại</div>
-                    <div className="staff-children-info-card-value">{child.phoneNumber || 'Chưa cập nhật'}</div>
+                    <div className="staff-children-info-card-label">Phone number</div>
+                    <div className="staff-children-info-card-value">{child.phoneNumber || 'Not specified'}</div>
                   </div>
                 </div>
                 <div className="staff-children-info-card">
@@ -155,8 +155,8 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                     <i className="fas fa-id-card"></i>
                   </div>
                   <div className="staff-children-info-card-content">
-                    <div className="staff-children-info-card-label">ID Phụ huynh</div>
-                    <div className="staff-children-info-card-value">{child.parentID || 'Chưa cập nhật'}</div>
+                    <div className="staff-children-info-card-label">Parent ID</div>
+                    <div className="staff-children-info-card-value">{child.parentID || 'Not specified'}</div>
                   </div>
                 </div>
                 <div className="staff-children-info-card">
@@ -164,37 +164,37 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
                     <i className="fas fa-map-marked-alt"></i>
                   </div>
                   <div className="staff-children-info-card-content">
-                    <div className="staff-children-info-card-label">Địa chỉ</div>
-                    <div className="staff-children-info-card-value">{child.city || 'Chưa cập nhật'}</div>
+                    <div className="staff-children-info-card-label">Address</div>
+                    <div className="staff-children-info-card-value">{child.address || 'Not specified'}</div>
                   </div>
                 </div>
               </div>
             </div>
             
             <div className="staff-children-info-section">
-              <h4><i className="fas fa-id-card"></i> Giấy khai sinh</h4>
+              <h4><i className="fas fa-id-card"></i> Birth certificate</h4>
               <div className="staff-children-document-container">
                 {child.birthCertificate ? (
                   <div className="staff-children-document-preview" onClick={() => openImageModal(child.birthCertificate)}>
                     <img 
                       src={child.birthCertificate} 
-                      alt="Giấy khai sinh" 
+                      alt="Birth certificate" 
                       className="staff-children-certificate"
                       onError={(e) => { e.target.src = '/images/no-document.png'; }}
                     />
                     <div className="staff-children-document-overlay">
                       <div className="staff-children-document-overlay-content">
                         <i className="fas fa-search-plus"></i>
-                        <span>Nhấn để xem</span>
+                        <span>Click to view</span>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="staff-children-no-document">
                     <i className="fas fa-file-alt"></i>
-                    <p>Chưa có giấy khai sinh</p>
+                    <p>No birth certificate</p>
                     <button className="staff-children-upload-btn">
-                      <i className="fas fa-upload"></i> Tải lên
+                      <i className="fas fa-upload"></i> Upload
                     </button>
                   </div>
                 )}
@@ -204,10 +204,10 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
           
           <div className="staff-children-modal-footer">
             <button className="staff-children-action-button secondary" onClick={onClose}>
-              <i className="fas fa-times"></i> Đóng
+              <i className="fas fa-times"></i> Close
             </button>
             <button className="staff-children-action-button primary">
-              <i className="fas fa-edit"></i> Chỉnh sửa
+              <i className="fas fa-edit"></i> Edit
             </button>
           </div>
         </div>
@@ -224,14 +224,14 @@ const ChildDetailModal = ({ isOpen, onClose, child }) => {
           <div className="staff-children-fullscreen-image-container">
             <img 
               src={selectedImage} 
-              alt="Xem chi tiết" 
+              alt="View details" 
               className="staff-children-fullscreen-image" 
               onClick={(e) => e.stopPropagation()}
               onError={(e) => { e.target.src = '/images/no-document.png'; }}
             />
           </div>
           <div className="staff-children-image-caption">
-            Nhấn bên ngoài ảnh để đóng
+            Click
           </div>
         </div>
       )}

@@ -28,7 +28,7 @@ const EnrichmentHistory = () => {
         setRegistrations(data || []);
         setError(null);
       } catch (err) {
-        setError('Không thể tải dữ liệu đăng ký lớp học. Vui lòng thử lại sau.');
+        setError('Cannot load registration data. Please try again later.');
         console.error('Error fetching registrations:', err);
       } finally {
         setLoading(false);
@@ -93,11 +93,11 @@ const EnrichmentHistory = () => {
       if (response && response.url) {
         window.location.href = response.url;
       } else {
-        toast.error('Không thể tạo đường dẫn thanh toán. Vui lòng thử lại sau.');
+        toast.error('Cannot create payment link. Please try again later.');
       }
     } catch (err) {
       console.error('Payment error:', err);
-      toast.error('Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại sau.');
+      toast.error('An error occurred while processing payment. Please try again later.');
     } finally {
       setProcessingPayment(false);
     }
@@ -111,7 +111,7 @@ const EnrichmentHistory = () => {
   };
 
   const formatDisplayDate = (dateString) => {
-    if (!dateString) return 'Chưa xác định';
+    if (!dateString) return 'Not specified';
     try {
       const date = new Date(dateString);
       const day = date.getDate().toString().padStart(2, '0');
@@ -149,13 +149,13 @@ const EnrichmentHistory = () => {
       case 'Active':
         return (
           <span className="enrichment-registration-status active">
-            <FontAwesomeIcon icon="check-circle" /> Đang học
+            <FontAwesomeIcon icon="check-circle" /> Studying
           </span>
         );
       case 'Pending':
         return (
           <span className="enrichment-registration-status pending">
-            <FontAwesomeIcon icon="clock" /> Chờ xử lý
+            <FontAwesomeIcon icon="clock" /> Pending
           </span>
         );
       default:
@@ -174,14 +174,14 @@ const EnrichmentHistory = () => {
         className="enrichment-tab-button"
       >
         <FontAwesomeIcon icon="th-large" />
-        Chương Trình Học
+        Enrichment Program
       </a>
       <button 
         className="enrichment-tab-button active"
         onClick={() => {}} // Already on this page
       >
         <FontAwesomeIcon icon="history" />
-        Lịch Sử Đăng Ký
+        Registration History
       </button>
     </div>
   );
@@ -207,9 +207,9 @@ const EnrichmentHistory = () => {
       <div className="decoration-cloud cloud2"></div>
 
       <div className="enrichment-program-header">
-        <h1 className="enrichment-program-title">Lịch Sử Đăng Ký Khóa Học Năng Khiếu</h1>
+        <h1 className="enrichment-program-title">Enrichment Program Registration History</h1>
         <p className="enrichment-program-subtitle">
-          Xem và quản lý các khóa học năng khiếu đã đăng ký cho con
+          View and manage the enrichment programs your child has registered for
         </p>
       </div>
 
@@ -219,7 +219,7 @@ const EnrichmentHistory = () => {
       {loading ? (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Đang tải dữ liệu...</p>
+          <p>Loading data...</p>
         </div>
       ) : error ? (
         <div className="error-container">
@@ -230,7 +230,7 @@ const EnrichmentHistory = () => {
             onClick={() => window.location.reload()}
           >
             <FontAwesomeIcon icon="sync" />
-            Thử lại
+            Try again
           </button>
         </div>
       ) : registrations.length === 0 ? (
@@ -238,13 +238,13 @@ const EnrichmentHistory = () => {
           <div className="empty-icon">
             <FontAwesomeIcon icon="book" size="3x" />
           </div>
-          <h3 className="empty-message">Chưa có đăng ký khóa học nào</h3>
+          <h3 className="empty-message">No registration yet</h3>
           <button
             className="retry-btn"
             onClick={() => window.location.href = '/enrichment-program'}
           >
             <FontAwesomeIcon icon="plus-circle" />
-            Đăng ký khóa học mới
+            Register new class
           </button>
         </div>
       ) : (
@@ -265,8 +265,8 @@ const EnrichmentHistory = () => {
                   </div>
                   <div className="enrichment-child-details">
                     <h3 className="enrichment-child-name">{registration.childrenResponse.name}</h3>
-                    <p className="enrichment-child-age">{calculateAge(registration.childrenResponse.birthday)} tuổi</p>
-                    <p className="enrichment-child-class">Lớp {registration.childrenResponse.gradeLevelName}</p>
+                    <p className="enrichment-child-age">{calculateAge(registration.childrenResponse.birthday)} years old</p>
+                    <p className="enrichment-child-class">Class {registration.childrenResponse.gradeLevelName}</p>
                   </div>
                 </div>
                 <div className="enrichment-registration-status-container">
@@ -291,36 +291,36 @@ const EnrichmentHistory = () => {
                   <div className="enrichment-program-info-grid">
                     <div className="enrichment-info-item">
                       <span className="enrichment-info-label">
-                        <FontAwesomeIcon icon="users" /> Lớp:
+                        <FontAwesomeIcon icon="users" /> Class:
                       </span>
                       <span className="enrichment-info-value">{registration.classResponse.name}</span>
                     </div>
                     
                     <div className="enrichment-info-item">
                       <span className="enrichment-info-label">
-                        <FontAwesomeIcon icon="calendar-alt" /> Năm học:
+                        <FontAwesomeIcon icon="calendar-alt" /> Academic year:
                       </span>
                       <span className="enrichment-info-value">{registration.classResponse.academicYear}</span>
                     </div>
                     
                     <div className="enrichment-info-item">
                       <span className="enrichment-info-label">
-                        <FontAwesomeIcon icon="clock" /> Lịch học:
+                        <FontAwesomeIcon icon="clock" /> Schedule:
                       </span>
                       <span className="enrichment-info-value">
                         {registration.classResponse.timetable ? 
                           `Thứ ${registration.classResponse.timetable}` : 
-                          'Chưa có lịch'}
+                          'No schedule'}
                       </span>
                     </div>
                     
                     <div className="enrichment-info-item">
                       <span className="enrichment-info-label">
-                        <FontAwesomeIcon icon="check-circle" /> Trạng thái lớp:
+                        <FontAwesomeIcon icon="check-circle" /> Class status:
                       </span>
                       <span className={`enrichment-info-value status-${registration.classResponse.status?.toLowerCase()}`}>
-                        {registration.classResponse.status === "Available" ? "Sẵn sàng" : 
-                         registration.classResponse.status === "Unavailable" ? "Chưa mở" : 
+                        {registration.classResponse.status === "Available" ? "Ready" : 
+                         registration.classResponse.status === "Unavailable" ? "Not opened" : 
                          registration.classResponse.status}
                       </span>
                     </div>
@@ -328,7 +328,7 @@ const EnrichmentHistory = () => {
                     {/* Display program fee */}
                     <div className="enrichment-info-item">
                       <span className="enrichment-info-label">
-                        <FontAwesomeIcon icon="money-bill-wave" /> Học phí:
+                        <FontAwesomeIcon icon="money-bill-wave" /> Tuition fee:
                       </span>
                       <span className="enrichment-info-value fee">
                         {formatCurrency(registration.enrichmentProgramResponse?.fee || 0)}
@@ -338,7 +338,7 @@ const EnrichmentHistory = () => {
                     {/* Display program duration */}
                     <div className="enrichment-info-item">
                       <span className="enrichment-info-label">
-                        <FontAwesomeIcon icon="calendar-day" /> Thời gian:
+                        <FontAwesomeIcon icon="calendar-day" /> Time:
                       </span>
                       <span className="enrichment-info-value">
                         {formatDisplayDate(registration.enrichmentProgramResponse?.startDate)} - {formatDisplayDate(registration.enrichmentProgramResponse?.endDate)}
@@ -350,7 +350,7 @@ const EnrichmentHistory = () => {
                   {registration.teachers && registration.teachers.length > 0 && (
                     <div className="enrichment-teacher-section">
                       <h5 className="enrichment-section-subtitle">
-                        <FontAwesomeIcon icon="chalkboard-teacher" /> Giáo viên
+                        <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                       </h5>
                       <div className="enrichment-teacher-list">
                         {registration.teachers.map((teacher, index) => (
@@ -360,10 +360,10 @@ const EnrichmentHistory = () => {
                             </div>
                             <div className="enrichment-teacher-contact">
                               <span>
-                                <FontAwesomeIcon icon="envelope" /> {teacher.email || 'Chưa cập nhật'}
+                                <FontAwesomeIcon icon="envelope" /> {teacher.email || 'Not updated'}
                               </span>
                               <span>
-                                <FontAwesomeIcon icon="phone" /> {teacher.phoneNumber || 'Chưa cập nhật'}
+                                <FontAwesomeIcon icon="phone" /> {teacher.phoneNumber || 'Not updated'}
                               </span>
                             </div>
                           </div>
@@ -379,7 +379,7 @@ const EnrichmentHistory = () => {
                   isRegistrationPaid(registration) ? (
                     <div className="enrichment-payment-success">
                       <FontAwesomeIcon icon="check-circle" />
-                      Đã thanh toán
+                        Paid
                     </div>
                   ) : (
                     <button 
@@ -390,12 +390,12 @@ const EnrichmentHistory = () => {
                       {processingPayment ? (
                         <>
                           <FontAwesomeIcon icon="spinner" spin />
-                          Đang xử lý...
+                          Processing...
                         </>
                       ) : (
                         <>
                           <FontAwesomeIcon icon="credit-card" />
-                          Thanh toán ngay
+                          Process payment
                         </>
                       )}
                     </button>
@@ -403,7 +403,7 @@ const EnrichmentHistory = () => {
                 ) : (
                   <div className="enrichment-payment-notice">
                     <FontAwesomeIcon icon="info-circle" />
-                    Đợi mở lớp để thanh toán
+                    Wait for class to open to process payment
                   </div>
                 )}
               </div>

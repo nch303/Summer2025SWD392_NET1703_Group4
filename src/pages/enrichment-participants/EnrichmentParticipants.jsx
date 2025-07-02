@@ -294,12 +294,12 @@ const EnrichmentParticipants = () => {
     setProcessingKick((prev) => ({ ...prev, [studentId]: true }));
     try {
       await kickChildFromClass(studentId, selectedClass);
-      message.success('Đã loại học sinh khỏi lớp học');
+      message.success('Student removed from class');
       
       // Remove student from the list
       setStudents(students.filter(student => student.id !== studentId));
     } catch (error) {
-      message.error('Không thể loại học sinh khỏi lớp học');
+      message.error('Could not remove student from class');
       console.error('Error kicking student:', error);
     } finally {
       setProcessingKick((prev) => ({ ...prev, [studentId]: false }));
@@ -323,25 +323,25 @@ const EnrichmentParticipants = () => {
       width: "80px",
     },
     {
-      title: "Họ tên",
+      title: "Full name",
       dataIndex: "name",
       key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: "Giới tính",
+      title: "Gender",
       dataIndex: "gender",
       key: "gender",
       render: (gender) =>
-        gender === "Male" ? "Nam" : gender === "Female" ? "Nữ" : "Khác",
+        gender === "Male" ? "Male" : gender === "Female" ? "Female" : "Other",
       filters: [
-        { text: "Nam", value: "Male" },
-        { text: "Nữ", value: "Female" },
+        { text: "Male", value: "Male" },
+        { text: "Female", value: "Female" },
       ],
       onFilter: (value, record) => record.gender === value,
     },
     {
-      title: "Ngày sinh",
+      title: "Birthday",
       dataIndex: "birthday",
       key: "birthday",
       render: (date) =>
@@ -351,7 +351,7 @@ const EnrichmentParticipants = () => {
       sorter: (a, b) => new Date(a.birthday) - new Date(b.birthday),
     },
     {
-      title: "Ngày đăng ký",
+      title: "Enroll date",
       dataIndex: "enrollDate",
       key: "enrollDate",
       render: (date) =>
@@ -362,7 +362,7 @@ const EnrichmentParticipants = () => {
     },
     // New column for payment status
     {
-      title: "Trạng thái thanh toán",
+      title: "Payment status",
       key: "paymentStatus",
       render: (_, record) => {
         if (paymentStatuses[record.id] === undefined) {
@@ -370,35 +370,35 @@ const EnrichmentParticipants = () => {
         }
         return paymentStatuses[record.id] ? (
           <Tag color="green" icon={<CheckCircleOutlined />}>
-            Đã thanh toán
+            Paid
           </Tag>
         ) : (
           <Tag color="orange" icon={<DollarOutlined />}>
-            Chưa thanh toán
+            Unpaid
           </Tag>
         );
       },
       filters: [
-        { text: "Đã thanh toán", value: true },
-        { text: "Chưa thanh toán", value: false },
+        { text: "Paid", value: true },
+        { text: "Unpaid", value: false },
       ],
       onFilter: (value, record) => paymentStatuses[record.id] === value,
       width: "150px",
     },
     // Actions column
     {
-      title: "Thao tác",
+      title: "Action",
       key: "action",
       render: (_, record) => {
         // Only show kick button if not paid
         if (!paymentStatuses[record.id]) {
           return (
             <Popconfirm
-              title="Loại học sinh khỏi lớp?"
-              description="Bạn có chắc muốn loại học sinh này khỏi lớp không?"
+              title="Remove student from class?"
+              description="Are you sure you want to remove this student from the class?"
               onConfirm={() => handleKickStudent(record.id)}
-              okText="Đồng ý"
-              cancelText="Hủy"
+              okText="Yes"
+              cancelText="Cancel"
             >
               <Button 
                 danger 
@@ -406,7 +406,7 @@ const EnrichmentParticipants = () => {
                 loading={processingKick[record.id]}
                 icon={<CloseCircleOutlined />}
               >
-                Loại khỏi lớp
+                Remove from class
               </Button>
             </Popconfirm>
           );
@@ -433,7 +433,7 @@ const EnrichmentParticipants = () => {
       },
       title: {
         display: true,
-        text: "Phân bố học sinh theo loại khóa năng khiếu",
+        text: "Student distribution by enrichment program type",
         font: {
           size: 18,
           weight: "bold",
@@ -451,7 +451,7 @@ const EnrichmentParticipants = () => {
             );
             const percentage =
               total > 0 ? Math.round((value / total) * 100) : 0;
-            return `${label}: ${value} học sinh (${percentage}%)`;
+            return `${label}: ${value} students (${percentage}%)`;
           },
         },
       },
@@ -488,7 +488,7 @@ const EnrichmentParticipants = () => {
       },
       title: {
         display: true,
-        text: `Phân bố học sinh theo khóa ${selectedType || ""}`,
+        text: `Student distribution by enrichment program type ${selectedType || ""}`,
         font: {
           size: 18,
           weight: "bold",
@@ -498,7 +498,7 @@ const EnrichmentParticipants = () => {
       tooltip: {
         callbacks: {
           label: function (context) {
-            return `Số học sinh hiện tại: ${context.raw}`;
+            return `Current number of students: ${context.raw}`;
           },
         },
       },
@@ -511,7 +511,7 @@ const EnrichmentParticipants = () => {
         beginAtZero: true,
         title: {
           display: true,
-          text: "Số học sinh",
+          text: "Number of students",
           font: {
             size: 14,
             weight: "bold",
@@ -525,7 +525,7 @@ const EnrichmentParticipants = () => {
       x: {
         title: {
           display: true,
-          text: "Khóa học năng khiếu",
+          text: "Enrichment program",
           font: {
             size: 14,
             weight: "bold",
@@ -540,11 +540,10 @@ const EnrichmentParticipants = () => {
       <div className="header-section">
         <AntTitle level={2}>
           <PieChartOutlined className="section-icon" />
-          Thống kê học sinh tham gia khóa năng khiếu
+          Enrichment program statistics
         </AntTitle>
         <Text type="secondary" className="description-text">
-          Thông tin tổng quan và chi tiết về số lượng học sinh đang tham gia các
-          khóa học năng khiếu
+          General and detailed information about the number of students participating in enrichment programs
         </Text>
       </div>
 
@@ -565,13 +564,13 @@ const EnrichmentParticipants = () => {
       <div className="filter-section">
         <div className="section-header">
           <BarChartOutlined className="section-icon" />
-          <Text strong>Lọc dữ liệu</Text>
+          <Text strong>Filter data</Text>
         </div>
         <Row gutter={[64, 24]} className="filter-row">
           <Col xs={24} md={12}>
-            <div className="filter-label">Loại khóa học năng khiếu:</div>
+            <div className="filter-label">Enrichment program type:</div>
             <Select
-              placeholder="Chọn loại khóa học năng khiếu"
+              placeholder="Select enrichment program type"
               style={{ width: "100%" }}
               onChange={(value) => setSelectedType(value)}
               value={selectedType}
@@ -587,9 +586,9 @@ const EnrichmentParticipants = () => {
 
           {selectedType && (
             <Col xs={24} md={12}>
-              <div className="filter-label">Khóa học:</div>
+              <div className="filter-label">Enrichment program:</div>
               <Select
-                placeholder={`Chọn khóa học ${selectedType}`}
+                placeholder={`Select enrichment program ${selectedType}`}
                 style={{ width: "100%" }}
                 onChange={(value) => setSelectedProgram(value)}
                 value={selectedProgram}
@@ -600,7 +599,7 @@ const EnrichmentParticipants = () => {
                     {program.name}
                     {program.isDelete && (
                       <Tag color="red" style={{ marginLeft: 8 }}>
-                        Đã xóa
+                        Deleted
                       </Tag>
                     )}
                   </Option>
@@ -623,7 +622,7 @@ const EnrichmentParticipants = () => {
             </div>
           ) : (
             <Empty
-              description="Không có dữ liệu khóa học cho loại này"
+              description="No data for this enrichment program type"
               className="styled-empty"
             />
           )}
@@ -636,21 +635,21 @@ const EnrichmentParticipants = () => {
           <div className="students-section">
             <div className="section-header">
               <TeamOutlined className="section-icon" />
-              <Text strong>Danh sách học sinh</Text>
+              <Text strong>Student list</Text>
             </div>
             <div className="table-header">
               <AntTitle level={4} className="table-title">
-                Học sinh tham gia ({students.length})
+                Students participating ({students.length})
                 {filteredPrograms.find((p) => p.id === selectedProgram)
                   ?.isDelete && (
                   <Tag color="red" style={{ marginLeft: 8 }}>
-                    Khóa đã xóa
+                    Deleted
                   </Tag>
                 )}
               </AntTitle>
               <Space>
                 <Input
-                  placeholder="Tìm theo tên"
+                  placeholder="Search by name"
                   prefix={<SearchOutlined />}
                   onChange={(e) => setSearchText(e.target.value)}
                   allowClear
@@ -669,7 +668,7 @@ const EnrichmentParticipants = () => {
                 dataSource={filteredStudents}
                 rowKey="id"
                 pagination={{ pageSize: 10 }}
-                locale={{ emptyText: "Không có học sinh nào" }}
+                locale={{ emptyText: "No students found" }}
                 className="styled-table"
               />
             )}

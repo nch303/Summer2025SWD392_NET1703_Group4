@@ -65,7 +65,7 @@ const EnrollmentApplicationPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!childId) {
-        setError('Không tìm thấy ID của trẻ.');
+        setError('Cannot find the child ID.');
         setLoading(false);
         return;
       }
@@ -128,7 +128,7 @@ const EnrollmentApplicationPage = () => {
         
         setError('');
       } catch (err) {
-        setError('Không thể tải thông tin. Vui lòng thử lại sau.');
+        setError('Cannot load information. Please try again later.');
         console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
@@ -150,12 +150,12 @@ const EnrollmentApplicationPage = () => {
     e.preventDefault();
     
     if (!formData.academicYear || !formData.gradeLevelID) {
-      setError('Vui lòng điền đầy đủ thông tin.');
+      setError('Please fill in all information.');
       return;
     }
     
     try {
-      showSpinner('Đang xử lý đăng ký...');
+      showSpinner('Processing enrollment...');
       setError('');
       
       const applicationData = {
@@ -165,9 +165,9 @@ const EnrollmentApplicationPage = () => {
       
       const response = await submitEnrollmentApplication(childId, applicationData);
       
-      toast.success('Đăng ký nhập học thành công!', {
+      toast.success('Enrollment successful!', {
         duration: 3000,
-        title: 'Hoàn tất đăng ký'
+        title: 'Complete enrollment'
       });
       
       setTimeout(() => {
@@ -178,13 +178,13 @@ const EnrollmentApplicationPage = () => {
       if (err.isDuplicate) {
         setError(err.message);
         toast.error(err.message, {
-          title: 'Đăng ký không thành công',
-          description: 'Vui lòng kiểm tra lại tình trạng đăng ký trong mục theo dõi đăng ký.'
+          title: 'Enrollment failed',
+          description: 'Please check the enrollment status in the enrollment tracking section.'
         });
       } else {
-        setError('Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.');
-        toast.error('Đã xảy ra lỗi trong quá trình đăng ký.', {
-          title: 'Lỗi đăng ký'
+        setError('An error occurred during enrollment. Please try again later.');
+        toast.error('An error occurred during enrollment.', {
+          title: 'Enrollment failed'
         });
       }
       console.error('Error submitting application:', err);
@@ -212,7 +212,7 @@ const EnrollmentApplicationPage = () => {
       <div className="enrollment-container">
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
-          <p>Đang tải thông tin...</p>
+          <p>Loading information...</p>
         </div>
       </div>
     );
@@ -235,57 +235,57 @@ const EnrollmentApplicationPage = () => {
         {child && (
           <div className="paper-enrollment-form">
             <div className="form-header">
-              <h1>ĐƠN XIN NHẬP HỌC</h1>
-              <h2>NĂM HỌC: {formData.academicYear}</h2>
+              <h1>ENROLLMENT APPLICATION</h1>
+              <h2>ACADEMIC YEAR: {formData.academicYear}</h2>
             </div>
             
             <div className="form-recipient">
-              <p><strong>Kính gửi</strong>: BAN GIÁM HIỆU TRƯỜNG MẦM NON LITTLE STARS</p>
+              <p><strong>Dear</strong>: PRINCIPAL OF LITTLE STARS PRESCHOOL</p>
             </div>
             
             <form onSubmit={handleSubmit} className="traditional-form">
               <div className="form-section parent-info">
                 <div className="form-field">
-                  <label htmlFor="parentName">Họ và tên</label>
+                  <label htmlFor="parentName">Name</label>
                   <div className="readonly-value">{formData.parentName}</div>
                 </div>
                 
                 <div className="form-field">
-                  <label htmlFor="currentAddress">Chỗ ở hiện nay</label>
+                  <label htmlFor="currentAddress">Current address</label>
                   <div className="readonly-value">{formData.currentAddress}</div>
                 </div>
                 
                 <div className="form-field">
-                  <label htmlFor="permanentAddress">Hộ khẩu thường trú</label>
+                  <label htmlFor="permanentAddress">Permanent address</label>
                   <div className="readonly-value">{formData.permanentAddress}</div>
                 </div>
                 
                 <div className="form-field">
-                  <label htmlFor="phoneNumber">Điện thoại</label>
+                  <label htmlFor="phoneNumber">Phone</label>
                   <div className="readonly-value">{formData.phoneNumber}</div>
                 </div>
               </div>
               
               <div className="form-section child-info">
                 <div className="form-field">
-                  <label>Con tôi tên là</label>
+                  <label>My child's name is</label>
                   <div className="readonly-value">{child.name}</div>
                 </div>
                 
                 <div className="form-field">
-                  <label>Sinh ngày</label>
+                  <label>Birthday</label>
                   <div className="readonly-value">{formatBirthday(child.birthday)}</div>
                 </div>
                 
                 <div className="form-field">
-                  <label>Nơi sinh</label>
-                  <div className="readonly-value">{child.city || 'Chưa cập nhật'}</div>
+                  <label>Birthplace</label>
+                  <div className="readonly-value">{child.city || 'Not updated'}</div>
                 </div>
               </div>
               
               <div className="form-section grade-selection">
                 <div className="form-field grade-field">
-                  <label htmlFor="gradeLevelID">Cấp lớp đăng ký</label>
+                  <label htmlFor="gradeLevelID">Grade level</label>
                   {gradeLevels.length > 0 ? (
                     <div className="grade-radio-group">
                       {gradeLevels.map((level) => {
@@ -329,7 +329,7 @@ const EnrollmentApplicationPage = () => {
                     </div>
                   ) : (
                     <div className="readonly-value error-message">
-                      Không có lớp học phù hợp với độ tuổi của trẻ
+                      No class suitable for the child's age
                     </div>
                   )}
                 </div>
@@ -345,7 +345,7 @@ const EnrollmentApplicationPage = () => {
                   <div className="grade-warning">
                     <FontAwesomeIcon icon="exclamation-triangle" className="warning-icon" />
                     <span>
-                      Trẻ {calculateAge(child.birthday)} tuổi đang đăng ký lớp thấp hơn độ tuổi khuyến nghị
+                      Child {calculateAge(child.birthday)} years old is registering for a lower grade than the recommended one
                     </span>
                   </div>
                 )}
@@ -353,25 +353,24 @@ const EnrollmentApplicationPage = () => {
               
               <div className="application-text">
                 <p>
-                  Nay tôi làm đơn này kính xin Ban Giám Hiệu cho con tôi ghi tên vào học 
-                  tại trường Mầm Non Little Stars.
+                  I hereby submit this application to the principal of Little Stars Preschool, requesting that my child be enrolled in the school.
                 </p>
                 <p>
-                  Tôi xin chấp hành nội quy, quy định của nhà trường.
+                  I hereby agree to abide by the rules and regulations of the school.
                 </p>
               </div>
               
               <div className="signature-container">
                 <div className="signature parent-signature">
                   <div className="date-section">
-                    <p>........, ngày ........ tháng ........ năm {new Date().getFullYear()}</p>
-                    <p className="signature-label">(Phụ huynh ký và ghi rõ họ tên)</p>
+                    <p>........, day ........ month ........ year {new Date().getFullYear()}</p>
+                    <p className="signature-label">(Parent's signature and full name)</p>
                   </div>
                 </div>
                 
                 <div className="signature principal-signature">
                   <div className="date-section">
-                    <p>HIỆU TRƯỞNG</p>
+                    <p>PRINCIPAL</p>
                     
                     <div className="signature-text">
                       TaKKhoan
@@ -385,7 +384,7 @@ const EnrollmentApplicationPage = () => {
                     <div className="school-stamp">
                       <div className="stamp-circle"></div>
                       <div className="stamp-inner-circle"></div>
-                      <div className="stamp-text-top">TRƯỜNG MẦM NON</div>
+                      <div className="stamp-text-top">PRESCHOOL</div>
                       <div className="stamp-text-bottom">LITTLE STARS</div>
                       <div className="stamp-date">{new Date().getFullYear()}</div>
                       <div className="stamp-approved">
@@ -404,7 +403,7 @@ const EnrollmentApplicationPage = () => {
                   className="btn-cancel"
                   onClick={() => navigate('/profile/children')}
                 >
-                  <FontAwesomeIcon icon="arrow-left" /> Quay lại
+                  <FontAwesomeIcon icon="arrow-left" /> Back
                 </button>
                 
                 <button 
@@ -413,7 +412,7 @@ const EnrollmentApplicationPage = () => {
                   disabled={gradeLevels.length === 0}
                 >
                   <FontAwesomeIcon icon="paper-plane" />
-                  Hoàn tất đăng ký
+                  Complete enrollment
                 </button>
               </div>
             </form>

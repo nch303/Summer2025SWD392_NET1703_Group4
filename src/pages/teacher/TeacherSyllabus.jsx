@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Table, Typography, Input, Button, Space, Tag, 
-  Tooltip, Empty, Spin, Tabs, Row, Col, Avatar, Dropdown, 
+import {
+  Card, Table, Typography, Input, Button, Space, Tag,
+  Tooltip, Empty, Spin, Tabs, Row, Col, Avatar, Dropdown,
   Modal, Drawer, Descriptions, Divider
 } from 'antd';
-import { 
-  SearchOutlined, FileTextOutlined, BookOutlined, 
+import {
+  SearchOutlined, FileTextOutlined, BookOutlined,
   DownloadOutlined, EyeOutlined, FilterOutlined,
   SortAscendingOutlined, PlusOutlined, FilePdfOutlined,
   BookFilled, ReadOutlined, CheckCircleOutlined, ClockCircleOutlined
@@ -47,7 +47,7 @@ const TeacherSyllabus = () => {
 
   const handleSearch = (value) => {
     setSearchValue(value);
-    const filtered = syllabi.filter(syllabus => 
+    const filtered = syllabi.filter(syllabus =>
       syllabus.name.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredSyllabi(filtered);
@@ -56,7 +56,7 @@ const TeacherSyllabus = () => {
   const showSyllabusDetail = async (syllabus) => {
     setSelectedSyllabus(syllabus);
     setDrawerVisible(true);
-    
+
     try {
       setDetailLoading(true);
       const slotsData = await getSyllabusDetailById(syllabus.id);
@@ -82,7 +82,7 @@ const TeacherSyllabus = () => {
 
   const columns = [
     {
-      title: 'STT',
+      title: 'ID',
       key: 'index',
       width: 70,
       align: 'center',
@@ -91,7 +91,7 @@ const TeacherSyllabus = () => {
       ),
     },
     {
-      title: 'Tên giáo trình',
+      title: 'Syllabus name',
       dataIndex: 'name',
       key: 'name',
       render: (text) => (
@@ -102,7 +102,7 @@ const TeacherSyllabus = () => {
       ),
     },
     {
-      title: 'Số buổi học',
+      title: 'Number of lessons',
       dataIndex: 'slotAmount',
       key: 'slotAmount',
       width: 150,
@@ -112,19 +112,19 @@ const TeacherSyllabus = () => {
       ),
     },
     {
-      title: 'Thao tác',
+      title: 'Action',
       key: 'action',
       width: 150,
       render: (_, record) => (
         <Space size="middle">
-          <Tooltip title="Xem chi tiết">
-            <Button 
-              type="text" 
-              icon={<EyeOutlined />} 
-              onClick={() => showSyllabusDetail(record)} 
+          <Tooltip title="View detail">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => showSyllabusDetail(record)}
             />
           </Tooltip>
-          <Tooltip title="Tải xuống">
+          <Tooltip title="Download">
             <Button type="text" icon={<DownloadOutlined />} />
           </Tooltip>
         </Space>
@@ -134,7 +134,7 @@ const TeacherSyllabus = () => {
 
   const assignedColumns = [
     {
-      title: 'STT',
+      title: 'ID',
       key: 'index',
       width: 70,
       align: 'center',
@@ -143,7 +143,7 @@ const TeacherSyllabus = () => {
       ),
     },
     {
-      title: 'Tên giáo trình',
+      title: 'Syllabus name',
       dataIndex: 'name',
       key: 'name',
       render: (text) => (
@@ -154,45 +154,45 @@ const TeacherSyllabus = () => {
       ),
     },
     {
-      title: 'Số buổi học',
+      title: 'Number of lessons',
       dataIndex: 'slotAmount',
       key: 'slotAmount',
       width: 150,
       align: 'center',
       render: (slotAmount) => slotAmount ? (
-        <Tag color="blue">{slotAmount} buổi</Tag>
+        <Tag color="blue">{slotAmount} lessons</Tag>
       ) : (
-        <Tag color="default">Chưa cập nhật</Tag>
+        <Tag color="default">Not updated</Tag>
       ),
     },
     {
-      title: 'Lớp',
+      title: 'Class',
       dataIndex: 'className',
       key: 'className',
     },
     {
-      title: 'Trạng thái',
+      title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (status) => (
-        <Tag color={status === 'Đang dạy' ? 'processing' : status === 'Sắp dạy' ? 'warning' : 'success'}>
+        <Tag color={status === 'Teaching' ? 'processing' : status === 'To be taught' ? 'warning' : 'success'}>
           {status}
         </Tag>
       ),
     },
     {
-      title: 'Tiến độ',
+      title: 'Progress',
       dataIndex: 'progress',
       key: 'progress',
       render: (progress) => (
         <div className="progress-cell">
           <div className="progress-bar">
-            <div 
-              style={{ 
+            <div
+              style={{
                 width: `${progress}%`,
                 height: '100%',
                 backgroundColor: progress === 0 ? '#f5f5f5' : progress < 30 ? '#ff4d4f' : progress < 70 ? '#faad14' : '#52c41a'
-              }} 
+              }}
             />
           </div>
           <Text>{progress}%</Text>
@@ -200,19 +200,19 @@ const TeacherSyllabus = () => {
       ),
     },
     {
-      title: 'Thao tác',
+      title: 'Action',
       key: 'action',
       width: 150,
       render: (_, record) => (
         <Space size="middle">
-          <Tooltip title="Xem chi tiết">
-            <Button 
-              type="text" 
-              icon={<EyeOutlined />} 
-              onClick={() => showSyllabusDetail(record)} 
+          <Tooltip title="View detail">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => showSyllabusDetail(record)}
             />
           </Tooltip>
-          <Tooltip title="Tải xuống">
+          <Tooltip title="Download">
             <Button type="text" icon={<DownloadOutlined />} />
           </Tooltip>
         </Space>
@@ -234,56 +234,56 @@ const TeacherSyllabus = () => {
     return (
       <div className="syllabus-detail">
         <div className="syllabus-header">
-          <Avatar 
-            className="syllabus-avatar" 
-            icon={<BookOutlined />} 
-            size={80} 
+          <Avatar
+            className="syllabus-avatar"
+            icon={<BookOutlined />}
+            size={80}
           />
           <div className="syllabus-title">
             <Title level={3}>{selectedSyllabus.name}</Title>
             <div className="syllabus-tags">
-              <Tag color="blue">{selectedSyllabus.slotAmount || syllabusSlots.length || 0} buổi học</Tag>
+              <Tag color="blue">{selectedSyllabus.slotAmount || syllabusSlots.length || 0} lessons</Tag>
             </div>
           </div>
         </div>
 
         <Divider />
 
-        <Descriptions 
-          title="Thông tin giáo trình" 
-          bordered 
+        <Descriptions
+          title="Syllabus information"
+          bordered
           column={1}
           className="syllabus-descriptions"
         >
-          <Descriptions.Item label="ID giáo trình">{selectedSyllabus.id}</Descriptions.Item>
-          <Descriptions.Item label="Tên giáo trình">{selectedSyllabus.name}</Descriptions.Item>
-          <Descriptions.Item label="Số buổi học">{selectedSyllabus.slotAmount || syllabusSlots.length || 0}</Descriptions.Item>
+          <Descriptions.Item label="ID of syllabus">{selectedSyllabus.id}</Descriptions.Item>
+          <Descriptions.Item label="Syllabus name">{selectedSyllabus.name}</Descriptions.Item>
+          <Descriptions.Item label="Number of lessons">{selectedSyllabus.slotAmount || syllabusSlots.length || 0}</Descriptions.Item>
         </Descriptions>
 
         {detailLoading ? (
           <div className="loading-container">
             <Spin size="large" />
-            <Text>Đang tải chi tiết giáo trình...</Text>
+            <Text>Loading syllabus detail...</Text>
           </div>
         ) : syllabusSlots.length > 0 ? (
           <>
-            <Divider orientation="left">Chi tiết các buổi học</Divider>
+            <Divider orientation="left">Lesson details</Divider>
             <div className="syllabus-slots">
               {groupedSlots.map((group, groupIndex) => (
-                <Card 
+                <Card
                   key={groupIndex}
                   className="unit-card"
                   title={
-                    <Text strong>Nhóm buổi học {groupIndex + 1} (Buổi {group[0].slot} - {group[group.length-1].slot})</Text>
+                    <Text strong>Lesson group {groupIndex + 1} (Lesson {group[0].slot} - {group[group.length - 1].slot})</Text>
                   }
                   style={{ marginBottom: 16 }}
                 >
                   {group.map((slot) => (
                     <div key={slot.id} style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
                       <Space size="middle">
-                        <Tag color="blue">Buổi {slot.slot}</Tag>
+                        <Tag color="blue">Lesson {slot.slot}</Tag>
                         <Text>{slot.content}</Text>
-                        <Tag color="green">{slot.duration} phút</Tag>
+                        <Tag color="green">{slot.duration} minutes</Tag>
                       </Space>
                     </div>
                   ))}
@@ -292,7 +292,7 @@ const TeacherSyllabus = () => {
             </div>
           </>
         ) : (
-          <Empty description="Không có thông tin chi tiết buổi học" />
+          <Empty description="No lesson detail" />
         )}
       </div>
     );
@@ -303,12 +303,12 @@ const TeacherSyllabus = () => {
       <div className="syllabus-header-section">
         <div className="header-top">
           <div className="header-left">
-            <Title level={2}>Giáo trình</Title>
-            <Text>Quản lý và theo dõi giáo trình giảng dạy</Text>
+            <Title level={2}>Syllabus</Title>
+            <Text>Manage and track the teaching syllabus</Text>
           </div>
           <div className="header-right">
             <Button type="primary" icon={<DownloadOutlined />}>
-              Tải tài liệu giảng dạy
+              Download teaching materials
             </Button>
           </div>
         </div>
@@ -316,7 +316,7 @@ const TeacherSyllabus = () => {
         <div className="header-actions">
           <div className="search-filter">
             <Search
-              placeholder="Tìm kiếm giáo trình..."
+              placeholder="Search syllabus..."
               allowClear
               enterButton={<SearchOutlined />}
               size="middle"
@@ -324,94 +324,94 @@ const TeacherSyllabus = () => {
               onChange={e => handleSearch(e.target.value)}
               style={{ width: 300 }}
             />
-            
+
             <Dropdown menu={{
               items: [
                 {
                   key: '1',
-                  label: 'Tất cả giáo trình',
+                  label: 'All syllabi',
                 },
                 {
                   key: '2',
-                  label: 'Mới nhất',
+                  label: 'Newest',
                 },
                 {
                   key: '3',
-                  label: 'Phổ biến nhất',
+                  label: 'Most popular',
                 },
               ],
             }} trigger={['click']}>
               <Button icon={<FilterOutlined />}>
-                Lọc
+                Filter
               </Button>
             </Dropdown>
-            
+
             <Dropdown menu={{
               items: [
                 {
                   key: '1',
-                  label: 'Tên (A-Z)',
+                  label: 'Name (A-Z)',
                 },
                 {
                   key: '2',
-                  label: 'Tên (Z-A)',
+                  label: 'Name (Z-A)',
                 },
               ],
             }} trigger={['click']}>
               <Button icon={<SortAscendingOutlined />}>
-                Sắp xếp
+                Sort
               </Button>
             </Dropdown>
           </div>
         </div>
       </div>
 
-      <Tabs 
-        activeKey={activeTab} 
+      <Tabs
+        activeKey={activeTab}
         onChange={setActiveTab}
         className="syllabus-tabs"
       >
-        <TabPane 
+        <TabPane
           tab={
             <span>
               <BookOutlined />
-              Tất cả giáo trình
+              All syllabi
             </span>
-          } 
+          }
           key="all"
         >
           {loading ? (
             <div className="loading-container">
               <Spin size="large" />
-              <Text>Đang tải danh sách giáo trình...</Text>
+              <Text>Loading syllabus list...</Text>
             </div>
           ) : filteredSyllabi.length === 0 ? (
-            <Empty 
-              description="Không tìm thấy giáo trình nào" 
-              image={Empty.PRESENTED_IMAGE_SIMPLE} 
+            <Empty
+              description="No syllabus found"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
             />
           ) : (
-            <Table 
-              columns={columns} 
-              dataSource={filteredSyllabi} 
+            <Table
+              columns={columns}
+              dataSource={filteredSyllabi}
               rowKey="id"
               pagination={{ pageSize: 10 }}
               className="syllabi-table"
             />
           )}
         </TabPane>
-        <TabPane 
+        <TabPane
           tab={
             <span>
               <CheckCircleOutlined />
-              Giáo trình đã gán
+              Assigned syllabi
             </span>
-          } 
+          }
           key="assigned"
         >
-          <Table 
-            columns={assignedColumns} 
-            dataSource={assignedSyllabi} 
+          <Table
+            columns={assignedColumns}
+            dataSource={assignedSyllabi}
             rowKey="id"
             pagination={{ pageSize: 10 }}
             className="syllabi-table"
@@ -420,7 +420,7 @@ const TeacherSyllabus = () => {
       </Tabs>
 
       <Drawer
-        title="Chi tiết giáo trình"
+        title="Syllabus detail"
         placement="right"
         onClose={closeDrawer}
         open={drawerVisible}

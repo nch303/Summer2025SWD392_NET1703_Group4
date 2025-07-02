@@ -98,46 +98,46 @@ const StaffDashboard = () => {
   // Navigation shortcuts
   const quickAccessLinks = [
     {
-      title: 'Quản lý lớp học',
+      title: 'Class management',
       icon: <BookOutlined />,
       color: '#4a6cf7',
       path: '/staff/classes',
-      description: 'Xem và quản lý danh sách lớp học'
+      description: 'View and manage class list'
     },
     {
-      title: 'Quản lý học sinh',
+      title: 'Student management',
       icon: <TeamOutlined />,
       color: '#54d62c',
-        path: '/staff/students',
-      description: 'Quản lý thông tin và hồ sơ học sinh'
+      path: '/staff/students',
+      description: 'Manage student information and records'
     },
     {
-      title: 'Phân công giáo viên',
+      title: 'Teacher assignment',
       icon: <UserOutlined />,
       color: '#a46bf5',
       path: '/staff/assign-teachers',
-      description: 'Phân công giáo viên cho các lớp học'
+      description: 'Assign teachers to classes'
     },
     {
-      title: 'Đơn nhập học',
+      title: 'Enrollment application',
       icon: <FormOutlined />,
       color: '#ffab00',
       path: '/staff/enrollment-applications',
-      description: 'Xử lý các đơn đăng ký nhập học'
+      description: 'Process enrollment applications'
     },
     {
-      title: 'Xếp lớp',
+      title: 'Class assignment',
       icon: <AppstoreOutlined />,
       color: '#00bcd4',
       path: '/staff/assign-students',
-      description: 'Phân bổ học sinh vào lớp học'
+      description: 'Assign students to classes'
     },
     {
-      title: 'Lịch học',
+      title: 'Schedule',
       icon: <CalendarOutlined />,
       color: '#ff5555',
       path: '/staff/schedule',
-      description: 'Xem lịch học và phân công'
+      description: 'View schedule and assign'
     }
   ];
 
@@ -145,15 +145,15 @@ const StaffDashboard = () => {
     <div className="staff-dashboard-container">
       <div className="dashboard-welcome-header">
         <div className="welcome-content">
-          <h1>Xin chào, <span className="staff-name">Nhân viên</span></h1>
-          <p>Chào mừng quay trở lại trang quản lý Little Stars Preschool</p>
+          <h1>Hello, <span className="staff-name">Staff</span></h1>
+          <p>Welcome back to Little Stars Preschool</p>
         </div>
         <div className="dashboard-date">
           <CalendarOutlined /> {new Date().toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </div>
 
-      <Spin spinning={loading} tip="Đang tải dữ liệu...">
+      <Spin spinning={loading} tip="Loading data...">
         {/* Stats Row */}
         <Row gutter={[24, 24]} className="stats-row">
           <Col xs={24} sm={12} lg={8}>
@@ -162,12 +162,12 @@ const StaffDashboard = () => {
                 <BookOutlined style={{ color: '#4a6cf7' }} />
               </div>
               <Statistic
-                title="Lớp học đang hoạt động"
+                title="Active classes"
                 className="staff-dashboard-ant-statistic-content"
                 value={stats.totalClasses}
                 suffix={
                   <Tag color="blue">
-                    {stats.availableClasses} lớp có thể nhận học sinh
+                    {stats.availableClasses} classes can accept students
                   </Tag>
                 }
               />
@@ -179,7 +179,7 @@ const StaffDashboard = () => {
                 <TeamOutlined style={{ color: '#54d62c' }} />
               </div>
               <Statistic
-                title="Học sinh đã nhập học"
+                title="Enrolled students"
                 value={stats.enrolledStudents}
               />
             </Card>
@@ -190,7 +190,7 @@ const StaffDashboard = () => {
                 <FormOutlined style={{ color: '#ffab00' }} />
               </div>
               <Statistic
-                title="Đơn nhập học chờ xử lý"
+                title="Enrollment applications pending"
                 value={stats.pendingApplications}
                 valueStyle={{ color: stats.pendingApplications > 0 ? '#ffab00' : undefined }}
               />
@@ -202,7 +202,7 @@ const StaffDashboard = () => {
                   style={{ marginTop: 16, background: '#ffab00', borderColor: '#ffab00' }}
                   onClick={() => navigate('/staff/enrollment-applications')}
                 >
-                  Xử lý ngay
+                  Process now
                 </Button>
               )}
             </Card>
@@ -213,7 +213,7 @@ const StaffDashboard = () => {
         <Card
           title={
             <span className="section-title">
-              <AppstoreOutlined /> Truy cập nhanh
+              <AppstoreOutlined /> Quick access
             </span>
           }
           variant="borderless"
@@ -251,14 +251,14 @@ const StaffDashboard = () => {
             <Card
               title={
                 <span className="section-title">
-                  <FormOutlined /> Đơn nhập học gần đây
+                  <FormOutlined /> Recent enrollment applications
                 </span>
               }
               variant="borderless"
               className="section-card"
               extra={
                 <Link to="/staff/enrollment-applications">
-                  Xem tất cả
+                  View all
                 </Link>
               }
             >
@@ -278,19 +278,18 @@ const StaffDashboard = () => {
                               app.status === 'Paid' ? 'green' :
                                 app.status === 'Enrolled' ? 'green' :
                                   app.status === 'Approved' ? 'green' :
-                                app.status === 'Pending' ? 'orange' : 'red'
+                                    app.status === 'Pending' ? 'orange' : 'red'
                             }>
-                              {app.status === 'Paid' ? 'Đã thanh toán' :
-                                app.status === 'Enrolled' ? 'Đã xếp lớp' :
-                                  app.status === 'Approved' ? 'Đã duyệt' :
-                                    app.status === 'Pending' ? 'Chờ duyệt' : 'Đã từ chối'}
+                              {app.status === 'Paid' ? 'Paid' :
+                                app.status === 'Enrolled' ? 'Enrolled' :
+                                  app.status === 'Approved' ? 'Approved' :
+                                    app.status === 'Pending' ? 'Pending' : 'Rejected'}
                             </Tag>
                           </div>
                         }
                         description={
                           <div className="app-description">
-                            <span>Phụ huynh: {app.parentName}</span>
-                            <span>Ngày đăng ký: {formatDate(app.applicationDate)}</span>
+                            <span>Parent: {app.parentName}</span>
                           </div>
                         }
                       />
@@ -298,7 +297,7 @@ const StaffDashboard = () => {
                   )}
                 />
               ) : (
-                <Empty description="Không có đơn nhập học gần đây" />
+                <Empty description="No recent enrollment applications" />
               )}
             </Card>
           </Col>
@@ -308,29 +307,29 @@ const StaffDashboard = () => {
             <Card
               title={
                 <span className="section-title">
-                  <BarChartOutlined /> Tình trạng lớp học
+                  <BarChartOutlined /> Class status
                 </span>
               }
               variant="borderless"
               className="section-card class-capacity-card"
               extra={
                 <Link to="/staff/classes">
-                  Xem tất cả
+                  View all
                 </Link>
               }
             >
               {classesByCapacity.length > 0 ? (
                 <div className="class-capacity-list">
                   {classesByCapacity.map((cls) => (
-                    <Tooltip 
-                      key={cls.id} 
+                    <Tooltip
+                      key={cls.id}
                       title={
                         <div className="class-tooltip-content">
-                          <div className="tooltip-title">Giáo viên:</div>
+                          <div className="tooltip-title">Teacher:</div>
                           <div className="tooltip-content">
-                            {cls.teacherNames && cls.teacherNames.length > 0 ? 
-                              cls.teacherNames.join(', ') : 
-                              'Chưa có'
+                            {cls.teacherNames && cls.teacherNames.length > 0 ?
+                              cls.teacherNames.join(', ') :
+                              'No teacher'
                             }
                           </div>
                         </div>
@@ -346,21 +345,20 @@ const StaffDashboard = () => {
                             <div className="class-name-text">{cls.name}</div>
                           </div>
                           <div className="capacity-indicator">
-                            <span className={cls.quantity >= cls.maxChildren ? 'capacity-full' : 
-                                           cls.capacityPercent >= 75 ? 'capacity-high' : 
-                                           cls.capacityPercent >= 50 ? 'capacity-medium' : 'capacity-low'}>
+                            <span className={cls.quantity >= cls.maxChildren ? 'capacity-full' :
+                              cls.capacityPercent >= 75 ? 'capacity-high' :
+                                cls.capacityPercent >= 50 ? 'capacity-medium' : 'capacity-low'}>
                               {cls.quantity}/{cls.maxChildren}
                             </span>
                           </div>
                         </div>
                         <div className="capacity-progress-container">
                           <div className="capacity-progress-bar">
-                            <div 
-                              className={`capacity-progress-fill ${
-                                cls.quantity >= cls.maxChildren ? 'full' : 
-                                cls.capacityPercent >= 75 ? 'high' : 
-                                cls.capacityPercent >= 50 ? 'medium' : 'low'
-                              }`} 
+                            <div
+                              className={`capacity-progress-fill ${cls.quantity >= cls.maxChildren ? 'full' :
+                                  cls.capacityPercent >= 75 ? 'high' :
+                                    cls.capacityPercent >= 50 ? 'medium' : 'low'
+                                }`}
                               style={{ width: `${cls.capacityPercent}%` }}
                             />
                           </div>
@@ -371,7 +369,7 @@ const StaffDashboard = () => {
                   ))}
                 </div>
               ) : (
-                <Empty description="Không có dữ liệu lớp học" />
+                <Empty description="No class data" />
               )}
             </Card>
           </Col>
@@ -383,7 +381,7 @@ const StaffDashboard = () => {
             <Card
               title={
                 <span className="section-title">
-                  <ProfileOutlined /> Công việc cần làm
+                  <ProfileOutlined /> Tasks to do
                 </span>
               }
               variant="borderless"
@@ -397,11 +395,11 @@ const StaffDashboard = () => {
                     </div>
                     <div className="task-content">
                       <div className="task-title">
-                        <span>Xử lý đơn nhập học</span>
+                        <span>Process enrollment applications</span>
                         <Badge count={stats.pendingApplications} style={{ backgroundColor: '#ff4d4f' }} />
                       </div>
                       <div className="task-description">
-                        Có {stats.pendingApplications} đơn nhập học đang chờ được xử lý
+                        There are {stats.pendingApplications} enrollment applications pending
                       </div>
                     </div>
                     <Button
@@ -409,7 +407,7 @@ const StaffDashboard = () => {
                       danger
                       onClick={() => navigate('/staff/enrollment-applications')}
                     >
-                      Xử lý
+                      Process
                     </Button>
                   </div>
                 )}
@@ -420,14 +418,14 @@ const StaffDashboard = () => {
                   </div>
                   <div className="task-content">
                     <div className="task-title">
-                      <span>Kiểm tra lớp học</span>
+                      <span>Check class status</span>
                     </div>
                     <div className="task-description">
-                      Cập nhật trạng thái và phân bổ học sinh cho các lớp học
+                      Update class status and assign students
                     </div>
                   </div>
                   <Button onClick={() => navigate('/staff/classes')}>
-                    Xem lớp học
+                    View class
                   </Button>
                 </div>
 
@@ -437,14 +435,14 @@ const StaffDashboard = () => {
                   </div>
                   <div className="task-content">
                     <div className="task-title">
-                      <span>Xem lịch học</span>
+                      <span>View schedule</span>
                     </div>
                     <div className="task-description">
-                      Kiểm tra lịch học và xác nhận thời khóa biểu các lớp
+                      Check schedule and confirm class schedule
                     </div>
                   </div>
                   <Button onClick={() => navigate('/staff/schedule')}>
-                    Xem lịch
+                    View schedule
                   </Button>
                 </div>
               </div>
