@@ -281,7 +281,7 @@ namespace WebAPI.Controllers
                 var result = await _classChildrenService.KickClassChildren(childId, classId);
                 if (result)
                 {
-                    if (existingClass.EnrichmentProgramId != null)
+                    if (existingClass.EnrichmentProgramId == null)
                     { 
                         // Update the status of the child to "Not Enrolled"
                         var child = await _childrenService.GetChildByIdAsync(childId);

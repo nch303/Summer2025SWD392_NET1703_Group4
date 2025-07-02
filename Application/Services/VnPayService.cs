@@ -79,9 +79,10 @@ namespace Application.Services
             // Check if the invoice already exists and has a non-exprired payment URL
             // If it does, return the existing payment URL
             var existingInvoiceDetail = await _invoiceDetailRepository.GetByProgramIdAsync(request.enrichmentPrograms[0]);
-            if (existingInvoiceDetail.Count != 0)
+            var childrenInvoiceDetail = existingInvoiceDetail.FindAll(x => x.ChildrenID == request.ChildrenID && x.Invoices!.Status != "Success");
+            if (childrenInvoiceDetail.Count != 0)
             {
-                var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
+                var existingInvoice = await _invoiceService.GetByIdAsync(childrenInvoiceDetail[0].InvoiceID);
                 if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
                 {
                     return existingInvoice.PaymentLink;
@@ -166,9 +167,10 @@ namespace Application.Services
             // Check if the invoice already exists and has a non-expired payment URL
             // If it does, return the existing payment URL
             var existingInvoiceDetail = await _invoiceDetailRepository.GetByTuitionIdAsync(request.TuitionFeeIds[0]);
-            if (existingInvoiceDetail.Count != 0)
+            var childrenInvoiceDetail = existingInvoiceDetail.FindAll(x => x.ChildrenID == request.ChildrenID && x.Invoices!.Status != "Success");
+            if (childrenInvoiceDetail.Count != 0)
             {
-                var existingInvoice = await _invoiceService.GetByIdAsync(existingInvoiceDetail[0].InvoiceID);
+                var existingInvoice = await _invoiceService.GetByIdAsync(childrenInvoiceDetail[0].InvoiceID);
                 if (existingInvoice!.Date.AddMinutes(15) > DateTime.Now && existingInvoice.PaymentLink != null)
                 {
                     return existingInvoice.PaymentLink;
