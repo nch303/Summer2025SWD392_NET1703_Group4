@@ -45,6 +45,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.InvoiceDetails
                 .Where(id => id.ProgramID == programId)
+                .Include(id => id.Invoices)
                 .ToListAsync();
         }
     }

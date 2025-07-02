@@ -295,6 +295,10 @@ namespace WebAPI.Controllers
                             application.Status = "Rejected";
                             await _EAService.UpdateEnrollmentApplicationAsync(application);
                         }
+
+                        //Update the quantity of children in the class
+                        existingClass.Quantity -= 1;
+                        await _classService.UpdateClass(classId, existingClass);
                     }
 
                     return Ok(new { message = "Child has been removed from the class successfully." });
