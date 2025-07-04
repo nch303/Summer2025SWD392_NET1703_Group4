@@ -380,19 +380,91 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("KickEnrichmentClassChildren/{childId}/{classId}")]
+        [HttpDelete("KickEnrichmentClassChildren/{childId}/{classId}")]
         public async Task<IActionResult> KickEnrichmentClassChildren(Guid childId, int classId)
         {
             try
             {
+                var existingClass = await _classService.GetClass(classId);
                 var result = await _classChildrenService.KickEnrichmentClassChildren(childId, classId);
                 if (result)
                 {
-                    return Ok(new { message = "Child has been removed from the enrichment class successfully." });
+                    if (existingClass.EnrichmentProgramId == null)
+                    {
+                        var child = await _childrenService.GetChildByIdAsync(childId);
+
+                        //Update the quantity of children in the class
+                        existingClass.Quantity -= 1;
+                        await _classService.UpdateClass(classId, existingClass);
+
+                        //If parent pay the tuition fee, refund the money
+                        var application = await _EAService.GetApplicatioinByChildID(childId);
+                        var invoices = await _invoiceRepository.GetByAccountIdAsync(child.ParentID);
+                        if (invoices != null || invoices.Any())
+                        {
+                            var invoiceOfChild = invoices!.Where(i => i.Status == "Success" && i.ChildrenID == child.ID && i.ID == application.InvoiceID);
+                            var amountToRefund = 0m;
+                            if (invoiceOfChild.Any())
+                            {
+                                foreach (var invoice in invoiceOfChild)
+                                {
+                                    amountToRefund += invoice.Amount;
+                                }
+
+                                // Create a refund invoice
+                                if (amountToRefund > 0)
+                                {
+                                    var refundInvoice = new Invoice
+                                    {
+                                        ID = Guid.NewGuid(),
+                                        AccountID = child.ParentID,
+                                        Amount = -amountToRefund,
+                                        Status = "Awaiting",
+                                        Date = DateTime.UtcNow,
+                                        Name = $"Refund for {child.Name}",
+                                        ChildrenID = child.ID
+                                    };
+                                    await _invoiceRepository.CreateAsync(refundInvoice);
+                                }
+                            }
+
+                            // Send notification to parent about the refund
+                            var notificationMessage = "Your child has been removed from the class, and a refund has been processed for the tuition fee paid.";
+                            var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
+                            if (parent != null)
+                            {
+                                var notification = new NotificationRequest
+                                {
+                                    AccountIDs = new List<Guid> { parent.Id },
+                                    Title = "Class Removal and Refund",
+                                    Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund:C} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration"
+                                };
+                                await _notificationService.CreateNotificationAsync(notification);
+                            }
+                        }
+                        else
+                        {
+                            // If the parent has not paid the tuition fee, just send a notification
+                            var notificationMessage = "Your child has been removed from the class due to insufficient enrollment.";
+                            var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
+                            if (parent != null)
+                            {
+                                var notification = new NotificationRequest
+                                {
+                                    AccountIDs = new List<Guid> { parent.Id },
+                                    Title = "Class Removal",
+                                    Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class due to insufficient enrollment. \n\nThank you for your understanding.\n\n- The School Administration"
+                                };
+                                await _notificationService.CreateNotificationAsync(notification);
+                            }
+                        }
+                    }
+
+                    return Ok(new { message = "Child has been removed from the class successfully." });
                 }
                 else
                 {
-                    return BadRequest(new { message = "Failed to remove child from the enrichment class." });
+                    return BadRequest(new { message = "Failed to remove child from the class." });
                 }
             }
             catch (Exception ex)

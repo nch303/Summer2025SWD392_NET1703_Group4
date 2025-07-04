@@ -132,9 +132,10 @@ namespace Application.Services
 
                         // Check a child must be completed the previous level before enrolling in a new enrichment program
                         var newEnrichment = await _enrichProgramService.GetProgramByIdAsync(enrichmentId);
-                        var passedEnrichment = classChildren.FindAll(x => x.Classes!.EnrichmentPrograms!.TypeProgramID == newEnrichment.TypeProgramID
+                        var enrichmentClassChildrenUsed = classChildren.FindAll(x => x.Classes!.EnrichmentProgramId != null);
+                        var passedEnrichment = enrichmentClassChildrenUsed.FindAll(x => x.Classes!.EnrichmentPrograms!.TypeProgramID == newEnrichment.TypeProgramID
                                                                   && x.Classes.EnrichmentPrograms!.Level == newEnrichment.Level - 1 && x.Status == "Completed");
-                        if (passedEnrichment.Count != 0)
+                        if (passedEnrichment.Count == 0)
                         {
                             throw new Exception("A child must be completed the previous level before enrolling in a new enrichment program.");
                         }
