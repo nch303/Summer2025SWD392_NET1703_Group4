@@ -45,7 +45,7 @@ import {
   getAllClasses,
   getStudentsByEnrichmentId,
   getEnrichmentInvoiceDetails,
-  kickChildFromClass,
+  kickChildFromEnrichmentClass,
 } from "./EnrichmentParticipantsService";
 
 // Register ChartJS components
@@ -293,7 +293,7 @@ const EnrichmentParticipants = () => {
     
     setProcessingKick((prev) => ({ ...prev, [studentId]: true }));
     try {
-      await kickChildFromClass(studentId, selectedClass);
+      await kickChildFromEnrichmentClass(studentId, selectedClass);
       message.success('Student removed from class');
       
       // Remove student from the list
@@ -537,9 +537,9 @@ const EnrichmentParticipants = () => {
 
   return (
     <Card className="stats-card">
-      <div className="header-section">
+      <div className="staff-header-section">
         <AntTitle level={2}>
-          <PieChartOutlined className="section-icon" />
+          <PieChartOutlined className="staff-header-section-icon" />
           Enrichment program statistics
         </AntTitle>
         <Text type="secondary" className="description-text">
@@ -561,14 +561,14 @@ const EnrichmentParticipants = () => {
 
       <Divider className="section-divider" />
 
-      <div className="filter-section">
-        <div className="section-header">
-          <BarChartOutlined className="section-icon" />
+      <div className="staff-filter-section">
+        <div className="staff-section-header">
+          <BarChartOutlined className="staff-section-icon" />
           <Text strong>Filter data</Text>
         </div>
-        <Row gutter={[64, 24]} className="filter-row">
+        <Row gutter={[64, 24]} className="staff-filter-row">
           <Col xs={24} md={12}>
-            <div className="filter-label">Enrichment program type:</div>
+            <div className="staff-filter-label">Enrichment program type:</div>
             <Select
               placeholder="Select enrichment program type"
               style={{ width: "100%" }}
@@ -586,7 +586,7 @@ const EnrichmentParticipants = () => {
 
           {selectedType && (
             <Col xs={24} md={12}>
-              <div className="filter-label">Enrichment program:</div>
+              <div className="staff-filter-label">Enrichment program:</div>
               <Select
                 placeholder={`Select enrichment program ${selectedType}`}
                 style={{ width: "100%" }}
@@ -632,9 +632,9 @@ const EnrichmentParticipants = () => {
       {selectedProgram && (
         <>
           <Divider className="section-divider" />
-          <div className="students-section">
-            <div className="section-header">
-              <TeamOutlined className="section-icon" />
+          <div className="staff-students-section">
+            <div className="staff-section-header">
+              <TeamOutlined className="staff-section-icon" />
               <Text strong>Student list</Text>
             </div>
             <div className="table-header">

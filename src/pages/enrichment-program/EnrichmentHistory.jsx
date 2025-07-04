@@ -158,6 +158,12 @@ const EnrichmentHistory = () => {
             <FontAwesomeIcon icon="clock" /> Pending
           </span>
         );
+      case 'Completed':
+        return (
+          <span className="enrichment-registration-status completed">
+            <FontAwesomeIcon icon="history" /> Completed
+          </span>
+        );
       default:
         return (
           <span className="enrichment-registration-status">
@@ -400,12 +406,17 @@ const EnrichmentHistory = () => {
                       )}
                     </button>
                   )
+                ) : (registration.classResponse.status === "Finished" ? (
+                  <div className="enrichment-class-finished">
+                    <FontAwesomeIcon icon="history" />
+                    Class is finished.
+                  </div>
                 ) : (
                   <div className="enrichment-payment-notice">
                     <FontAwesomeIcon icon="info-circle" />
                     Wait for class to open to process payment
                   </div>
-                )}
+                ))}
               </div>
             </div>
           ))}

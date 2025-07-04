@@ -118,6 +118,19 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className="staff-sidebar-text">Assign Teachers</span>
         </Link>
+        
+        <Link 
+          to="/staff/refund-list" 
+          className={`staff-sidebar-link ${isActive('/staff/refund-list') ? 'active' : ''}`}
+          aria-label="Refund Management"
+        >
+          <div className="staff-sidebar-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H4c-.55 0-1-.45-1-1V8h18v9c0 .55-.45 1-1 1zM8 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1H8v-1h4v-2H8c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm9-7h-3v-1h4V7h-6v4c0 .55.45 1 1 1h3v1h-4v2h6v-4c0-.55-.45-1-1-1z"/>
+            </svg>
+          </div>
+          <span className="staff-sidebar-text">Refund Management</span>
+        </Link>
       </nav>
     </aside>
   );

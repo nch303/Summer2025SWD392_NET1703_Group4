@@ -10,7 +10,7 @@ import {
   BookOutlined, ScheduleOutlined, DeleteOutlined, WarningOutlined
 } from '@ant-design/icons';
 import './StaffClassPage.css';
-import { getAllClasses, getClassAttendance, getStudentsByClassId, kickStudentFromClass, openClass, finishClass, upgradeStudents } from './StaffClassService';
+import { getAllClasses, getClassAttendance, getStudentsByClassId, kickStudentFromClass, kickStudentFromEnrichmentClass, openClass, finishClass, upgradeStudents, upgradeEnrichmentStudents } from './StaffClassService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 import { useCustomToast } from '../../components/toast/CustomToast';
@@ -250,8 +250,12 @@ const StaffClassPage = () => {
 
     setKickingStudent(true);
     try {
-      const response = await kickStudentFromClass(childId, selectedClass.id);
-      toast.success('Student removed from class successfully', {
+      // Choose the appropriate API based on whether it's an enrichment class
+      const response = selectedClass.epName 
+        ? await kickStudentFromEnrichmentClass(childId, selectedClass.id)
+        : await kickStudentFromClass(childId, selectedClass.id);
+        
+      toast.success(response.message || 'Student removed from class successfully', {
         title: 'Student removed successfully',
         duration: 3000
       });
@@ -331,8 +335,11 @@ const StaffClassPage = () => {
       key: 'selection',
       width: 50,
       render: (_, record) => {
-        // Disable checkbox for Graduated or Completed students
-        const isDisabled = record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed';
+        // For regular classes: disable for Graduated/Completed students
+        // For enrichment classes: disable for Completed students
+        const isDisabled = selectedClass.epName 
+          ? record.enrichmentClassChildrenStatus === 'Completed'
+          : (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed');
 
         return (
           <Checkbox
@@ -388,28 +395,47 @@ const StaffClassPage = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'childrenGradeStatus',
-      key: 'childrenGradeStatus',
+      dataIndex: selectedClass?.epName ? 'enrichmentClassChildrenStatus' : 'childrenGradeStatus',
+      key: 'status',
       width: 120,
-      render: (status) => {
+      render: (status, record) => {
         let color = 'green';
         let text = status;
 
-        switch (status) {
-          case 'Graduated':
-            color = 'purple';
-            text = 'Graduated';
-            break;
-          case 'Completed':
-            color = 'blue';
-            text = 'Completed';
-            break;
-          case 'Active':
-            color = 'green';
-            text = 'Active';
-            break;
-          default:
-            color = 'default';
+        // For enrichment classes
+        if (selectedClass?.epName) {
+          switch (record.enrichmentClassChildrenStatus) {
+            case 'Completed':
+              color = 'purple';
+              text = 'Completed';
+              break;
+            case 'Active':
+              color = 'green';
+              text = 'Active';
+              break;
+            default:
+              color = 'default';
+          }
+        } 
+        // For regular classes
+        else {
+          switch (record.childrenGradeStatus) {
+            case 'Graduated':
+              color = 'purple';
+              text = 'Graduated';
+              break;
+            case 'Completed':
+              color = 'blue';
+              text = 'Completed';
+              break;
+            case 'Active':
+              color = 'green';
+              text = 'Active';
+              break;
+            default:
+              color = 'default';
+              text = record.childrenGradeStatus || 'N/A';
+          }
         }
 
         return <Tag color={color}>{text}</Tag>;
@@ -421,8 +447,13 @@ const StaffClassPage = () => {
       width: 180,
       align: 'center',
       render: (_, record) => {
-        // Hide delete button for Graduated or Completed students
-        if (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed') {
+        // Hide delete button for Graduated/Completed students in regular classes
+        // Hide delete button for Completed students in enrichment classes
+        const isCompleted = selectedClass?.epName 
+          ? record.enrichmentClassChildrenStatus === 'Completed'
+          : (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed');
+
+        if (isCompleted) {
           return null;
         }
 
@@ -442,7 +473,7 @@ const StaffClassPage = () => {
                 icon={<DeleteOutlined />}
                 size="small"
                 loading={kickingStudent}
-                className="kick-student-btn"
+                className="staff-kick-student-btn"
               >
                 Remove
               </Button>
@@ -501,16 +532,62 @@ const StaffClassPage = () => {
     }
   };
 
-  // Add this function to handle select all toggle
+  // Add this function to handle enrichment upgrade
+  const handleUpgradeEnrichmentStudents = async () => {
+    if (selectedStudentIds.length === 0) {
+      toast.warning('Please select at least one student to upgrade', {
+        title: 'Select student',
+        duration: 3000
+      });
+      return;
+    }
+
+    setUpgradingStudents(true);
+    try {
+      const response = await upgradeEnrichmentStudents(selectedClass.id, selectedStudentIds);
+      toast.success(response.message || 'Students have been upgraded to the next enrichment level.', {
+        title: 'Upgrade successful',
+        duration: 3000
+      });
+
+      // Reset selection
+      setSelectedStudentIds([]);
+      setSelectAllStudents(false);
+
+      // Refresh the class list
+      fetchClassList();
+
+      // Refresh the student list if needed
+      if (selectedClass) {
+        const updatedStudents = await getStudentsByClassId(selectedClass.id);
+        setStudents(updatedStudents);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Cannot upgrade enrichment students', {
+        title: 'Error',
+        duration: 5000
+      });
+    } finally {
+      setUpgradingStudents(false);
+    }
+  };
+
+  // Update the handleSelectAllStudentsToggle function
   const handleSelectAllStudentsToggle = (checked) => {
     setSelectAllStudents(checked);
     if (checked) {
-      // Only select students who are eligible for upgrade (not Graduated or Completed)
+      // Only select students who are eligible for upgrade
+      // For regular classes: not Graduated or Completed
+      // For enrichment classes: not Completed
       const eligibleStudentIds = students
-        .filter(student =>
-          student.childrenGradeStatus !== 'Graduated' &&
-          student.childrenGradeStatus !== 'Completed'
-        )
+        .filter(student => {
+          if (selectedClass?.epName) {
+            return student.enrichmentClassChildrenStatus !== 'Completed';
+          } else {
+            return (student.childrenGradeStatus !== 'Graduated' && 
+                   student.childrenGradeStatus !== 'Completed');
+          }
+        })
         .map(student => student.id);
 
       setSelectedStudentIds(eligibleStudentIds);
@@ -519,12 +596,17 @@ const StaffClassPage = () => {
     }
   };
 
-  // Add this function to toggle individual student selection
+  // Update the toggleStudentSelection function
   const toggleStudentSelection = (studentId) => {
     const student = students.find(s => s.id === studentId);
+    
+    // Check if student is eligible for selection based on class type
+    const isIneligible = selectedClass?.epName 
+      ? student.enrichmentClassChildrenStatus === 'Completed'
+      : (student.childrenGradeStatus === 'Graduated' || student.childrenGradeStatus === 'Completed');
 
-    // Don't allow selection of students with Graduated or Completed status
-    if (student.childrenGradeStatus === 'Graduated' || student.childrenGradeStatus === 'Completed') {
+    // Don't allow selection of ineligible students
+    if (isIneligible) {
       return;
     }
 
@@ -535,10 +617,14 @@ const StaffClassPage = () => {
       setSelectedStudentIds([...selectedStudentIds, studentId]);
 
       // Check if all eligible students are now selected
-      const eligibleStudents = students.filter(s =>
-        s.childrenGradeStatus !== 'Graduated' &&
-        s.childrenGradeStatus !== 'Completed'
-      );
+      const eligibleStudents = students.filter(s => {
+        if (selectedClass?.epName) {
+          return s.enrichmentClassChildrenStatus !== 'Completed';
+        } else {
+          return (s.childrenGradeStatus !== 'Graduated' && 
+                 s.childrenGradeStatus !== 'Completed');
+        }
+      });
 
       if (selectedStudentIds.length + 1 === eligibleStudents.length) {
         setSelectAllStudents(true);
@@ -559,10 +645,10 @@ const StaffClassPage = () => {
             <Card
               className="staff-class-card"
               extra={
-                <div className="card-header-actions">
+                <div className="staff-card-header-actions">
                   {/* Bộ lọc theo năm học */}
-                  <div className="academic-year-filter">
-                    <span className="filter-label">Academic year:</span>
+                  <div className="staff-academic-year-filter">
+                    <span className="staff-filter-label">Academic year:</span>
                     <Button
                       icon={<FontAwesomeIcon icon="chevron-left" />}
                       size="small"
@@ -574,7 +660,7 @@ const StaffClassPage = () => {
                       }}
                       disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                     />
-                    <span className="academic-year-display">
+                    <span className="staff-academic-year-display">
                       {selectedAcademicYear || 'All'}
                     </span>
                     <Button
@@ -591,7 +677,7 @@ const StaffClassPage = () => {
                   </div>
 
                   {/* Bộ lọc theo cấp lớp */}
-                  <div className="grade-level-filter">
+                  <div className="staff-grade-level-filter">
                     <Radio.Group
                       value={selectedGradeLevel}
                       onChange={handleGradeLevelChange}
@@ -615,20 +701,20 @@ const StaffClassPage = () => {
             >
               {/* Regular Classes */}
               {classesByCategory.regularClasses?.length > 0 && (
-                <div className="class-section">
-                  <div className="class-section-header">
-                    <FontAwesomeIcon icon="graduation-cap" className="section-icon" />
-                    <span className="section-title">Regular classes</span>
-                    <Tag color="blue" className="section-count">
+                <div className="staff-class-section">
+                  <div className="staff-class-section-header regular">
+                    <FontAwesomeIcon icon="graduation-cap" className="staff-class-section-icon" />
+                    <span className="staff-section-title">Regular classes</span>
+                    <Tag color="blue" className="staff-section-count">
                       {classesByCategory.regularClasses.length} classes
                     </Tag>
                   </div>
 
-                  <div className="class-list-container">
+                  <div className="staff-class-list-container">
                     <Table
                       dataSource={classesByCategory.regularClasses}
                       rowKey="id"
-                      rowClassName="regular-row"
+                      rowClassName="staff-regular-row"
                       onRow={(record) => ({
                         onClick: () => showClassDetail(record),
                         style: { cursor: 'pointer' }
@@ -638,13 +724,13 @@ const StaffClassPage = () => {
                           title: 'Class name',
                           dataIndex: 'name',
                           key: 'name',
-                          render: (text) => <span className="class-name-cell">{text}</span>
+                          render: (text) => <span className="staff-class-name-cell">{text}</span>
                         },
                         {
                           title: 'Grade level',
                           dataIndex: 'gradeLevelName',
                           key: 'gradeLevelName',
-                          render: (text) => text || <span className="text-muted">-</span>
+                          render: (text) => text || <span className="staff-text-muted">-</span>
                         },
                         {
                           title: 'Status',
@@ -663,8 +749,8 @@ const StaffClassPage = () => {
                           key: 'quantity',
                           width: 200,
                           render: (quantity, record) => (
-                            <div className="class-capacity-cell">
-                              <span className={quantity >= record.maxChildren ? 'capacity-full' : ''}>
+                            <div className="staff-class-capacity-cell">
+                              <span className={quantity >= record.maxChildren ? 'staff-capacity-full' : ''}>
                                 {quantity}/{record.maxChildren}
                               </span>
                               <Progress
@@ -681,7 +767,7 @@ const StaffClassPage = () => {
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
-                            <div className="staff-teacher-tags">
+                            <div className="staff-class-teacher-tags">
                               {teacherNames && teacherNames.length > 0 ? (
                                 teacherNames.map((name, idx) => (
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -735,7 +821,7 @@ const StaffClassPage = () => {
                                   <Button
                                     type="default"
                                     danger
-                                    className="finish-class-btn"
+                                    className="staff-finish-class-btn"
                                     icon={<CloseOutlined />}
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
@@ -748,7 +834,7 @@ const StaffClassPage = () => {
                               {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
-                                  className="open-class-btn"
+                                  className="staff-open-class-btn"
                                   icon={<CheckCircleOutlined />}
                                   size="small"
                                   onClick={(e) => handleOpenClass(record.id, e)}
@@ -762,7 +848,7 @@ const StaffClassPage = () => {
                         }
                       ]}
                       pagination={false}
-                      className="class-table"
+                      className="staff-class-table"
                     />
                   </div>
                 </div>
@@ -770,20 +856,20 @@ const StaffClassPage = () => {
 
               {/* Enrichment Classes */}
               {classesByCategory.enrichmentClasses?.length > 0 && (
-                <div className="class-section">
-                  <div className="class-section-header enrichment">
-                    <FontAwesomeIcon icon="star" className="section-icon" />
-                    <span className="section-title">Enrichment classes</span>
-                    <Tag color="purple" className="section-count">
+                <div className="staff-class-section">
+                  <div className="staff-class-section-header enrichment-class">
+                    <FontAwesomeIcon icon="star" className="staff-section-enrichment-icon" />
+                    <span className="staff-section-title">Enrichment classes</span>
+                    <Tag color="purple" className="staff-section-count">
                       {classesByCategory.enrichmentClasses.length} classes
                     </Tag>
                   </div>
 
-                  <div className="class-list-container">
+                  <div className="staff-class-list-container">
                     <Table
                       dataSource={classesByCategory.enrichmentClasses}
                       rowKey="id"
-                      rowClassName="enrichment-row"
+                      rowClassName="staff-enrichment-row"
                       onRow={(record) => ({
                         onClick: () => showClassDetail(record),
                         style: { cursor: 'pointer' }
@@ -793,13 +879,13 @@ const StaffClassPage = () => {
                           title: 'Class name',
                           dataIndex: 'name',
                           key: 'name',
-                          render: (text) => <span className="class-name-cell">{text}</span>
+                          render: (text) => <span className="staff-class-name-cell">{text}</span>
                         },
                         {
                           title: 'Program',
                           dataIndex: 'epName',
                           key: 'epName',
-                          render: (text) => text || <span className="text-muted">-</span>
+                          render: (text) => text || <span className="staff-text-muted">-</span>
                         },
                         {
                           title: 'Status',
@@ -818,8 +904,8 @@ const StaffClassPage = () => {
                           key: 'quantity',
                           width: 200,
                           render: (quantity, record) => (
-                            <div className="class-capacity-cell">
-                              <span className={quantity >= record.maxChildren ? 'capacity-full' : ''}>
+                            <div className="staff-class-capacity-cell">
+                              <span className={quantity >= record.maxChildren ? 'staff-capacity-full' : ''}>
                                 {quantity}/{record.maxChildren}
                               </span>
                               <Progress
@@ -836,7 +922,7 @@ const StaffClassPage = () => {
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
-                            <div className="staff-teacher-tags">
+                            <div className="staff-class-teacher-tags">
                               {teacherNames && teacherNames.length > 0 ? (
                                 teacherNames.map((name, idx) => (
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -890,7 +976,7 @@ const StaffClassPage = () => {
                                   <Button
                                     type="default"
                                     danger
-                                    className="finish-class-btn"
+                                    className="staff-finish-class-btn"
                                     icon={<CloseOutlined />}
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
@@ -903,7 +989,7 @@ const StaffClassPage = () => {
                               {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
-                                  className="open-class-btn"
+                                  className="staff-open-class-btn"
                                   icon={<CheckCircleOutlined />}
                                   size="small"
                                   onClick={(e) => handleOpenClass(record.id, e)}
@@ -917,7 +1003,7 @@ const StaffClassPage = () => {
                         }
                       ]}
                       pagination={false}
-                      className="class-table"
+                      className="staff-class-table"
                     />
                   </div>
                 </div>
@@ -939,15 +1025,15 @@ const StaffClassPage = () => {
         onCancel={() => setDetailModalVisible(false)}
         footer={null}
         width={900}
-        className="class-detail-modal"
+        className="staff-class-detail-modal"
       >
         {selectedClass && (
-          <div className="class-detail-content">
+          <div className="staff-class-detail-content">
             {/* Enhanced header with gradient background */}
-            <div className={`class-detail-header ${selectedClass.epName ? 'enrichment' : 'regular'}`}>
-              <div className="class-detail-title">
+            <div className={`staff-class-detail-header ${selectedClass.epName ? 'enrichment' : 'regular'}`}>
+              <div className="staff-class-detail-title">
                 <h2>{selectedClass.name}</h2>
-                <div className="class-detail-badges">
+                <div className="staff-class-detail-badges">
                   <Tag color={selectedClass.status === 'Available' ? 'green' : 'orange'}>
                     {selectedClass.status}
                   </Tag>
@@ -959,13 +1045,13 @@ const StaffClassPage = () => {
                   <Tag color="gold">{selectedClass.academicYear}</Tag>
                 </div>
               </div>
-              <div className="class-detail-icon">
+              <div className="staff-detail-icon">
                 {selectedClass.epName ? (
-                  <div className="detail-icon enrichment">
+                  <div className="staff-detail-icon enrichment">
                     <FontAwesomeIcon icon="star" />
                   </div>
                 ) : (
-                  <div className="detail-icon regular">
+                  <div className="staff-detail-icon regular">
                     <FontAwesomeIcon icon="graduation-cap" />
                   </div>
                 )}
@@ -976,7 +1062,7 @@ const StaffClassPage = () => {
             <Tabs
               activeKey={activeTab}
               onChange={setActiveTab}
-              className="class-detail-tabs"
+              className="staff-class-detail-tabs"
               type="card"
               items={[
                 {
@@ -987,24 +1073,24 @@ const StaffClassPage = () => {
                     </span>
                   ),
                   children: (
-                    <div className="class-detail-tab-content">
+                    <div className="staff-class-detail-tab-content">
                       <Row gutter={[24, 24]}>
                         {/* Left column: Basic Information */}
                         <Col span={14}>
                           <Card>
                             <Row gutter={[16, 16]}>
                               <Col span={16}>
-                                <div className="detail-item">
-                                  <div className="detail-label">Learning program:</div>
-                                  <div className="detail-value">{selectedClass.syllabusName}</div>
+                                <div className="staff-class-detail-item">
+                                  <div className="staff-class-detail-label">Learning program:</div>
+                                  <div className="staff-class-detail-value">{selectedClass.syllabusName}</div>
                                 </div>
                               </Col>
 
                               {selectedClass.epName && (
                                 <Col span={12}>
-                                  <div className="detail-item">
-                                    <div className="detail-label">Enrichment program:</div>
-                                    <div className="detail-value">
+                                  <div className="staff-class-detail-item">
+                                    <div className="staff-class-detail-label">Enrichment program:</div>
+                                    <div className="staff-class-detail-value">
                                       <Tag color="purple">{selectedClass.epName}</Tag>
                                     </div>
                                   </div>
@@ -1013,11 +1099,11 @@ const StaffClassPage = () => {
 
                               {selectedClass.timetable && (
                                 <Col span={24}>
-                                  <div className="detail-item">
-                                    <div className="detail-label">Schedule:</div>
-                                    <div className="detail-value highlight schedule-display">
+                                  <div className="staff-class-detail-item">
+                                    <div className="staff-class-detail-label">Schedule:</div>
+                                    <div className="staff-class-detail-value highlight schedule-display">
                                       {formatSchedule(selectedClass.timetable).split(', ').map((day, index) => (
-                                        <Tag key={index} color="blue" className="schedule-day-tag">
+                                        <Tag key={index} color="blue" className="staff-schedule-day-tag">
                                           {day}
                                         </Tag>
                                       ))}
@@ -1031,29 +1117,29 @@ const StaffClassPage = () => {
                           {/* Teacher section with enhanced visuals */}
                           <Card
                             title={
-                              <span className="detail-card-title">
+                              <span className="staff-class-detail-card-title">
                                 <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                               </span>
                             }
                             variant="borderless"
-                            className="class-detail-card staff-teacher-section"
+                            className="staff-class-detail-card staff-class-teacher-section"
                           >
                             {selectedClass.teacherNames && selectedClass.teacherNames.length > 0 ? (
-                              <div className="staff-teachers-assigned-list">
+                              <div className="staff-class-teachers-assigned-list">
                                 {selectedClass.teacherNames.map((name, idx) => (
-                                  <div className="staff-teacher-card" key={idx}>
+                                  <div className="staff-class-teacher-card" key={idx}>
                                     <Avatar
                                       icon={<UserOutlined />}
-                                      className="staff-teacher-avatar"
+                                      className="staff-class-teacher-avatar"
                                       size={64}
                                     />
-                                    <div className="staff-teacher-name">{name}</div>
+                                    <div className="staff-class-teacher-name">{name}</div>
                                     <Tag color="blue">Teacher</Tag>
                                   </div>
                                 ))}
                               </div>
                             ) : (
-                              <div className="no-teachers">
+                              <div className="staff-no-teachers">
                                 <Empty
                                   description="No teacher assigned"
                                   image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -1067,15 +1153,15 @@ const StaffClassPage = () => {
                         <Col span={10}>
                           <Card
                             title={
-                              <span className="detail-card-title">
+                              <span className="staff-class-detail-card-title">
                                 <FontAwesomeIcon icon="users" /> Class capacity
                               </span>
                             }
                             variant="borderless"
-                            className="class-detail-card capacity-card"
+                            className="staff-class-detail-card staff-capacity-card"
                           >
-                            <div className="capacity-visualization">
-                              <div className="capacity-donut">
+                            <div className="staff-capacity-visualization">
+                              <div className="staff-capacity-donut-detail-card">
                                 <Progress
                                   type="circle"
                                   percent={Math.round((selectedClass.quantity / selectedClass.maxChildren) * 100)}
@@ -1084,15 +1170,15 @@ const StaffClassPage = () => {
                                   size={180}
                                 />
                               </div>
-                              <div className="capacity-stats">
-                                <div className="capacity-stat-item">
-                                  <div className="capacity-stat-value">{selectedClass.quantity}</div>
-                                  <div className="capacity-stat-label">Currently</div>
+                              <div className="staff-class-capacity-stats">
+                                <div className="staff-class-capacity-stat-item">
+                                  <div className="staff-class-capacity-stat-value">{selectedClass.quantity}</div>
+                                  <div className="staff-class-capacity-stat-label">Currently</div>
                                 </div>
-                                <div className="capacity-stat-divider">/</div>
-                                <div className="capacity-stat-item">
-                                  <div className="capacity-stat-value">{selectedClass.maxChildren}</div>
-                                  <div className="capacity-stat-label">Maximum</div>
+                                <div className="staff-class-capacity-stat-divider">/</div>
+                                <div className="staff-class-capacity-stat-item">
+                                  <div className="staff-class-capacity-stat-value">{selectedClass.maxChildren}</div>
+                                  <div className="staff-class-capacity-stat-label">Maximum</div>
                                 </div>
                               </div>
 
@@ -1102,11 +1188,11 @@ const StaffClassPage = () => {
                                   type="warning"
                                   showIcon
                                   icon={<FontAwesomeIcon icon="exclamation-triangle" />}
-                                  className="capacity-warning-alert"
+                                  className="staff-class-capacity-warning-alert"
                                 />
                               )}
 
-                              <div className="capacity-description">
+                              <div className="staff-class-capacity-description">
                                 <p>
                                   This class currently has <strong>{selectedClass.quantity}</strong> students,
                                   {selectedClass.quantity < selectedClass.maxChildren ?
@@ -1120,23 +1206,23 @@ const StaffClassPage = () => {
                           {/* Class status card */}
                           <Card
                             title={
-                              <span className="detail-card-title">
+                              <span className="staff-class-detail-card-title">
                                 <FontAwesomeIcon icon="clipboard-list" /> Status
                               </span>
                             }
                             variant="borderless"
-                            className="class-detail-card status-card"
+                            className="staff-class-detail-card staff-status-card"
                           >
-                            <div className={`class-status ${selectedClass.status.toLowerCase()}`}>
-                              <div className="status-icon">
+                            <div className={`staff-class-status ${selectedClass.status.toLowerCase()}`}>
+                              <div className="staff-class-status-icon">
                                 <FontAwesomeIcon
                                   icon={selectedClass.status === 'Available' ? 'check-circle' :
                                     selectedClass.status === 'Finished' ? 'history' : 'clock'}
                                 />
                               </div>
-                              <div className="status-details">
-                                <div className="status-value">{selectedClass.status}</div>
-                                <div className="status-description">
+                              <div className="staff-class-status-details">
+                                <div className="staff-class-status-value">{selectedClass.status}</div>
+                                <div className="staff-class-status-description">
                                   {selectedClass.status === 'Available'
                                     ? 'Class is open and can accept students.'
                                     : selectedClass.status === 'Finished'
@@ -1160,18 +1246,18 @@ const StaffClassPage = () => {
                   ),
                   disabled: selectedClass.quantity === 0,
                   children: (
-                    <div className="class-detail-tab-content">
+                    <div className="staff-class-detail-tab-content">
                       <Spin spinning={attendanceLoading}>
                         {selectedClass.quantity > 0 ? (
                           <>
                             {Object.keys(groupedAttendance).length > 0 ? (
-                              <div className="attendance-container">
-                                <div className="attendance-date-selector">
+                              <div className="staff-attendance-container">
+                                <div className="staff-attendance-date-selector">
                                   <Radio.Group
                                     buttonStyle="solid"
                                     defaultValue={activeDate}
                                     onChange={(e) => setActiveDate(e.target.value)}
-                                    className="date-radio-group"
+                                    className="staff-date-radio-group"
                                   >
                                     {Object.keys(groupedAttendance).map(date => (
                                       <Radio.Button key={date} value={date}>
@@ -1184,42 +1270,42 @@ const StaffClassPage = () => {
                                 {Object.entries(groupedAttendance).map(([date, records]) => (
                                   <div
                                     key={date}
-                                    className="attendance-date-section"
+                                    className="staff-attendance-date-section"
                                     style={{ display: activeDate === date ? 'block' : 'none' }}
                                   >
-                                    <div className="attendance-summary-cards">
+                                    <div className="staff-attendance-summary-cards">
                                       <Row gutter={16}>
                                         <Col span={12}>
-                                          <Card className="summary-card present">
-                                            <div className="summary-icon">
+                                          <Card className="staff-summary-card present">
+                                            <div className="staff-summary-icon">
                                               <FontAwesomeIcon icon="check-circle" />
                                             </div>
-                                            <div className="summary-content">
-                                              <div className="summary-count">
+                                            <div className="staff-summary-content">
+                                              <div className="staff-summary-count">
                                                 {records.filter(r => r.status === 'Attend').length}
                                               </div>
-                                              <div className="summary-label">Present</div>
+                                              <div className="staff-summary-label">Present</div>
                                             </div>
                                           </Card>
                                         </Col>
                                         <Col span={12}>
-                                          <Card className="summary-card absent">
-                                            <div className="summary-icon">
+                                          <Card className="staff-summary-card absent">
+                                            <div className="staff-summary-icon">
                                               <FontAwesomeIcon icon="times-circle" />
                                             </div>
-                                            <div className="summary-content">
-                                              <div className="summary-count">
+                                            <div className="staff-summary-content">
+                                              <div className="staff-summary-count">
                                                 {records.filter(r => r.status === 'Absent').length}
                                               </div>
-                                              <div className="summary-label">Absent</div>
+                                              <div className="staff-summary-label">Absent</div>
                                             </div>
                                           </Card>
                                         </Col>
                                       </Row>
                                     </div>
 
-                                    <div className="attendance-table-container">
-                                      <h3 className="attendance-date-title">
+                                    <div className="staff-attendance-table-container">
+                                      <h3 className="staff-attendance-date-title">
                                         <CalendarOutlined /> Attendance on {formatDate(date)}
                                       </h3>
 
@@ -1228,7 +1314,7 @@ const StaffClassPage = () => {
                                         columns={attendanceColumns}
                                         rowKey="id"
                                         pagination={false}
-                                        className="attendance-table enhanced"
+                                        className="staff-attendance-table enhanced"
                                       />
                                     </div>
                                   </div>
@@ -1262,15 +1348,15 @@ const StaffClassPage = () => {
                   ),
                   disabled: selectedClass.quantity === 0,
                   children: (
-                    <div className="class-detail-tab-content">
+                    <div className="staff-class-detail-tab-content">
                       <Spin spinning={studentsLoading}>
                         {selectedClass.quantity > 0 ? (
                           <>
                             {students && students.length > 0 ? (
-                              <div className="staff-students-container">
+                              <div className="staff-class-students-container">
                                 <Card
                                   title={
-                                    <span className="detail-card-title">
+                                    <span className="staff-class-detail-card-title">
                                       <FontAwesomeIcon icon="user-graduate" /> List of students
                                     </span>
                                   }
@@ -1284,23 +1370,25 @@ const StaffClassPage = () => {
                                           <Button
                                             type="primary"
                                             icon={<FontAwesomeIcon icon="level-up-alt" />}
-                                            onClick={handleUpgradeStudents}
+                                            onClick={selectedClass.epName ? handleUpgradeEnrichmentStudents : handleUpgradeStudents}
                                             disabled={selectedStudentIds.length === 0}
                                             loading={upgradingStudents}
-                                            className={selectedStudentIds.length === 0 ? "upgrade-btn-disabled" : "upgrade-btn"}
+                                            className={selectedStudentIds.length === 0 ? "staff-upgrade-btn-disabled" : "staff-upgrade-btn"}
                                           >
-                                            Upgrade {selectedStudentIds.length > 0 ? `(${selectedStudentIds.length})` : ''}
+                                            {selectedClass.epName ? 'Upgrade Level' : 'Upgrade Grade'} {selectedStudentIds.length > 0 ? `(${selectedStudentIds.length})` : ''}
                                           </Button>
                                         </Tooltip>
                                       )}
                                     </div>
                                   }
-                                  className="class-detail-card"
+                                  className="staff-class-detail-card"
                                 >
                                   {selectedClass.status === 'Finished' && (
                                     <Alert
                                       message="Class has ended"
-                                      description="You can select students to upgrade to the next grade level."
+                                      description={selectedClass.epName
+                                        ? "You can select students to upgrade to the next enrichment level."
+                                        : "You can select students to upgrade to the next grade level."}
                                       type="info"
                                       showIcon
                                       style={{ marginBottom: '16px' }}
@@ -1311,7 +1399,7 @@ const StaffClassPage = () => {
                                     columns={studentColumns}
                                     rowKey="id"
                                     pagination={{ pageSize: 5 }}
-                                    className="staff-students-table enhanced"
+                                    className="staff-class-students-table enhanced"
                                   />
                                 </Card>
                               </div>

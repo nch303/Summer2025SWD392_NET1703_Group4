@@ -1070,6 +1070,14 @@ input[type="text"].enrichment-program-search-input {
   scroll-behavior: smooth;
 }
 
+.enrichment-class-finished {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #7b1fa2;
+  font-weight: 600;
+}
+
 /* Thông tin khóa học nâng cao */
 .enrichment-program-info-section {
   background: #fff;
@@ -1680,6 +1688,11 @@ input[type="text"].enrichment-program-search-input {
 .enrichment-registration-status.pending {
   background-color: rgba(241, 196, 15, 0.1);
   color: #f1c40f;
+}
+
+.enrichment-registration-status.completed {
+  background-color: rgba(123, 31, 162, 0.1);
+  color: #7b1fa2;
 }
 
 .enrichment-history-card-body {

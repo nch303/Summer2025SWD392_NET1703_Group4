@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import { 
   PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined, 
-  CloseCircleOutlined, DollarOutlined, UndoOutlined
+  CloseCircleOutlined, DollarOutlined, UndoOutlined, TrophyOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import './AdminEnrichment.css';
@@ -69,6 +69,7 @@ const AdminEnrichment = () => {
       setSelectedProgram(record);
       form.setFieldsValue({
         ...record,
+        level: record.level || 1,
         dates: record.startDate && record.endDate ? 
           [dayjs(record.startDate), dayjs(record.endDate)] : undefined
       });
@@ -92,6 +93,7 @@ const AdminEnrichment = () => {
         description: values.description,
         startDate: startDate ? startDate.format('YYYY-MM-DD') : null,
         endDate: endDate ? endDate.format('YYYY-MM-DD') : null,
+        level: values.level || 1,
         maxChildren: values.maxChildren,
         fee: values.fee,
         typeProgramID: values.typeProgramID
@@ -135,6 +137,30 @@ const AdminEnrichment = () => {
     }
   };
 
+  // Function to get level badge color
+  const getLevelColor = (level) => {
+    switch (level) {
+      case 1: return 'green';
+      case 2: return 'blue';
+      case 3: return 'purple';
+      case 4: return 'gold';
+      case 5: return 'magenta';
+      default: return 'default';
+    }
+  };
+
+  // Function to get level name
+  const getLevelName = (level) => {
+    switch (level) {
+      case 1: return 'Beginner';
+      case 2: return 'Elementary';
+      case 3: return 'Intermediate';
+      case 4: return 'Advanced';
+      case 5: return 'Expert';
+      default: return `Level ${level}`;
+    }
+  };
+
   // Table columns
   const columns = [
     {
@@ -155,6 +181,17 @@ const AdminEnrichment = () => {
       render: (type, record) => (
         <Tag color={record.isDelete ? 'default' : 'blue'}>{type}</Tag>
       ),
+    },
+    {
+      title: 'Level',
+      dataIndex: 'level',
+      key: 'level',
+      render: (level) => (
+        <Tag color={getLevelColor(level)} icon={<TrophyOutlined />}>
+          {getLevelName(level)}
+        </Tag>
+      ),
+      sorter: (a, b) => a.level - b.level,
     },
     {
       title: 'Description',
@@ -265,7 +302,7 @@ const AdminEnrichment = () => {
       <Card className="enrichment-card">
         <div className="enrichment-header">
           <Title level={2}>Enrichment Programs Management</Title>
-          <Space>
+          <Space wrap>
             <Input.Search
               placeholder="Search programs..."
               allowClear
@@ -313,7 +350,8 @@ const AdminEnrichment = () => {
           layout="vertical"
           initialValues={{ 
             maxChildren: 30,
-            typeProgramID: 2
+            typeProgramID: 2,
+            level: 1
           }}
         >
           <Form.Item 
@@ -339,6 +377,20 @@ const AdminEnrichment = () => {
               {programTypes.map(type => (
                 <Option key={type.id} value={type.name}>{type.name}</Option>
               ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item 
+            name="level" 
+            label="Program Level"
+            rules={[{ required: true, message: 'Please select program level' }]}
+          >
+            <Select placeholder="Select program level">
+              <Option value={1}>Level 1 - Beginner</Option>
+              <Option value={2}>Level 2 - Elementary</Option>
+              <Option value={3}>Level 3 - Intermediate</Option>
+              <Option value={4}>Level 4 - Advanced</Option>
+              <Option value={5}>Level 5 - Expert</Option>
             </Select>
           </Form.Item>
           

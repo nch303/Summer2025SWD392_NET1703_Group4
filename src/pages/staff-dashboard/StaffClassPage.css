@@ -36,7 +36,7 @@
     overflow: hidden;
   }
   
-  .card-title-with-icon {
+  .staff-card-title-with-icon {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -45,31 +45,31 @@
     color: #262626;
   }
   
-  .card-title-with-icon .anticon {
+  .staff-card-title-with-icon .anticon {
     color: #1890ff;
   }
   
   /* Academic year filter styling */
-  .card-header-actions {
+  .staff-card-header-actions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 16px;
   }
   
-  .academic-year-filter {
+  .staff-academic-year-filter {
     display: flex;
     align-items: center;
     gap: 8px;
   }
   
-  .filter-label {
+  .staff-filter-label {
     font-size: 14px;
     color: #595959;
     white-space: nowrap;
   }
   
-  .academic-year-display {
+  .staff-academic-year-display {
     min-width: 100px;
     padding: 4px 12px;
     background-color: #f5f8ff;
@@ -81,20 +81,20 @@
   }
   
   /* Grade level filter styling */
-  .grade-level-filter {
+  .staff-grade-level-filter {
     margin-left: 24px;
   }
   
   /* Section styling */
-  .class-section {
+  .staff-class-section {
     margin-bottom: 32px;
   }
   
-  .class-section:last-child {
+  .staff-class-section:last-child {
     margin-bottom: 0;
   }
   
-  .class-section-header {
+  .staff-class-section-header {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -104,68 +104,82 @@
     color: #1890ff;
   }
   
-  .class-section-header.enrichment {
+  .staff-class-section-header.enrichment {
     color: #722ed1;
   }
   
-  .section-icon {
+  .staff-class-section-icon {
     font-size: 18px;
   }
   
-  .section-title {
+  .staff-section-enrichment-icon {
+    font-size: 18px;
+    color: #722ed1;
+  }
+
+  .staff-section-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .staff-section-count {
     font-size: 18px;
     font-weight: 600;
   }
   
   /* Grade level collapse panel styling */
-  .class-level-collapse {
+  .staff-class-level-collapse {
     background: transparent;
     border: none;
   }
   
-  .class-level-collapse .ant-collapse-item {
+  .staff-class-level-collapse .ant-collapse-item {
     border: 1px solid #f0f0f0;
     border-radius: 8px !important;
     margin-bottom: 16px;
     overflow: hidden;
   }
   
-  .class-level-collapse .ant-collapse-header {
+  .staff-class-level-collapse .ant-collapse-header {
     background-color: #f5f8ff;
     padding: 16px 20px !important;
     align-items: center;
   }
   
-  .grade-header {
+  .staff-grade-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
   }
   
-  .grade-name {
+  .staff-grade-name {
     font-size: 16px;
     font-weight: 600;
     color: #262626;
   }
   
-  .grade-count {
+  .staff-grade-count {
     margin-left: auto;
   }
   
-  .class-level-collapse .ant-collapse-content-box {
+  .staff-class-level-collapse .ant-collapse-content-box {
     padding: 16px !important;
     background-color: #fff;
   }
+
+  .staff-class-section-header.enrichment-class {
+    color: #722ed1;
+  }
   
   /* Class cards styling */
-  .class-card-container {
+  .staff-class-card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
   }
   
-  .class-card {
+  .staff-class-card {
     position: relative;
     transition: all 0.3s;
     height: 100%;
@@ -174,21 +188,21 @@
     border: 1px solid #f0f0f0;
   }
   
-  .class-card:hover {
+  .staff-class-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     border-color: #1890ff;
   }
   
-  .class-card.enrichment {
+  .staff-class-card.enrichment {
     border-left: 3px solid #722ed1;
   }
   
-  .class-card.enrichment:hover {
+  .staff-class-card.enrichment:hover {
     border-color: #722ed1;
   }
   
-  .class-card-header {
+  .staff-class-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -197,7 +211,7 @@
     border-bottom: 1px solid #f0f0f0;
   }
   
-  .class-name {
+  .staff-class-name {
     font-size: 16px;
     font-weight: 600;
     color: #262626;
@@ -206,46 +220,46 @@
     text-overflow: ellipsis;
   }
   
-  .class-info {
+  .staff-class-info {
     display: flex;
     flex-direction: column;
     gap: 12px;
     flex-grow: 1;
   }
   
-  .class-staff-teachers {
+  .staff-class-staff-teachers {
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
   
-  .staff-teacher-tags {
+  .staff-class-teacher-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
   }
   
-  .class-syllabus {
+  .staff-class-syllabus {
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
   
-  .class-capacity {
+  .staff-class-capacity {
     margin-top: auto;
   }
   
-  .capacity-label-container {
+  .staff-class-capacity-label-container {
     display: flex;
     justify-content: space-between;
     margin-bottom: 4px;
   }
   
-  .capacity-full {
+  .staff-class-capacity-full {
     color: #ff4d4f;
   }
   
-  .class-card-footer {
+  .staff-class-card-footer {
     margin-top: 16px;
     padding-top: 12px;
     border-top: 1px solid #f0f0f0;
@@ -254,17 +268,17 @@
   }
   
   /* Class Detail Modal */
-  .class-detail-modal .ant-modal-content {
+  .staff-class-detail-modal .ant-modal-content {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
   
-  .class-detail-modal .ant-modal-body {
+  .staff-class-detail-modal .ant-modal-body {
     padding: 0;
   }
   
-  .class-detail-header {
+  .staff-class-detail-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -272,32 +286,40 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
   
-  .class-detail-header.regular {
+  .staff-class-detail-header.regular {
     background: linear-gradient(135deg, #e6f7ff, #bae7ff);
   }
   
-  .class-detail-header.enrichment {
+  .staff-class-detail-header.enrichment {
     background: linear-gradient(135deg, #f9f0ff, #efdbff);
   }
   
-  .class-detail-title h2 {
+  .staff-class-detail-title h2 {
     margin: 0 0 12px 0;
     font-size: 24px;
     font-weight: 600;
     color: #262626;
   }
   
-  .class-detail-badges {
+  .staff-class-detail-badges {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
   
-  .class-detail-icon {
+  .staff-class-detail-icon {
     margin-left: 16px;
   }
+
+  .staff-detail-icon.enrichment{
+    color: #722ed1;
+  }
+
+  .staff-kick-student-btn.detail-icon.enrichment {
+    color: #722ed1;
+  }
   
-  .detail-icon {
+  .staff-class-detail-icon {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -308,42 +330,45 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   
-  .detail-icon.regular {
+  .staff-class-detail-icon.regular {
     background-color: #fff;
     color: #1890ff;
     border: 2px solid #91caff;
   }
   
-  .detail-icon.enrichment {
+  .staff-class-detail-icon.enrichment {
     background-color: #fff;
     color: #722ed1;
     border: 2px solid #d3adf7;
   }
   
   /* Tabs styling */
-  .class-detail-tabs {
+  .staff-class-detail-tabs {
     padding: 16px 24px;
   }
   
-  .class-detail-tabs .ant-tabs-nav {
+  .staff-class-detail-tabs .ant-tabs-nav {
     margin-bottom: 24px;
   }
   
-  .class-detail-tab-content {
+  .staff-class-detail-tab-content {
     padding-bottom: 24px;
   }
   
-  .class-detail-card {
-    margin-bottom: 24px;
+  .staff-capacity-donut-detail-card {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 12px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   
-  .class-detail-card:last-child {
+  .staff-class-detail-card:last-child {
     margin-bottom: 0;
   }
   
-  .detail-card-title {
+  .staff-class-detail-card-title {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -352,49 +377,65 @@
     color: #262626;
   }
   
-  .detail-item {
+  .staff-detail-icon{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .staff-detail-icon.regular{
+    color: #1890ff;
+  }
+
+  .staff-class-detail-item {
     margin-bottom: 16px;
   }
   
-  .detail-item:last-child {
+  .staff-class-detail-item:last-child {
     margin-bottom: 0;
   }
   
-  .detail-label {
+  .staff-class-detail-label {
     font-size: 14px;
     color: #8c8c8c;
     margin-bottom: 6px;
   }
   
-  .detail-value {
+  .staff-class-detail-value {
     font-size: 15px;
     color: #262626;
     font-weight: 500;
   }
   
-  .detail-value.highlight {
+  .staff-class-detail-value.highlight {
     color: #1890ff;
     font-weight: 600;
   }
   
   /* Schedule Display */
-  .schedule-display {
+  .staff-class-schedule-display {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
   
-  .schedule-day-tag {
+  .staff-class-schedule-day-tag {
     font-size: 14px;
     padding: 4px 12px;
   }
   
   /* Capacity Visualization */
-  .capacity-card {
+  .staff-class-capacity-card {
     background-color: #fafafa;
   }
   
-  .capacity-visualization {
+  .staff-class-capacity-visualization {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -402,47 +443,48 @@
     padding: 16px 0;
   }
   
-  .capacity-donut {
+  .staff-class-capacity-donut {
     margin-bottom: 24px;
   }
   
-  .capacity-stats {
+  .staff-class-capacity-stats {
     display: flex;
+    justify-content: center;
     align-items: center;
     margin-bottom: 24px;
     font-size: 18px;
   }
   
-  .capacity-stat-item {
+  .staff-class-capacity-stat-item {
     text-align: center;
   }
   
-  .capacity-stat-value {
+  .staff-class-capacity-stat-value {
     font-size: 36px;
     font-weight: 600;
     color: #262626;
     line-height: 1;
   }
   
-  .capacity-stat-label {
+  .staff-class-capacity-stat-label {
     font-size: 14px;
     color: #8c8c8c;
     margin-top: 4px;
   }
   
-  .capacity-stat-divider {
+  .staff-class-capacity-stat-divider {
     margin: 0 16px;
     font-size: 36px;
     font-weight: 300;
     color: #d9d9d9;
   }
   
-  .capacity-warning-alert {
+  .staff-class-capacity-warning-alert {
     margin: 16px 0;
     border-radius: 8px;
   }
   
-  .capacity-description {
+  .staff-class-capacity-description {
     margin-top: 16px;
     text-align: center;
     color: #595959;
@@ -450,18 +492,18 @@
   }
   
   /* Teacher section */
-  .staff-teacher-section {
+  .staff-class-teacher-section {
     margin-top: 24px;
   }
   
-  .staff-teachers-assigned-list {
+  .staff-class-teachers-assigned-list {
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
     justify-content: center;
   }
   
-  .staff-teacher-card {
+  .staff-class-teacher-card {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -473,18 +515,18 @@
     transition: all 0.3s ease;
   }
   
-  .staff-teacher-card:hover {
+  .staff-class-teacher-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }
   
-  .staff-teacher-avatar {
+  .staff-class-teacher-avatar {
     background-color: #1890ff;
     margin-bottom: 12px;
     border: 3px solid #e6f7ff;
   }
   
-  .staff-teacher-name {
+  .staff-class-teacher-name {
     font-weight: 500;
     text-align: center;
     margin-bottom: 8px;
@@ -495,140 +537,140 @@
   }
   
   /* Class Status Card */
-  .status-card {
+  .staff-class-status-card {
     margin-top: 24px;
   }
   
-  .class-status {
+  .staff-class-status {
     display: flex;
     align-items: center;
     padding: 16px;
     border-radius: 8px;
   }
   
-  .class-status.available {
+  .staff-class-status.available {
     background-color: #f6ffed;
     border: 1px solid #b7eb8f;
   }
   
-  .class-status.unavailable {
+  .staff-class-status.unavailable {
     background-color: #fff7e6;
     border: 1px solid #ffd591;
   }
   
-  .class-status.finished {
+  .staff-class-status.finished {
     background-color: #f0f0f0;
     border: 1px solid #d9d9d9;
   }
   
-  .status-icon {
+  .staff-class-status-icon {
     font-size: 32px;
     margin-right: 20px;
   }
   
-  .class-status.available .status-icon {
+  .staff-class-status.available .staff-class-status-icon {
     color: #52c41a;
   }
   
-  .class-status.unavailable .status-icon {
+  .staff-class-status.unavailable .staff-class-status-icon {
     color: #fa8c16;
   }
   
-  .class-status.finished .status-icon {
+  .staff-class-status.finished .staff-class-status-icon {
     color: #8c8c8c;
   }
   
-  .status-value {
+  .staff-class-status-value {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 4px;
   }
   
-  .class-status.available .status-value {
+  .staff-class-status.available .staff-class-status-value {
     color: #52c41a;
   }
   
-  .class-status.unavailable .status-value {
+  .staff-class-status.unavailable .staff-class-status-value {
     color: #fa8c16;
   }
   
-  .class-status.finished .status-value {
+  .staff-class-status.finished .staff-class-status-value {
     color: #595959;
   }
   
-  .status-description {
+  .staff-class-status-description {
     color: #595959;
     font-size: 14px;
   }
   
   /* Attendance Tab */
-  .attendance-date-selector {
+  .staff-attendance-date-selector {
     margin-bottom: 32px;
     display: flex;
     justify-content: center;
   }
   
-  .date-radio-group {
+  .staff-date-radio-group {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
   }
   
-  .attendance-summary-cards {
+  .staff-attendance-summary-cards {
     margin-bottom: 24px;
   }
   
-  .summary-card {
+  .staff-summary-card {
     border-radius: 12px;
     display: flex;
     align-items: center;
     padding: 16px;
   }
   
-  .summary-card.present {
+  .staff-summary-card.present {
     background-color: #f6ffed;
     border: 1px solid #b7eb8f;
   }
   
-  .summary-card.absent {
+  .staff-summary-card.absent {
     background-color: #fff1f0;
     border: 1px solid #ffa39e;
   }
   
-  .summary-icon {
+  .staff-summary-icon {
     font-size: 28px;
     margin-right: 16px;
   }
   
-  .summary-card.present .summary-icon {
+  .staff-summary-card.present .staff-summary-icon {
     color: #52c41a;
   }
   
-  .summary-card.absent .summary-icon {
+  .staff-summary-card.absent .staff-summary-icon {
     color: #f5222d;
   }
   
-  .summary-count {
+  .staff-summary-count {
     font-size: 24px;
     font-weight: 600;
     line-height: 1;
   }
   
-  .summary-label {
+  .staff-summary-label {
     font-size: 14px;
     color: #595959;
     margin-top: 4px;
   }
   
-  .attendance-table-container {
+  .staff-attendance-table-container {
     background-color: white;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
   
-  .attendance-date-title {
+  .staff-attendance-date-title {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 16px;
@@ -638,12 +680,12 @@
     gap: 8px;
   }
   
-  .attendance-table.enhanced {
+  .staff-attendance-table.enhanced {
     border-radius: 8px;
     overflow: hidden;
   }
   
-  .attendance-table.enhanced .ant-table-thead > tr > th {
+  .staff-attendance-table.enhanced .ant-table-thead > tr > th {
     background-color: #f5f8ff;
     color: #262626;
     font-weight: 500;
@@ -651,21 +693,21 @@
   
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .class-card-container {
+    .staff-class-card-container {
       grid-template-columns: 1fr;
     }
     
-    .class-detail-header {
+    .staff-class-detail-header {
       flex-direction: column;
       text-align: center;
       padding: 16px;
     }
     
-    .class-detail-icon {
+    .staff-class-detail-icon {
       margin: 16px 0 0;
     }
     
-    .attendance-date-title {
+    .staff-attendance-date-title {
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
@@ -673,31 +715,31 @@
   }
   
   /* List/Table styling */
-  .class-list-container {
+  .staff-class-list-container {
     margin-bottom: 16px;
   }
   
-  .class-table .ant-table-thead > tr > th {
+  .staff-class-table .ant-table-thead > tr > th {
     background-color: #f5f8ff;
     color: #262626;
     font-weight: 500;
   }
   
-  .class-table .ant-table-tbody > tr.regular-row:hover > td {
+  .staff-class-table .ant-table-tbody > tr.regular-row:hover > td {
     background-color: rgba(24, 144, 255, 0.05);
   }
   
-  .class-table .ant-table-tbody > tr.enrichment-row:hover > td {
+  .staff-class-table .ant-table-tbody > tr.enrichment-row:hover > td {
     background-color: rgba(114, 46, 209, 0.05);
   }
   
-  .class-capacity-cell {
+  .staff-class-capacity-cell {
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
   
-  .class-name-cell {
+  .staff-class-name-cell {
     font-weight: 600;
     color: #262626;
   }
@@ -727,53 +769,53 @@
   }
   
   /* Add these styles at the end of the file */
-  .kick-student-btn {
+  .staff-kick-student-btn {
     background-color: #ff4d4f;
     color: white;
     border: none;
   }
   
-  .kick-student-btn:hover {
+  .staff-kick-student-btn:hover {
     background-color: #ff7875;
     color: white;
   }
   
-  .kick-student-btn:active {
+  .staff-kick-student-btn:active {
     background-color: #d9363e;
     color: white;
   }
   
   /* Add these styles for the open class button */
-  .open-class-btn {
+  .staff-open-class-btn {
     background-color: #52c41a;
     color: white;
     border: none;
   }
   
-  .open-class-btn:hover {
+  .staff-open-class-btn:hover {
     background-color: #73d13d;
     color: white;
   }
   
-  .open-class-btn:active {
+  .staff-open-class-btn:active {
     background-color: #389e0d;
     color: white;
   }
   
   /* Add these styles for the finish class button */
-  .finish-class-btn {
+  .staff-finish-class-btn {
     background-color: #fff;
     color: #ff4d4f;
     border: 1px solid #ff4d4f;
   }
   
-  .finish-class-btn:hover {
+  .staff-finish-class-btn:hover {
     background-color: #fff1f0;
     color: #ff4d4f;
     border: 1px solid #ff7875;
   }
   
-  .finish-class-btn:active {
+  .staff-finish-class-btn:active {
     background-color: #fff1f0;
     color: #d9363e;
     border: 1px solid #d9363e;
@@ -786,24 +828,24 @@
     100% { opacity: 1; }
   }
   
-  .class-status.finished .status-icon {
+  .staff-class-status.finished .staff-class-status-icon {
     animation: pulse 2s infinite;
   }
   
   /* Add to your CSS file */
-  .upgrade-alert {
+  .staff-upgrade-alert {
     margin-bottom: 16px;
     border-left: 3px solid #1890ff;
   }
   
-  .upgrade-btn {
+  .staff-upgrade-btn {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 0 12px;
   }
   
-  .upgrade-icon {
+  .staff-upgrade-icon {
     font-size: 16px;
   }
   
@@ -812,24 +854,24 @@
   }
   
   /* Add the "ready for upgrade" style */
-  .ready-for-upgrade {
+  .staff-ready-for-upgrade {
     background-color: rgba(24, 144, 255, 0.05);
   }
   
-  .ready-for-upgrade td:first-child {
+  .staff-ready-for-upgrade td:first-child {
     border-left: 3px solid #1890ff;
   }
   
-  .upgrade-btn-disabled {
+  .staff-upgrade-btn-disabled {
     cursor: not-allowed !important;
     opacity: 0.6;
   }
   
-  .upgrade-btn {
+  .staff-upgrade-btn {
     transition: all 0.3s;
   }
   
-  .upgrade-btn:hover {
+  .staff-upgrade-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
   }

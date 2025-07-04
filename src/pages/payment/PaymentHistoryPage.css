@@ -433,6 +433,13 @@ input[type="text"].payment-search-input {
   border: none;
 }
 
+.payment-status-refunded {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: none;
+  font-weight: 1000;
+}
+
 .payment-detail-link {
   color: #2196F3;
   text-decoration: none;
