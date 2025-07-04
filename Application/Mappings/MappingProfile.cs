@@ -108,7 +108,9 @@ namespace Application.Mappings
                 .ForMember(dest => dest.StaffName, opt => opt.MapFrom(src => src.Staff!.FullName));
             CreateMap<EnrollmentApplicationRequest, EnrollmentApplication>();
 
-            CreateMap<Invoice, InvoiceResponse>();
+            CreateMap<Invoice, InvoiceResponse>()
+                .ForMember(dest => dest.ChildrenName, opt => opt.MapFrom(src => src.Childrens!.Name))
+                .ForMember(dest => dest.ParentName, opt => opt.MapFrom(src => src.Accounts!.FullName));
             CreateMap<Invoice, InvoicePDFResponse>();
 
             CreateMap<InvoiceDetail, InvoiceDetailResponse>();
