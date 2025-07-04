@@ -59,6 +59,8 @@ const PaymentHistoryPage = () => {
       case 'failed':
       case 'thất bại':
         return <span className="payment-status payment-status-failed">Failed</span>;
+      case 'refunded':
+        return <span className="payment-status payment-status-refunded">Refunded</span>;
       default:
         return <span className="payment-status">{status}</span>;
     }

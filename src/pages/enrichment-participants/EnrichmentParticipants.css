@@ -12,12 +12,12 @@
   border: none;
 }
 
-.header-section {
+.staff-header-section {
   margin-bottom: 24px;
   text-align: center;
 }
 
-.header-section h2 {
+.staff-header-section h2 {
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
@@ -27,12 +27,17 @@
   font-size: 16px;
 }
 
-.section-icon {
+.staff-section-icon {
   margin-right: 10px;
   color: #5c7cfa;
 }
 
-.section-header {
+.staff-header-section-icon {
+  margin-right: 15px;
+  color: #5c7cfa;
+}
+
+.staff-section-header {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
@@ -43,7 +48,7 @@
   margin: 32px 0;
 }
 
-.filter-section {
+.staff-filter-section {
   margin: 20px 0;
   padding: 20px;
   background-color: #f9fbff;
@@ -51,11 +56,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-.filter-row {
+.staff-filter-row {
   margin-bottom: 16px;
 }
 
-.filter-label {
+.staff-filter-label {
   margin-bottom: 10px;
   font-weight: 500;
   color: #4c6ef5;
@@ -108,7 +113,7 @@
   box-shadow: 0 4px 12px rgba(107, 138, 253, 0.15);
 }
 
-.students-section {
+.staff-students-section {
   padding: 20px;
   background-color: #fff;
   border-radius: 12px;
@@ -175,7 +180,7 @@
   }
   
   .filter-section,
-  .students-section {
+  .staff-students-section {
     padding: 15px;
   }
   
@@ -195,7 +200,7 @@
     margin-bottom: 8px;
   }
   
-  .students-section {
+  .staff-students-section {
     padding: 12px;
   }
   
