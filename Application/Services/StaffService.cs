@@ -245,7 +245,7 @@ namespace Application.Services
                     throw new Exception($"Child with ID {childId} is not enrolled in any enrichment class.");
                 }
 
-                var enrichmentClassChildren = classChilren.FirstOrDefault(c => c.Classes!.EnrichmentProgramId != classId);  
+                var enrichmentClassChildren = classChilren.FirstOrDefault(c => c.Classes!.ID == classId);  
                 if (enrichmentClassChildren == null)
                 {
                     throw new Exception($"Child with ID {childId} is not enrolled in the enrichment class with ID {classId}.");

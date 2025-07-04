@@ -24,5 +24,6 @@ namespace Application.DTOs.Response
         public string? GradeLevelName { get; set; }
         public string? Status { get; set; }
         public string? ChildrenGradeStatus { get; set; }
+        public string? EnrichmentClassChildrenStatus { get; set; }
     }
 }

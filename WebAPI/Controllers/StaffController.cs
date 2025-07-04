@@ -508,11 +508,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("UpgradeEnrichmentChildren")]
-        public async Task<IActionResult> UpgradeEnrichmentChildren(List<Guid> childrenIds, int enrichmentId)
+        public async Task<IActionResult> UpgradeEnrichmentChildren(List<Guid> childrenIds, int classId)
         {
             try
             {
-                await _staffService.UpgradeEnrichmentChilren(childrenIds, enrichmentId);
+                await _staffService.UpgradeEnrichmentChilren(childrenIds, classId);
                 return Ok(new { message = "Enrichment children upgraded successfully!" });
             }
             catch (Exception ex)

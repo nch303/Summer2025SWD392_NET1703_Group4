@@ -300,7 +300,6 @@ namespace WebAPI.Controllers
                         continue;
                     }
 
-
                     //Gan ChildrenGradeStatus cho ChildResponse
                     var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
                     var classOfChildren = await _classService.GetClass(classId);
@@ -309,6 +308,11 @@ namespace WebAPI.Controllers
                     response[i].GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
                     response[i].GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
                     response[i].ChildrenGradeStatus = childrenGradeByClassId?.Status;
+
+                    //Gan EnrichmentClassChildrenStatus cho ChildResponse
+                    var classChildren = await _classChildrenService.GetByChildIdAsync(response[i].ID);
+                    var enrichmentClassChildren = classChildren.Where(cc => cc.ClassID == classId).FirstOrDefault();
+                    response[i].EnrichmentClassChildrenStatus = enrichmentClassChildren!.Status;
                 }
                 return Ok(response);
             }
