@@ -281,8 +281,8 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var children = await _classChildrenService.GetChildrenByClassIdAsync(classId);
-                var response = _mapper.Map<List<ChildrenResponse>>(children);
+                var classChildrens = await _classChildrenService.GetChildrenByClassIdAsync(classId);
+                var response = _mapper.Map<List<ChildrenResponse>>(classChildrens);
                 for (int i = 0; i < response.Count; i++)
                 {
                     var parent = await _accountService.GetAccountByIdAsync(response[i].ParentID);
@@ -304,6 +304,10 @@ namespace WebAPI.Controllers
                     var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(response[i].ID);
                     var classOfChildren = await _classService.GetClass(classId);
                     var childrenGradeByClassId = childrenGrade.Where(cg => cg.GradeLevelID == classOfChildren.GradeLevelID).FirstOrDefault();
+
+                    //Gan status cho ChildResponse
+                    var children = await _childrenService.GetChildByIdAsync(response[i].ID);
+                    response[i].Status = children!.Status;
 
                     response[i].GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
                     response[i].GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;

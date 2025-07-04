@@ -15,11 +15,19 @@ namespace Application.Services
     {
         private readonly IClassRepository _classRepository;
         private readonly IStaffRepository _staffRepository;
+        private readonly IClassChildrenRepository _classChildrenRepository;
+        private readonly IEnrichProgramService _enrichProgramService;
+        private readonly IChildrenRepository _childrenRepository;
 
-        public ClassService(IClassRepository classRepository, IStaffRepository staffRepository)
+        public ClassService(IClassRepository classRepository, IStaffRepository staffRepository
+            , IClassChildrenRepository classChildrenRepository, IEnrichProgramService enrichProgramService
+            , IChildrenRepository childrenRepository)
         {
             _classRepository = classRepository;
             _staffRepository = staffRepository;
+            _classChildrenRepository = classChildrenRepository;
+            _enrichProgramService = enrichProgramService;
+            _childrenRepository = childrenRepository;
         }
 
         public async Task<Class> CreatClass(Class room)
@@ -82,8 +90,58 @@ namespace Application.Services
             {
                 if (classItem.MaxChildren >= classItem.Quantity + childrenIds.Count)
                 {
-                    classchildren = await _staffRepository.AssignChildrenListToClassAsync(classItem.ID, childrenIds);
+                    foreach (var childId in childrenIds)
+                    {
 
+                        //Get child information
+                        var child = await _childrenRepository.GetChildByIdAsync(childId);
+
+                        //Get academic year
+                        string academicYear = "";
+                        var today = DateTime.Now.Date;
+                        var year = today.Year;
+
+                        // So sánh với ngày 1/6 của năm hiện tại
+                        var schoolStartDate = new DateTime(year, 6, 1);
+
+                        if (today < schoolStartDate)
+                        {
+                            academicYear = (year - 1).ToString() + "-" + year.ToString();
+                        }
+                        else
+                        {
+                            academicYear = year.ToString() + "-" + (year + 1).ToString();
+                        }
+
+                        // Check a child must be enrolled in at only one enrichment program in a academic year
+                        var classChildren = await _classChildrenRepository.GetByChildIdAsync(childId);
+                        if (classChildren.Count != 0)
+                        {
+                            var enrichmentClassChildren = classChildren.FindAll(x => x.Classes!.AcademicYear == academicYear && x.Classes.EnrichmentProgramId != null);
+                            if (enrichmentClassChildren.Count > 1)
+                            {
+                                throw new Exception("Your child " + child.Name + " must be enrolled in at only one enrichment program in a academic year");
+                            }
+
+                            var existingProgram = classChildren.Find(x => x.Classes!.EnrichmentProgramId == enrichmentId);
+                            if (existingProgram != null)
+                            {
+                                throw new Exception("Your child " + child.Name + " is already enrolled in this enrichment program. If your child finished this program, please choose the higher level or a new pprogram.");
+                            }
+                        }
+
+                        // Check a child must be completed the previous level before enrolling in a new enrichment program
+                        var newEnrichment = await _enrichProgramService.GetProgramByIdAsync(enrichmentId);
+                        var passedEnrichment = classChildren.FindAll(x => x.Classes!.EnrichmentPrograms!.TypeProgramID == newEnrichment.TypeProgramID
+                                                                  && x.Classes.EnrichmentPrograms!.Level == newEnrichment.Level - 1 && x.Status == "Completed");
+                        if (passedEnrichment.Count != 0)
+                        {
+                            throw new Exception("A child must be completed the previous level before enrolling in a new enrichment program.");
+                        }
+                    }
+
+
+                    classchildren = await _staffRepository.AssignChildrenListToClassAsync(classItem.ID, childrenIds);
                     classItem.Quantity += childrenIds.Count;
                     await _classRepository.UpdateClass(classItem.ID, classItem);
                 }
