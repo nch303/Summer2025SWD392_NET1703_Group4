@@ -32,10 +32,36 @@ export const getClassDetail = async (id) => {
 
 export const updateClass = async (id, classData) => {
   try {
-    const response = await api.put(`/api/Class/update-class/${id}`, classData);
+    console.log('Updating class with ID:', id);
+    console.log('Request data:', JSON.stringify(classData));
+    
+    // Đảm bảo tất cả các trường đều là đúng định dạng
+    const sanitizedData = {
+      syllabusID: parseInt(classData.syllabusID) || 0, // Đảm bảo syllabusID là số nguyên
+      name: classData.name,
+      maxChildren: parseInt(classData.maxChildren) || 0
+    };
+    
+    console.log('Sanitized data:', JSON.stringify(sanitizedData));
+    // Sử dụng endpoint đúng: update-class
+    const response = await api.put(`/api/Class/update-class/${id}`, sanitizedData);
+    console.log('Update successful, response:', response.data);
     return response.data;
   } catch (error) {
     console.error(`Error updating class with ID ${id}:`, error);
+    
+    // Log chi tiết lỗi để debug
+    if (error.response) {
+      // Lỗi từ server
+      console.error('Server response:', error.response.status, error.response.data);
+    } else if (error.request) {
+      // Không nhận được response
+      console.error('No response received:', error.request);
+    } else {
+      // Lỗi khi thiết lập request
+      console.error('Request setup error:', error.message);
+    }
+    
     throw error;
   }
 };

@@ -183,9 +183,25 @@ const ClassManagement = () => {
       loadFormOptions();
     }
     
-    // Set initial syllabus selection
-    setSelectedSyllabusId(classData.syllabusID);
-    setSelectedSyllabusName(classData.syllabusName || "Select syllabus");
+    // Log toàn bộ dữ liệu để debug
+    console.log('Class data for edit:', classData);
+    
+    // Tìm ID syllabus chính xác
+    let syllabusId = parseInt(classData.syllabusID) || 0;
+    const syllabusName = classData.syllabusName || "Select syllabus";
+    
+    // Nếu ID là 0 nhưng có tên syllabus, tìm ID từ danh sách syllabi
+    if (syllabusId === 0 && syllabusName && syllabusName !== "Select syllabus" && syllabi.length > 0) {
+      const foundSyllabus = syllabi.find(s => s.name === syllabusName);
+      if (foundSyllabus) {
+        syllabusId = foundSyllabus.id;
+        console.log(`Found syllabus ID ${syllabusId} for "${syllabusName}"`);
+      }
+    }
+    
+    setSelectedSyllabusId(syllabusId);
+    setSelectedSyllabusName(syllabusName);
+    console.log(`Initial syllabus selection: ID=${syllabusId}, Name=${syllabusName}`);
     
     // Set form values for other fields
     form.setFieldsValue({
@@ -207,9 +223,12 @@ const ClassManagement = () => {
 
   // Add handler for syllabus selection
   const handleSyllabusSelect = (id, name) => {
-    setSelectedSyllabusId(id);
+    // Đảm bảo id luôn là số nguyên
+    const syllabusId = parseInt(id);
+    setSelectedSyllabusId(syllabusId);
     setSelectedSyllabusName(name);
     setShowSyllabusDropdown(false);
+    console.log(`Selected syllabus: ID=${syllabusId}, Name=${name}`);
   };
 
   // Add effect to close dropdown when clicking outside
@@ -233,11 +252,23 @@ const ClassManagement = () => {
     try {
       setEditLoading(true);
       
+      if (!selectedSyllabusId) {
+        notification.error({
+          message: 'Validation Error',
+          description: 'Please select a syllabus for the class.',
+        });
+        setEditLoading(false);
+        return;
+      }
+      
       // Combine form values with selected syllabus
       const updatedValues = {
         ...values,
-        syllabusID: selectedSyllabusId
+        syllabusID: parseInt(selectedSyllabusId), // Đảm bảo syllabusID là số nguyên
+        maxChildren: parseInt(values.maxChildren) // Đảm bảo maxChildren là số nguyên
       };
+      
+      console.log('Sending update with values:', updatedValues);
       
       await updateClass(editingClass.id, updatedValues);
       
@@ -260,10 +291,10 @@ const ClassManagement = () => {
     } catch (error) {
       console.error('Failed to update class:', error);
       
-      // Show error notification
+      // Show error notification with details if available
       notification.error({
         message: 'Update Failed',
-        description: 'There was an error updating the class. Please try again.',
+        description: error.response?.data?.message || 'There was an error updating the class. Please try again.',
       });
       
       setEditLoading(false);
