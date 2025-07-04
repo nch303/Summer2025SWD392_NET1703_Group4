@@ -344,7 +344,7 @@ namespace Application.Services
         {
             var invoiceDetails = await _invoiceRepository.GetInvoiceDetailsByChildrenIdAndEnrichProgramIdAsync(childrenId, enrichmentProgramId);
             var invoices = new List<Invoice>();
-     
+
             foreach (var detail in invoiceDetails)
             {
                 invoices.Add(await _invoiceRepository.GetByIdAsync(detail.InvoiceID));
@@ -353,10 +353,20 @@ namespace Application.Services
             var invoicesTemps = invoices.ToList();
             foreach (var invoice in invoices)
             {
-                if(invoice.Status != "Success")
+                if (invoice.Status != "Success")
                     invoicesTemps.Remove(invoice);
             }
             return invoicesTemps;
+        }
+
+        public async Task<List<Invoice>> GetAwaitingRefundInvoicesAsync()
+        {
+            var invoices = await _invoiceRepository.GetAwaitingRefundInvoicesAsync();
+            if (invoices == null || invoices.Count == 0)
+            {
+                throw new InvalidOperationException("No awaiting refund invoices found for the specified account ID.");
+            }
+            return invoices;
         }
     }
 }

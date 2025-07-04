@@ -80,5 +80,11 @@ namespace Application.Services
             var enrichmentChildren = await _repository.GetEnrichmentClassChildrenWithParentIdAsync(parentId);
             return enrichmentChildren;
         }
+
+        public async Task<List<ClassChildren>> UpdateClassChildrenAsync(ClassChildren classChildren)
+        {
+            var updatedChildren = await _repository.UpdateClassChildrenAsync(classChildren);
+            return updatedChildren;
+        }
     }
 }

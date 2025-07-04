@@ -30,11 +30,13 @@ namespace Application.Services
         private readonly IEARepository _eaRepository;
         private readonly IEAService _eaService;
         private readonly IInvoiceDetailRepository _invoiceDetailRepository;
+        private readonly IClassChildrenRepository _classChildrenRepository;
 
         public VnPayService(IConfiguration configuration, IInvoiceService invoiceService, IInvoiceDetailService invoiceDetailService
             , IAccountService accountService, IEnrichProgramService enrichProgramService, ITuitionFeeService tuitionFeeService
             , IGradeLevelService gradeLevelService, IChildrenGradeService childrenGradeService
-            , IEARepository eARepository, IEAService eaService, IInvoiceDetailRepository invoiceDetailRepository)
+            , IEARepository eARepository, IEAService eaService, IInvoiceDetailRepository invoiceDetailRepository
+            , IClassChildrenRepository classChildrenRepository)
         {
             _configuration = configuration;
             _invoiceService = invoiceService;
@@ -47,11 +49,55 @@ namespace Application.Services
             _eaRepository = eARepository;
             _eaService = eaService;
             _invoiceDetailRepository = invoiceDetailRepository;
+            _classChildrenRepository = classChildrenRepository;
         }
 
 
         public async Task<string> CreatePaymentUrl(VnPayRequest request, HttpContext context)
         {
+            //Get academic year
+            string academicYear = "";
+            var today = DateTime.Now.Date;
+            var year = today.Year;
+
+            // So sánh với ngày 1/6 của năm hiện tại
+            var schoolStartDate = new DateTime(year, 6, 1);
+
+            if (today < schoolStartDate)
+            {
+                academicYear = (year - 1).ToString() + "-" + year.ToString();
+            }
+            else
+            {
+                academicYear = year.ToString() + "-" + (year + 1).ToString();
+            }
+
+            // Check a child must be enrolled in at only one enrichment program in a academic year
+            var classChildren = await _classChildrenRepository.GetByChildIdAsync(request.ChildrenID);
+            if(classChildren.Count != 0)
+            {
+                var enrichmentClassChildren = classChildren.FindAll(x => x.Classes!.AcademicYear == academicYear && x.Classes.EnrichmentProgramId != null);
+                if (enrichmentClassChildren.Count > 1)
+                {
+                    throw new Exception("A child must be enrolled in at only one enrichment program in a academic year");
+                }
+
+                var existingProgram = classChildren.Find(x => x.Classes!.EnrichmentProgramId == request.enrichmentPrograms[0]);
+                if (existingProgram != null)
+                {
+                    throw new Exception("A child is already enrolled in this enrichment program. If your child finished this program, please choose the higher level or a new pprogram.");
+                }
+            }
+
+            // Check a child must be completed the previous level before enrolling in a new enrichment program
+            var newEnrichment = await _enrichProgramService.GetProgramByIdAsync(request.enrichmentPrograms[0]);
+            var passedEnrichment = classChildren.FindAll(x => x.Classes!.EnrichmentPrograms!.TypeProgramID == newEnrichment.TypeProgramID
+                                                      && x.Classes.EnrichmentPrograms!.Level == newEnrichment.Level - 1 && x.Status == "Completed");
+            if (passedEnrichment.Count != 0)
+            {
+                throw new Exception("A child must be completed the previous level before enrolling in a new enrichment program.");
+            }
+
             var invoiceId = Guid.NewGuid(); // Generate a new invoice ID for the payment 
 
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);

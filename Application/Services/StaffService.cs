@@ -170,7 +170,7 @@ namespace Application.Services
 
             var currentGrade = new GradeLevel();
             var newGradeLevel = new GradeLevel();
-            
+
             var childrenGrades = await _staffRepository.UpgradeChildren(childrenIds);
             if (childrenGrades.Count == 0)
             {
@@ -182,9 +182,9 @@ namespace Application.Services
             {
                 childrenGradeResult.Add(childrenGrades[childrenGrades.Count - i]);
             }
-            
+
             var currentAcademicYear = childrenGrades[0].AcademicYear;
-            
+
             var years = currentAcademicYear!.Split('-');
 
             int startYear = int.Parse(years[0]);
@@ -216,7 +216,7 @@ namespace Application.Services
                         break;
                 }
 
-                if(childGrade.Status != "Graduated")
+                if (childGrade.Status != "Graduated")
                 {
                     newChildrenGrade = new ChildrenGrade
                     {
@@ -232,6 +232,26 @@ namespace Application.Services
 
                     await _childrengradeService.CreateChildrenGradeAsync(newChildrenGrade);
                 }
+            }
+        }
+
+        public async Task UpgradeEnrichmentChilren(List<Guid> childrenIds, int classId)
+        {
+            foreach (var childId in childrenIds)
+            {
+                var classChilren = await _classChildrenService.GetByChildIdAsync(childId);
+                if (classChilren == null || classChilren.Count == 0)
+                {
+                    throw new Exception($"Child with ID {childId} is not enrolled in any enrichment class.");
+                }
+
+                var enrichmentClassChildren = classChilren.FirstOrDefault(c => c.Classes!.EnrichmentProgramId != classId);  
+                if (enrichmentClassChildren == null)
+                {
+                    throw new Exception($"Child with ID {childId} is not enrolled in the enrichment class with ID {classId}.");
+                }
+                enrichmentClassChildren!.Status = "Completed";
+                await _classChildrenService.UpdateClassChildrenAsync(enrichmentClassChildren);
             }
         }
     }

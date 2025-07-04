@@ -11,6 +11,7 @@ namespace Domain.Entities
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int? Level { get; set; }
         public bool IsDelete { get; set; }
         public int MaxChildren { get; set; }
         public decimal Fee { get; set; }

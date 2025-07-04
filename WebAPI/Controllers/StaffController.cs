@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
@@ -22,11 +23,13 @@ namespace WebAPI.Controllers
         private readonly IChildrenGradeService _childrenGradeService;
         private readonly IAccountService _accountService;
         private readonly IClassChildrenService _classChildrenService;
+        private readonly IInvoiceRepository _invoiceRepository;
 
 
         public StaffController(IStaffService staffService, IChildrenService childrenService, IMapper mapper
             , INotificationService notificationService, IClassService classService, IEAService eAService
-            , IChildrenGradeService childrenGradeService, IAccountService accountService, IClassChildrenService classChildrenService)
+            , IChildrenGradeService childrenGradeService, IAccountService accountService, IClassChildrenService classChildrenService
+            , IInvoiceRepository invoiceRepository)
         {
             _staffService = staffService;
             _childrenService = childrenService;
@@ -37,6 +40,7 @@ namespace WebAPI.Controllers
             _childrenGradeService = childrenGradeService;
             _accountService = accountService;
             _classChildrenService = classChildrenService;
+            _invoiceRepository = invoiceRepository;
         }
 
         [HttpGet("GetNotEnrolledChildren")]
@@ -282,7 +286,7 @@ namespace WebAPI.Controllers
                 if (result)
                 {
                     if (existingClass.EnrichmentProgramId == null)
-                    { 
+                    {
                         // Update the status of the child to "Not Enrolled"
                         var child = await _childrenService.GetChildByIdAsync(childId);
                         child!.Status = "Temporary";
@@ -299,6 +303,67 @@ namespace WebAPI.Controllers
                         //Update the quantity of children in the class
                         existingClass.Quantity -= 1;
                         await _classService.UpdateClass(classId, existingClass);
+
+                        //If parent pay the tuition fee, refund the money
+                        var invoices = await _invoiceRepository.GetByAccountIdAsync(child.ParentID);
+                        if (invoices == null || !invoices.Any())
+                        {
+                            var invoiceOfChild = invoices!.Where(i => i.Status == "Success" && i.ChildrenID == child.ID);
+                            var amountToRefund = 0m;
+                            if (invoiceOfChild.Any())
+                            {
+                                foreach (var invoice in invoiceOfChild)
+                                {
+                                    amountToRefund += invoice.Amount;
+                                }
+
+                                // Create a refund invoice
+                                if (amountToRefund > 0)
+                                {
+                                    var refundInvoice = new Invoice
+                                    {
+                                        ID = Guid.NewGuid(),
+                                        AccountID = child.ParentID,
+                                        Amount = -amountToRefund,
+                                        Status = "AwaitingRefund",
+                                        Date = DateTime.UtcNow,
+                                        Name = $"Refund for {child.Name}",
+                                        ChildrenID = child.ID
+                                    };
+                                    await _invoiceRepository.CreateAsync(refundInvoice);
+                                }
+                            }
+
+                            // Send notification to parent about the refund
+                            var notificationMessage = "Your child has been removed from the class, and a refund has been processed for the tuition fee paid.";
+                            var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
+                            if (parent != null)
+                            {
+                                var notification = new NotificationRequest
+                                {
+                                    AccountIDs = new List<Guid> { parent.Id },
+                                    Title = "Class Removal and Refund",
+                                    Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund:C} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration"
+                                };
+                                await _notificationService.CreateNotificationAsync(notification);
+                            }
+                        }
+                        else
+                        {
+                            // If the parent has not paid the tuition fee, just send a notification
+                            var notificationMessage = "Your child has been removed from the class due to insufficient enrollment.";
+                            var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
+                            if (parent != null)
+                            {
+                                var notification = new NotificationRequest
+                                {
+                                    AccountIDs = new List<Guid> { parent.Id },
+                                    Title = "Class Removal",
+                                    Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class due to insufficient enrollment. \n\nThank you for your understanding.\n\n- The School Administration"
+                                };
+                                await _notificationService.CreateNotificationAsync(notification);
+                            }
+                        }
                     }
 
                     return Ok(new { message = "Child has been removed from the class successfully." });
@@ -386,6 +451,68 @@ namespace WebAPI.Controllers
             {
                 await _staffService.UpgradeChildren(childrenIds);
                 return Ok(new { message = "Children upgraded successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetAwaitingRefundInvoices")]
+        public async Task<IActionResult> GetAwaitingRefundInvoicesAsync()
+        {
+            try
+            {
+                var awaitingRefundInvoices = await _invoiceRepository.GetAwaitingRefundInvoicesAsync();
+                var response = _mapper.Map<List<InvoiceResponse>>(awaitingRefundInvoices);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("ProcessRefund/{invoiceId}")]
+        public async Task<IActionResult> ProcessRefund(Guid invoiceId)
+        {
+            try
+            {
+                var invoice = await _invoiceRepository.GetByIdAsync(invoiceId);
+                if (invoice == null)
+                {
+                    return NotFound(new { message = "Invoice not found." });
+                }
+                // Process the refund logic here
+                invoice.Status = "Refunded";
+                await _invoiceRepository.UpdateStatusAsync(invoiceId, invoice.Status);
+                // Send notification to the parent
+                var parentAccount = await _accountService.GetAccountByIdAsync(invoice.AccountID);
+                if (parentAccount != null)
+                {
+                    var notification = new NotificationRequest
+                    {
+                        AccountIDs = new List<Guid> { parentAccount.Id },
+                        Title = "Refund Processed",
+                        Content = $"Dear {parentAccount.FullName},\n\nYour refund for the invoice {invoice.Name} has been processed successfully.\n\n- The School Administration"
+                    };
+                    await _notificationService.CreateNotificationAsync(notification);
+                }
+                return Ok(new { message = "Refund processed successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("UpgradeEnrichmentChildren")]
+        public async Task<IActionResult> UpgradeEnrichmentChildren(List<Guid> childrenIds, int enrichmentId)
+        {
+            try
+            {
+                await _staffService.UpgradeEnrichmentChilren(childrenIds, enrichmentId);
+                return Ok(new { message = "Enrichment children upgraded successfully!" });
             }
             catch (Exception ex)
             {

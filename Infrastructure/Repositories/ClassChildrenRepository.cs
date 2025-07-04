@@ -143,5 +143,22 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             return enrichmentChildren;
         }
+
+        public async Task<List<ClassChildren>> UpdateClassChildrenAsync(ClassChildren classChildren)
+        {
+            _context.ClassChildrens.Update(classChildren);
+            await _context.SaveChangesAsync();
+            return await _context.ClassChildrens
+                .Include(cc => cc.Childrens)
+                    .ThenInclude(c => c.Parents)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.Syllabi)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.GradeLevels)
+                .Include(cc => cc.Classes)
+                    .ThenInclude(cls => cls.EnrichmentPrograms)
+                .Include(cc => cc.Attendances)
+                .ToListAsync();
+        }
     }
 }

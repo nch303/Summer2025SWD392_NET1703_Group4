@@ -18,5 +18,6 @@ namespace Domain.Interfaces
         Task<bool> KickEnrichmentClassChildren(Guid childId, int classId);
         Task<List<ClassChildren>> GetEnrichmentClassChildrenWithParentIdChildrenIdAsync(Guid parentId, Guid childrenId);
         Task<List<ClassChildren>> GetEnrichmentClassChildrenWithParentIdAsync(Guid parentId);
+        Task<List<ClassChildren>> UpdateClassChildrenAsync(ClassChildren classChildren);
     }
 }

@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task<bool> ReassignChildToNewClassAsync(Guid childId, int newClassId, int oldClassId);
         Task<ClassTeacher> AssignTeacherToClassAsync(int classId, Guid teacherId);
         Task UpgradeChildren(List<Guid> childrenIds);
+        Task UpgradeEnrichmentChilren(List<Guid> childrenIds, int classId);
     }
 }
