@@ -44,7 +44,7 @@ namespace Application.Services
             return invoiceDetails;
         }
 
-        public async Task<List<InvoiceDetail>> GetByProgramIdAsync(int programId)
+        public async Task<List<InvoiceDetail>> GetByProgramIdAsync(int? programId)
         {
             var invoiceDetails = await _invoiceDetailRepository.GetByProgramIdAsync(programId);
             if (invoiceDetails.Count == 0)

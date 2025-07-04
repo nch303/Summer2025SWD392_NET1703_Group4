@@ -12,6 +12,6 @@ namespace Application.Interfaces
         Task<InvoiceDetail> CreateAsync(InvoiceDetail invoiceDetail);
         Task<List<InvoiceDetail>> GetByInvoiceIdAsync(Guid invoiceId);
         Task<List<InvoiceDetail>> GetByTuitionIdAsync(int tuitionId);
-        Task<List<InvoiceDetail>> GetByProgramIdAsync(int programId);
+        Task<List<InvoiceDetail>> GetByProgramIdAsync(int? programId);
     }
 }
