@@ -83,7 +83,7 @@ namespace Infrastructure.Repositories
         public async Task<List<Invoice>> GetAwaitingRefundInvoicesAsync()
         {
             return await _context.Invoices
-                .Where(i => i.Status == "AwaitingRefund")
+                .Where(i => i.Status == "Awaiting")
                 .ToListAsync();
         }
     }

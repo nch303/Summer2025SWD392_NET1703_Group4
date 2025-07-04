@@ -292,23 +292,16 @@ namespace WebAPI.Controllers
                         child!.Status = "Temporary";
                         await _childrenService.UpdateChildAsync(child);
 
-                        // Update the status of the enrollment application to "Rejected"
-                        var application = await _EAService.GetApplicatioinByChildID(childId);
-                        if (application != null)
-                        {
-                            application.Status = "Rejected";
-                            await _EAService.UpdateEnrollmentApplicationAsync(application);
-                        }
-
                         //Update the quantity of children in the class
                         existingClass.Quantity -= 1;
                         await _classService.UpdateClass(classId, existingClass);
 
                         //If parent pay the tuition fee, refund the money
+                        var application = await _EAService.GetApplicatioinByChildID(childId);
                         var invoices = await _invoiceRepository.GetByAccountIdAsync(child.ParentID);
-                        if (invoices == null || !invoices.Any())
+                        if (invoices != null || invoices.Any())
                         {
-                            var invoiceOfChild = invoices!.Where(i => i.Status == "Success" && i.ChildrenID == child.ID);
+                            var invoiceOfChild = invoices!.Where(i => i.Status == "Success" && i.ChildrenID == child.ID && i.ID == application.InvoiceID);
                             var amountToRefund = 0m;
                             if (invoiceOfChild.Any())
                             {
@@ -325,7 +318,7 @@ namespace WebAPI.Controllers
                                         ID = Guid.NewGuid(),
                                         AccountID = child.ParentID,
                                         Amount = -amountToRefund,
-                                        Status = "AwaitingRefund",
+                                        Status = "Awaiting",
                                         Date = DateTime.UtcNow,
                                         Name = $"Refund for {child.Name}",
                                         ChildrenID = child.ID
@@ -364,6 +357,14 @@ namespace WebAPI.Controllers
                                 await _notificationService.CreateNotificationAsync(notification);
                             }
                         }
+
+                        // Update the status of the enrollment application to "Rejected"
+                        if (application != null)
+                        {
+                            application.Status = "Rejected";
+                            await _EAService.UpdateEnrollmentApplicationAsync(application);
+                        }
+
                     }
 
                     return Ok(new { message = "Child has been removed from the class successfully." });
@@ -458,7 +459,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("GetAwaitingRefundInvoices")]
+        [HttpGet("GetAwaitingInvoices")]
         public async Task<IActionResult> GetAwaitingRefundInvoicesAsync()
         {
             try
