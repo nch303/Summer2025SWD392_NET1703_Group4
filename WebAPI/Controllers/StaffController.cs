@@ -401,9 +401,10 @@ namespace WebAPI.Controllers
                     var invoicesDetail = await _invoiceDetailRepository.GetByProgramIdAsync(existingClass.EnrichmentProgramId);
                     var invoiceDetailOfChild = invoicesDetail.FirstOrDefault(i => i.ChildrenID == child.ID && i.Invoices!.Status == "Success"
                                                                           && i.ProgramID == existingClass.EnrichmentProgramId);
-                    var invoices = await _invoiceRepository.GetByIdAsync(invoiceDetailOfChild!.InvoiceID);
-                    if (invoices != null)
+                    if (invoiceDetailOfChild != null)
                     {
+                        var invoices = await _invoiceRepository.GetByIdAsync(invoiceDetailOfChild!.InvoiceID);
+
                         var amountToRefund = 0m;
                         amountToRefund += invoices.Amount;
 
@@ -454,7 +455,6 @@ namespace WebAPI.Controllers
                             await _notificationService.CreateNotificationAsync(notification);
                         }
                     }
-
                     return Ok(new { message = "Child has been removed from the class successfully." });
                 }
                 else
