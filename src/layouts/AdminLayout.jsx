@@ -38,6 +38,11 @@ const AdminLayout = () => {
       label: 'Dashboard',
     },
     {
+      key: '/admin/users/list',
+      icon: <UserOutlined />,
+      label: 'Users',
+    },
+    {
       key: '/admin/students',
       icon: <TeamOutlined />,
       label: 'Students',
@@ -46,6 +51,21 @@ const AdminLayout = () => {
       key: '/admin/teachers',
       icon: <UserOutlined />,
       label: 'Teachers',
+    },
+    {
+      key: '/admin/classes/list',
+      icon: <CalendarOutlined />,
+      label: 'Classes',
+    },
+    {
+      key: '/admin/syllabus',
+      icon: <FileTextOutlined />,
+      label: 'Syllabus',
+    },
+    {
+      key: '/admin/tuition-fees',
+      icon: <DollarOutlined />,
+      label: 'Tuition Fees',
     },
     {
       key: '/admin/enrichment',
@@ -66,36 +86,6 @@ const AdminLayout = () => {
       key: '/admin/send-announcement',
       icon: <BellOutlined />,
       label: 'Send Announcement',
-    },
-    {
-      key: '/admin/reports',
-      icon: <BarChartOutlined />,
-      label: 'Reports',
-    },
-    {
-      key: '/admin/tuition-fees',
-      icon: <DollarOutlined />,
-      label: 'Tuition Fees',
-    },
-    {
-      key: '/admin/syllabus',
-      icon: <FileTextOutlined />,
-      label: 'Syllabus',
-    },
-    {
-      key: '/admin/classes/list',
-      icon: <CalendarOutlined />,
-      label: 'Classes',
-    },
-    {
-      key: '/admin/users/list',
-      icon: <UserOutlined />,
-      label: 'Users',
-    },
-    {
-      key: '/admin/settings',
-      icon: <SettingOutlined />,
-      label: 'Settings',
     },
   ];
 

@@ -13,7 +13,7 @@
   height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
   z-index: 10;
   flex-shrink: 0;
   border: 1px solid rgba(231, 235, 247, 0.8);

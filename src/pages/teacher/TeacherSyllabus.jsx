@@ -124,9 +124,6 @@ const TeacherSyllabus = () => {
               onClick={() => showSyllabusDetail(record)}
             />
           </Tooltip>
-          <Tooltip title="Download">
-            <Button type="text" icon={<DownloadOutlined />} />
-          </Tooltip>
         </Space>
       ),
     },
@@ -211,9 +208,6 @@ const TeacherSyllabus = () => {
               icon={<EyeOutlined />}
               onClick={() => showSyllabusDetail(record)}
             />
-          </Tooltip>
-          <Tooltip title="Download">
-            <Button type="text" icon={<DownloadOutlined />} />
           </Tooltip>
         </Space>
       ),
@@ -305,11 +299,6 @@ const TeacherSyllabus = () => {
           <div className="header-left">
             <Title level={2}>Syllabus</Title>
             <Text>Manage and track the teaching syllabus</Text>
-          </div>
-          <div className="header-right">
-            <Button type="primary" icon={<DownloadOutlined />}>
-              Download teaching materials
-            </Button>
           </div>
         </div>
 

@@ -96,11 +96,11 @@ const TeacherDashboard = () => {
 
   // Chart data
   const attendanceChartData = {
-    labels: ['Present', 'Absent', 'Late'],
+    labels: ['Present', 'Absent'],
     datasets: [
       {
-        data: [attendanceStats.present, attendanceStats.absent, attendanceStats.late],
-        backgroundColor: ['#4caf50', '#f44336', '#ff9800'],
+        data: [attendanceStats.present, attendanceStats.absent],
+        backgroundColor: ['#4caf50', '#f44336'],
         borderWidth: 1,
       },
     ],
@@ -200,13 +200,6 @@ const TeacherDashboard = () => {
       path: '#',
       description: 'Generate reports'
     },
-    {
-      title: 'Settings',
-      icon: <SettingOutlined />,
-      color: '#607d8b',
-      path: '/teacher/settings',
-      description: 'Update preferences'
-    },
   ];
 
   // Mock data for today's schedule
@@ -297,26 +290,6 @@ const TeacherDashboard = () => {
         </Row>
       </div>
 
-      {/* Quick Access Section */}
-      <h3 className="section-title">Quick Access</h3>
-      <div className="quick-access-section">
-        <Row gutter={[16, 16]}>
-          {quickAccessItems.map((item, index) => (
-            <Col xs={12} sm={8} md={4} key={index}>
-              <Link to={item.path}>
-                <Card className="quick-access-card" hoverable>
-                  <div className="quick-icon" style={{ backgroundColor: item.color }}>
-                    {item.icon}
-                  </div>
-                  <div className="quick-title">{item.title}</div>
-                  <div className="quick-description">{item.description}</div>
-                </Card>
-              </Link>
-            </Col>
-          ))}
-        </Row>
-      </div>
-
       {/* Charts & Analytics Section */}
       <h3 className="section-title">Analytics & Insights</h3>
       <Row gutter={[24, 24]} className="charts-section">
@@ -333,10 +306,6 @@ const TeacherDashboard = () => {
               <div className="legend-item">
                 <span className="legend-dot" style={{ backgroundColor: '#f44336' }}></span>
                 <span>Absent: {attendanceStats.absent} students</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-dot" style={{ backgroundColor: '#ff9800' }}></span>
-                <span>Late: {attendanceStats.late} students</span>
               </div>
             </div>
           </Card>

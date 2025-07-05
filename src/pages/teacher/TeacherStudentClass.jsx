@@ -212,7 +212,7 @@ const TeacherStudentClass = () => {
                 />
               </Badge.Ribbon>
 
-              <div className="student-details">
+              <div className="teacher-class-student-details">
                 <Title level={5} className="student-name">{student.name}</Title>
                 <div className="student-info-grid">
                   <Text type="secondary"><CalendarOutlined /> {formatBirthday(student.birthday)}</Text>
@@ -434,9 +434,6 @@ const TeacherStudentClass = () => {
                   View attendance
                 </Button>
               </Link>
-              <Button type="primary" icon={<DownloadOutlined />}>
-                Export list
-              </Button>
             </Space>
           </div>
         </div>

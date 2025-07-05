@@ -91,9 +91,10 @@
   border: 2px solid #f0f0f0;
 }
 
-.student-details {
+.teacher-class-student-details {
   width: 100%;
   text-align: center;
+
 }
 
 .student-name {

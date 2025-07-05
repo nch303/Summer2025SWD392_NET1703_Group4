@@ -133,11 +133,11 @@ const StaffDashboard = () => {
       description: 'Assign students to classes'
     },
     {
-      title: 'Schedule',
-      icon: <CalendarOutlined />,
+      title: 'Refund list',
+      icon: <ProfileOutlined />,
       color: '#ff5555',
-      path: '/staff/schedule',
-      description: 'View schedule and assign'
+      path: '/staff/refund-list',
+      description: 'View refund list'
     }
   ];
 
@@ -212,7 +212,7 @@ const StaffDashboard = () => {
         {/* Quick Access Section */}
         <Card
           title={
-            <span className="section-title">
+            <span className="staff-dashboard-section-title">
               <AppstoreOutlined /> Quick access
             </span>
           }
@@ -250,7 +250,7 @@ const StaffDashboard = () => {
           <Col xs={24} lg={12}>
             <Card
               title={
-                <span className="section-title">
+                <span className="staff-dashboard-section-title">
                   <FormOutlined /> Recent enrollment applications
                 </span>
               }
@@ -306,7 +306,7 @@ const StaffDashboard = () => {
           <Col xs={24} lg={12}>
             <Card
               title={
-                <span className="section-title">
+                <span className="staff-dashboard-section-title">
                   <BarChartOutlined /> Class status
                 </span>
               }
@@ -380,7 +380,7 @@ const StaffDashboard = () => {
           <Col xs={24} lg={24}>
             <Card
               title={
-                <span className="section-title">
+                <span className="staff-dashboard-section-title">
                   <ProfileOutlined /> Tasks to do
                 </span>
               }

@@ -530,3 +530,117 @@
     padding: 10px 12px;
   }
 }
+
+/* Pagination styles */
+.refund-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding: 16px 0;
+  border-top: 1px solid #edf2f7;
+}
+
+.refund-pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.refund-pagination-select {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: white;
+  color: #2d3748;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refund-pagination-select:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+.refund-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refund-pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.refund-pagination-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.refund-pagination-btn:hover:not(:disabled) {
+  background-color: #edf2f7;
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.refund-pagination-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.refund-pagination-btn.active {
+  background-color: #4299e1;
+  color: white;
+  border-color: #3182ce;
+  font-weight: 600;
+}
+
+.refund-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f7fafc;
+}
+
+.refund-pagination-ellipsis {
+  min-width: 36px;
+  text-align: center;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .refund-pagination {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .refund-pagination-info {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .refund-pagination-controls {
+    width: 100%;
+    justify-content: center;
+  }
+}

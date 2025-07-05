@@ -17,6 +17,11 @@ const StaffRefundList = () => {
   const [minAmount, setMinAmount] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [paginatedInvoices, setPaginatedInvoices] = useState([]);
+
   const fetchRefundInvoices = async () => {
     setLoading(true);
     try {
@@ -37,6 +42,19 @@ const StaffRefundList = () => {
   useEffect(() => {
     handleSearch();
   }, [searchTerm, dateRange, minAmount, maxAmount]);
+  
+  // Update paginated invoices whenever filtered invoices or pagination settings change
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setPaginatedInvoices(filteredInvoices.slice(startIndex, endIndex));
+    
+    // Reset to page 1 if the current page would be empty
+    const totalPages = Math.ceil(filteredInvoices.length / itemsPerPage);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [filteredInvoices, currentPage, itemsPerPage]);
 
   const handleProcessRefund = async (invoiceId) => {
     setProcessing(true);
@@ -95,6 +113,7 @@ const StaffRefundList = () => {
     }
     
     setFilteredInvoices(filtered);
+    setCurrentPage(1); // Reset to page 1 whenever search results change
   };
 
   const clearFilters = () => {
@@ -103,6 +122,7 @@ const StaffRefundList = () => {
     setMinAmount('');
     setMaxAmount('');
     setFilteredInvoices(refundInvoices);
+    setCurrentPage(1);
   };
 
   const formatAmount = (amount) => {
@@ -118,6 +138,59 @@ const StaffRefundList = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+  
+  // Pagination handlers
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+  
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(parseInt(e.target.value));
+    setCurrentPage(1); // Reset to page 1 when changing items per page
+  };
+  
+  const totalPages = Math.ceil(filteredInvoices.length / itemsPerPage);
+  
+  // Generate page numbers for pagination display
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if there are less than maxVisiblePages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show first page, last page, and pages around current page
+      if (currentPage <= 3) {
+        // If current page is near the start
+        for (let i = 1; i <= 5; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        // If current page is near the end
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // If current page is in the middle
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
   };
 
   return (
@@ -241,71 +314,138 @@ const StaffRefundList = () => {
           }
         </div>
       ) : (
-        <div className="refund-table-container">
-          <table className="refund-table">
-            <thead>
-              <tr>
-                <th>Invoice ID</th>
-                <th>Name</th>
-                <th>Parent</th>
-                <th>Student</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInvoices.map((invoice) => (
-                <tr key={invoice.id} className="refund-invoice-row">
-                  <td>
-                    <div className="refund-id-cell">
-                      {invoice.id.substring(0, 8)}...
-                    </div>
-                  </td>
-                  <td>{invoice.name}</td>
-                  <td>{invoice.parentName || 'N/A'}</td>
-                  <td>{invoice.childrenName || 'N/A'}</td>
-                  <td className="refund-amount">{formatAmount(invoice.amount)}</td>
-                  <td>{formatDate(invoice.date)}</td>
-                  <td>
-                    {invoice.status === 'Awaiting' ? (
-                      <span className="refund-status refund-awaiting-refund">
-                        <FontAwesomeIcon icon="clock" /> {invoice.status}
-                      </span>
-                    ) : (
-                      <span className="refund-status refund-processed-refund">
-                        <FontAwesomeIcon icon="check-circle" /> {invoice.status}
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    {invoice.status === 'Awaiting' ? (
-                    <button 
-                      className="refund-process-refund-button"
-                      onClick={() => handleProcessRefund(invoice.id)}
-                      disabled={processing}
-                    >
-                      {processing ? (
-                        <>
-                          <FontAwesomeIcon icon="spinner" spin /> Processing
-                        </>
-                      ) : (
-                        <>
-                          <FontAwesomeIcon icon="hand-holding-dollar" /> Process
-                        </>
-                      )}
-                    </button>
-                    ) : (
-                      <span>
-                      </span>
-                    )}
-                  </td>
+        <>
+          <div className="refund-results-summary">
+            Showing {Math.min((currentPage - 1) * itemsPerPage + 1, filteredInvoices.length)} to {Math.min(currentPage * itemsPerPage, filteredInvoices.length)} of {filteredInvoices.length} refund requests
+          </div>
+          
+          <div className="refund-table-container">
+            <table className="refund-table">
+              <thead>
+                <tr>
+                  <th>Invoice ID</th>
+                  <th>Name</th>
+                  <th>Parent</th>
+                  <th>Student</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {paginatedInvoices.map((invoice) => (
+                  <tr key={invoice.id} className="refund-invoice-row">
+                    <td>
+                      <div className="refund-id-cell">
+                        {invoice.id.substring(0, 8)}...
+                      </div>
+                    </td>
+                    <td>{invoice.name}</td>
+                    <td>{invoice.parentName || 'N/A'}</td>
+                    <td>{invoice.childrenName || 'N/A'}</td>
+                    <td className="refund-amount">{formatAmount(invoice.amount)}</td>
+                    <td>{formatDate(invoice.date)}</td>
+                    <td>
+                      {invoice.status === 'Awaiting' ? (
+                        <span className="refund-status refund-awaiting-refund">
+                          <FontAwesomeIcon icon="clock" /> {invoice.status}
+                        </span>
+                      ) : (
+                        <span className="refund-status refund-processed-refund">
+                          <FontAwesomeIcon icon="check-circle" /> {invoice.status}
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {invoice.status === 'Awaiting' ? (
+                      <button 
+                        className="refund-process-refund-button"
+                        onClick={() => handleProcessRefund(invoice.id)}
+                        disabled={processing}
+                      >
+                        {processing ? (
+                          <>
+                            <FontAwesomeIcon icon="spinner" spin /> Processing
+                          </>
+                        ) : (
+                          <>
+                            <FontAwesomeIcon icon="hand-holding-dollar" /> Process
+                          </>
+                        )}
+                      </button>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Pagination controls */}
+          <div className="refund-pagination">
+            <div className="refund-pagination-info">
+              <select 
+                className="refund-pagination-select" 
+                value={itemsPerPage} 
+                onChange={handleItemsPerPageChange}
+              >
+                <option value="5">5 / page</option>
+                <option value="10">10 / page</option>
+                <option value="20">20 / page</option>
+                <option value="50">50 / page</option>
+              </select>
+            </div>
+            
+            <div className="refund-pagination-controls">
+              <button 
+                className="refund-pagination-btn" 
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(1)}
+              >
+                <FontAwesomeIcon icon="angle-double-left" />
+              </button>
+              
+              <button 
+                className="refund-pagination-btn" 
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                <FontAwesomeIcon icon="angle-left" />
+              </button>
+              
+              <div className="refund-pagination-pages">
+                {getPageNumbers().map((page, index) => (
+                  page === '...' ? 
+                    <span key={`ellipsis-${index}`} className="refund-pagination-ellipsis">...</span> :
+                    <button 
+                      key={`page-${page}`}
+                      className={`refund-pagination-btn ${currentPage === page ? 'active' : ''}`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                ))}
+              </div>
+              
+              <button 
+                className="refund-pagination-btn" 
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                <FontAwesomeIcon icon="angle-right" />
+              </button>
+              
+              <button 
+                className="refund-pagination-btn" 
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => handlePageChange(totalPages)}
+              >
+                <FontAwesomeIcon icon="angle-double-right" />
+              </button>
+            </div>
+          </div>
+        </>
       )}
 
       {processing && <ProcessingSpinner overlay />}
