@@ -13,8 +13,7 @@ import {
   ArrowLeftOutlined, PhoneOutlined, HomeOutlined, MailOutlined,
   FileTextOutlined, CloseOutlined
 } from '@ant-design/icons';
-import { getStudentsByClassId, calculateAge, formatBirthday, getStudentDetail } from './TeacherStudentClassService';
-import { getClassesByTeacherId } from './TeacherClassService';
+import { getStudentsByClassId, calculateAge, formatBirthday, getStudentDetail, getClassesByTeacherId } from '../../services/TeacherService';
 import { useUser } from '../../contexts/UserContext';
 import './TeacherStudentClass.css';
 

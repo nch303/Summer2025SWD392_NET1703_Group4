@@ -20,7 +20,7 @@ import {
   DollarOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../contexts/UserContext';
-import Navbar from '../components/navbar/Navbar';
+import Navbar from '../components/Navbar';
 import './AdminLayout.css';
 
 const { Header, Sider, Content } = Layout;

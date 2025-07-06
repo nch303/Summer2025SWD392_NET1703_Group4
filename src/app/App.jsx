@@ -12,22 +12,16 @@ import TeacherLayout from '../layouts/TeacherLayout';
 
 // Pages
 import HomePage from '../pages/home/HomePage';
-import LoginPage from '../pages/login/LoginPage';
-import RegisterPage from '../pages/register/RegisterPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
 import NewsPage from '../pages/news/NewsPage';
-import NotFoundPage from '../components/error/NotFoundPage';
-import ForgotPasswordPage from '../pages/forgot-password/ForgotPasswordPage';
-import ConfirmEmailPage from '../pages/confirm-email/ConfirmEmailPage';
+import NotFoundPage from '../components/NotFoundPage.jsx';
 import AboutUsPage from '../pages/about-us/AboutUsPage';
 import ContactPage from '../pages/contact/ContactPage';
-import AdminPage from '../pages/admin/AdminPage';
 
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 import PaymentFailPage from '../pages/payment/PaymentFail';
-import ResetPasswordPage from '../pages/forgot-password/ResetPasswordPage';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
 import NotificationPage from '../pages/notification/NotificationPage';
@@ -35,21 +29,34 @@ import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
 import NewsDetailPage from '../pages/news/NewsDetailPage';
 import EnrichmentProgram from '../pages/enrichment-program/EnrichmentProgram';
 import EnrichmentHistory from '../pages/enrichment-program/EnrichmentHistory';
-import AdminEnrichment from '../pages/admin/AdminEnrichment'; 
+
+// Auth Pages
+import LoginPage from '../pages/auth/LoginPage';
+import RegisterPage from '../pages/auth/RegisterPage';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
+import ConfirmEmailPage from '../pages/auth/ConfirmEmailPage';
 
 // Staff Pages
-import StaffDashboard from '../pages/staff-dashboard/StaffDashboard';
-import ChildrenManagement from '../pages/staff-children-management/ChildrenManagement';
-import EnrollmentApplicationManagement from '../pages/staff-dashboard/EnrollmentApplicationManagement';
-import StaffClasses from '../pages/staff-dashboard/StaffClassPage';
-import StaffRefundList from '../pages/staff-dashboard/StaffRefundList';
+import StaffDashboard from '../pages/staff/StaffDashboard';
+import ChildrenManagement from '../pages/staff/ChildrenManagement';
+import EnrollmentApplicationManagement from '../pages/staff/EnrollmentApplicationManagement';
+import StaffClasses from '../pages/staff/StaffClassPage';
+import StaffRefundList from '../pages/staff/StaffRefundList';
+import StaffAssignStudentPage from '../pages/staff/StaffAssignStudentPage.jsx';
+import StaffAssignTeacherPage from '../pages/staff/StaffAssignTeacherPage';
 
 // Admin Pages
-import AccountListPage from '../pages/admin-accounts-management/AccountListPage';
-import StudentsManagement from '../pages/admin-students-management/StudentsManagement';
+import AccountListPage from '../pages/admin/AccountListPage';
+import StudentsManagement from '../pages/admin/StudentsManagement';
 import AdminSyllabus from '../pages/admin/AdminSyllabus';
 import TuitionFeeManagement from '../pages/admin/TuitionFeeManagement';
-import TeachersManagement from '../pages/admin-teachers-management/TeachersManagement';
+import TeachersManagement from '../pages/admin/TeachersManagement';
+import ClassManagement from '../pages/admin/ClassManagement';
+import SendAnnouncementPage from '../pages/admin/SendAnnouncementPage';
+import AdminNews from '../pages/admin/AdminNews';
+import AdminEnrichment from '../pages/admin/AdminEnrichment'; 
+import AdminPage from '../pages/admin/AdminPage';
 
 // Teacher Pages
 import TeacherDashboard from '../pages/teacher/TeacherDashboard';
@@ -59,19 +66,13 @@ import TeacherSyllabus from '../pages/teacher/TeacherSyllabus';
 import TeacherCheckAttendance from '../pages/teacher/TeacherCheckAttendance';
 import TeacherAttendanceAll from '../pages/teacher/TeacherAttendanceAll';
 
-import ClassManagement from '../pages/admin-classes-management/ClassManagement';
-
-
 // Route Guards
 import ProtectedRoute from '../components/route-guard/ProtectedRoute';
 import AuthRoute from '../components/route-guard/AuthRoute';
 import { UserProvider } from '../contexts/UserContext';
 
-import SendAnnouncementPage from '../pages/announcement/SendAnnouncementPage';
+
 import ReportsPage from '../pages/reports/ReportsPage';
-import StaffAssignStudentPage from '../pages/staff-children-management/StaffAssignStudentPage.jsx';
-import AdminNews from '../pages/admin/AdminNews';
-import StaffAssignTeacherPage from '../pages/staff-assign-teacher/StaffAssignTeacherPage';
 import EnrichmentParticipants from '../pages/enrichment-participants/EnrichmentParticipants';
 
 function App() {
@@ -211,14 +212,11 @@ function App() {
           }>
             <Route index element={<AdminPage />} />
             <Route path="syllabus" element={<AdminSyllabus />} />
-            <Route path="courses" element={<div>Courses Management</div>} />
             <Route path="classes/list" element={<ClassManagement />} />
             <Route path="news" element={<AdminNews />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="tuition-fees" element={<TuitionFeeManagement />} />
-            <Route path="classes" element={<div>Classes Management</div>} />
-            <Route path="settings" element={<div>Settings</div>} />
             <Route path="users/list" element={<AccountListPage />} />
             <Route path="enrichment" element={<AdminEnrichment />} />
             <Route path="students" element={<StudentsManagement />} />
@@ -239,10 +237,6 @@ function App() {
             <Route path="syllabus" element={<TeacherSyllabus />} />
             <Route path="classes/:classId/check-attendance" element={<TeacherCheckAttendance />} />
             <Route path="classes/:classId/view-all-attendance" element={<TeacherAttendanceAll />} />
-            <Route path="schedule" element={<div>Schedule</div>} />
-            <Route path="assignments" element={<div>Assignments</div>} />
-            <Route path="messages" element={<div>Messages</div>} />
-            <Route path="settings" element={<div>Settings</div>} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

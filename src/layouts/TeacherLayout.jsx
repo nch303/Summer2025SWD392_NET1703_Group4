@@ -13,8 +13,8 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme, Avatar, Dropdown, Badge } from 'antd';
-import Navbar from '../components/navbar/Navbar';
-import Footer from '../components/footer/Footer';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/scroll-button/ScrollToTopButton';
 import PageLoadingScreen from '../components/loading/PageLoadingScreen';
 import './TeacherLayout.css';

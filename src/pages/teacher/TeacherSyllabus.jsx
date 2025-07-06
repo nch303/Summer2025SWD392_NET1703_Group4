@@ -10,7 +10,7 @@ import {
   SortAscendingOutlined, PlusOutlined, FilePdfOutlined,
   BookFilled, ReadOutlined, CheckCircleOutlined, ClockCircleOutlined
 } from '@ant-design/icons';
-import { getAllSyllabi, getSyllabusById, getSyllabusDetailById } from './TeacherSyllabusService';
+import { getAllSyllabi, getSyllabusById, getSyllabusDetailById } from '../../services/TeacherService';
 import './TeacherSyllabus.css';
 
 const { Title, Text, Paragraph } = Typography;

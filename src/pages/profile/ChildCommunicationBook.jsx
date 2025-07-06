@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getChildClassInfo } from './ChildProfileService';
+import { getChildClassInfo } from '../../services/ProfileService';
 import './ChildCommunicationBook.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

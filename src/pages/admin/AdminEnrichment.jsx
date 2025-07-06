@@ -13,7 +13,7 @@ import {
   getAllEnrichmentPrograms, getEnrichmentProgramById, 
   createEnrichmentProgram, updateEnrichmentProgram, deleteEnrichmentProgram,
   restoreEnrichmentProgram, getAllProgramTypes
-} from './AdminEnrichmentService';
+} from '../../services/AdminService';
 
 const { Title, Text } = Typography;
 const { RangePicker } = DatePicker;

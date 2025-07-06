@@ -8,7 +8,7 @@ import {
   UndoOutlined, EyeOutlined
 } from '@ant-design/icons';
 import './AdminNews.css';
-import { getAllNews, getNewsById, createNews, updateNews, deleteNews, searchNews, updateNewsStatus } from './AdminNewsService';
+import { getAllNews, getNewsById, createNews, updateNews, deleteNews, searchNews, updateNewsStatus } from '../../services/AdminService';
 
 const AdminNews = () => {
   const [form] = Form.useForm();

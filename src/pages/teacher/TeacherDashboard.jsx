@@ -13,9 +13,7 @@ import {
   CheckOutlined, CloseOutlined, FileOutlined, SettingOutlined
 } from '@ant-design/icons';
 import { UserContext } from '../../contexts/UserContext';
-import { getClassesByTeacherId, getStatusColor } from './TeacherClassService';
-import { getAllSyllabi } from './TeacherSyllabusService';
-import { getStudentsByClassId } from './TeacherStudentClassService';
+import { getClassesByTeacherId, getStatusColor, getAllSyllabi, getStudentsByClassId } from '../../services/TeacherService';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title } from 'chart.js';
 import { Pie, Line, Bar } from 'react-chartjs-2';
 import './TeacherDashboard.css';

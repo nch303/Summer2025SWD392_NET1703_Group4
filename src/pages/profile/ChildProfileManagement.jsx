@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getChildrenByParentId, addChild, updateChild, deleteChild } from './ChildProfileService';
+import { getChildrenByParentId, addChild, updateChild, deleteChild } from '../../services/ProfileService';
 import ChildCommunicationBook from './ChildCommunicationBook';
 import { useUser } from '../../contexts/UserContext';
 import './ProfilePage.css';

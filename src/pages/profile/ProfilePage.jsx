@@ -5,7 +5,7 @@ import ChildProfileManagement from './ChildProfileManagement';
 import ChangePasswordForm from './ChangePasswordForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCurrentUserProfile, changePassword, updateUserProfile } from './ProfileService';
+import { getCurrentUserProfile, changePassword, updateUserProfile } from '../../services/ProfileService';
 
 const Toast = ({ message, type, onClose }) => {
   const [isExiting, setIsExiting] = useState(false);

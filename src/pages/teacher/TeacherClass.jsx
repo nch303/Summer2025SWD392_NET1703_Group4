@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-import { getClassesByTeacherId, getStatusColor } from './TeacherClassService';
+import { getClassesByTeacherId, getStatusColor } from '../../services/TeacherService';
 import './TeacherClass.css';
 
 const { Title, Text, Paragraph } = Typography;

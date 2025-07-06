@@ -8,8 +8,7 @@ import {
   CheckCircleOutlined, CloseCircleOutlined
 } from '@ant-design/icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getAllClassAttendance } from './TeacherCheckAttendanceService';
-import { getClassesByTeacherId } from './TeacherClassService';
+import { getAllClassAttendance, getClassesByTeacherId } from '../../services/TeacherService';
 import { useUser } from '../../contexts/UserContext';
 import './TeacherAttendanceAll.css';
 

@@ -11,7 +11,9 @@ import {
   InfoCircleOutlined, CheckOutlined, UploadOutlined, FileExcelOutlined,
   LoadingOutlined, CloseOutlined
 } from '@ant-design/icons';
-import { getAllSyllabi, createSyllabus, createSyllabusDetails, deleteSyllabus, getSyllabusDetails, updateMultipleSyllabi, updateSyllabusDetail } from './AdminSyllabusService';
+import { getAllSyllabi, createSyllabus, createSyllabusDetails, 
+  deleteSyllabus, getSyllabusDetails, 
+  updateMultipleSyllabi, updateSyllabusDetail } from '../../services/AdminService';
 import * as XLSX from 'xlsx'; 
 import './AdminSyllabus.css';
 

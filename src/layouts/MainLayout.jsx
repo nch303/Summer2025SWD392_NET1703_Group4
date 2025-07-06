@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/navbar/Navbar';
-import Footer from '../components/footer/Footer';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/scroll-button/ScrollToTopButton';
 import PageLoadingScreen from '../components/loading/PageLoadingScreen';
 

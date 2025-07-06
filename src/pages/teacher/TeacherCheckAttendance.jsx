@@ -9,7 +9,7 @@ import {
   ArrowLeftOutlined, InfoCircleOutlined
 } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getTodayAttendance, updateAttendanceRecords } from './TeacherCheckAttendanceService';
+import { getTodayAttendance, updateAttendanceRecords } from '../../services/TeacherService';
 import './TeacherCheckAttendance.css';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';

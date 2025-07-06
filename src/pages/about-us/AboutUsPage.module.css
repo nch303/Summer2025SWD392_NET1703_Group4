@@ -1,0 +1,595 @@
+.aboutUsContainer {
+  width: 100%;
+  overflow-x: hidden;
+  color: #4a4a4a;
+}
+
+/* Hero Section */
+.aboutHeroSection {
+  position: relative;
+  height: 500px;
+  background-image: url('https://vinschool.edu.vn/wp-content/uploads/2023/08/14/Du-an-moi-4.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-bottom: 60px;
+}
+
+.aboutHeroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.aboutHeroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.aboutHeroContent h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  color: white;
+}
+
+.aboutTitleUnderline {
+  height: 4px;
+  width: 80px;
+  background: linear-gradient(90deg, #FF9F43, #FF6B6B);
+  margin: 0 auto 25px;
+  border-radius: 2px;
+}
+
+.aboutHeroContent p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+/* Common Section Styles */
+.aboutSection {
+  padding: 80px 0;
+  position: relative;
+}
+
+.aboutSectionContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.aboutSectionHeader {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.aboutSectionHeader h2 {
+  font-size: 2.5rem;
+  color: #5f7adb;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  margin-bottom: 15px;
+}
+
+.aboutSectionUnderline {
+  height: 4px;
+  width: 60px;
+  background: linear-gradient(90deg, #FF9F43, #FF6B6B);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* Story Section */
+.aboutStoryContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.aboutStoryImage {
+  position: relative;
+}
+
+.aboutStoryImage img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.aboutImageDecoration {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 15px;
+  left: 15px;
+  border: 4px solid #FDCB6E;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+.aboutStoryText p {
+  margin-bottom: 20px;
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+/* Philosophy Section */
+.aboutPhilosophySection {
+  background-color: #f9f9ff;
+  position: relative;
+}
+
+.aboutRainbowTop,
+.aboutRainbowBottom {
+  height: 15px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  background: linear-gradient(90deg,
+      #FF6B6B 0%,
+      #FF6B6B 16.6%,
+      #FDCB6E 16.6%,
+      #FDCB6E 33.2%,
+      #6BCB77 33.2%,
+      #6BCB77 49.8%,
+      #4CACBC 49.8%,
+      #4CACBC 66.4%,
+      #5F7ADB 66.4%,
+      #5F7ADB 83%,
+      #A86BD1 83%,
+      #A86BD1 100%);
+}
+
+.aboutRainbowTop {
+  top: 0;
+}
+
+.aboutRainbowBottom {
+  bottom: 0;
+}
+
+.aboutPhilosophyCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.aboutPhilosophyCard {
+  background-color: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.aboutPhilosophyCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.aboutCardIcon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.aboutCardIcon svg {
+  width: 35px;
+  height: 35px;
+}
+
+.aboutPlayIcon {
+  background-color: #FFE8E8;
+  color: #FF6B6B;
+}
+
+.aboutIndividualIcon {
+  background-color: #EAEAFF;
+  color: #5F7ADB;
+}
+
+.aboutCommunityIcon {
+  background-color: #E6FFEA;
+  color: #6BCB77;
+}
+
+.aboutPhilosophyCard h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.aboutPhilosophyCard p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Team Section */
+.aboutTeamIntro {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  font-size: 1.2rem;
+}
+
+.aboutTeamMembers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+.aboutTeamMember {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.aboutMemberImage {
+  height: 250px;
+  overflow: hidden;
+}
+
+.aboutMemberImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.aboutTeamMember:hover .aboutMemberImage img {
+  transform: scale(1.05);
+}
+
+.aboutMemberInfo {
+  padding: 25px;
+}
+
+.aboutMemberInfo h3 {
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.aboutMemberTitle {
+  color: #5F7ADB;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.aboutMemberDescription {
+  color: #666;
+  line-height: 1.6;
+}
+
+.aboutTeamCta {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.aboutBtnPrimary {
+  background: linear-gradient(135deg, #5F7ADB, #A86BD1);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(95, 122, 219, 0.3);
+}
+
+.aboutBtnPrimary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(95, 122, 219, 0.4);
+}
+
+.aboutBtnSecondary {
+  background-color: transparent;
+  color: #5F7ADB;
+  border: 2px solid #5F7ADB;
+  padding: 10px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.aboutBtnSecondary:hover {
+  background-color: #5F7ADB;
+  color: white;
+}
+
+/* Facilities Section */
+.aboutFacilitiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.aboutFacilityItem {
+  padding: 25px;
+  border-radius: 15px;
+  background-color: white;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.aboutFacilityItem:hover {
+  transform: translateY(-5px);
+}
+
+.aboutFacilityIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+}
+
+.aboutFacilityIcon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.aboutFacilityItem h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.aboutFacilityItem p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Values Section */
+.aboutValuesSection {
+  background-color: #f9f9ff;
+  position: relative;
+  overflow: hidden;
+}
+
+.aboutValuesList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.aboutValueItem {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+.aboutValueNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #5F7ADB;
+  opacity: 0.5;
+  line-height: 1;
+}
+
+.aboutValueContent h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.aboutValueContent p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Testimonials Section */
+.aboutTestimonialsSlider {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.aboutTestimonial {
+  background-color: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.aboutQuoteIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #EAEAFF;
+  color: #5F7ADB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.aboutQuoteIcon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.aboutTestimonialText {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 25px;
+  font-style: italic;
+}
+
+.aboutTestimonialAuthor {
+  color: #666;
+}
+
+.aboutAuthorName {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.aboutAuthorRelation {
+  color: #777;
+}
+
+/* CTA Section */
+.aboutCtaSection {
+  background-color: #5F7ADB;
+  color: white;
+  text-align: center;
+  padding: 60px 0;
+}
+
+.aboutCtaContent {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.aboutCtaContent p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.aboutCtaButtons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.aboutCtaSection .aboutBtnPrimary {
+  background: white;
+  color: #5F7ADB;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.aboutCtaSection .aboutBtnPrimary:hover {
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+}
+
+.aboutCtaSection .aboutBtnSecondary {
+  border-color: white;
+  color: white;
+}
+
+.aboutCtaSection .aboutBtnSecondary:hover {
+  background-color: white;
+  color: #5F7ADB;
+}
+
+.aboutRainbowDecoration {
+  height: 12px;
+  width: 200px;
+  position: absolute;
+  right: 50px;
+  bottom: 30px;
+  background: linear-gradient(90deg,
+      #FF6B6B, #FDCB6E, #6BCB77, #4CACBC, #5F7ADB, #A86BD1);
+  border-radius: 6px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .aboutStoryContent {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutStoryImage {
+    margin-bottom: 30px;
+  }
+
+  .aboutHeroContent h1 {
+    font-size: 3rem;
+  }
+
+  .aboutTeamMembers {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutHeroSection {
+    height: 400px;
+  }
+
+  .aboutHeroContent h1 {
+    font-size: 2.5rem;
+  }
+
+  .aboutHeroContent p {
+    font-size: 1.2rem;
+  }
+
+  .aboutSectionHeader h2 {
+    font-size: 2rem;
+  }
+
+  .aboutValueItem {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .aboutCtaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .aboutBtnSecondary {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutHeroSection {
+    height: 350px;
+  }
+
+  .aboutHeroContent h1 {
+    font-size: 2rem;
+  }
+
+  .aboutHeroContent p {
+    font-size: 1rem;
+  }
+
+  .aboutSection {
+    padding: 50px 0;
+  }
+
+  .aboutPhilosophyCards {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutTestimonial {
+    padding: 25px;
+  }
+
+  .aboutTestimonialText {
+    font-size: 1rem;
+  }
+}

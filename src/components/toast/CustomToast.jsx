@@ -129,7 +129,7 @@ export const useCustomToast = () => {
     return addToast({ message, type: TOAST_TYPES.INFO, ...options });
   };
 
-  const ToastContainer = ({ position = 'top-right' }) => {
+  const ToastContainer = ({ position = 'center' }) => {
     // Tách thông báo thành 2 nhóm: success và các loại khác
     const successToasts = toasts.filter(toast => toast.type === TOAST_TYPES.SUCCESS);
     const otherToasts = toasts.filter(toast => toast.type !== TOAST_TYPES.SUCCESS);

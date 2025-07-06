@@ -13,7 +13,7 @@ import {
   updateTuitionFee,
   deleteTuitionFee,
   getGradeLevels
-} from './TuitionFeeManagementService';
+} from '../../services/AdminService';
 import './TuitionFeeManagement.css';
 import { useCustomToast } from '../../components/toast/CustomToast';
 

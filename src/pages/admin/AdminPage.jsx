@@ -8,7 +8,7 @@ import {
   CloseCircleOutlined, BarChartOutlined, DownloadOutlined
 } from '@ant-design/icons';
 import './AdminPage.css';
-import { getDashboardData, exportDashboardToExcel } from './AdminDashboardService';
+import { getDashboardData, exportDashboardToExcel } from '../../services/AdminService';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell
