@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { getChildrenByParentId, addChild, updateChild, deleteChild } from '../../services/ProfileService';
 import ChildCommunicationBook from './ChildCommunicationBook';
 import { useUser } from '../../contexts/UserContext';
-import './ProfilePage.css';
+import styles from './ProfilePage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ChildProfileManagement = () => {
   const [children, setChildren] = useState([]);
@@ -15,6 +15,7 @@ const ChildProfileManagement = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [formSubmitting, setFormSubmitting] = useState(false);
   const { currentUser } = useUser();
+  const navigate = useNavigate();
 
   const [childFormData, setChildFormData] = useState({
     name: '',
@@ -311,19 +312,19 @@ const ChildProfileManagement = () => {
 
   if (isLoading && !children.length) {
     return (
-      <div className="profile-loading-container">
-        <div className="profile-loading-spinner"></div>
+      <div className={styles.profileLoadingContainer}>
+        <div className={styles.profileLoadingSpinner}></div>
         <p>Loading information...</p>
       </div>
     );
   }
 
   return (
-    <div className="child-profile-management">
+    <div className={styles.childProfileManagement}>
       {/* Status message */}
       {message.text && (
-        <div className={`profile-message ${message.type}`}>
-          <div className="message-icon">
+        <div className={`${styles.profileMessage} ${styles[message.type]}`}>
+          <div className={styles.messageIcon}>
             {message.type === 'success' ? (
               <FontAwesomeIcon icon="check" />
             ) : (
@@ -331,18 +332,18 @@ const ChildProfileManagement = () => {
             )}
           </div>
           <span>{message.text}</span>
-          <button className="message-close" onClick={() => setMessage({ text: '', type: '' })}>
+          <button className={styles.messageClose} onClick={() => setMessage({ text: '', type: '' })}>
             <FontAwesomeIcon icon="times" />
           </button>
         </div>
       )}
 
       {/* Header with add button */}
-      <div className="content-header">
+      <div className={styles.contentHeader}>
         <h2>Child Profile</h2>
         {!formSubmitting && (
           <button
-            className="child-add-btn"
+            className={styles.childAddBtn}
             onClick={openAddModal}
           >
             <FontAwesomeIcon icon="plus" />
@@ -353,11 +354,11 @@ const ChildProfileManagement = () => {
 
       {/* List of children */}
       {children.length > 0 && (
-        <div className="children-list">
-          <div className="children-grid">
+        <div className={styles.childrenList}>
+          <div className={styles.childrenGrid}>
             {children.map((child) => (
-              <div key={child.id} className="child-card child-card-row">
-                <div className="child-avatar">
+              <div key={child.id} className={`${styles.childCard} ${styles.childCardRow}`}>
+                <div className={styles.childAvatar}>
                   {child.avatar ? (
                     <img
                       src={child.avatar}
@@ -368,9 +369,9 @@ const ChildProfileManagement = () => {
                     <FontAwesomeIcon icon="children" size="2x" />
                   )}
                 </div>
-                <div className="child-info">
-                  <h3 className="child-name">{child.name}</h3>
-                  <p className="child-dob">
+                <div className={styles.childInfo}>
+                  <h3 className={styles.childName}>{child.name}</h3>
+                  <p className={styles.childDob}>
                     {new Date(child.birthday).toLocaleDateString('vi-VN', {
                       day: '2-digit',
                       month: '2-digit',
@@ -378,19 +379,19 @@ const ChildProfileManagement = () => {
                     })}
                   </p>
                 </div>
-                <div className="child-details-row">
-                  <p className="child-gender">
+                <div className={styles.childDetailsRow}>
+                  <p className={styles.childGender}>
                     <FontAwesomeIcon icon={child.gender === 'Male' ? 'mars' : 'venus'} />
                     <span>{child.gender === 'Male' ? 'Male' : 'Female'}</span>
                   </p>
-                  <p className="child-city">
+                  <p className={styles.childCity}>
                     <FontAwesomeIcon icon="map-marker-alt" />
                     <span>{child.city || 'Not updated'}</span>
                   </p>
                 </div>
-                <div className="child-actions">
+                <div className={styles.childActions}>
                   <button
-                    className="edit-child-btn"
+                    className={styles.editChildBtn}
                     onClick={() => openEditModal(child)}
                     title="Edit information"
                     aria-label="Edit information"
@@ -401,7 +402,7 @@ const ChildProfileManagement = () => {
                   {/* Chỉ hiển thị nút sổ liên lạc khi học sinh đang học (Active) */}
                   {child.status === 'Active' && (
                     <button
-                      className="communication-book-btn"
+                      className={styles.communicationBookBtn}
                       onClick={() => openCommunicationBook(child.id)}
                       title="Communication book"
                       aria-label="Communication book"
@@ -412,7 +413,7 @@ const ChildProfileManagement = () => {
 
                   {child.status === 'Active' ? (
                     <span
-                      className="enrolled-badge"
+                      className={styles.enrolledBadge}
                       title="Enrolled"
                     >
                       <FontAwesomeIcon icon="check-circle" />
@@ -420,12 +421,12 @@ const ChildProfileManagement = () => {
                     </span>
                   ) : (
                     <button
-                      className="enroll-child-btn"
+                      className={styles.enrollChildBtn}
                       onClick={() => {
                         if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
                           setEnrollmentError({ show: true, childName: child.name });
                         } else {
-                          window.location.href = `/enrollment-application/${child.id}`;
+                          navigate(`/enrollment-application/${child.id}`);
                         }
                       }}
                       title="Enroll"
@@ -443,14 +444,14 @@ const ChildProfileManagement = () => {
 
       {/* Empty state */}
       {children.length === 0 && (
-        <div className="empty-children-state">
-          <div className="empty-icon">
+        <div className={styles.emptyChildrenState}>
+          <div className={styles.emptyIcon}>
             <FontAwesomeIcon icon="children" size="3x" />
           </div>
           <h3>No child information</h3>
           <p>Add child information to manage the child's profile at the nursery school.</p>
           <button
-            className="add-first-child-btn"
+            className={styles.addFirstChildBtn}
             onClick={openAddModal}
           >
             <FontAwesomeIcon icon="plus" />
@@ -461,42 +462,42 @@ const ChildProfileManagement = () => {
 
       {/* Modal Form */}
       {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content child-detail-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={`${styles.modalContent} ${styles.childDetailModal}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
 
               <h3><FontAwesomeIcon icon="child" /> {isEditingChild ? 'Update child information' : 'Add new child profile'}</h3>
-              <button className="modal-close-btn" onClick={closeModal} aria-label="Close">
+              <button className={styles.modalCloseBtn} onClick={closeModal} aria-label="Close">
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
 
-            <div className="modal-body">
+            <div className={styles.modalBody}>
 
-              <form className="profile-form" onSubmit={handleSubmitForm}>
-                <div className="form-group">
+              <form className={styles.profileForm} onSubmit={handleSubmitForm}>
+                <div className={styles.formGroup}>
                   <label htmlFor="avatar">
-                    <FontAwesomeIcon icon="user-circle" className="input-label-icon" /> Avatar
+                    <FontAwesomeIcon icon="user-circle" className={styles.inputLabelIcon} /> Avatar
                   </label>
-                  <div className="file-upload-container">
+                  <div className={styles.fileUploadContainer}>
                     <input
                       type="file"
                       id="avatar"
                       name="avatar"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, 'avatar')}
-                      className="file-input"
+                      className={styles.fileInput}
                     />
-                    <label htmlFor="avatar" className="file-upload-btn">
+                    <label htmlFor="avatar" className={styles.fileUploadBtn}>
                       <FontAwesomeIcon icon="cloud-upload-alt" /> Select avatar
                     </label>
-                    <span className="file-name">
+                    <span className={styles.fileName}>
                       {avatarFile ? avatarFile.name : 'No file selected'}
                     </span>
                   </div>
 
                   {childFormData.avatar && (
-                    <div className="avatar-preview">
+                    <div className={styles.avatarPreview}>
                       <img
                         src={childFormData.avatar}
                         alt="Preview avatar"
@@ -505,12 +506,12 @@ const ChildProfileManagement = () => {
                   )}
                 </div>
 
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name" className="required-field">
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="name" className={styles.requiredField}>
                       Child's name *
                     </label>
-                    <div className="input-with-icon">
+                    <div className={styles.inputWithIcon}>
                       <FontAwesomeIcon icon="user" />
                       <input
                         type="text"
@@ -519,17 +520,17 @@ const ChildProfileManagement = () => {
                         value={childFormData.name}
                         onChange={handleInputChange}
                         placeholder="Enter child's name"
-                        className={formErrors.name ? "input-error" : ""}
+                        className={formErrors.name ? styles.inputError : ""}
                       />
                     </div>
-                    {formErrors.name && <div className="form-error-message">{formErrors.name}</div>}
+                    {formErrors.name && <div className={styles.formErrorMessage}>{formErrors.name}</div>}
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="birthday" className="required-field">
+                  <div className={styles.formGroup}>
+                    <label htmlFor="birthday" className={styles.requiredField}>
                       Birthday *
                     </label>
-                    <div className="input-with-icon">
+                    <div className={styles.inputWithIcon}>
                       <FontAwesomeIcon icon="birthday-cake" />
                       <input
                         type="date"
@@ -537,20 +538,20 @@ const ChildProfileManagement = () => {
                         name="birthday"
                         value={childFormData.birthday}
                         onChange={handleInputChange}
-                        className={formErrors.birthday ? "input-error" : ""}
+                        className={formErrors.birthday ? styles.inputError : ""}
                       />
                     </div>
-                    {formErrors.birthday && <div className="form-error-message">{formErrors.birthday}</div>}
+                    {formErrors.birthday && <div className={styles.formErrorMessage}>{formErrors.birthday}</div>}
                   </div>
                 </div>
 
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="gender" className="required-field">
-                      <FontAwesomeIcon icon="venus-mars" className="input-label-icon" /> Gender
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="gender" className={styles.requiredField}>
+                      <FontAwesomeIcon icon="venus-mars" className={styles.inputLabelIcon} /> Gender
                     </label>
-                    <div className="radio-group">
-                      <label className={`radio-label ${childFormData.gender === 'Male' ? 'active' : ''}`}>
+                    <div className={styles.radioGroup}>
+                      <label className={`${styles.radioLabel} ${childFormData.gender === 'Male' ? styles.active : ''}`}>
                         <input
                           type="radio"
                           name="gender"
@@ -560,7 +561,7 @@ const ChildProfileManagement = () => {
                         />
                         <FontAwesomeIcon icon="mars" /> <span>Male</span>
                       </label>
-                      <label className={`radio-label ${childFormData.gender === 'Female' ? 'active' : ''}`}>
+                      <label className={`${styles.radioLabel} ${childFormData.gender === 'Female' ? styles.active : ''}`}>
                         <input
                           type="radio"
                           name="gender"
@@ -571,14 +572,14 @@ const ChildProfileManagement = () => {
                         <FontAwesomeIcon icon="venus" /> <span>Female</span>
                       </label>
                     </div>
-                    {formErrors.gender && <div className="form-error-message">{formErrors.gender}</div>}
+                    {formErrors.gender && <div className={styles.formErrorMessage}>{formErrors.gender}</div>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={styles.formGroup}>
                     <label htmlFor="city">
                       City
                     </label>
-                    <div className="input-with-icon">
+                    <div className={styles.inputWithIcon}>
                       <FontAwesomeIcon icon="map-marker-alt" />
                       <input
                         type="text"
@@ -592,46 +593,46 @@ const ChildProfileManagement = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="birthCertificate" className="required-field">
-                    <FontAwesomeIcon icon="certificate" className="input-label-icon" /> Birth certificate *
+                <div className={styles.formGroup}>
+                  <label htmlFor="birthCertificate" className={styles.requiredField}>
+                    <FontAwesomeIcon icon="certificate" className={styles.inputLabelIcon} /> Birth certificate *
                   </label>
-                  <div className="file-upload-container">
+                  <div className={styles.fileUploadContainer}>
                     <input
                       type="file"
                       id="birthCertificate"
                       name="birthCertificate"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, 'birthCertificate')}
-                      className={`file-input ${formErrors.birthCertificate ? "input-error" : ""}`}
+                      className={`${styles.fileInput} ${formErrors.birthCertificate ? styles.inputError : ""}`}
                     />
-                    <label htmlFor="birthCertificate" className={`file-upload-btn ${formErrors.birthCertificate ? "input-error-border" : ""}`}>
+                    <label htmlFor="birthCertificate" className={`${styles.fileUploadBtn} ${formErrors.birthCertificate ? styles.inputErrorBorder : ""}`}>
                       <FontAwesomeIcon icon="file-upload" /> Select birth certificate
                     </label>
-                    <span className="file-name">
+                    <span className={styles.fileName}>
                       {birthCertificateFile ? birthCertificateFile.name : 'No file selected'}
                     </span>
                   </div>
 
                   {childFormData.birthCertificate && (
-                    <div className="certificate-preview-small">
+                    <div className={styles.certificatePreviewSmall}>
                       <img
                         src={childFormData.birthCertificate}
                         alt="Preview birth certificate"
                       />
-                      <div className="certificate-overlay-small">
+                      <div className={styles.certificateOverlaySmall}>
                         <FontAwesomeIcon icon="search-plus" /> Click to view details
                       </div>
                     </div>
                   )}
 
-                  {formErrors.birthCertificate && <div className="form-error-message">{formErrors.birthCertificate}</div>}
+                  {formErrors.birthCertificate && <div className={styles.formErrorMessage}>{formErrors.birthCertificate}</div>}
                 </div>
 
-                <div className="modal-footer">
+                <div className={styles.modalFooter}>
                   <button
                     type="button"
-                    className="cancel-edit-btn"
+                    className={styles.cancelEditBtn}
                     onClick={closeModal}
                     disabled={formSubmitting}
                   >
@@ -640,12 +641,12 @@ const ChildProfileManagement = () => {
                   </button>
                   <button
                     type="submit"
-                    className="save-profile-btn"
+                    className={styles.saveProfileBtn}
                     disabled={formSubmitting}
                   >
                     {formSubmitting ? (
                       <>
-                        <span className="btn-spinner"></span>
+                        <span className={styles.btnSpinner}></span>
                         Saving...
                       </>
                     ) : (
@@ -664,24 +665,24 @@ const ChildProfileManagement = () => {
 
       {/* Enrollment Error Popup */}
       {enrollmentError.show && (
-        <div className="modal-overlay" onClick={() => setEnrollmentError({ show: false, childName: '' })}>
-          <div className="modal-content error-popup" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className={styles.modalOverlay} onClick={() => setEnrollmentError({ show: false, childName: '' })}>
+          <div className={`${styles.modalContent} ${styles.errorPopup}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
               <h3><FontAwesomeIcon icon="exclamation-triangle" /> Notification</h3>
               <button
-                className="modal-close-btn"
+                className={styles.modalCloseBtn}
                 onClick={() => setEnrollmentError({ show: false, childName: '' })}
                 aria-label="Close"
               >
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
-            <div className="modal-body">
+            <div className={styles.modalBody}>
               <p>Currently, the child {enrollmentError.childName} has an application in the registration process.</p>
             </div>
-            <div className="modal-footer">
+            <div className={styles.modalFooter}>
               <button
-                className="confirm-btn"
+                className={styles.confirmBtn}
                 onClick={() => setEnrollmentError({ show: false, childName: '' })}
               >
                 <FontAwesomeIcon icon="check" /> I understand

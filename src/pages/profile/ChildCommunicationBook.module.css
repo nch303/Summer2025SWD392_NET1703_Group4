@@ -20,7 +20,7 @@
   --danger-color: #f44336;
   --danger-color-light: #ffebee;
   --danger-rgb: 244, 67, 54;
-  
+
   --info-color: #2196f3;
   --info-color-light: #e3f2fd;
   --info-rgb: 33, 150, 243;
@@ -38,7 +38,7 @@
 }
 
 /* Communication Book Modal */
-.communication-book-modal {
+.communicationBookModal {
   width: 90%;
   max-width: 1000px;
   max-height: 90vh;
@@ -48,48 +48,63 @@
   background-color: #f8fafc;
 }
 
-.communication-book-modal .modal-header {
+.communicationBookModal .modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
   background: linear-gradient(135deg, #ff8a65 0%, #ff7043 100%);
-  padding: 1.5rem;
+  color: white;
 }
 
-.communication-book-modal .modal-header h3 {
-  color: white;
+.communicationBookModal .modalHeader h3 {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 1.3rem;
   margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.communicationBookModal .modalHeader svg {
+  font-size: 1.2rem;
 }
 
 /* Tab Navigation - Fixed Size Version */
-.communication-book-tabs {
+.communicationBookTabs {
   display: flex;
-  background-color: #ff7043; /* Thay đổi nền sang màu cam như header */
+  background-color: #ff7043;
+  /* Thay đổi nền sang màu cam như header */
   border-bottom: none;
   padding: 0;
   position: relative;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-.communication-book-tabs::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+.communicationBookTabs::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Edge */
 }
 
 /* Xóa indicator trượt cũ */
-.communication-book-tabs::after {
+.communicationBookTabs::after {
   display: none;
 }
 
-.communication-tab {
+.communicationTab {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25%; /* Chia đều 4 tab (25% cho mỗi tab) */
-  min-width: 150px; /* Độ rộng tối thiểu đảm bảo nội dung hiển thị đẹp */
-  height: 56px; /* Chiều cao cố định */
+  width: 25%;
+  /* Chia đều 4 tab (25% cho mỗi tab) */
+  min-width: 150px;
+  /* Độ rộng tối thiểu đảm bảo nội dung hiển thị đẹp */
+  height: 56px;
+  /* Chiều cao cố định */
   padding: 0 8px;
-  color: rgba(255, 255, 255, 0.85); /* Màu chữ trắng hơi trong suốt */
+  color: rgba(255, 255, 255, 0.85);
+  /* Màu chữ trắng hơi trong suốt */
   background: none;
   border: none;
   cursor: pointer;
@@ -98,12 +113,44 @@
   font-weight: 500;
   font-size: 0.95rem;
   position: relative;
-  flex: none; /* Không co giãn theo flex */
+  flex: none;
+  /* Không co giãn theo flex */
   border-bottom: 4px solid transparent;
   text-align: center;
 }
 
-.communication-tab svg {
+.modalCloseBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  margin-left: auto; /* This ensures it stays at the far right */
+}
+
+.modalCloseBtn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.modalCloseBtn svg {
+  font-size: 1.5rem;
+} 
+
+.modalCloseBtn:focus {
+  outline: none;
+}
+
+.communicationTab svg {
   margin-right: 8px;
   width: 18px;
   height: 18px;
@@ -111,26 +158,26 @@
 }
 
 /* Active tab styling */
-.communication-tab.active {
+.communicationTab.active {
   color: #ffffff;
   font-weight: 600;
   border-bottom: 4px solid #ffffff;
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.communication-tab.active svg {
+.communicationTab.active svg {
   color: #ffffff;
 }
 
 /* Hover effects */
-.communication-tab:hover:not(.active) {
+.communicationTab:hover:not(.active) {
   background-color: rgba(255, 255, 255, 0.1);
   color: #ffffff;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .communication-tab {
+  .communicationTab {
     min-width: 120px;
     font-size: 0.85rem;
     height: 50px;
@@ -139,28 +186,29 @@
 
 /* Hiển thị chỉ biểu tượng trên màn hình rất nhỏ */
 @media (max-width: 480px) {
-  .communication-tab {
-    width: 25%; /* Vẫn giữ kích thước cố định */
+  .communicationTab {
+    width: 25%;
+    /* Vẫn giữ kích thước cố định */
     min-width: 60px;
     padding: 0;
   }
-  
-  .communication-tab span {
+
+  .communicationTab span {
     display: none;
   }
-  
-  .communication-tab svg {
+
+  .communicationTab svg {
     margin-right: 0;
   }
 }
 
 /* Tab content transition */
-.communication-tab-panel {
+.communicationTabPanel {
   padding: 1.5rem;
 }
 
 /* Loading State */
-.communication-book-loading {
+.communicationBookLoading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,13 +216,13 @@
   padding: 3rem 0;
 }
 
-.communication-book-loading p {
+.communicationBookLoading p {
   margin-top: 1rem;
   color: var(--text-color-muted);
 }
 
 /* Error State */
-.error-message {
+.errorMessage {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,31 +231,31 @@
   text-align: center;
 }
 
-.error-message svg {
+.errorMessage svg {
   font-size: 3rem;
   color: var(--danger-color);
   margin-bottom: 1rem;
 }
 
-.error-message p {
+.errorMessage p {
   color: var(--text-color);
   font-size: 1.1rem;
 }
 
 /* Content Container */
-.communication-book-content {
+.communicationBookContent {
   flex: 1;
   overflow-y: auto;
   padding: 0;
 }
 
 /* Tab Panel */
-.communication-tab-panel {
+.communicationTabPanel {
   padding: 1.5rem;
 }
 
 /* Child Header Information */
-.communication-book-header {
+.communicationBookHeader {
   display: flex;
   background-color: #fff;
   padding: 1.5rem;
@@ -216,7 +264,7 @@
   margin-bottom: 1.5rem;
 }
 
-.communication-book-avatar {
+.communicationBookAvatar {
   width: 120px;
   height: 120px;
   border-radius: 12px;
@@ -231,35 +279,38 @@
   border: 4px solid #fff;
 }
 
-.communication-book-avatar img {
+.communicationBookAvatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.communication-book-avatar svg {
+.communicationBookAvatar svg {
   font-size: 3rem;
   color: var(--accent-color);
 }
 
-.communication-book-header-info {
+.communicationBookHeaderInfo {
   flex: 1;
 }
 
-.communication-book-header-info h2 {
+.communicationBookHeaderInfo h2 {
   margin: 0 0 1rem;
   font-size: 1.8rem;
   color: var(--text-color-dark);
 }
 
-.communication-book-badges {
+.communicationBookBadges {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
 /* Badges */
-.gender-badge, .age-badge, .city-badge, .status-badge {
+.genderBadge,
+.ageBadge,
+.cityBadge,
+.statusBadge {
   display: inline-flex;
   align-items: center;
   padding: 6px 12px;
@@ -268,47 +319,50 @@
   font-weight: 500;
 }
 
-.gender-badge svg, .age-badge svg, .city-badge svg, .status-badge svg {
+.genderBadge svg,
+.ageBadge svg,
+.cityBadge svg,
+.statusBadge svg {
   margin-right: 6px;
 }
 
-.gender-badge.male {
+.genderBadge.male {
   background-color: rgba(66, 153, 225, 0.1);
   color: #3182ce;
 }
 
-.gender-badge.female {
+.genderBadge.female {
   background-color: rgba(236, 72, 153, 0.1);
   color: #db2777;
 }
 
-.age-badge {
+.ageBadge {
   background-color: rgba(var(--warning-rgb), 0.1);
   color: var(--warning-color);
 }
 
-.city-badge {
+.cityBadge {
   background-color: rgba(var(--primary-rgb), 0.1);
   color: var(--primary-color);
 }
 
-.status-badge {
+.statusBadge {
   background-color: rgba(var(--text-color-muted), 0.1);
   color: var(--text-color-muted);
 }
 
-.status-badge.active {
+.statusBadge.active {
   background-color: rgba(var(--success-rgb), 0.1);
   color: var(--success-color);
 }
 
-.status-badge.inactive {
+.statusBadge.inactive {
   background-color: rgba(var(--danger-rgb), 0.1);
   color: var(--danger-color);
 }
 
 /* Section Styling */
-.communication-book-section {
+.communicationBookSection {
   position: relative;
   overflow: hidden;
   background-color: #fff;
@@ -318,20 +372,11 @@
   margin-bottom: 1.5rem;
 }
 
-.communication-book-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 5px;
-  background: linear-gradient(to bottom, var(--primary-color), rgba(var(--primary-rgb), 0.3));
-  border-radius: 10px 0 0 10px;
-}
-
-.communication-book-section h4 {
+.communicationBookSection h4 {
   display: flex;
   align-items: center;
+  justify-content: center;
+  align-content: center;
   font-size: 1.2rem;
   color: var(--text-color-dark);
   margin: 0 0 1.2rem;
@@ -339,13 +384,16 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
-.communication-book-section h4 svg {
+.communicationBookSection h4 svg {
+  align-content: center;
+  align-self: center;
+  justify-content: center;
   margin-right: 10px;
   color: var(--primary-color);
 }
 
 /* New Info Display Style */
-.communication-book-info-grid {
+.communicationBookInfoGrid {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -355,7 +403,7 @@
   background: #fff;
 }
 
-.info-item {
+.infoItem {
   display: flex;
   align-items: center;
   padding: 0;
@@ -368,23 +416,23 @@
   border-left: 3px solid transparent;
 }
 
-.info-item:nth-child(odd) {
+.infoItem:nth-child(odd) {
   background-color: #f8fafc;
 }
 
-.info-item:hover {
+.infoItem:hover {
   border-left: 3px solid var(--primary-color);
 }
 
-.info-item.highlight {
+.infoItem.highlight {
   background-color: rgba(var(--accent-rgb), 0.05);
 }
 
-.info-item::before {
+.infoItem::before {
   display: none;
 }
 
-.info-label {
+.infoLabel {
   flex: 0 0 30%;
   padding: 0.85rem 1rem;
   margin: 0;
@@ -400,15 +448,15 @@
   letter-spacing: normal;
 }
 
-.info-label i,
-.info-label svg {
+.infoLabel i,
+.infoLabel svg {
   margin-right: 8px;
   color: var(--primary-color);
   width: 16px;
   height: 16px;
 }
 
-.info-value {
+.infoValue {
   flex: 1;
   padding: 0.85rem 1rem;
   font-weight: 500;
@@ -419,12 +467,12 @@
   padding-left: 1rem;
 }
 
-.info-value::before {
+.infoValue::before {
   display: none;
 }
 
 /* Status-specific styling */
-.status-text {
+.statusText {
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -434,41 +482,41 @@
   border-radius: 12px;
 }
 
-.status-text svg {
+.statusText svg {
   margin-right: 5px;
 }
 
 /* Class Container */
-.class-info-container {
+.classInfoContainer {
   background-color: #fff;
   border-radius: var(--border-radius-md);
   padding: 1.5rem;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* Class Information Section Styling */
-.class-info-container {
+.classInfoContainer {
   background-color: #f8fafc;
   border-radius: var(--border-radius-md);
   padding: 1.5rem;
   border: 1px solid #e2e8f0;
 }
 
-.class-info-header {
+.classInfoHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
-.class-info-name h3 {
+.classInfoName h3 {
   margin: 0 0 5px;
   font-size: 1.4rem;
   color: var(--text-color-dark);
 }
 
-.class-grade-level {
+.classGradeLevel {
   display: inline-block;
   padding: 4px 8px;
   background-color: rgba(var(--accent-rgb), 0.1);
@@ -478,7 +526,7 @@
   border-radius: 4px;
 }
 
-.class-status-badge {
+.classStatusBadge {
   display: inline-block;
   padding: 6px 12px;
   background-color: rgba(var(--success-rgb), 0.1);
@@ -489,11 +537,11 @@
 }
 
 /* Class Capacity Bar */
-.communication-book-class-capacity {
+.communicationBookClassCapacity {
   margin-top: 1.5rem;
 }
 
-.capacity-bar {
+.capacityBar {
   height: 8px;
   background-color: #e2e8f0;
   border-radius: 4px;
@@ -501,27 +549,27 @@
   margin-bottom: 8px;
 }
 
-.capacity-filled {
+.capacityFilled {
   height: 100%;
   background: linear-gradient(to right, var(--accent-color-light), var(--accent-color));
   border-radius: 4px;
 }
 
-.capacity-text {
+.capacityText {
   font-size: 0.85rem;
   color: var(--text-color-muted);
   text-align: right;
 }
 
 /* Teachers List */
-.communication-book-teachers-list {
+.communicationBookTeachersList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.communication-book-teacher-card {
+.communicationBookTeacherCard {
   display: flex;
   align-items: center;
   background-color: #fff;
@@ -531,7 +579,7 @@
   border: 1px solid #f1f5f9;
 }
 
-.communication-book-teacher-avatar {
+.communicationBookTeacherAvatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -544,36 +592,38 @@
   color: white;
 }
 
-.communication-book-teacher-info {
+.communicationBookTeacherInfo {
   flex: 1;
 }
 
-.communication-book-teacher-info h5 {
+.communicationBookTeacherInfo h5 {
   margin: 0 0 8px;
   font-size: 1rem;
   color: var(--text-color-dark);
 }
 
-.communication-book-teacher-contact {
+.communicationBookTeacherContact {
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: 0.85rem;
 }
 
-.communication-book-teacher-email, .communication-book-teacher-phone {
+.communicationBookTeacherEmail,
+.communicationBookTeacherPhone {
   display: flex;
   align-items: center;
   color: var(--text-color-muted);
 }
 
-.communication-book-teacher-email svg, .communication-book-teacher-phone svg {
+.communicationBookTeacherEmail svg,
+.communicationBookTeacherPhone svg {
   margin-right: 6px;
   font-size: 0.9rem;
   color: var(--primary-color);
 }
 
-.communication-book-no-teachers-message {
+.communicationBookNoTeachersMessage {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -582,21 +632,21 @@
   font-size: 1rem;
 }
 
-.communication-book-no-teachers-message svg {
+.communicationBookNoTeachersMessage svg {
   margin-right: 8px;
   color: var(--warning-color);
 }
 
 /* Redesigned Attendance Section */
-.class-attendance-block {
+.classAttendanceBlock {
   margin-bottom: 2rem;
   background-color: #fff;
   border-radius: var(--border-radius-md);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
-.class-attendance-title {
+.classAttendanceTitle {
   font-size: 1.1rem;
   color: #fff;
   margin: 0;
@@ -607,19 +657,19 @@
   justify-content: space-between;
 }
 
-.class-attendance-title svg {
+.classAttendanceTitle svg {
   margin-right: 10px;
 }
 
 /* Month selector redesign */
-.month-selector {
+.monthSelector {
   margin: 0;
   padding: 0.75rem;
   background-color: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
 }
 
-.month-selector-buttons {
+.monthSelectorButtons {
   display: flex;
   overflow-x: auto;
   gap: 0.5rem;
@@ -627,16 +677,16 @@
   scrollbar-width: thin;
 }
 
-.month-selector-buttons::-webkit-scrollbar {
+.monthSelectorButtons::-webkit-scrollbar {
   height: 4px;
 }
 
-.month-selector-buttons::-webkit-scrollbar-thumb {
+.monthSelectorButtons::-webkit-scrollbar-thumb {
   background: var(--primary-color-light);
   border-radius: 10px;
 }
 
-.month-button {
+.monthButton {
   padding: 0.5rem 1rem;
   background-color: #fff;
   border: 1px solid #e2e8f0;
@@ -648,25 +698,25 @@
 }
 
 /* Attendance table redesign */
-.attendance-month {
+.attendanceMonth {
   padding: 1rem;
 }
 
-.attendance-table {
+.attendanceTable {
   overflow-x: auto;
   border-radius: var(--border-radius-sm);
 }
 
-.attendance-table table {
+.attendanceTable table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: var(--border-radius-sm);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.attendance-table th {
+.attendanceTable th {
   background-color: #f1f5f9;
   color: var(--text-color-dark);
   font-size: 0.95rem;
@@ -675,39 +725,37 @@
   padding: 0.8rem 1rem;
 }
 
-.attendance-table td {
+.attendanceTable td {
   padding: 0.8rem 1rem;
   border-bottom: 1px solid #f1f5f9;
   font-size: 0.95rem;
 }
 
 /* Status indicators */
-.attendance-status {
-  display: inline-block;
+.attendanceStatus {
   padding: 0.25rem 1rem;
   border-radius: 20px;
   font-weight: 500;
-  text-align: center;
   min-width: 100px;
 }
 
-.attendance-status.attend {
+.attendanceStatus.attend {
   background-color: rgba(var(--success-rgb), 0.15);
   color: var(--success-color);
 }
 
-.attendance-status.absent {
+.attendanceStatus.absent {
   background-color: rgba(var(--danger-rgb), 0.15);
   color: var(--danger-color);
 }
 
-.attendance-status.late {
+.attendanceStatus.late {
   background-color: rgba(var(--warning-rgb), 0.15);
   color: var(--warning-color);
 }
 
 /* Highlight current month */
-.month-button.active {
+.monthButton.active {
   background-color: var(--primary-color);
   color: #fff;
   border-color: var(--primary-color);
@@ -716,24 +764,24 @@
 }
 
 /* Row styling */
-.attendance-attend {
+.attendanceAttend {
   background-color: #f0fdf4;
 }
 
-.attendance-absent {
+.attendanceAbsent {
   background-color: #fef2f2;
 }
 
-.attendance-late {
+.attendanceLate {
   background-color: #fffbeb;
 }
 
-.attendance-table tr:hover td {
+.attendanceTable tr:hover td {
   background-color: rgba(var(--primary-rgb), 0.05);
 }
 
 /* Show current date indicator */
-.current-month-indicator {
+.currentMonthIndicator {
   display: flex;
   align-items: center;
   padding: 0.5rem 0.75rem;
@@ -745,12 +793,12 @@
   margin-bottom: 0.75rem;
 }
 
-.current-month-indicator svg {
+.currentMonthIndicator svg {
   margin-right: 0.5rem;
 }
 
 /* Attendance Legend */
-.attendance-summary {
+.attendanceSummary {
   margin-top: 1.5rem;
   padding: 1rem;
   background-color: #f8fafc;
@@ -758,131 +806,131 @@
   border: 1px solid #f1f5f9;
 }
 
-.attendance-legend {
+.attendanceLegend {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
 }
 
-.legend-item {
+.legendItem {
   display: flex;
   align-items: center;
   font-size: 0.9rem;
   color: var(--text-color);
 }
 
-.legend-color {
+.legendColor {
   width: 16px;
   height: 16px;
   border-radius: 4px;
   margin-right: 8px;
 }
 
-.legend-color.attend {
+.legendColor.attend {
   background-color: rgba(var(--success-rgb), 0.5);
 }
 
-.legend-color.absent {
+.legendColor.absent {
   background-color: rgba(var(--danger-rgb), 0.5);
 }
 
-.legend-color.late {
+.legendColor.late {
   background-color: rgba(var(--warning-rgb), 0.5);
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .communication-book-header {
+  .communicationBookHeader {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
 
-  .communication-book-avatar {
+  .communicationBookAvatar {
     margin: 0 0 1.5rem;
   }
 
-  .communication-book-badges {
+  .communicationBookBadges {
     justify-content: center;
   }
 
-  .communication-book-info-grid {
+  .communicationBookInfoGrid {
     grid-template-columns: 1fr;
   }
 
-  .teachers-list {
+  .teachersList {
     grid-template-columns: 1fr;
   }
 
-  .communication-book-tabs {
+  .communicationBookTabs {
     padding: 0;
     justify-content: flex-start;
   }
-  
-  .communication-tab {
+
+  .communicationTab {
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
     flex: 0 0 auto;
     max-width: none;
   }
-  
-  .communication-tab svg {
+
+  .communicationTab svg {
     margin-right: 5px;
     width: 16px;
     height: 16px;
   }
-  
+
   /* Only show icons on very small screens */
   @media (max-width: 480px) {
-    .communication-tab {
+    .communicationTab {
       padding: 0.75rem;
     }
-    
-    .communication-tab span {
+
+    .communicationTab span {
       display: none;
     }
-    
-    .communication-tab svg {
+
+    .communicationTab svg {
       margin-right: 0;
     }
-    
-    .communication-tab.active svg {
+
+    .communicationTab.active svg {
       transform: scale(1.2);
     }
   }
 
-  .class-info-header {
+  .classInfoHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
 
-  .attendance-legend {
+  .attendanceLegend {
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
   }
 
-  .info-item {
+  .infoItem {
     padding: 0.85rem;
   }
-  
-  .info-value {
+
+  .infoValue {
     font-size: 1rem;
   }
 
-  .info-label {
+  .infoLabel {
     flex: 0 0 40%;
     font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
-  .info-item {
+  .infoItem {
     flex-direction: column;
   }
-  
-  .info-label {
+
+  .infoLabel {
     flex: 0 0 auto;
     width: 100%;
     border-right: none;
@@ -890,34 +938,34 @@
     padding: 0.6rem 1rem;
     justify-content: center;
   }
-  
-  .info-value {
+
+  .infoValue {
     padding: 0.6rem 1rem;
     text-align: center;
   }
 }
 
 /* Add indicator for horizontal scrolling on tabs */
-.communication-book-tabs::before {
+.communicationBookTabs::before {
   content: '';
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
   width: 30px;
-  background: linear-gradient(to right, rgba(255,255,255,0), #ffffff);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
   z-index: 2;
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
-.communication-book-tabs.has-overflow::before {
+.communicationBookTabs.has-overflow::before {
   opacity: 1;
 }
 
 /* Birth Certificate */
-.birth-certificate-container {
+.birthCertificateContainer {
   position: relative;
   max-width: 280px;
   border-radius: 10px;
@@ -928,16 +976,18 @@
   outline: 2px solid rgba(var(--primary-rgb), 0.2);
 }
 
-.birth-certificate-img {
+.birthCertificateImg {
   display: block;
   width: 100%;
   height: auto;
   transition: transform 0.3s ease;
-  max-height: 200px; /* Giới hạn chiều cao */
-  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+  max-height: 200px;
+  /* Giới hạn chiều cao */
+  object-fit: cover;
+  /* Đảm bảo hình ảnh không bị méo */
 }
 
-.birth-certificate-container:hover .birth-certificate-img {
+.birthCertificateContainer:hover .birthCertificateImg {
   transform: scale(1.03);
 }
 
@@ -946,7 +996,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.7); /* Tối hơn một chút */
+  background: rgba(0, 0, 0, 0.7);
+  /* Tối hơn một chút */
   color: white;
   padding: 10px 0;
   text-align: center;
@@ -955,19 +1006,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 1; /* Hiển thị luôn thay vì hover */
+  opacity: 1;
+  /* Hiển thị luôn thay vì hover */
 }
 
-.birth-certificate-container:hover .view-certificate-overlay {
-  background: rgba(var(--primary-rgb), 0.8); /* Đổi màu khi hover */
+.birthCertificateContainer:hover .viewCertificateOverlay {
+  background: rgba(var(--primary-rgb), 0.8);
+  cursor: pointer;
+  /* Đổi màu khi hover */
 }
 
-.view-certificate-overlay svg {
+.viewCertificateOverlay svg {
   margin-right: 6px;
 }
 
 /* Thêm style cho tiêu đề phần giáo viên trong lớp học */
-.teacher-section-title {
+.teacherSectionTitle {
   font-size: 1.1rem;
   color: var(--text-color-dark);
   margin: 1.5rem 0 1rem;
@@ -977,8 +1031,9 @@
   align-items: center;
 }
 
-.teacher-section-title:before {
-  content: '\f51c'; /* FontAwesome chalkboard-teacher */
+.teacherSectionTitle:before {
+  content: '\f51c';
+  /* FontAwesome chalkboard-teacher */
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   color: var(--primary-color);
@@ -987,7 +1042,7 @@
 }
 
 /* Tạo card summary ở đầu mỗi tab */
-.communication-book-summary-card {
+.communicationBookSummaryCard {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-radius: var(--border-radius-md);
   padding: 1rem;
@@ -996,7 +1051,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.communication-book-summary-card h5 {
+.communicationBookSummaryCard h5 {
   font-size: 1.1rem;
   color: var(--text-color-dark);
   margin: 0 0 0.8rem;
@@ -1004,12 +1059,12 @@
   align-items: center;
 }
 
-.communication-book-summary-card h5 svg {
+.communicationBookSummaryCard h5 svg {
   margin-right: 8px;
   color: var(--primary-color);
 }
 
-.communication-book-summary-card p {
+.communicationBookSummaryCard p {
   color: var(--text-color-muted);
   margin: 0;
   font-size: 0.95rem;
@@ -1017,47 +1072,47 @@
 }
 
 /* Tạo Style cho điểm danh */
-.attendance-statistics {
+.attendanceStatistics {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.attendance-stat-card {
+.attendanceStatCard {
   flex: 1;
   background-color: #fff;
   border-radius: var(--border-radius-sm);
   padding: 1rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.stat-number {
+.statNumber {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
-.stat-attend .stat-number {
+.statAttend .statNumber {
   color: var(--success-color);
 }
 
-.stat-absent .stat-number {
+.statAbsent .statNumber {
   color: var(--danger-color);
 }
 
-.stat-late .stat-number {
+.statLate .statNumber {
   color: var(--warning-color);
 }
 
-.communication-book-stat-label {
+.communicationBookStatLabel {
   font-size: 0.85rem;
   color: var(--text-color-muted);
 }
 
 /* Badge hiển thị tổng số */
-.count-badge {
+.countBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1072,13 +1127,13 @@
 }
 
 /* Nút liên lạc nhanh */
-.quick-contact {
+.quickContact {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.contact-btn {
+.contactBtn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1093,35 +1148,35 @@
   transition: all 0.2s ease;
 }
 
-.contact-btn svg {
+.contactBtn svg {
   margin-right: 6px;
 }
 
-.contact-btn:hover {
+.contactBtn:hover {
   background-color: var(--primary-color);
   color: white;
 }
 
-.contact-phone {
+.contactPhone {
   background-color: rgba(var(--success-rgb), 0.1);
   color: var(--success-color);
 }
 
-.contact-phone:hover {
+.contactPhone:hover {
   background-color: var(--success-color);
 }
 
-.contact-email {
+.contactEmail {
   background-color: rgba(var(--info-rgb), 0.1);
   color: var(--info-color);
 }
 
-.contact-email:hover {
+.contactEmail:hover {
   background-color: var(--info-color);
 }
 
 /* Cải tiến phần lớp học - panel trượt */
-.class-selector {
+.classSelector {
   display: flex;
   overflow-x: auto;
   gap: 0.75rem;
@@ -1130,21 +1185,21 @@
   scrollbar-width: thin;
 }
 
-.class-selector::-webkit-scrollbar {
+.classSelector::-webkit-scrollbar {
   height: 4px;
 }
 
-.class-selector::-webkit-scrollbar-track {
+.classSelector::-webkit-scrollbar-track {
   background: #f1f5f9;
   border-radius: 10px;
 }
 
-.class-selector::-webkit-scrollbar-thumb {
+.classSelector::-webkit-scrollbar-thumb {
   background: var(--primary-color-light);
   border-radius: 10px;
 }
 
-.class-card-small {
+.classCardSmall {
   flex: 0 0 auto;
   padding: 0.8rem 1.2rem;
   background-color: #fff;
@@ -1156,63 +1211,63 @@
   position: relative;
 }
 
-.class-card-small.active {
+.classCardSmall.active {
   background-color: rgba(var(--primary-rgb), 0.1);
   border-color: var(--primary-color);
 }
 
-.class-card-small:hover {
+.classCardSmall:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.class-card-name {
+.classCardName {
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--text-color-dark);
   margin-bottom: 5px;
 }
 
-.class-card-grade {
+.classCardGrade {
   font-size: 0.8rem;
   color: var(--accent-color);
   display: flex;
   align-items: center;
 }
 
-.class-card-grade svg {
+.classCardGrade svg {
   margin-right: 4px;
   font-size: 0.75rem;
 }
 
 /* Class type styling */
-.class-card-small.regular-class {
+.classCardSmall.regularClass {
   border-left: 4px solid var(--primary-color);
 }
 
-.class-card-small.enrichment-class {
+.classCardSmall.enrichmentClass {
   border-left: 4px solid var(--accent-color);
 }
 
-.class-card-small.enrichment-class .class-card-grade {
+.classCardSmall.enrichmentClass .classCardGrade {
   color: var(--accent-color);
 }
 
-.class-card-small.regular-class .class-card-grade {
+.classCardSmall.regularClass .classCardGrade {
   color: var(--primary-color);
 }
 
 /* When active, keep the distinction clear */
-.class-card-small.active.regular-class {
+.classCardSmall.active.regularClass {
   background-color: rgba(var(--primary-rgb), 0.1);
 }
 
-.class-card-small.active.enrichment-class {
+.classCardSmall.active.enrichmentClass {
   background-color: rgba(var(--accent-rgb), 0.1);
 }
 
 /* Academic Year Selector Styles */
-.academic-year-selector {
+.academicYearSelector {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1220,11 +1275,11 @@
   gap: 0.5rem;
 }
 
-.current-academic-year {
+.currentAcademicYear {
   background-color: #fff;
   padding: 0.75rem 1.5rem;
   border-radius: 30px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   font-weight: 600;
   color: var(--text-color-dark);
   display: flex;
@@ -1234,17 +1289,17 @@
   justify-content: center;
 }
 
-.current-academic-year svg {
+.currentAcademicYear svg {
   color: var(--primary-color);
 }
 
-.year-nav-button {
+.yearNavButton {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background-color: #fff;
   border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1253,19 +1308,19 @@
   color: var(--text-color-muted);
 }
 
-.year-nav-button:hover:not(:disabled) {
+.yearNavButton:hover:not(:disabled) {
   background-color: var(--primary-color);
   color: #fff;
   transform: scale(1.05);
 }
 
-.year-nav-button:disabled {
+.yearNavButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   background-color: #f8f9fa;
 }
 
-.class-type-badge {
+.classTypeBadge {
   display: inline-flex;
   align-items: center;
   padding: 0.3rem 0.6rem;
@@ -1275,19 +1330,87 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.class-type-badge svg {
+.classTypeBadge svg {
   margin-right: 5px;
 }
 
-.class-type-badge.regular {
+.classTypeBadge.regular {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-.class-type-badge.enrichment {
-  background-color: rgba(var(--accent-rgb), 0.3);
+.classTypeBadge.enrichment {
+  background-color: rgba(128, 0, 255, 0.688);
 }
 
-.class-title-content {
+.classTitleContent {
   display: flex;
   align-items: center;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 16px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.modalBody {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 70px); /* Adjust based on header height */
+  background-color: #f8fafc;
+}
+
+.communicationBookContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Handle loading state within modal body */
+.communicationBookLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  min-height: 300px;
+}
+
+/* Error message styling */
+.errorMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+  min-height: 300px;
+}
+
+.errorMessage svg {
+  font-size: 3rem;
+  color: var(--danger-color);
+  margin-bottom: 1rem;
+}
+
+.errorMessage p {
+  color: var(--text-color);
+  font-size: 1.1rem;
 }

@@ -4,11 +4,12 @@ import {
   getEnrichmentClassRegistrations, 
   createPaymentUrl,
   getEnrichmentInvoiceDetails
-} from './EnrichmentProgramService';
+} from '../../services/EnrichmentProgramService';
 import { useUser } from '../../contexts/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
-import './EnrichmentProgram.css';
+import styles from './EnrichmentProgram.module.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link, useNavigate } from 'react-router-dom';
 
 const EnrichmentHistory = () => {
   const [registrations, setRegistrations] = useState([]);
@@ -17,7 +18,7 @@ const EnrichmentHistory = () => {
   const [processingPayment, setProcessingPayment] = useState(false);
   const [paymentStatuses, setPaymentStatuses] = useState({});
   const { currentUser } = useUser();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchRegistrations = async () => {
       if (!currentUser?.id) return;
@@ -148,25 +149,25 @@ const EnrichmentHistory = () => {
     switch (status) {
       case 'Active':
         return (
-          <span className="enrichment-registration-status active">
+          <span className={`${styles.enrichmentRegistrationStatus} ${styles.active}`}>
             <FontAwesomeIcon icon="check-circle" /> Studying
           </span>
         );
       case 'Pending':
         return (
-          <span className="enrichment-registration-status pending">
+          <span className={`${styles.enrichmentRegistrationStatus} ${styles.pending}`}>
             <FontAwesomeIcon icon="clock" /> Pending
           </span>
         );
       case 'Completed':
         return (
-          <span className="enrichment-registration-status completed">
+          <span className={`${styles.enrichmentRegistrationStatus} ${styles.completed}`}>
             <FontAwesomeIcon icon="history" /> Completed
           </span>
         );
       default:
         return (
-          <span className="enrichment-registration-status">
+          <span className={`${styles.enrichmentRegistrationStatus}`}>
             <FontAwesomeIcon icon="info-circle" /> {status}
           </span>
         );
@@ -174,16 +175,16 @@ const EnrichmentHistory = () => {
   };
 
   const renderTabNavigation = () => (
-    <div className="enrichment-tabs-navigation">
-      <a
-        href="/enrichment-program" 
-        className="enrichment-tab-button"
+    <div className={styles.enrichmentTabsNavigation}>
+      <Link
+        to="/enrichment-program" 
+        className={styles.enrichmentTabButton}
       >
         <FontAwesomeIcon icon="th-large" />
         Enrichment Program
-      </a>
+      </Link>
       <button 
-        className="enrichment-tab-button active"
+        className={`${styles.enrichmentTabButton} ${styles.active}`}
         onClick={() => {}} // Already on this page
       >
         <FontAwesomeIcon icon="history" />
@@ -192,8 +193,23 @@ const EnrichmentHistory = () => {
     </div>
   );
 
+  const getStatusClass = (status) => {
+    if (!status) return '';
+    
+    switch (status) {
+      case 'Available': 
+        return styles.statusAvailable;
+      case 'Unavailable': 
+        return styles.statusUnavailable;
+      case 'Finished':
+        return styles.statusFinished;
+      default:
+        return '';
+    }
+  };
+
   return (
-    <div className="enrichment-program-container">
+    <div className={styles.enrichmentProgramContainer}>
       <ToastContainer 
         position="top-right"
         autoClose={5000}
@@ -207,14 +223,14 @@ const EnrichmentHistory = () => {
       />
       
       {/* Decorative elements */}
-      <div className="decoration-star star1"></div>
-      <div className="decoration-star star2"></div>
-      <div className="decoration-cloud cloud1"></div>
-      <div className="decoration-cloud cloud2"></div>
+      <div className={`${styles.decorationStar} ${styles.star1}`}></div>
+      <div className={`${styles.decorationStar} ${styles.star2}`}></div>
+      <div className={`${styles.decorationCloud} ${styles.cloud1}`}></div>
+      <div className={`${styles.decorationCloud} ${styles.cloud2}`}></div>
 
-      <div className="enrichment-program-header">
-        <h1 className="enrichment-program-title">Enrichment Program Registration History</h1>
-        <p className="enrichment-program-subtitle">
+      <div className={styles.enrichmentProgramHeader}>
+        <h1 className={styles.enrichmentProgramTitle}>Enrichment Program Registration History</h1>
+        <p className={styles.enrichmentProgramSubtitle}>
           View and manage the enrichment programs your child has registered for
         </p>
       </div>
@@ -223,16 +239,16 @@ const EnrichmentHistory = () => {
       {renderTabNavigation()}
 
       {loading ? (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
           <p>Loading data...</p>
         </div>
       ) : error ? (
-        <div className="error-container">
-          <FontAwesomeIcon icon="exclamation-circle" className="error-icon" />
-          <p className="error-message">{error}</p>
+        <div className={styles.errorContainer}>
+          <FontAwesomeIcon icon="exclamation-circle" className={styles.errorIcon} />
+          <p className={styles.errorMessage}>{error}</p>
           <button
-            className="retry-btn"
+            className={styles.retryBtn}
             onClick={() => window.location.reload()}
           >
             <FontAwesomeIcon icon="sync" />
@@ -240,91 +256,91 @@ const EnrichmentHistory = () => {
           </button>
         </div>
       ) : registrations.length === 0 ? (
-        <div className="empty-container">
-          <div className="empty-icon">
+        <div className={styles.emptyContainer}>
+          <div className={styles.emptyIcon}>
             <FontAwesomeIcon icon="book" size="3x" />
           </div>
-          <h3 className="empty-message">No registration yet</h3>
+          <h3 className={styles.emptyMessage}>No registration yet</h3>
           <button
-            className="retry-btn"
-            onClick={() => window.location.href = '/enrichment-program'}
+            className={styles.retryBtn}
+            onClick={() => navigate('/enrichment-program')}
           >
             <FontAwesomeIcon icon="plus-circle" />
             Register new class
           </button>
         </div>
       ) : (
-        <div className="enrichment-history-list">
+          <div className={styles.enrichmentHistoryList}>
           {registrations.map((registration) => (
-            <div key={registration.id} className="enrichment-history-card">
-              <div className="enrichment-history-card-header">
-                <div className="enrichment-child-info">
-                  <div className="enrichment-child-avatar-container">
+            <div key={registration.id} className={styles.enrichmentHistoryCard}>
+              <div className={styles.enrichmentHistoryCardHeader}>
+                <div className={styles.enrichmentChildInfo}>
+                  <div className={styles.enrichmentChildAvatarContainer}>
                     <img 
                       src={registration.childrenResponse.avatar || "https://via.placeholder.com/80?text=Avatar"} 
                       alt={registration.childrenResponse.name}
-                      className="enrichment-child-avatar"
+                      className={styles.enrichmentChildAvatar}
                       onError={(e) => {
                         e.target.src = "https://via.placeholder.com/80?text=Avatar";
                       }}
                     />
                   </div>
-                  <div className="enrichment-child-details">
-                    <h3 className="enrichment-child-name">{registration.childrenResponse.name}</h3>
-                    <p className="enrichment-child-age">{calculateAge(registration.childrenResponse.birthday)} years old</p>
-                    <p className="enrichment-child-class">Class {registration.childrenResponse.gradeLevelName}</p>
+                  <div className={styles.enrichmentChildDetails}>
+                    <h3 className={styles.enrichmentChildName}>{registration.childrenResponse.name}</h3>
+                    <p className={styles.enrichmentChildAge}>{calculateAge(registration.childrenResponse.birthday)} years old</p>
+                    <p className={styles.enrichmentChildClass}>Class {registration.childrenResponse.gradeLevelName}</p>
                   </div>
                 </div>
-                <div className="enrichment-registration-status-container">
+                <div className={styles.enrichmentRegistrationStatusContainer}>
                   {renderRegistrationStatus(registration.status)}
                 </div>
               </div>
               
-              <div className="enrichment-history-card-body">
-                <div className="enrichment-program-details">
-                  <h4 className="enrichment-program-name">
-                    <FontAwesomeIcon icon="star" className="enrichment-program-icon" />
+              <div className={styles.enrichmentHistoryCardBody}>
+                <div className={styles.enrichmentProgramDetails}>
+                  <h4 className={styles.enrichmentProgramName}>
+                    <FontAwesomeIcon icon="star" className={styles.enrichmentProgramIcon} />
                     {registration.classResponse.epName}
                   </h4>
                   
                   {/* Program description */}
                   {registration.enrichmentProgramResponse?.description && (
-                    <p className="enrichment-program-description">
+                    <p className={styles.enrichmentProgramDescription}>
                       {registration.enrichmentProgramResponse.description}
                     </p>
                   )}
                   
-                  <div className="enrichment-program-info-grid">
-                    <div className="enrichment-info-item">
-                      <span className="enrichment-info-label">
+                  <div className={styles.enrichmentProgramInfoGrid}>
+                    <div className={styles.enrichmentInfoItem}>
+                      <span className={styles.enrichmentInfoLabel}>
                         <FontAwesomeIcon icon="users" /> Class:
                       </span>
-                      <span className="enrichment-info-value">{registration.classResponse.name}</span>
+                      <span className={styles.enrichmentInfoValue}>{registration.classResponse.name}</span>
                     </div>
                     
-                    <div className="enrichment-info-item">
-                      <span className="enrichment-info-label">
+                    <div className={styles.enrichmentInfoItem}>
+                      <span className={styles.enrichmentInfoLabel}>
                         <FontAwesomeIcon icon="calendar-alt" /> Academic year:
                       </span>
-                      <span className="enrichment-info-value">{registration.classResponse.academicYear}</span>
+                      <span className={styles.enrichmentInfoValue}>{registration.classResponse.academicYear}</span>
                     </div>
                     
-                    <div className="enrichment-info-item">
-                      <span className="enrichment-info-label">
+                    <div className={styles.enrichmentInfoItem}>
+                      <span className={styles.enrichmentInfoLabel}>
                         <FontAwesomeIcon icon="clock" /> Schedule:
                       </span>
-                      <span className="enrichment-info-value">
+                      <span className={styles.enrichmentInfoValue}>
                         {registration.classResponse.timetable ? 
                           `Thứ ${registration.classResponse.timetable}` : 
                           'No schedule'}
                       </span>
                     </div>
                     
-                    <div className="enrichment-info-item">
-                      <span className="enrichment-info-label">
+                    <div className={styles.enrichmentInfoItem}>
+                      <span className={styles.enrichmentInfoLabel}>
                         <FontAwesomeIcon icon="check-circle" /> Class status:
                       </span>
-                      <span className={`enrichment-info-value status-${registration.classResponse.status?.toLowerCase()}`}>
+                      <span className={`${styles.enrichmentInfoValue} ${getStatusClass(registration.classResponse.status)}`}>
                         {registration.classResponse.status === "Available" ? "Ready" : 
                          registration.classResponse.status === "Unavailable" ? "Not opened" : 
                          registration.classResponse.status}
@@ -332,21 +348,21 @@ const EnrichmentHistory = () => {
                     </div>
                     
                     {/* Display program fee */}
-                    <div className="enrichment-info-item">
-                      <span className="enrichment-info-label">
+                    <div className={styles.enrichmentInfoItem}>
+                      <span className={styles.enrichmentInfoLabel}>
                         <FontAwesomeIcon icon="money-bill-wave" /> Tuition fee:
                       </span>
-                      <span className="enrichment-info-value fee">
+                      <span className={`${styles.enrichmentInfoValue} ${styles.fee}`}>
                         {formatCurrency(registration.enrichmentProgramResponse?.fee || 0)}
                       </span>
                     </div>
                     
                     {/* Display program duration */}
-                    <div className="enrichment-info-item">
-                      <span className="enrichment-info-label">
+                    <div className={styles.enrichmentInfoItem}>
+                      <span className={styles.enrichmentInfoLabel}>
                         <FontAwesomeIcon icon="calendar-day" /> Time:
                       </span>
-                      <span className="enrichment-info-value">
+                      <span className={styles.enrichmentInfoValue}>
                         {formatDisplayDate(registration.enrichmentProgramResponse?.startDate)} - {formatDisplayDate(registration.enrichmentProgramResponse?.endDate)}
                       </span>
                     </div>
@@ -354,17 +370,17 @@ const EnrichmentHistory = () => {
                   
                   {/* Teacher information */}
                   {registration.teachers && registration.teachers.length > 0 && (
-                    <div className="enrichment-teacher-section">
-                      <h5 className="enrichment-section-subtitle">
+                    <div className={styles.enrichmentTeacherSection}>
+                      <h5 className={styles.enrichmentSectionSubtitle}>
                         <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                       </h5>
-                      <div className="enrichment-teacher-list">
+                      <div className={styles.enrichmentTeacherList}>
                         {registration.teachers.map((teacher, index) => (
-                          <div key={index} className="enrichment-teacher-item">
-                            <div className="enrichment-teacher-name">
+                          <div key={index} className={styles.enrichmentTeacherItem}>
+                            <div className={styles.enrichmentTeacherName}>
                               {teacher.fullName}
                             </div>
-                            <div className="enrichment-teacher-contact">
+                            <div className={styles.enrichmentTeacherContact}>
                               <span>
                                 <FontAwesomeIcon icon="envelope" /> {teacher.email || 'Not updated'}
                               </span>
@@ -380,16 +396,16 @@ const EnrichmentHistory = () => {
                 </div>
               </div>
               
-              <div className="enrichment-history-card-footer">
+              <div className={styles.enrichmentHistoryCardFooter}>
                 {registration.classResponse.status === "Available" ? (
                   isRegistrationPaid(registration) ? (
-                    <div className="enrichment-payment-success">
+                    <div className={styles.enrichmentPaymentSuccess}>
                       <FontAwesomeIcon icon="check-circle" />
                         Paid
                     </div>
                   ) : (
                     <button 
-                      className="enrichment-payment-button"
+                      className={styles.enrichmentPaymentButton}
                       onClick={() => handlePayment(registration)}
                       disabled={processingPayment}
                     >
@@ -407,12 +423,12 @@ const EnrichmentHistory = () => {
                     </button>
                   )
                 ) : (registration.classResponse.status === "Finished" ? (
-                  <div className="enrichment-class-finished">
+                  <div className={styles.enrichmentClassFinished}>
                     <FontAwesomeIcon icon="history" />
                     Class is finished.
                   </div>
                 ) : (
-                  <div className="enrichment-payment-notice">
+                  <div className={styles.enrichmentPaymentNotice}>
                     <FontAwesomeIcon icon="info-circle" />
                     Wait for class to open to process payment
                   </div>

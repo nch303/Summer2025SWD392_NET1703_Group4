@@ -24,7 +24,6 @@ import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
 import PaymentFailPage from '../pages/payment/PaymentFail';
 import EnrollmentApplicationPage from '../pages/enrollment-application/EnrollmentApplicationPage';
 import EnrollmentTrackingPage from '../pages/enrollment-application/EnrollmentTrackingPage';
-import NotificationPage from '../pages/notification/NotificationPage';
 import TuitionFeePage from '../pages/tuition-fee/TuitionFeePage';
 import NewsDetailPage from '../pages/news/NewsDetailPage';
 import EnrichmentProgram from '../pages/enrichment-program/EnrichmentProgram';
@@ -154,11 +153,6 @@ function App() {
             <Route path="/enrollment-tracking" element={
               <ProtectedRoute>
                 <EnrollmentTrackingPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/notifications" element={
-              <ProtectedRoute>
-                <NotificationPage />
               </ProtectedRoute>
             } />
             <Route path="/payment-fail/:invoiceId" element={

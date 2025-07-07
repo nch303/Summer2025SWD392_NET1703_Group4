@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './ScrollToTopButton.css';
+import styles from './ScrollToTopButton.module.css';
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -49,13 +49,13 @@ const ScrollToTopButton = () => {
     <>
       {isVisible && (
         <button 
-          className="scroll-to-top-btn"
+          className={styles.scrollToTopBtn}
           onClick={scrollToTop}
           aria-label="Back to top"
         >
-          <div className="balloon-container">
-            <div className="balloon"></div>
-            <div className="balloon-string"></div>
+          <div className={styles.balloonContainer}>
+            <div className={styles.balloon}></div>
+            <div className={styles.balloonString}></div>
           </div>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/>

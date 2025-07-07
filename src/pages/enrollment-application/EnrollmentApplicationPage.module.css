@@ -3,24 +3,24 @@
   --primary-color-dark: #f4511e;
   --primary-color-light: #ffccbc;
   --primary-rgb: 255, 112, 67;
-  
+
   --accent-color: #5c6bc0;
   --accent-color-light: #d1c4e9;
   --accent-rgb: 92, 107, 192;
-  
+
   --success-color: #4caf50;
   --success-color-light: #e8f5e9;
   --success-rgb: 76, 175, 80;
-  
+
   --text-color: #37474f;
   --text-color-dark: #263238;
   --text-color-muted: #607d8b;
-  
+
   --card-bg-color: #ffffff;
   --card-border-color: #eceff1;
 }
 
-.enrollment-container {
+.enrollmentContainer {
   background-color: #f8f9fa;
   min-height: calc(100vh - 80px);
   padding: 20px 15px;
@@ -28,7 +28,7 @@
   background-image: linear-gradient(to bottom, #fff 0%, #f8f9fa 100%);
 }
 
-.enrollment-paper {
+.enrollmentPaper {
   max-width: 920px;
   margin: 0 auto;
   background: white;
@@ -40,30 +40,30 @@
   position: relative;
 }
 
-.enrollment-header {
+.enrollmentHeader {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
   color: white;
   padding: 16px 24px;
 }
 
-.header-content {
+.headerContent {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.header-content h1 {
+.headerContent h1 {
   margin: 0;
   font-size: 1.6rem;
   font-weight: 600;
 }
 
-.header-icon {
+.headerIcon {
   margin-right: 12px;
   font-size: 24px;
 }
 
-.steps-indicator {
+.stepsIndicator {
   display: flex;
   align-items: center;
   margin-top: 12px;
@@ -79,7 +79,7 @@
   opacity: 1;
 }
 
-.step-number {
+.stepNumber {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -91,16 +91,16 @@
   margin-right: 8px;
 }
 
-.step-label {
+.stepLabel {
   font-size: 0.9rem;
 }
 
-.step.active .step-number {
+.step.active .stepNumber {
   background-color: white;
   color: var(--primary-color);
 }
 
-.step-line {
+.stepLine {
   flex: 1;
   height: 2px;
   background-color: rgba(255, 255, 255, 0.3);
@@ -116,23 +116,23 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.success-message {
+.successMessage {
   background-color: var(--success-color-light);
   color: var(--success-color);
   border: 1px solid #d2eee2;
 }
 
-.error-message {
+.errorMessage {
   background-color: #ffebee;
   color: #d32f2f;
   border-left: 4px solid #f44336;
 }
 
-.error-message .message-icon {
+.errorMessage .messageIcon {
   color: #f44336;
 }
 
-.message-icon {
+.messageIcon {
   margin-right: 12px;
   font-size: 18px;
   display: flex;
@@ -140,13 +140,13 @@
   justify-content: center;
 }
 
-.enrollment-step {
+.enrollmentStep {
   padding: 15px 24px 24px;
   flex: 1;
   overflow: auto;
 }
 
-.step-title {
+.stepTitle {
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-color-dark);
@@ -155,24 +155,24 @@
   align-items: center;
 }
 
-.step-title svg {
+.stepTitle svg {
   margin-right: 10px;
   color: var(--primary-color);
 }
 
-.child-profile {
+.childProfile {
   background-color: #f9fafc;
   border-radius: 8px;
   padding: 20px;
 }
 
-.child-profile-header {
+.childProfileHeader {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.child-avatar {
+.childAvatar {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -186,32 +186,32 @@
   flex-shrink: 0;
 }
 
-.child-avatar img {
+.childAvatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.child-avatar .avatar-icon {
+.childAvatar .avatarIcon {
   color: #6c757d;
   font-size: 40px;
 }
 
-.child-name h3 {
+.childName h3 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-color-dark);
 }
 
-.child-details-grid {
+.childDetailsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
   margin-bottom: 15px;
 }
 
-.detail-item {
+.detailItem {
   display: flex;
   align-items: flex-start;
   background-color: white;
@@ -220,7 +220,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.detail-icon {
+.detailIcon {
   width: 36px;
   height: 36px;
   background-color: rgba(var(--primary-rgb), 0.1);
@@ -234,27 +234,27 @@
   flex-shrink: 0;
 }
 
-.detail-content {
+.detailContent {
   flex: 1;
 }
 
-.detail-label {
+.detailLabel {
   font-size: 0.8rem;
   color: var(--text-color-muted);
   margin-bottom: 3px;
 }
 
-.detail-value {
+.detailValue {
   font-weight: 500;
   color: var(--text-color-dark);
   font-size: 0.95rem;
 }
 
-.birth-cert-item {
+.birthCertItem {
   grid-column: span 2;
 }
 
-.certificate-link {
+.certificateLink {
   display: inline-flex;
   align-items: center;
   color: var(--primary-color);
@@ -262,26 +262,26 @@
   font-weight: 500;
 }
 
-.certificate-link svg {
+.certificateLink svg {
   margin-right: 5px;
 }
 
-.certificate-link:hover {
+.certificateLink:hover {
   text-decoration: underline;
 }
 
-.certificate-section {
+.certificateSection {
   display: flex;
   gap: 15px;
   margin-top: 15px;
 }
 
-.certificate-preview {
+.certificatePreview {
   flex: 0 1 200px;
   margin: 0;
 }
 
-.certificate-image {
+.certificateImage {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -289,36 +289,36 @@
   width: 100%;
 }
 
-.certificate-image img {
+.certificateImage img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.child-step-actions {
+.childStepActions {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
 
-.enrollment-form {
+.enrollmentForm {
   background-color: #f9fafc;
   padding: 20px;
   border-radius: 8px;
 }
 
-.form-row {
+.formRow {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
   margin-bottom: 20px;
 }
 
-.form-group {
+.formGroup {
   margin-bottom: 15px;
 }
 
-.form-group label {
+.formGroup label {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
@@ -327,13 +327,13 @@
   font-size: 0.95rem;
 }
 
-.form-group label svg {
+.formGroup label svg {
   margin-right: 8px;
   color: var(--primary-color);
 }
 
-.form-group select, 
-.form-group input {
+.formGroup select,
+.formGroup input {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #e0e0e0;
@@ -343,14 +343,14 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group select:focus, 
-.form-group input:focus {
+.formGroup select:focus,
+.formGroup input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
   outline: none;
 }
 
-.enrollment-summary {
+.enrollmentSummary {
   background-color: white;
   padding: 15px;
   border-radius: 8px;
@@ -359,7 +359,7 @@
   border: 1px solid #e0e0e0;
 }
 
-.enrollment-summary h3 {
+.enrollmentSummary h3 {
   font-size: 1rem;
   margin-top: 0;
   margin-bottom: 10px;
@@ -368,35 +368,38 @@
   border-bottom: 1px dashed #e0e0e0;
 }
 
-.summary-row {
+.summaryRow {
   display: flex;
   margin-bottom: 8px;
 }
 
-.summary-row:last-child {
+.summaryRow:last-child {
   margin-bottom: 0;
 }
 
-.summary-label {
+.summaryLabel {
   width: 100px;
   font-weight: 500;
   color: var(--text-color-muted);
   font-size: 0.9rem;
 }
 
-.summary-value {
+.summaryValue {
   flex: 1;
   font-weight: 500;
   font-size: 0.9rem;
 }
 
-.enrollment-form-actions {
+.enrollmentFormActions {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
 }
 
-.btn-cancel, .btn-back, .btn-next, .btn-submit {
+.btnCancel,
+.btnBack,
+.btnNext,
+.btnSubmit {
   padding: 10px 16px;
   border: none;
   border-radius: 6px;
@@ -408,42 +411,47 @@
   transition: all 0.2s;
 }
 
-.btn-cancel, .btn-back {
+.btnCancel,
+.btnBack {
   background-color: #e0e0e0;
   color: #333;
 }
 
-.btn-cancel:hover, .btn-back:hover {
+.btnCancel:hover,
+.btnBack:hover {
   background-color: #d0d0d0;
 }
 
-.btn-next, .btn-submit {
+.btnNext,
+.btnSubmit {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
   color: white;
   box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.2);
 }
 
-.btn-next:hover, .btn-submit:hover {
+.btnNext:hover,
+.btnSubmit:hover {
   background: linear-gradient(135deg, var(--primary-color) 30%, var(--primary-color-dark) 100%);
   box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.3);
   transform: translateY(-2px);
 }
 
-.btn-submit:disabled {
+.btnSubmit:disabled {
   background: linear-gradient(135deg, #ffab91 0%, #ffccbc 100%);
   cursor: not-allowed;
   transform: none;
 }
 
-.btn-cancel svg, .btn-back svg {
+.btnCancel svg,
+.btnBack svg {
   margin-right: 8px;
 }
 
-.btn-next svg {
+.btnNext svg {
   margin-left: 8px;
 }
 
-.btn-submit svg {
+.btnSubmit svg {
   margin-right: 8px;
 }
 
@@ -458,11 +466,16 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.loading-overlay {
+.loadingOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -476,7 +489,7 @@
   z-index: 1000;
 }
 
-.loading-spinner {
+.loadingSpinner {
   border: 3px solid rgba(var(--primary-rgb), 0.2);
   border-top: 3px solid var(--primary-color);
   border-radius: 50%;
@@ -487,26 +500,26 @@
 }
 
 @media (max-width: 768px) {
-  .child-details-grid {
+  .childDetailsGrid {
     grid-template-columns: 1fr;
   }
-  
-  .form-row {
+
+  .formRow {
     grid-template-columns: 1fr;
     gap: 10px;
   }
-  
-  .certificate-section {
+
+  .certificateSection {
     flex-direction: column;
   }
-  
-  .certificate-preview {
+
+  .certificatePreview {
     flex: 0 0 auto;
   }
 }
 
 /* Compact Premium Paper Form */
-.paper-enrollment-form {
+.paperEnrollmentForm {
   max-width: 800px;
   margin: 0 auto 20px;
   padding: 40px 40px 30px;
@@ -522,7 +535,7 @@
   transform-origin: top center;
 }
 
-.paper-enrollment-form::before {
+.paperEnrollmentForm::before {
   content: '';
   position: absolute;
   top: 0;
@@ -534,14 +547,14 @@
   border-top-right-radius: 10px;
 }
 
-.form-header {
+.formHeader {
   text-align: center;
   margin-bottom: 25px;
   position: relative;
   padding-bottom: 15px;
 }
 
-.form-header::before {
+.formHeader::before {
   content: '';
   position: absolute;
   top: -10px;
@@ -554,7 +567,7 @@
   background-position: center;
 }
 
-.form-header::after {
+.formHeader::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -566,19 +579,19 @@
   border-radius: 2px;
 }
 
-.form-header h1 {
+.formHeader h1 {
   font-size: 24px;
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 8px;
   letter-spacing: 1px;
   color: #263238;
-  text-shadow: 1px 1px 0 rgba(0,0,0,0.05);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.05);
   display: inline-block;
 }
 
-.form-header h1::before,
-.form-header h1::after {
+.formHeader h1::before,
+.formHeader h1::after {
   content: '✦';
   font-size: 18px;
   color: rgba(255, 112, 67, 0.6);
@@ -587,22 +600,22 @@
   transform: translateY(-50%);
 }
 
-.form-header h1::before {
+.formHeader h1::before {
   left: -24px;
 }
 
-.form-header h1::after {
+.formHeader h1::after {
   right: -24px;
 }
 
-.form-header h2 {
+.formHeader h2 {
   font-size: 18px;
   margin-top: 6px;
   font-weight: 600;
   color: #455a64;
 }
 
-.form-recipient {
+.formRecipient {
   margin-bottom: 25px;
   border-left: 3px solid #ff7043;
   position: relative;
@@ -611,18 +624,18 @@
   border-radius: 0 6px 6px 0;
 }
 
-.form-recipient p {
+.formRecipient p {
   font-size: 16px;
   line-height: 1.4;
   margin: 0;
 }
 
-.traditional-form {
+.traditionalForm {
   display: flex;
   flex-direction: column;
 }
 
-.form-section {
+.formSection {
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -634,17 +647,17 @@
   transition: all 0.3s ease;
 }
 
-.form-section:hover {
+.formSection:hover {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
 }
 
-.form-section.parent-info {
+.formSection.parentInfo {
   border: 1px dashed rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
-.form-section.parent-info::before {
+.formSection.parentInfo::before {
   content: 'Parent Information';
   position: absolute;
   top: -10px;
@@ -656,13 +669,13 @@
   border-radius: 4px;
 }
 
-.form-section.child-info {
+.formSection.childInfo {
   background-color: rgba(255, 112, 67, 0.04);
   border: 1px solid rgba(255, 112, 67, 0.15);
   position: relative;
 }
 
-.form-section.child-info::before {
+.formSection.childInfo::before {
   content: 'Child Information';
   position: absolute;
   top: -10px;
@@ -674,13 +687,13 @@
   border-radius: 4px;
 }
 
-.form-section.grade-selection {
+.formSection.gradeSelection {
   background-color: rgba(92, 107, 192, 0.04);
   border: 1px solid rgba(92, 107, 192, 0.15);
   padding: 15px 18px;
 }
 
-.form-field {
+.formField {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -688,7 +701,7 @@
   position: relative;
 }
 
-.form-field label {
+.formField label {
   min-width: 130px;
   font-weight: 500;
   color: #455a64;
@@ -697,7 +710,7 @@
   padding-left: 20px;
 }
 
-.form-field label::before {
+.formField label::before {
   content: '';
   position: absolute;
   left: 0;
@@ -711,7 +724,7 @@
   opacity: 0.6;
 }
 
-.form-field input {
+.formField input {
   flex: 1;
   border: none;
   border-bottom: 1px dotted #78909c;
@@ -723,13 +736,13 @@
   transition: all 0.3s ease;
 }
 
-.form-field input:focus {
+.formField input:focus {
   outline: none;
   border-bottom: 2px solid #ff7043;
   padding-bottom: 7px;
 }
 
-.readonly-value {
+.readonlyValue {
   flex: 1;
   border-bottom: 1px dotted #78909c;
   padding: 8px 0;
@@ -740,7 +753,7 @@
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-.readonly-value.error-message {
+.readonlyValue.errorMessage {
   border-bottom: none;
   border-left: 4px solid #f44336;
   border-radius: 4px;
@@ -749,7 +762,7 @@
   font-weight: normal;
 }
 
-.grade-select {
+.gradeSelect {
   flex: 1;
   border: 1px solid #cfd8dc;
   padding: 8px 12px;
@@ -767,7 +780,7 @@
   cursor: pointer;
 }
 
-.application-text {
+.applicationText {
   margin: 20px 0;
   line-height: 1.6;
   text-align: justify;
@@ -781,8 +794,8 @@
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
-.application-text::before,
-.application-text::after {
+.applicationText::before,
+.applicationText::after {
   content: '"';
   font-size: 60px;
   color: rgba(255, 112, 67, 0.15);
@@ -791,23 +804,23 @@
   font-family: Georgia, serif;
 }
 
-.application-text::before {
+.applicationText::before {
   top: -15px;
   left: 5px;
 }
 
-.application-text::after {
+.applicationText::after {
   bottom: -40px;
   right: 5px;
   transform: rotate(180deg);
 }
 
-.application-text p {
+.applicationText p {
   margin: 0 0 10px;
   position: relative;
 }
 
-.application-text p:last-child {
+.applicationText p:last-child {
   margin-bottom: 0;
 }
 
@@ -835,14 +848,14 @@
   z-index: 0;
 }
 
-.date-section {
+.dateSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 40px;
 }
 
-.date-section p {
+.dateSection p {
   font-size: 15px;
   letter-spacing: 0.5px;
   color: #455a64;
@@ -850,7 +863,7 @@
   z-index: 1;
 }
 
-.signature-label {
+.signatureLabel {
   font-style: italic;
   color: #607d8b;
   position: relative;
@@ -861,7 +874,7 @@
   font-size: 14px;
 }
 
-.enrollment-form-actions {
+.enrollmentFormActions {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -871,7 +884,8 @@
   padding-top: 20px;
 }
 
-.btn-cancel, .btn-submit {
+.btnCancel,
+.btnSubmit {
   padding: 10px 20px;
   border-radius: 6px;
   border: none;
@@ -887,7 +901,7 @@
 }
 
 /* Watermark styling - smaller and lighter */
-.enrollment-paper::before {
+.enrollmentPaper::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -904,51 +918,51 @@
 }
 
 @media print {
-  .enrollment-container {
+  .enrollmentContainer {
     background: white;
   }
-  
-  .enrollment-form-actions {
+
+  .enrollmentFormActions {
     display: none;
   }
-  
-  .paper-enrollment-form {
+
+  .paperEnrollmentForm {
     box-shadow: none;
     border: none;
   }
-  
-  .paper-enrollment-form::before {
+
+  .paperEnrollmentForm::before {
     display: none;
   }
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .paper-enrollment-form {
+  .paperEnrollmentForm {
     padding: 40px 25px;
   }
-  
-  .form-field {
+
+  .formField {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
-  .form-field label {
+
+  .formField label {
     min-width: auto;
   }
-  
+
   .signature {
     width: 100%;
   }
-  
-  .form-header h1::before,
-  .form-header h1::after {
+
+  .formHeader h1::before,
+  .formHeader h1::after {
     display: none;
   }
 }
 
-.grade-info {
+.gradeInfo {
   font-size: 13px;
   color: #607d8b;
   margin-top: 8px;
@@ -961,12 +975,12 @@
   border: 1px dashed rgba(92, 107, 192, 0.3);
 }
 
-.info-icon {
+.infoIcon {
   color: #5c6bc0;
 }
 
 /* Enhanced school stamp styling */
-.school-stamp {
+.schoolStamp {
   position: absolute;
   top: 30px;
   left: 50%;
@@ -983,7 +997,7 @@
   filter: blur(0.2px);
 }
 
-.stamp-circle {
+.stampCircle {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -995,7 +1009,7 @@
   box-shadow: inset 0 0 12px rgba(183, 28, 28, 0.1);
 }
 
-.stamp-inner-circle {
+.stampInnerCircle {
   position: absolute;
   width: 78%;
   height: 78%;
@@ -1003,7 +1017,7 @@
   border-radius: 50%;
 }
 
-.stamp-text-top {
+.stampTextTop {
   position: absolute;
   top: 20px;
   font-size: 12px;
@@ -1014,7 +1028,7 @@
   letter-spacing: 0.5px;
 }
 
-.stamp-text-bottom {
+.stampTextBottom {
   position: absolute;
   bottom: 20px;
   font-size: 12px;
@@ -1025,13 +1039,13 @@
   letter-spacing: 0.5px;
 }
 
-.stamp-star {
+.stampStar {
   position: absolute;
   font-size: 24px;
   color: #b71c1c;
 }
 
-.stamp-logo {
+.stampLogo {
   font-size: 36px;
   color: #b71c1c;
   font-weight: bold;
@@ -1040,7 +1054,7 @@
   letter-spacing: -1px;
 }
 
-.stamp-approved {
+.stampApproved {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -1053,7 +1067,7 @@
   letter-spacing: 1px;
 }
 
-.stamp-approved svg {
+.stampApproved svg {
   filter: drop-shadow(0 0 1px rgba(183, 28, 28, 0.6));
   width: 34px;
   height: 34px;
@@ -1063,7 +1077,7 @@
 
 
 /* Add date text at the bottom of the stamp */
-.stamp-date {
+.stampDate {
   position: absolute;
   bottom: 38px;
   font-size: 8px;
@@ -1073,7 +1087,7 @@
 }
 
 /* Add new signature container styles */
-.signature-container {
+.signatureContainer {
   display: flex;
   justify-content: space-between;
   margin-top: 25px;
@@ -1088,19 +1102,19 @@
   position: relative;
 }
 
-.parent-signature {
+.parentSignature {
   align-self: flex-start;
 }
 
-.principal-signature {
+.principalSignature {
   align-self: flex-end;
 }
 
-.principal-signature .date-section {
+.principalSignature .dateSection {
   gap: 60px;
 }
 
-.principal-name {
+.principalName {
   font-weight: bold;
   font-size: 16px;
   color: #263238;
@@ -1110,12 +1124,12 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .signature-container {
+  .signatureContainer {
     flex-direction: column;
     align-items: center;
     gap: 40px;
   }
-  
+
   .signature {
     width: 100%;
     max-width: 280px;
@@ -1134,7 +1148,7 @@
   margin-bottom: 5px;
 }
 
-.signature-line {
+.signatureLine {
   position: absolute;
   width: 100%;
   height: 1.5px;
@@ -1143,16 +1157,16 @@
   left: 0;
 }
 
-.principal-signature .date-section {
+.principalSignature .dateSection {
   gap: 30px;
 }
 
-.grade-field {
+.gradeField {
   flex-direction: column;
   align-items: flex-start;
 }
 
-.grade-radio-group {
+.gradeRadioGroup {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -1162,7 +1176,7 @@
   padding: 20px 0;
 }
 
-.grade-radio-label {
+.gradeRadioLabel {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1181,14 +1195,14 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.grade-radio-label:hover {
+.gradeRadioLabel:hover {
   background-color: #f0f4f8;
   border-color: #c0c8d0;
   transform: translateY(-2px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
-.grade-radio-label.active {
+.gradeRadioLabel.active {
   background-color: #ff7043;
   border: 2px solid #ff5722;
   color: white;
@@ -1197,18 +1211,18 @@
   transform: translateY(-2px);
 }
 
-.grade-radio-label input[type="radio"] {
+.gradeRadioLabel input[type="radio"] {
   position: absolute;
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.grade-radio-label.recommended {
+.gradeRadioLabel.recommended {
   border: 2px dashed #4caf50;
 }
 
-.grade-radio-label.recommended::after {
+.gradeRadioLabel.recommended::after {
   content: "Recommended";
   position: absolute;
   top: -10px;
@@ -1224,60 +1238,61 @@
   z-index: 1;
 }
 
-.grade-radio-text {
+.gradeRadioText {
   font-size: 16px;
   font-weight: 500;
   text-align: center;
 }
 
 @media (max-width: 768px) {
-  .grade-radio-group {
+  .gradeRadioGroup {
     flex-direction: row;
     flex-wrap: wrap;
   }
-  
-  .grade-radio-label {
+
+  .gradeRadioLabel {
     width: calc(50% - 16px);
     max-width: none;
   }
 }
 
 @media (max-width: 480px) {
-  .grade-radio-label {
+  .gradeRadioLabel {
     width: 100%;
   }
 }
 
 
 /* When both recommended and active */
-.grade-radio-label.active.recommended::after {
+.gradeRadioLabel.active.recommended::after {
   background-color: #ff5722;
 }
 
 /* Ensure these elements don't cause conflicts */
-.enrollment-container .traditional-form {
+.enrollmentContainer .traditionalForm {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
-.enrollment-container .form-field {
+.enrollmentContainer .formField {
   margin-bottom: 15px;
 }
 
 /* Add these styles to EnrollmentApplicationPage.css */
-.grade-radio-label.disabled {
+.gradeRadioLabel.disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background-color: #f5f5f5;
   border: 1px dashed #ccc;
 }
 
-.grade-radio-label.disabled:hover {
+.gradeRadioLabel.disabled:hover {
   transform: none;
   box-shadow: none;
 }
 
-.level-warning-indicator {
+.levelWarningIndicator {
   position: absolute;
   top: -8px;
   right: -8px;
@@ -1292,7 +1307,7 @@
   font-size: 12px;
 }
 
-.grade-warning {
+.gradeWarning {
   margin-top: 10px;
   padding: 10px 15px;
   background-color: #fff3e0;
@@ -1305,7 +1320,6 @@
   gap: 10px;
 }
 
-.warning-icon {
+.warningIcon {
   color: #ff9800;
 }
-

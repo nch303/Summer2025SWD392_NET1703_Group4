@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getChildById, getParentById, submitEnrollmentApplication, getGradeLevels } from './EnrollmentApplicationService';
-import './EnrollmentApplicationPage.css';
+import { getChildById, getParentById, 
+  submitEnrollmentApplication, getGradeLevels } from '../../services/EnrollmentApplicationService';
+import styles from './EnrollmentApplicationPage.module.css';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 
@@ -209,9 +210,9 @@ const EnrollmentApplicationPage = () => {
   
   if (loading) {
     return (
-      <div className="enrollment-container">
-        <div className="loading-overlay">
-          <div className="loading-spinner"></div>
+      <div className={styles.enrollmentContainer}>
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingSpinner}></div>
           <p>Loading information...</p>
         </div>
       </div>
@@ -219,13 +220,13 @@ const EnrollmentApplicationPage = () => {
   }
 
   return (
-    <div className="enrollment-container">
+    <div className={styles.enrollmentContainer}>
       <toast.ToastContainer position="top-right" />
       
-      <div className="enrollment-paper">
+      <div className={styles.enrollmentPaper}>
         {error && (
-          <div className="message error-message">
-            <div className="message-icon">
+          <div className={`${styles.message} ${styles.errorMessage}`}>
+            <div className={styles.messageIcon}>
               <FontAwesomeIcon icon="times-circle" />
             </div>
             <span>{error}</span>
@@ -233,61 +234,61 @@ const EnrollmentApplicationPage = () => {
         )}
         
         {child && (
-          <div className="paper-enrollment-form">
-            <div className="form-header">
+          <div className={styles.paperEnrollmentForm}>
+            <div className={styles.formHeader}>
               <h1>ENROLLMENT APPLICATION</h1>
               <h2>ACADEMIC YEAR: {formData.academicYear}</h2>
             </div>
             
-            <div className="form-recipient">
+            <div className={styles.formRecipient}>
               <p><strong>Dear</strong>: PRINCIPAL OF LITTLE STARS PRESCHOOL</p>
             </div>
             
-            <form onSubmit={handleSubmit} className="traditional-form">
-              <div className="form-section parent-info">
-                <div className="form-field">
+            <form onSubmit={handleSubmit} className={styles.traditionalForm}>
+              <div className={`${styles.formSection} ${styles.parentInfo}`}>
+                <div className={styles.formField}>
                   <label htmlFor="parentName">Name</label>
-                  <div className="readonly-value">{formData.parentName}</div>
+                  <div className={styles.readonlyValue}>{formData.parentName}</div>
                 </div>
                 
-                <div className="form-field">
+                <div className={styles.formField}>
                   <label htmlFor="currentAddress">Current address</label>
-                  <div className="readonly-value">{formData.currentAddress}</div>
+                  <div className={styles.readonlyValue}>{formData.currentAddress}</div>
                 </div>
                 
-                <div className="form-field">
+                <div className={styles.formField}>
                   <label htmlFor="permanentAddress">Permanent address</label>
-                  <div className="readonly-value">{formData.permanentAddress}</div>
+                  <div className={styles.readonlyValue}>{formData.permanentAddress}</div>
                 </div>
                 
-                <div className="form-field">
+                <div className={styles.formField}>
                   <label htmlFor="phoneNumber">Phone</label>
-                  <div className="readonly-value">{formData.phoneNumber}</div>
+                  <div className={styles.readonlyValue}>{formData.phoneNumber}</div>
                 </div>
               </div>
               
-              <div className="form-section child-info">
-                <div className="form-field">
+              <div className={`${styles.formSection} ${styles.childInfo}`}>
+                <div className={styles.formField}>
                   <label>My child's name is</label>
-                  <div className="readonly-value">{child.name}</div>
+                  <div className={styles.readonlyValue}>{child.name}</div>
                 </div>
                 
-                <div className="form-field">
+                <div className={styles.formField}>
                   <label>Birthday</label>
-                  <div className="readonly-value">{formatBirthday(child.birthday)}</div>
+                  <div className={styles.readonlyValue}>{formatBirthday(child.birthday)}</div>
                 </div>
                 
-                <div className="form-field">
+                <div className={styles.formField}>
                   <label>Birthplace</label>
-                  <div className="readonly-value">{child.city || 'Not updated'}</div>
+                  <div className={styles.readonlyValue}>{child.city || 'Not updated'}</div>
                 </div>
               </div>
               
-              <div className="form-section grade-selection">
-                <div className="form-field grade-field">
+              <div className={`${styles.formSection} ${styles.gradeSelection}`}>
+                <div className={`${styles.formField} ${styles.gradeField}`}>
                   <label htmlFor="gradeLevelID">Grade level</label>
                   {gradeLevels.length > 0 ? (
-                    <div className="grade-radio-group">
+                    <div className={styles.gradeRadioGroup}>
                       {gradeLevels.map((level) => {
                         // Determine if this is the recommended level based on age
                         const childAge = calculateAge(child.birthday);
@@ -309,7 +310,7 @@ const EnrollmentApplicationPage = () => {
                         return (
                           <label 
                             key={level.id} 
-                            className={`grade-radio-label ${formData.gradeLevelID === level.id.toString() ? 'active' : ''} ${isRecommended ? 'recommended' : ''} ${isTooAdvanced ? 'disabled' : ''} ${isTooBasic ? 'warning' : ''}`}
+                            className={`${styles.gradeRadioLabel} ${formData.gradeLevelID === level.id.toString() ? styles.active : ''} ${isRecommended ? styles.recommended : ''} ${isTooAdvanced ? styles.disabled : ''} ${isTooBasic ? styles.warning : ''}`}
                           >
                             <input
                               type="radio"
@@ -319,16 +320,16 @@ const EnrollmentApplicationPage = () => {
                               onChange={handleInputChange}
                               disabled={isTooAdvanced}
                             />
-                            <span className="grade-radio-text">{level.name}</span>
+                            <span className={styles.gradeRadioText}>{level.name}</span>
                             {isTooBasic && formData.gradeLevelID === level.id.toString() && (
-                              <span className="level-warning-indicator">&#9888;</span>
+                              <span className={styles.levelWarningIndicator}>&#9888;</span>
                             )}
                           </label>
                         );
                       })}
                     </div>
                   ) : (
-                    <div className="readonly-value error-message">
+                    <div className={`${styles.readonlyValue} ${styles.errorMessage}`}>
                       No class suitable for the child's age
                     </div>
                   )}
@@ -342,8 +343,8 @@ const EnrollmentApplicationPage = () => {
                     (childAge > 4 && level.name.includes("Chồi") && formData.gradeLevelID === level.id.toString());
                   return isTooBasic;
                 }) && (
-                  <div className="grade-warning">
-                    <FontAwesomeIcon icon="exclamation-triangle" className="warning-icon" />
+                  <div className={styles.gradeWarning}>
+                    <FontAwesomeIcon icon="exclamation-triangle" className={styles.warningIcon} />
                     <span>
                       Child {calculateAge(child.birthday)} years old is registering for a lower grade than the recommended one
                     </span>
@@ -351,7 +352,7 @@ const EnrollmentApplicationPage = () => {
                 )}
               </div>
               
-              <div className="application-text">
+              <div className={styles.applicationText}>
                 <p>
                   I hereby submit this application to the principal of Little Stars Preschool, requesting that my child be enrolled in the school.
                 </p>
@@ -360,34 +361,34 @@ const EnrollmentApplicationPage = () => {
                 </p>
               </div>
               
-              <div className="signature-container">
-                <div className="signature parent-signature">
-                  <div className="date-section">
+              <div className={styles.signatureContainer}>
+                <div className={styles.signatureParentSignature}>
+                  <div className={styles.dateSection}>
                     <p>........, day ........ month ........ year {new Date().getFullYear()}</p>
-                    <p className="signature-label">(Parent's signature and full name)</p>
+                    <p className={styles.signatureLabel}>(Parent's signature and full name)</p>
                   </div>
                 </div>
                 
-                <div className="signature principal-signature">
-                  <div className="date-section">
+                <div className={`${styles.signature} ${styles.principalSignature}`}>
+                  <div className={styles.dateSection}>
                     <p>PRINCIPAL</p>
                     
-                    <div className="signature-text">
+                    <div className={styles.signatureText}>
                       TaKKhoan
-                      <div className="signature-line"></div>
+                      <div className={styles.signatureLine}></div>
                     </div>
                     <div>
                       Tạ Khắc Khoan
                     </div>
                     
                     {/* School stamp */}
-                    <div className="school-stamp">
-                      <div className="stamp-circle"></div>
-                      <div className="stamp-inner-circle"></div>
-                      <div className="stamp-text-top">PRESCHOOL</div>
-                      <div className="stamp-text-bottom">LITTLE STARS</div>
-                      <div className="stamp-date">{new Date().getFullYear()}</div>
-                      <div className="stamp-approved">
+                    <div className={styles.schoolStamp}>
+                      <div className={styles.stampCircle}></div>
+                      <div className={styles.stampInnerCircle}></div>
+                      <div className={styles.stampTextTop}>PRESCHOOL</div>
+                      <div className={styles.stampTextBottom}>LITTLE STARS</div>
+                      <div className={styles.stampDate}>{new Date().getFullYear()}</div>
+                      <div className={styles.stampApproved}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(183, 28, 28, 0.9)">
                           <path d="M12 3L14.94 8.34L21 9.27L16.5 13.33L17.75 19.34L12 16.67L6.25 19.34L7.5 13.33L3 9.27L9.06 8.34L12 3Z"/>
                         </svg>
@@ -397,10 +398,10 @@ const EnrollmentApplicationPage = () => {
                 </div>
               </div>
               
-              <div className="enrollment-form-actions">
+              <div className={styles.enrollmentFormActions}>
                 <button 
                   type="button" 
-                  className="btn-cancel"
+                  className={styles.btnCancel}
                   onClick={() => navigate('/profile/children')}
                 >
                   <FontAwesomeIcon icon="arrow-left" /> Back
@@ -408,7 +409,7 @@ const EnrollmentApplicationPage = () => {
                 
                 <button 
                   type="submit" 
-                  className="btn-submit"
+                  className={styles.btnSubmit}
                   disabled={gradeLevels.length === 0}
                 >
                   <FontAwesomeIcon icon="paper-plane" />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { getNotifications, markNotificationAsRead } from './NotificationService';
-import { useUser } from '../../contexts/UserContext';
-import './NotificationBell.css';
+import { getNotifications, markNotificationAsRead } from '../services/NotificationService';
+import { useUser } from '../contexts/UserContext';
+import styles from './NotificationBell.module.css';
 
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
@@ -125,24 +125,24 @@ const NotificationBell = () => {
     : notifications.filter(notification => !notification.isRead);
 
   return (
-    <div className={`notification-bell-container ${isStaff ? 'staff-user' : isTeacher ? 'teacher-user' : isAdmin ? 'admin-user' : ''}`} ref={modalRef}>
+    <div className={`${styles.notificationBellContainer} ${isStaff ? styles.staffUser : isTeacher ? styles.teacherUser : isAdmin ? styles.adminUser : ''}`} ref={modalRef}>
       <button 
-        className={`notification-bell-button ${hasNewNotifications ? 'new-notification' : ''}`}
+        className={`${styles.notificationBellButton} ${hasNewNotifications ? styles.newNotification : ''}`}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Notifications"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
         </svg>
-        {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+        {unreadCount > 0 && <span className={styles.notificationBadge}>{unreadCount}</span>}
       </button>
 
       {isOpen && (
-        <div className="notification-modal">
-          <div className="notification-header">
+        <div className={styles.notificationModal}>
+          <div className={styles.notificationHeader}>
             <h3>Notifications</h3>
             <button 
-              className={`bell-refresh-button ${refreshing ? 'refreshing' : ''}`} 
+              className={`${styles.bellRefreshButton} ${refreshing ? styles.refreshing : ''}`} 
               onClick={handleRefresh}
               disabled={refreshing}
               title="Refresh notifications"
@@ -153,15 +153,15 @@ const NotificationBell = () => {
             </button>
           </div>
           
-          <div className="notification-tabs">
+          <div className={styles.notificationTabs}>
             <button 
-              className={`notification-tab ${activeTab === 'all' ? 'active' : ''}`}
+              className={`${styles.notificationTab} ${activeTab === 'all' ? styles.active : ''}`}
               onClick={() => setActiveTab('all')}
             >
               All
             </button>
             <button 
-              className={`notification-tab ${activeTab === 'unread' ? 'active' : ''}`}
+              className={`${styles.notificationTab} ${activeTab === 'unread' ? styles.active : ''}`}
               onClick={() => setActiveTab('unread')}
             >
               Unread {unreadCount > 0 && `(${unreadCount})`}
@@ -169,10 +169,10 @@ const NotificationBell = () => {
           </div>
           
           {selectedNotification ? (
-            <div className="notification-detail">
-              <div className="notification-detail-header">
+            <div className={styles.notificationDetail}>
+              <div className={styles.notificationDetailHeader}>
                 <button 
-                  className="notification-back-button"
+                  className={styles.notificationBackButton}
                   onClick={() => setSelectedNotification(null)}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -181,47 +181,47 @@ const NotificationBell = () => {
                 </button>
                 <h4>{selectedNotification.title}</h4>
               </div>
-              <div className="notification-detail-content">
+              <div className={styles.notificationDetailContent}>
                 <p>{selectedNotification.content}</p>
                 {selectedNotification.dateCreated && (
-                  <div className="notification-date">
+                  <div className={styles.notificationDate}>
                     {new Date(selectedNotification.dateCreated).toLocaleString()}
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="notification-content">
+            <div className={styles.notificationContent}>
               {loading ? (
-                <div className="notification-loading">
-                  <div className="spinner"></div>
+                <div className={styles.notificationLoading}>
+                  <div className={styles.spinner}></div>
                   <p>Loading notifications...</p>
                 </div>
               ) : filteredNotifications.length > 0 ? (
-                <ul className="notification-list">
+                <ul className={styles.notificationList}>
                   {filteredNotifications.map(notification => (
                     <li 
                       key={notification.id} 
-                      className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
+                      className={`${styles.notificationItem} ${!notification.isRead ? styles.unread : ''}`}
                       onClick={() => handleNotificationClick(notification)}
                     >
-                      <div className="notification-item-content">
+                      <div className={styles.notificationItemContent}>
                         <h4>{notification.title}</h4>
                         <p>{notification.content}</p>
                       </div>
-                      {!notification.isRead && <span className="notification-dot"></span>}
+                      {!notification.isRead && <span className={styles.notificationDot}></span>}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="notification-empty">
+                <div className={styles.notificationEmpty}>
                   <p>{activeTab === 'all' ? 'No notifications yet' : 'No unread notifications'}</p>
                 </div>
               )}
             </div>
           )}
           
-          <div className="notification-footer">
+          <div className={styles.notificationFooter}>
             <button onClick={() => {
               setIsOpen(false);
               setSelectedNotification(null);

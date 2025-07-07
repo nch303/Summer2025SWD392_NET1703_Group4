@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getTuitionFeesByCurrentAccount, createPaymentUrlForTuitionFee } from './TuitionFeeService';
+import { getTuitionFeesByCurrentAccount, createPaymentUrlForTuitionFee } from '../../services/TuitionFeeService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
-import './TuitionFee.css';
+import styles from './TuitionFee.module.css';
 
 const TuitionFeePage = () => {
   const [tuitionFees, setTuitionFees] = useState([]);
@@ -214,45 +214,45 @@ const TuitionFeePage = () => {
     return (
       <div
         key={fee.id}
-        className={`tuition-fee-card ${isPastDue ? 'past-due' : ''} ${isSelected ? 'selected' : ''}`}
+        className={`${styles.tuitionFeeCard} ${isPastDue ? 'past-due' : ''} ${isSelected ? 'selected' : ''}`}
         onClick={() => handleSelectFee(fee.id)}
       >
-        <div className="tuition-fee-checkbox">
+        <div className={styles.tuitionFeeCheckbox}>
           <input
             type="radio"
             checked={isSelected}
             onChange={() => { }}
             onClick={(e) => e.stopPropagation()}
           />
-          <span className="checkmark"></span>
+          <span className={styles.checkmark}></span>
         </div>
 
-        <div className="tuition-fee-details">
-          <div className="tuition-fee-header">
+        <div className={styles.tuitionFeeDetails}>
+          <div className={styles.tuitionFeeHeader}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#FFF' }}>{fee.childName} - {fee.name}</h3>
-            <span className={`tuition-fee-badge ${isPastDue ? 'past-due' : 'upcoming'}`}>
+            <span className={`${styles.tuitionFeeBadge} ${isPastDue ? 'past-due' : 'upcoming'}`}>
               {isPastDue ? 'Owed' : 'Unpaid'}
             </span>
           </div>
 
-          <div className="tuition-fee-description">
-            <ul className="tuition-fee-description-list">
+          <div className={styles.tuitionFeeDescription}>
+            <ul className={styles.tuitionFeeDescriptionList}>
               {descriptionItems.map((item, index) => (
-                <li key={index} className="tuition-fee-description-item">{item}</li>
+                <li key={index} className={styles.tuitionFeeDescriptionItem}>{item}</li>
               ))}
             </ul>
           </div>
 
-          <div className="tuition-fee-footer">
-            <div className="tuition-fee-grade">
+          <div className={styles.tuitionFeeFooter}>
+            <div className={styles.tuitionFeeGrade}>
               <FontAwesomeIcon icon="graduation-cap" />
               <span>{fee.gradeLevelName}</span>
             </div>
-            <div className="tuition-fee-date">
+            <div className={styles.tuitionFeeDate}>
               <FontAwesomeIcon icon="calendar-alt" />
               <span>Due date: {formatDate(fee.date)}</span>
             </div>
-            <div className="tuition-fee-amount">
+            <div className={styles.tuitionFeeAmount}>
               <FontAwesomeIcon icon="money-bill-wave" />
               <span>{formatCurrency(fee.fee)}</span>
             </div>
@@ -263,18 +263,18 @@ const TuitionFeePage = () => {
   };
 
   return (
-    <div className="tuition-fee-container">
+    <div className={styles.tuitionFeeContainer}>
       <toast.ToastContainer position="top-right" />
 
-      <div className="tuition-fee-paper">
-        <div className="tuition-fee-header">
-          <div className="tuition-fee-header-content">
-            <FontAwesomeIcon icon="money-check-alt" className="tuition-fee-header-icon" />
+      <div className={styles.tuitionFeePaper}>
+        <div className={styles.tuitionFeeHeader}>
+          <div className={styles.tuitionFeeHeaderContent}>
+            <FontAwesomeIcon icon="money-check-alt" className={styles.tuitionFeeHeaderIcon} />
             <h1>Tuition fee management</h1>
           </div>
 
           <button
-            className="tuition-fee-refresh-button"
+            className={styles.tuitionFeeRefreshButton}
             onClick={fetchTuitionFees}
           >
             <FontAwesomeIcon icon="sync" />
@@ -283,24 +283,24 @@ const TuitionFeePage = () => {
         </div>
 
         {error && (
-          <div className="tuition-fee-message tuition-fee-error-message">
-            <div className="tuition-fee-message-icon">
+          <div className={`${styles.tuitionFeeMessage} ${styles.tuitionFeeErrorMessage}`}>
+            <div className={styles.tuitionFeeMessageIcon}>
               <FontAwesomeIcon icon="times-circle" />
             </div>
             <span>{error}</span>
           </div>
         )}
 
-        <div className="tuition-fee-content">
+        <div className={styles.tuitionFeeContent}>
           {/* Billing information */}
-          <div className="tuition-fee-billing-summary">
-            <div className="tuition-fee-billing-card">
-              <div className="tuition-fee-billing-left">
+          <div className={styles.tuitionFeeBillingSummary}>
+            <div className={styles.tuitionFeeBillingCard}>
+              <div className={styles.tuitionFeeBillingLeft}>
                 <h3>Total amount to pay</h3>
-                <div className="tuition-fee-price">
+                <div className={styles.tuitionFeePrice}>
                   {formatCurrency(totalSelectedAmount)}
                 </div>
-                <div className="tuition-fee-selection-info">
+                <div className={styles.tuitionFeeSelectionInfo}>
                   {hasSelectedFee ? (
                     <span>1 fee selected</span>
                   ) : (
@@ -308,9 +308,9 @@ const TuitionFeePage = () => {
                   )}
                 </div>
               </div>
-              <div className="tuition-fee-billing-actions">
+              <div className={styles.tuitionFeeBillingActions}>
                 <button
-                  className="tuition-fee-clear-btn"
+                  className={styles.tuitionFeeClearBtn}
                   onClick={handleClearSelection}
                   disabled={!hasSelectedFee || processingPayment}
                 >
@@ -318,7 +318,7 @@ const TuitionFeePage = () => {
                   <span>Unselect</span>
                 </button>
                 <button
-                  className={`tuition-fee-payment-btn ${processingPayment ? 'processing' : ''}`}
+                  className={`${styles.tuitionFeePaymentBtn} ${processingPayment ? 'processing' : ''}`}
                   onClick={handlePayment}
                   disabled={!hasSelectedFee || processingPayment}
                 >
@@ -330,16 +330,16 @@ const TuitionFeePage = () => {
           </div>
 
           {/* Billing tabs */}
-          <div className="tuition-fee-tabs">
+          <div className={styles.tuitionFeeTabs}>
             <button
-              className={`tuition-fee-tab ${activeBillingTab === 'upcoming' ? 'active' : ''}`}
+              className={`${styles.tuitionFeeTab} ${activeBillingTab === 'upcoming' ? styles.active : ''}`}
               onClick={() => setActiveBillingTab('upcoming')}
             >
               <FontAwesomeIcon icon="calendar-day" />
               <span>Upcoming ({categorizedFees.upcoming.length})</span>
             </button>
             <button
-              className={`tuition-fee-tab ${activeBillingTab === 'overdue' ? 'active' : ''}`}
+              className={`${styles.tuitionFeeTab} ${activeBillingTab === 'overdue' ? styles.active : ''}`}
               onClick={() => setActiveBillingTab('overdue')}
             >
               <FontAwesomeIcon icon="exclamation-circle" />
@@ -348,21 +348,21 @@ const TuitionFeePage = () => {
           </div>
 
           {/* Billing content based on active tab */}
-          <div className="tuition-fee-tab-content">
+          <div className={styles.tuitionFeeTabContent}>
             {activeBillingTab === 'upcoming' && (
               <>
                 {categorizedFees.upcoming.length > 0 ? (
-                  <div className="tuition-fee-section">
-                    <div className="tuition-fee-section-header">
+                  <div className={styles.tuitionFeeSection}>
+                    <div className={styles.tuitionFeeSectionHeader}>
                       <h2>Tuition fee in this month</h2>
                     </div>
-                    <div className="tuition-fee-list">
+                    <div className={styles.tuitionFeeList}>
                       {categorizedFees.upcoming.map(fee => renderFeeCard(fee))}
                       {categorizedFees.future.map(fee => renderFeeCard(fee))}
                     </div>
                   </div>
                 ) : (
-                  <div className="tuition-fee-empty-state">
+                  <div className={styles.tuitionFeeEmptyState}>
                     <FontAwesomeIcon icon="calendar-check" />
                     <h3>No fee in this month</h3>
                     <p>You don't have any tuition fee to pay in this month.</p>
@@ -374,16 +374,16 @@ const TuitionFeePage = () => {
             {activeBillingTab === 'overdue' && (
               <>
                 {categorizedFees.past.length > 0 ? (
-                  <div className="tuition-fee-section">
-                    <div className="tuition-fee-section-header">
+                  <div className={styles.tuitionFeeSection}>
+                    <div className={styles.tuitionFeeSectionHeader}>
                       <h2>Overdue tuition fee</h2>
                     </div>
-                    <div className="tuition-fee-list">
+                    <div className={styles.tuitionFeeList}>
                       {categorizedFees.past.map(fee => renderFeeCard(fee, true))}
                     </div>
                   </div>
                 ) : (
-                  <div className="tuition-fee-empty-state">
+                  <div className={styles.tuitionFeeEmptyState}>
                     <FontAwesomeIcon icon="check-circle" />
                     <h3>No overdue tuition fee</h3>
                     <p>You don't have any overdue tuition fee to pay. Good job!</p>

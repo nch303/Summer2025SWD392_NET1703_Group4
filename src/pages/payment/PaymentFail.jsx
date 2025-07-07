@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { getPaymentDetails } from './PaymentHistoryService';
-import './PaymentFail.css';
+import { getPaymentDetails } from '../../services/PaymentHistoryService';
+import styles from './PaymentFail.module.css';
 
 const PaymentFail = () => {
   const navigate = useNavigate();
@@ -65,35 +65,35 @@ const PaymentFail = () => {
   }
 
   return (
-    <div className="payment-fail-container">
-      <div className="payment-fail-card">
-        <div className="payment-fail-icon">
+    <div className={styles.paymentFailContainer}>
+      <div className={styles.paymentFailCard}>
+        <div className={styles.paymentFailIcon}>
           <i className="fas fa-times-circle"></i>
         </div>
         
-        <h1 className="payment-fail-title">Transaction failed</h1>
+        <h1 className={styles.paymentFailTitle}>Transaction failed</h1>
         
-        <div className="payment-fail-details">
-          <p className="payment-fail-message">{errorDetails.errorMessage}</p>
+        <div className={styles.paymentFailDetails}>
+          <p className={styles.paymentFailMessage}>{errorDetails.errorMessage}</p>
           
-          <div className="payment-fail-info">
+          <div className={styles.paymentFailInfo}>
             {errorDetails.transactionId !== 'Unknown' && (
-              <div className="payment-fail-info-item">
-                <span className="info-label">Transaction ID:</span>
-                <span className="info-value">{errorDetails.transactionId}</span>
+              <div className={styles.paymentFailInfoItem}>
+                <span className={styles.infoLabel}>Transaction ID:</span>
+                <span className={styles.infoValue}>{errorDetails.transactionId}</span>
               </div>
             )}
             
             {errorDetails.errorCode !== 'Unknown' && (
-              <div className="payment-fail-info-item">
-                <span className="info-label">Error code:</span>
-                <span className="info-value">{errorDetails.errorCode}</span>
+              <div className={styles.paymentFailInfoItem}>
+                <span className={styles.infoLabel}>Error code:</span>
+                <span className={styles.infoValue}>{errorDetails.errorCode}</span>
               </div>
             )}
           </div>
         </div>
         
-        <div className="payment-fail-help">
+        <div className={styles.paymentFailHelp}>
           <h3>You can try:</h3>
           <ul>
             <li>Check your payment information</li>
@@ -102,16 +102,16 @@ const PaymentFail = () => {
           </ul>
         </div>
         
-        <div className="payment-fail-actions">
+        <div className={styles.paymentFailActions}>
           <button 
-            className="btn-payment-history" 
+            className={styles.btnPaymentHistory} 
             onClick={goToPaymentHistory}
           >
             <i className="fas fa-history"></i> Payment history
           </button>
           
           <button 
-            className="btn-home" 
+            className={styles.btnHome} 
             onClick={goToHomePage}
           >
             <i className="fas fa-home"></i> Home

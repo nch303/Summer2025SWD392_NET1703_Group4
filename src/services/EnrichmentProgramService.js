@@ -1,4 +1,4 @@
-import api from '../../config/axiosConfig';
+import api from '../config/axiosConfig';
 
 /**
  * Get all enrichment programs

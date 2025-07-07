@@ -1,6 +1,6 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
-.payment-fail-container {
+.paymentFailContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,7 +10,7 @@
   font-family: 'Nunito', 'Segoe UI', sans-serif;
 }
 
-.payment-fail-card {
+.paymentFailCard {
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
@@ -24,17 +24,18 @@
 }
 
 @keyframes slideIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px); 
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.payment-fail-icon {
+.paymentFailIcon {
   font-size: 80px;
   color: #ff3b30;
   margin-bottom: 20px;
@@ -42,19 +43,27 @@
 }
 
 @keyframes pulseError {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
-.payment-fail-title {
+.paymentFailTitle {
   font-size: 28px;
   color: #333;
   margin-bottom: 20px;
   font-weight: 700;
 }
 
-.payment-fail-message {
+.paymentFailMessage {
   font-size: 18px;
   color: #555;
   margin-bottom: 25px;
@@ -62,7 +71,7 @@
   line-height: 1.5;
 }
 
-.payment-fail-details {
+.paymentFailDetails {
   background-color: #fff8f8;
   border-radius: 12px;
   padding: 20px;
@@ -70,7 +79,7 @@
   border: 1px solid rgba(255, 59, 48, 0.2);
 }
 
-.payment-fail-info {
+.paymentFailInfo {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -78,7 +87,7 @@
   margin-top: 15px;
 }
 
-.payment-fail-info-item {
+.paymentFailInfoItem {
   display: flex;
   justify-content: space-between;
   padding: 10px;
@@ -87,18 +96,18 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.info-label {
+.infoLabel {
   font-weight: 600;
   color: #555;
 }
 
-.info-value {
+.infoValue {
   font-family: 'Roboto Mono', monospace;
   color: #333;
   font-weight: 500;
 }
 
-.payment-fail-help {
+.paymentFailHelp {
   background-color: #f8f9fa;
   border-radius: 12px;
   padding: 20px;
@@ -106,32 +115,32 @@
   text-align: left;
 }
 
-.payment-fail-help h3 {
+.paymentFailHelp h3 {
   font-size: 18px;
   color: #333;
   margin-top: 0;
   margin-bottom: 15px;
 }
 
-.payment-fail-help ul {
+.paymentFailHelp ul {
   margin: 0;
   padding-left: 20px;
 }
 
-.payment-fail-help li {
+.paymentFailHelp li {
   margin-bottom: 10px;
   color: #555;
   line-height: 1.5;
 }
 
-.payment-fail-actions {
+.paymentFailActions {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   justify-content: center;
 }
 
-.payment-fail-actions button {
+.paymentFailActions button {
   padding: 14px 24px;
   border-radius: 10px;
   font-size: 16px;
@@ -144,34 +153,34 @@
   border: none;
 }
 
-.btn-try-again {
+.btnTryAgain {
   background-color: #ff3b30;
   color: white;
 }
 
-.btn-try-again:hover {
+.btnTryAgain:hover {
   background-color: #e0352b;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
 }
 
-.btn-payment-history {
+.btnPaymentHistory {
   background-color: #007aff;
   color: white;
 }
 
-.btn-payment-history:hover {
+.btnPaymentHistory:hover {
   background-color: #0062cc;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
 }
 
-.btn-home {
+.btnHome {
   background-color: #f5f5f5;
   color: #333;
 }
 
-.btn-home:hover {
+.btnHome:hover {
   background-color: #e5e5e5;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -179,27 +188,27 @@
 
 /* Responsive Styles */
 @media (max-width: 576px) {
-  .payment-fail-card {
+  .paymentFailCard {
     padding: 30px 20px;
   }
-  
-  .payment-fail-icon {
+
+  .paymentFailIcon {
     font-size: 60px;
   }
-  
-  .payment-fail-title {
+
+  .paymentFailTitle {
     font-size: 24px;
   }
-  
-  .payment-fail-message {
+
+  .paymentFailMessage {
     font-size: 16px;
   }
-  
-  .payment-fail-actions {
+
+  .paymentFailActions {
     flex-direction: column;
   }
-  
-  .payment-fail-actions button {
+
+  .paymentFailActions button {
     width: 100%;
     justify-content: center;
   }

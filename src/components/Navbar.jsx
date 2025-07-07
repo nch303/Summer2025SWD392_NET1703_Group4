@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
-import NotificationBell from '../pages/notification/NotificationBell';
+import NotificationBell from './NotificationBell';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './ProfilePage.css';
+import styles from './ProfilePage.module.css';
 import { changePassword } from '../../services/ProfileService';
 
 const ChangePasswordForm = () => {
@@ -144,10 +144,10 @@ const ChangePasswordForm = () => {
   };
 
   return (
-    <div className="change-password-form">
+    <div className={styles.changePasswordForm}>
       {message.text && (
-        <div className={`profile-message ${message.type}`}>
-          <div className="message-icon">
+        <div className={`${styles.profileMessage} ${message.type}`}>
+          <div className={styles.messageIcon}>
             {message.type === 'success' ? (
               <FontAwesomeIcon icon="check" />
             ) : (
@@ -155,16 +155,16 @@ const ChangePasswordForm = () => {
             )}
           </div>
           <span>{message.text}</span>
-          <button className="message-close" onClick={() => setMessage({ text: '', type: '' })}>
+          <button className={styles.messageClose} onClick={() => setMessage({ text: '', type: '' })}>
             <FontAwesomeIcon icon="times" />
           </button>
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className={styles.formGroup}>
           <label htmlFor="currentPassword">Current password *</label>
-          <div className="input-with-icon password-input">
+          <div className={`${styles.inputWithIcon} ${styles.passwordInput}`}>
             <FontAwesomeIcon icon="lock" />
             <input
               type={showPassword.currentPassword ? "text" : "password"}
@@ -176,18 +176,18 @@ const ChangePasswordForm = () => {
             />
             <button
               type="button"
-              className="toggle-password-btn"
+              className={styles.togglePasswordBtn}
               onClick={() => togglePasswordVisibility('currentPassword')}
             >
               <FontAwesomeIcon icon={showPassword.currentPassword ? "eye-slash" : "eye"} />
             </button>
           </div>
-          {errors.currentPassword && <div className="form-error">{errors.currentPassword}</div>}
+          {errors.currentPassword && <div className={styles.formError}>{errors.currentPassword}</div>}
         </div>
 
-        <div className="form-group">
+        <div className={styles.formGroup}>
           <label htmlFor="newPassword">New password *</label>
-          <div className="input-with-icon password-input">
+          <div className={`${styles.inputWithIcon} ${styles.passwordInput}`}>
             <FontAwesomeIcon icon="lock" />
             <input
               type={showPassword.newPassword ? "text" : "password"}
@@ -199,30 +199,30 @@ const ChangePasswordForm = () => {
             />
             <button
               type="button"
-              className="toggle-password-btn"
+              className={styles.togglePasswordBtn}
               onClick={() => togglePasswordVisibility('newPassword')}
             >
               <FontAwesomeIcon icon={showPassword.newPassword ? "eye-slash" : "eye"} />
             </button>
           </div>
-          {errors.newPassword && <div className="form-error">{errors.newPassword}</div>}
+          {errors.newPassword && <div className={styles.formError}>{errors.newPassword}</div>}
 
           {/* Password strength meter */}
           {passwordData.newPassword.length > 0 && (
-            <div className="password-strength-container">
-              <div className="password-strength-meter">
+            <div className={styles.passwordStrengthContainer}>
+              <div className={styles.passwordStrengthMeter}>
                 <div
-                  className={`change-password-password-bar ${passwordScore === 0 ? 'strength-none' :
-                      passwordScore === 1 ? 'strength-weak' :
-                        passwordScore === 2 ? 'strength-fair' :
-                          passwordScore === 3 ? 'strength-good' :
-                            passwordScore === 4 ? 'strength-strong' :
-                              passwordScore === 5 ? 'strength-strong' : ''
+                  className={`${styles.changePasswordPasswordBar} ${passwordScore === 0 ? styles.strengthNone :
+                      passwordScore === 1 ? styles.strengthWeak :
+                        passwordScore === 2 ? styles.strengthFair :
+                          passwordScore === 3 ? styles.strengthGood :
+                            passwordScore === 4 ? styles.strengthStrong :
+                              passwordScore === 5 ? styles.strengthStrong : ''
                     }`}
                   style={{ width: `${passwordScore * 20}%` }}
                 ></div>
               </div>
-              <span className="password-strength-text">
+              <span className={styles.passwordStrengthText}>
                 {passwordScore === 0 ? 'Password strength' :
                   passwordScore === 1 ? 'Weak' :
                     passwordScore === 2 ? 'Average' :
@@ -233,31 +233,31 @@ const ChangePasswordForm = () => {
             </div>
           )}
 
-          <div className="password-requirements">
+          <div className={styles.passwordRequirements}>
             <p>Password must have:</p>
             <ul>
-              <li className={passwordStrength.length ? 'valid' : ''}>
+              <li className={passwordStrength.length ? `${styles.valid}` : ''}>
                 At least 8 characters
               </li>
-              <li className={passwordStrength.uppercase ? 'valid' : ''}>
+              <li className={passwordStrength.uppercase ? `${styles.valid}` : ''}>
                 At least one uppercase letter (A-Z)
               </li>
-              <li className={passwordStrength.lowercase ? 'valid' : ''}>
+              <li className={passwordStrength.lowercase ? `${styles.valid}` : ''}>
                 At least one lowercase letter (a-z)
               </li>
-              <li className={passwordStrength.number ? 'valid' : ''}>
+              <li className={passwordStrength.number ? `${styles.valid}` : ''}>
                 At least one number (0-9)
               </li>
-              <li className={passwordStrength.special ? 'valid' : ''}>
+              <li className={passwordStrength.special ? `${styles.valid}` : ''}>
                 At least one special character (!@#$%^&*)
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="form-group">
+        <div className={styles.formGroup}>
           <label htmlFor="confirmPassword">Confirm new password *</label>
-          <div className="input-with-icon password-input">
+          <div className={`${styles.inputWithIcon} ${styles.passwordInput}`}>
             <FontAwesomeIcon icon="lock" />
             <input
               type={showPassword.confirmPassword ? "text" : "password"}
@@ -269,24 +269,24 @@ const ChangePasswordForm = () => {
             />
             <button
               type="button"
-              className="toggle-password-btn"
+              className={styles.togglePasswordBtn}
               onClick={() => togglePasswordVisibility('confirmPassword')}
             >
               <FontAwesomeIcon icon={showPassword.confirmPassword ? "eye-slash" : "eye"} />
             </button>
           </div>
-          {errors.confirmPassword && <div className="form-error">{errors.confirmPassword}</div>}
+          {errors.confirmPassword && <div className={styles.formError}>{errors.confirmPassword}</div>}
         </div>
 
-        <div className="profile-form-actions">
+        <div className={styles.profileFormActions}>
           <button
             type="submit"
-            className="save-profile-btn"
+            className={styles.saveProfileBtn}
             disabled={isSubmitting || passwordScore < 4}
           >
             {isSubmitting ? (
               <>
-                <span className="btn-spinner"></span>
+                <span className={styles.btnSpinner}></span>
                 Processing...
               </>
             ) : (

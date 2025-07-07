@@ -3,44 +3,44 @@
   --primary-color-dark: #f4511e;
   --primary-color-light: #feeae5;
   --primary-rgb: 255, 112, 67;
-  
+
   --accent-color: #5c6bc0;
   --accent-color-light: #d1c4e9;
   --accent-rgb: 92, 107, 192;
-  
+
   --success-color: #4caf50;
   --success-color-light: #e8f5e9;
   --success-rgb: 76, 175, 80;
-  
+
   --warning-color: #ffb300;
   --warning-color-light: #fff8e1;
   --warning-rgb: 255, 179, 0;
-  
+
   --danger-color: #f44336;
   --danger-color-light: #ffebee;
   --danger-rgb: 244, 67, 54;
-  
+
   --info-color: #2196f3;
   --info-color-light: #e3f2fd;
   --info-rgb: 33, 150, 243;
-  
+
   --text-color: #37474f;
   --text-color-dark: #263238;
   --text-color-muted: #607d8b;
-  
+
   --card-bg-color: #ffffff;
   --card-border-color: #eceff1;
 }
 
 /* Base container */
-.tuition-fee-container {
+.tuitionFeeContainer {
   background-color: #f6f8fa;
   min-height: calc(100vh - 80px);
   padding: 30px 20px;
   box-sizing: border-box;
 }
 
-.tuition-fee-paper {
+.tuitionFeePaper {
   max-width: 1000px;
   margin: 0 auto;
   background: white;
@@ -51,7 +51,7 @@
 }
 
 /* Header styles */
-.tuition-fee-header {
+.tuitionFeeHeader {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
   color: white;
   padding: 24px 32px;
@@ -62,7 +62,7 @@
   align-items: center;
 }
 
-.tuition-fee-header::after {
+.tuitionFeeHeader::after {
   content: '';
   position: absolute;
   top: 0;
@@ -74,27 +74,27 @@
   z-index: 0;
 }
 
-.tuition-fee-header-content {
+.tuitionFeeHeaderContent {
   display: flex;
   align-items: center;
   position: relative;
   z-index: 1;
 }
 
-.tuition-fee-header-content h1 {
+.tuitionFeeHeaderContent h1 {
   margin: 0;
   font-size: 1.8rem;
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.tuition-fee-header-icon {
+.tuitionFeeHeaderIcon {
   margin-right: 16px;
   font-size: 32px;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
 }
 
-.tuition-fee-refresh-button {
+.tuitionFeeRefreshButton {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -108,12 +108,12 @@
   z-index: 1;
 }
 
-.tuition-fee-refresh-button:hover {
+.tuitionFeeRefreshButton:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Message styles */
-.tuition-fee-message {
+.tuitionFeeMessage {
   margin: 20px 32px;
   padding: 16px;
   border-radius: 10px;
@@ -122,27 +122,27 @@
   animation: fadeInUp 0.5s;
 }
 
-.tuition-fee-error-message {
+.tuitionFeeErrorMessage {
   background-color: var(--danger-color-light);
   color: var(--danger-color);
   border: 1px solid rgba(var(--danger-rgb), 0.2);
 }
 
-.tuition-fee-message-icon {
+.tuitionFeeMessageIcon {
   margin-right: 16px;
   font-size: 24px;
 }
 
-.tuition-fee-content {
+.tuitionFeeContent {
   padding: 32px;
 }
 
 /* Billing summary */
-.tuition-fee-billing-summary {
+.tuitionFeeBillingSummary {
   margin-bottom: 32px;
 }
 
-.tuition-fee-billing-card {
+.tuitionFeeBillingCard {
   background: linear-gradient(135deg, #fff 0%, #f8f9fb 100%);
   border-radius: 16px;
   padding: 24px;
@@ -153,31 +153,31 @@
   align-items: center;
 }
 
-.tuition-fee-billing-left h3 {
+.tuitionFeeBillingLeft h3 {
   margin: 0 0 8px;
   font-size: 1.2rem;
   color: var(--text-color);
   font-weight: 600;
 }
 
-.tuition-fee-price {
+.tuitionFeePrice {
   font-size: 2.2rem;
   font-weight: 700;
   color: var(--primary-color-dark);
   margin: 10px 0;
 }
 
-.tuition-fee-selection-info {
+.tuitionFeeSelectionInfo {
   font-size: 0.95rem;
   color: var(--text-color-muted);
 }
 
-.tuition-fee-billing-actions {
+.tuitionFeeBillingActions {
   display: flex;
   gap: 12px;
 }
 
-.tuition-fee-clear-btn {
+.tuitionFeeClearBtn {
   padding: 12px 20px;
   background-color: #f5f5f5;
   color: var(--text-color);
@@ -191,11 +191,11 @@
   transition: all 0.2s;
 }
 
-.tuition-fee-clear-btn:hover:not(:disabled) {
+.tuitionFeeClearBtn:hover:not(:disabled) {
   background-color: #e0e0e0;
 }
 
-.tuition-fee-payment-btn {
+.tuitionFeePaymentBtn {
   padding: 12px 24px;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
   color: white;
@@ -211,25 +211,25 @@
   box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.2);
 }
 
-.tuition-fee-payment-btn:hover:not(:disabled) {
+.tuitionFeePaymentBtn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
 }
 
-.tuition-fee-payment-btn:disabled,
-.tuition-fee-clear-btn:disabled {
+.tuitionFeePaymentBtn:disabled,
+.tuitionFeeClearBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.tuition-fee-payment-btn.processing {
+.tuitionFeePaymentBtn.processing {
   background: var(--primary-color-dark);
   transform: none;
   box-shadow: none;
 }
 
 /* Tabs */
-.tuition-fee-tabs {
+.tuitionFeeTabs {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
@@ -237,7 +237,7 @@
   padding-bottom: 10px;
 }
 
-.tuition-fee-tab {
+.tuitionFeeTab {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -252,36 +252,36 @@
   transition: all 0.2s;
 }
 
-.tuition-fee-tab:hover {
+.tuitionFeeTab:hover {
   color: var(--text-color-dark);
 }
 
-.tuition-fee-tab.active {
+.tuitionFeeTab.active {
   color: var(--primary-color-dark);
   border-bottom-color: var(--primary-color);
   font-weight: 600;
 }
 
 /* Section headers */
-.tuition-fee-section {
+.tuitionFeeSection {
   margin-bottom: 30px;
 }
 
-.tuition-fee-section-header {
+.tuitionFeeSectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.tuition-fee-section-header h2 {
+.tuitionFeeSectionHeader h2 {
   margin: 0;
   font-size: 1.4rem;
   color: var(--text-color-dark);
   font-weight: 600;
 }
 
-.tuition-fee-select-all-btn {
+.tuitionFeeSelectAllBtn {
   background-color: var(--success-color-light);
   color: var(--success-color);
   border: none;
@@ -295,27 +295,27 @@
   transition: all 0.2s;
 }
 
-.tuition-fee-select-all-btn:hover {
+.tuitionFeeSelectAllBtn:hover {
   background-color: rgba(var(--success-rgb), 0.2);
 }
 
-.tuition-fee-select-all-btn.overdue {
+.tuitionFeeSelectAllBtn.overdue {
   background-color: var(--danger-color-light);
   color: var(--danger-color);
 }
 
-.tuition-fee-select-all-btn.overdue:hover {
+.tuitionFeeSelectAllBtn.overdue:hover {
   background-color: rgba(var(--danger-rgb), 0.2);
 }
 
 /* Fee cards */
-.tuition-fee-list {
+.tuitionFeeList {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.tuition-fee-card {
+.tuitionFeeCard {
   display: flex;
   background: white;
   border: 1px solid var(--card-border-color);
@@ -327,85 +327,85 @@
   overflow: hidden;
 }
 
-.tuition-fee-card:hover {
+.tuitionFeeCard:hover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
-.tuition-fee-card.selected {
+.tuitionFeeCard.selected {
   border-color: var(--primary-color);
   background-color: var(--primary-color-light);
 }
 
-.tuition-fee-card.past-due {
+.tuitionFeeCard.past-due {
   border-left: 4px solid var(--danger-color);
 }
 
-.tuition-fee-checkbox {
+.tuitionFeeCheckbox {
   margin-right: 20px;
   display: flex;
   align-items: flex-start;
   padding-top: 8px;
 }
 
-.tuition-fee-checkbox input {
+.tuitionFeeCheckbox input {
   width: 22px;
   height: 22px;
   cursor: pointer;
 }
 
-.tuition-fee-details {
+.tuitionFeeDetails {
   flex: 1;
 }
 
-.tuition-fee-header {
+.tuitionFeeHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.tuition-fee-header h3 {
+.tuitionFeeHeader h3 {
   margin: 0;
   font-size: 1.2rem;
   color: var(--text-color-dark);
   font-weight: 600;
 }
 
-.tuition-fee-badge {
+.tuitionFeeBadge {
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
-.tuition-fee-badge.upcoming {
+.tuitionFeeBadge.upcoming {
   background-color: var(--info-color-light);
   color: var(--info-color);
 }
 
-.tuition-fee-badge.past-due {
+.tuitionFeeBadge.past-due {
   background-color: var(--danger-color-light);
   color: var(--danger-color);
 }
 
-.tuition-fee-description {
+.tuitionFeeDescription {
   margin: 12px 0;
   color: var(--text-color);
   font-size: 1rem;
   line-height: 1.5;
 }
 
-.tuition-fee-footer {
+.tuitionFeeFooter {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   margin-top: 15px;
 }
 
-.tuition-fee-grade,
-.tuition-fee-date,
-.tuition-fee-amount {
+.tuitionFeeGrade,
+.tuitionFeeDate,
+.tuitionFeeAmount {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -415,13 +415,13 @@
   border-radius: 6px;
 }
 
-.tuition-fee-amount {
+.tuitionFeeAmount {
   font-weight: 600;
   color: var(--primary-color-dark);
 }
 
 /* Empty states */
-.tuition-fee-empty-state {
+.tuitionFeeEmptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -432,20 +432,20 @@
   border: 1px dashed #d0d7de;
 }
 
-.tuition-fee-empty-state svg {
+.tuitionFeeEmptyState svg {
   font-size: 50px;
   color: var(--text-color-muted);
   margin-bottom: 20px;
   opacity: 0.7;
 }
 
-.tuition-fee-empty-state h3 {
+.tuitionFeeEmptyState h3 {
   margin: 0 0 10px;
   font-size: 1.4rem;
   color: var(--text-color-dark);
 }
 
-.tuition-fee-empty-state p {
+.tuitionFeeEmptyState p {
   margin: 0;
   color: var(--text-color-muted);
   max-width: 500px;
@@ -457,6 +457,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -464,91 +465,96 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .tuition-fee-billing-card {
+  .tuitionFeeBillingCard {
     flex-direction: column;
     gap: 20px;
   }
-  
-  .tuition-fee-billing-left {
+
+  .tuitionFeeBillingLeft {
     text-align: center;
     width: 100%;
   }
-  
-  .tuition-fee-billing-actions {
+
+  .tuitionFeeBillingActions {
     width: 100%;
   }
-  
-  .tuition-fee-clear-btn,
-  .tuition-fee-payment-btn {
+
+  .tuitionFeeClearBtn,
+  .tuitionFeePaymentBtn {
     flex: 1;
     justify-content: center;
   }
-  
-  .tuition-fee-tabs {
+
+  .tuitionFeeTabs {
     overflow-x: auto;
     padding-bottom: 5px;
   }
-  
-  .tuition-fee-header {
+
+  .tuitionFeeHeader {
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
   }
-  
-  .tuition-fee-refresh-button {
+
+  .tuitionFeeRefreshButton {
     align-self: flex-start;
   }
-  
-  .tuition-fee-content {
+
+  .tuitionFeeContent {
     padding: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .tuition-fee-footer {
+  .tuitionFeeFooter {
     flex-direction: column;
     gap: 8px;
   }
-  
-  .tuition-fee-header h3 {
+
+  .tuitionFeeHeader h3 {
     font-size: 1rem;
   }
-  
-  .tuition-fee-section-header {
+
+  .tuitionFeeSectionHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
-  .tuition-fee-billing-actions {
+
+  .tuitionFeeBillingActions {
     flex-direction: column;
   }
 }
 
 /* Add these styles to style the bullet points */
-.tuition-fee-description-list {
+.tuitionFeeDescriptionList {
   margin: 0;
   padding-left: 20px;
 }
 
-.tuition-fee-description-item {
+.tuitionFeeDescriptionItem {
   margin-bottom: 6px;
   color: var(--text-color);
   font-size: 0.95rem;
   line-height: 1.4;
 }
 
-.tuition-fee-description-item:last-child {
+.tuitionFeeDescriptionItem:last-child {
   margin-bottom: 0;
 }
 
 /* Make sure the bullet points look nice in selected mode as well */
-.tuition-fee-card.selected .tuition-fee-description-item {
+.tuitionFeeCard.selected .tuitionFeeDescriptionItem {
   color: var(--primary-color-dark);
 }

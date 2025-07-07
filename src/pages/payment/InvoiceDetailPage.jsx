@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   getInvoiceDetails, 
   downloadInvoicePdf, 
   getInvoiceInfo 
-} from './InvoiceDetailService';
+} from '../../services/PaymentHistoryService';
 import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import { useReactToPrint } from 'react-to-print';
-import './InvoiceDetailPage.css';
+import styles from './InvoiceDetailPage.module.css';
 
 const InvoiceDetailPage = () => {
   const { invoiceId } = useParams();
@@ -203,7 +203,7 @@ const InvoiceDetailPage = () => {
         icon: 'fa-check-circle',
         color: 'var(--success-color)',
         bgColor: 'rgba(76, 175, 80, 0.1)',
-        class: 'status-success'
+        statusClass: styles.statusSuccess
       };
     } else if (status === 'pending') {
       return {
@@ -211,7 +211,7 @@ const InvoiceDetailPage = () => {
         icon: 'fa-clock',
         color: 'var(--warning-color)',
         bgColor: 'rgba(255, 152, 0, 0.1)',
-        class: 'status-pending'
+        statusClass: styles.statusPending
       };
     } else if (status === 'failed') {
       return {
@@ -219,7 +219,7 @@ const InvoiceDetailPage = () => {
         icon: 'fa-times-circle',
         color: 'var(--danger-color)',
         bgColor: 'rgba(244, 67, 54, 0.1)',
-        class: 'status-failed'
+        statusClass: styles.statusFailed
       };
     } else {
       return {
@@ -227,7 +227,7 @@ const InvoiceDetailPage = () => {
         icon: 'fa-info-circle',
         color: 'var(--text-medium)',
         bgColor: 'rgba(120, 144, 156, 0.1)',
-        class: 'status-other'
+        statusClass: styles.statusOther
       };
     }
   };
@@ -235,18 +235,18 @@ const InvoiceDetailPage = () => {
   const status = getStatusDisplay();
 
   return (
-    <div className="invoice-detail-page">
+    <div className={styles.invoiceDetailPage}>
       <ProcessingSpinner isVisible={loading} message="Loading invoice information..." />
       
-      <div className="invoice-detail-container">
-        <div className={`invoice-premium-actions ${isVisible ? 'visible' : ''}`}>
-          <button onClick={handleGoBack} className="invoice-back-button">
+      <div className={styles.invoiceDetailContainer}>
+        <div className={`${styles.invoicePremiumActions} ${isVisible ? styles.visible : ''}`}>
+          <button onClick={handleGoBack} className={styles.invoiceBackButton}>
             <i className="fas fa-arrow-left"></i> Back
           </button>
-          <div className="invoice-actions-right">
+          <div className={styles.invoiceActionsRight}>
             <button 
               type="button" 
-              className="invoice-action-button invoice-print-button"
+              className={`${styles.invoiceActionButton} ${styles.invoicePrintButton}`}
               onClick={handlePrint}
               disabled={loading || printLoading}
             >
@@ -255,7 +255,7 @@ const InvoiceDetailPage = () => {
             </button>
             <button 
               type="button" 
-              className="invoice-action-button invoice-download-button" 
+              className={`${styles.invoiceActionButton} ${styles.invoiceDownloadButton}`} 
               onClick={handleDownloadPdf}
               disabled={loading || pdfLoading}
             >
@@ -265,55 +265,61 @@ const InvoiceDetailPage = () => {
           </div>
         </div>
         
-        <div className={`invoice-premium-card ${isVisible ? 'visible' : ''}`} ref={printComponentRef}>
+        <div className={`${styles.invoicePremiumCard} ${isVisible ? styles.visible : ''}`} ref={printComponentRef}>
           {/* Watermark */}
-          <div className="invoice-watermark">
-            {status && status.label === 'Đã thanh toán' ? (
-              <div className="paid-watermark">
-                  <span>PAID</span>
-              </div>
-            ) : status && status.label === 'Failed' ? (
-              <div className="failed-watermark">
-                <span>FAILED</span>
-              </div>
-            ) : status && status.label === 'Pending' ? (
-              <div className="pending-watermark">
-                <span>PENDING</span>
-              </div>
-            ) : null}
+          <div className={styles.invoiceWatermark}>
+            {status && (
+              <>
+                {status.label === 'Paid' && (
+                  <div className={styles.paidWatermark}>
+                    <span>PAID</span>
+                  </div>
+                )}
+                {status.label === 'Failed' && (
+                  <div className={styles.failedWatermark}>
+                    <span>FAILED</span>
+                  </div>
+                )}
+                {status.label === 'Pending' && (
+                  <div className={styles.pendingWatermark}>
+                    <span>PENDING</span>
+                  </div>
+                )}
+              </>
+            )}
           </div>
           
           {/* Top decoration */}
-          <div className="invoice-top-decoration"></div>
+          <div className={styles.invoiceTopDecoration}></div>
           
           {/* Invoice header */}
-          <div className="invoice-premium-header">
-            <div className="invoice-brand">
-              <div className="brand-logo">
+          <div className={styles.invoicePremiumHeader}>
+            <div className={styles.invoiceBrand}>
+              <div className={styles.brandLogo}>
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
                 </svg>
               </div>
-              <div className="brand-info">
+              <div className={styles.brandInfo}>
                 <h1>Little Stars Preschool</h1>
                 <p>123 Đường Giáo Dục, Quận 1, TP. Hồ Chí Minh</p>
                 <p>+84 28 1234 5678 | info@littlestars.edu.vn</p>
               </div>
             </div>
-            <div className="invoice-premium-title">
+            <div className={styles.invoicePremiumTitle}>
               <h2>INVOICE</h2>
-              <div className="invoice-premium-details">
-                <div className="invoice-detail-item">
-                  <span className="label">Invoice ID:</span>
-                  <span className="value">{invoiceInfo?.id || 'N/A'}</span>
+              <div className={styles.invoicePremiumDetails}>
+                <div className={styles.invoiceDetailItem}>
+                  <span className={styles.label}>Invoice ID:</span>
+                  <span className={styles.value}>{invoiceInfo?.id || 'N/A'}</span>
                 </div>
-                <div className="invoice-detail-item">
-                  <span className="label">Date:</span>
-                  <span className="value">{invoiceInfo?.date ? formatDate(invoiceInfo.date) : 'N/A'}</span>
+                <div className={styles.invoiceDetailItem}>
+                  <span className={styles.label}>Date:</span>
+                  <span className={styles.value}>{invoiceInfo?.date ? formatDate(invoiceInfo.date) : 'N/A'}</span>
                 </div>
               </div>
               {status && (
-                <div className={`invoice-premium-status ${status.class}`}>
+                <div className={`${styles.invoicePremiumStatus} ${status.statusClass}`}>
                   <i className={`fas ${status.icon}`}></i>
                   <span>{status.label}</span>
                 </div>
@@ -322,71 +328,71 @@ const InvoiceDetailPage = () => {
           </div>
           
           {/* Customer information */}
-          <div className="invoice-customer-section">
-            <div className="invoice-detail-section-title">
+          <div className={styles.invoiceCustomerSection}>
+            <div className={styles.invoiceDetailSectionTitle}>
               <i className="fas fa-user-circle"></i>
               <h3>Customer information</h3>
             </div>
-            <div className="customer-info-grid">
-              <div className="customer-info-item">
-                <span className="label">Child:</span>
-                <span className="value highlight">{invoiceInfo?.childrenName || 'N/A'}</span>
+            <div className={styles.customerInfoGrid}>
+              <div className={styles.customerInfoItem}>
+                <span className={styles.label}>Child:</span>
+                <span className={`${styles.value} ${styles.highlight}`}>{invoiceInfo?.childrenName || 'N/A'}</span>
               </div>
-              <div className="customer-info-item">
-                <span className="label">Parent:</span>
-                <span className="value">{invoiceInfo?.parentName || 'N/A'}</span>
+              <div className={styles.customerInfoItem}>
+                <span className={styles.label}>Parent:</span>
+                <span className={styles.value}>{invoiceInfo?.parentName || 'N/A'}</span>
               </div>
-              <div className="customer-info-item">
-                <span className="label">Email:</span>
-                <span className="value">{invoiceInfo?.parentEmail || 'N/A'}</span>
+              <div className={styles.customerInfoItem}>
+                <span className={styles.label}>Email:</span>
+                <span className={styles.value}>{invoiceInfo?.parentEmail || 'N/A'}</span>
               </div>
-              <div className="customer-info-item">
-                <span className="label">Phone:</span>
-                <span className="value">{invoiceInfo?.parentPhone || 'N/A'}</span>
+              <div className={styles.customerInfoItem}>
+                <span className={styles.label}>Phone:</span>
+                <span className={styles.value}>{invoiceInfo?.parentPhone || 'N/A'}</span>
               </div>
             </div>
           </div>
           
           {/* Invoice items table */}
-          <div className="invoice-items-section">
-            <div className="invoice-detail-section-title">
+          <div className={styles.invoiceItemsSection}>
+            <div className={styles.invoiceDetailSectionTitle}>
               <i className="fas fa-file-invoice-dollar"></i>
               <h3>Payment details</h3>
             </div>
-            <div className="premium-table-container">
-              <table className="premium-invoice-table">
+            <div className={styles.premiumTableContainer}>
+              <table className={styles.premiumInvoiceTable}>
                 <thead>
                   <tr>
                     <th width="5%">#</th>
-                    <th className="text-left" width="65%">Content</th>
-                    <th className="text-center" width="30%">Price</th>
+                    <th className={styles.textLeft} width="65%">Content</th>
+                    <th className={styles.textCenter} width="30%">Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   {parsedLineItems.length > 0 ? (
                     parsedLineItems.map((item, index) => (
-                      <tr key={`line-item-${index}`} className="item-row">
+                      <tr key={`line-item-${index}`} className={styles.itemRow}>
                         <td>{index + 1}</td>
-                        <td className="text-left item-name">{item.itemName}</td>
-                        <td className="text-right item-price">{formatCurrency(item.amount)}</td>
+                        <td className={`${styles.itemName} ${styles.textLeft}`}>{item.itemName}</td>
+                        <td className={`${styles.itemPrice} ${styles.textRight}`}>{formatCurrency(item.amount)}</td>
                       </tr>
                     ))
                   ) : (
                     invoiceDetails.map((item, index) => (
-                      <tr key={`${item.invoiceID}-${index}`} className="item-row">
+                      <tr key={`${item.invoiceID}-${index}`} className={styles.itemRow}>
                         <td>{index + 1}</td>
-                        <td className="text-left item-name">
+                        <td className={`${styles.itemName} ${styles.textLeft}`}>
                           {item.programName === null ? item.tuitionFeeName : item.programName}
                         </td>
-                        <td className="text-right item-price">{formatCurrency(item.price)}</td>
+                        <td className={`${styles.itemPrice} ${styles.textRight}`}>{formatCurrency(item.price)}</td>
                       </tr>
                     ))
                   )}
                 </tbody>
                 <tfoot>
-                  <tr className="total-row">
-                    <td colSpan="2" className="text-right"><strong>Total:</strong></td>
-                    <td className="text-right total-amount">
+                  <tr className={styles.totalRow}>
+                    <td colSpan="2" className={`${styles.textRight} ${styles.totalAmount}`}><strong>Total:</strong></td>
+                    <td className={`${styles.textRight} ${styles.totalAmount}`}>
                       {parsedLineItems.length > 0 
                         ? formatCurrency(calculateTotal())
                         : formatCurrency(invoiceDetails.reduce((sum, item) => sum + (item.price || 0), 0))}
@@ -398,41 +404,41 @@ const InvoiceDetailPage = () => {
           </div>
         
           {/* Footer */}
-          <div className="invoice-premium-footer">
-            <div className="footer-notes">
-              <div className="note-item">
+          <div className={styles.invoicePremiumFooter}>
+            <div className={styles.footerNotes}>
+              <div className={styles.noteItem}>
                 <i className="fas fa-info-circle"></i>
                 <p>This invoice is a proof of payment from Little Stars Preschool.</p>
               </div>
-              <div className="note-item">
+              <div className={styles.noteItem}>
                 <i className="fas fa-exclamation-triangle"></i>
                 <p>Tuition fees paid are not refundable except in special cases specified in the terms.</p>
               </div>
             </div>
             
-            <div className="footer-signatures">
-              <div className="signature-block">
-                <div className="signature-line"></div>
-                <p className="signature-title">Invoice maker</p>
+            <div className={styles.footerSignatures}>
+              <div className={styles.signatureBlock}>
+                <div className={styles.signatureLine}></div>
+                <p className={styles.signatureTitle}>Invoice maker</p>
               </div>
-              <div className="signature-block">
-                <div className="signature-line"></div>
-                <p className="signature-title">Parent</p>
+              <div className={styles.signatureBlock}>
+                <div className={styles.signatureLine}></div>
+                <p className={styles.signatureTitle}>Parent</p>
               </div>
             </div>
             
-            <div className="invoice-barcode">
-              <svg className="barcode-image" viewBox="0 0 200 40">
+            <div className={styles.invoiceBarcode}>
+              <svg className={styles.barcodeImage} viewBox="0 0 200 40">
                 {[...Array(40)].map((_, i) => (
                   <rect key={i} x={i * 5} y={0} width={Math.random() > 0.3 ? 2 : 1} height="40" fill="#333" />
                 ))}
               </svg>
-              <div className="invoice-id-display">{invoiceInfo?.id || 'N/A'}</div>
+              <div className={styles.invoiceIdDisplay}>{invoiceInfo?.id || 'N/A'}</div>
             </div>
             
-            <div className="footer-contact">
+            <div className={styles.footerContact}>
               <p>© {new Date().getFullYear()} Little Stars Preschool - All rights reserved</p>
-              <div className="social-icons">
+              <div className={styles.socialIcons}>
                 <i className="fab fa-facebook"></i>
                 <i className="fab fa-instagram"></i>
                 <i className="fab fa-youtube"></i>

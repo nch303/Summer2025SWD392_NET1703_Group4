@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getChildClassInfo } from '../../services/ProfileService';
-import './ChildCommunicationBook.css';
+import styles from './ChildCommunicationBook.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
@@ -27,7 +27,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
   // Hiệu ứng cho indicator
   useEffect(() => {
     if (activeTabRef.current && tabsRef.current) {
-      const tabElement = document.querySelector(`.communication-tab[data-tab="${activeTab}"]`);
+      const tabElement = document.querySelector(`.${styles.communicationTab}[data-tab="${activeTab}"]`);
 
       if (tabElement) {
         const tabsContainer = tabsRef.current;
@@ -56,7 +56,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
     if (classesInfo && classesInfo.length > 0) {
       const years = [...new Set(classesInfo.map(item => item.classResponse.academicYear))].sort();
       setAcademicYears(years);
-      
+
       // Set the most recent year as default
       if (years.length > 0 && !selectedAcademicYear) {
         setSelectedAcademicYear(years[years.length - 1]);
@@ -71,7 +71,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
         item => item.classResponse.academicYear === selectedAcademicYear
       );
       setFilteredClasses(filtered);
-      
+
       // Reset selected class index when filter changes
       setSelectedClassIndex(0);
     } else {
@@ -102,9 +102,9 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
       const isOverflowing = tabsContainer.scrollWidth > tabsContainer.clientWidth;
 
       if (isOverflowing) {
-        tabsContainer.classList.add('has-overflow');
+        tabsContainer.classList.add(styles.hasOverflow);
       } else {
-        tabsContainer.classList.remove('has-overflow');
+        tabsContainer.classList.remove(styles.hasOverflow);
       }
     }
   };
@@ -218,7 +218,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
   useEffect(() => {
     if (filteredClasses.length > 0) {
       const newSelectedMonths = {};
-      
+
       filteredClasses.forEach(classItem => {
         if (classItem.attendanceResponses && classItem.attendanceResponses.length > 0) {
           const grouped = groupAttendanceByMonth(classItem.attendanceResponses);
@@ -227,13 +227,13 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
             const [monthB, yearB] = b.split('-').map(Number);
             return yearB - yearA || monthB - monthA;
           });
-          
+
           if (months.length > 0) {
             newSelectedMonths[classItem.id] = months[0];
           }
         }
       });
-      
+
       setSelectedMonths(newSelectedMonths);
     }
   }, [filteredClasses]);
@@ -244,18 +244,18 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={onClose}>
       <div
-        className="modal-content communication-book-modal"
+        className={`${styles.modalContent} ${styles.communicationBookModal}`}
         onClick={e => e.stopPropagation()}
       >
-        <div className="modal-header">
+        <div className={styles.modalHeader}>
           <h3>
             <FontAwesomeIcon icon="book" />
             Child communication book
           </h3>
           <button
-            className="modal-close-btn"
+            className={styles.modalCloseBtn}
             onClick={onClose}
             aria-label="Close"
           >
@@ -264,25 +264,25 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
         </div>
 
         {isLoading ? (
-          <div className="modal-body communication-book-loading">
-            <div className="profile-loading-spinner"></div>
+          <div className={`${styles.modalBody} ${styles.communicationBookLoading}`}>
+            <div className={styles.profileLoadingSpinner}></div>
             <p>Loading information...</p>
           </div>
         ) : error ? (
-          <div className="modal-body">
-            <div className="error-message">
+          <div className={styles.modalBody}>
+            <div className={styles.errorMessage}>
               <FontAwesomeIcon icon="exclamation-circle" />
               <p>{error}</p>
             </div>
           </div>
         ) : childInfo ? (
           <>
-            <div className="communication-book-tabs" ref={tabsRef} style={{
+            <div className={`${styles.communicationBookTabs}`} ref={tabsRef} style={{
               '--indicator-left': '0px',
               '--indicator-width': '0px'
             }}>
               <button
-                className={`communication-tab ${activeTab === 'personal' ? 'active' : ''}`}
+                className={`${styles.communicationTab} ${activeTab === 'personal' ? styles.active : ''}`}
                 onClick={() => setActiveTab('personal')}
                 data-tab="personal"
                 ref={activeTab === 'personal' ? activeTabRef : null}
@@ -291,7 +291,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                 <span>Personal information</span>
               </button>
               <button
-                className={`communication-tab ${activeTab === 'parent' ? 'active' : ''}`}
+                className={`${styles.communicationTab} ${activeTab === 'parent' ? styles.active : ''}`}
                 onClick={() => setActiveTab('parent')}
                 data-tab="parent"
                 ref={activeTab === 'parent' ? activeTabRef : null}
@@ -300,7 +300,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                 <span>Parent information</span>
               </button>
               <button
-                className={`communication-tab ${activeTab === 'class' ? 'active' : ''}`}
+                className={`${styles.communicationTab} ${activeTab === 'class' ? styles.active : ''}`}
                 onClick={() => setActiveTab('class')}
                 data-tab="class"
                 ref={activeTab === 'class' ? activeTabRef : null}
@@ -309,7 +309,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                 <span>Class information</span>
               </button>
               <button
-                className={`communication-tab ${activeTab === 'attendance' ? 'active' : ''}`}
+                className={`${styles.communicationTab} ${activeTab === 'attendance' ? styles.active : ''}`}
                 onClick={() => setActiveTab('attendance')}
                 data-tab="attendance"
                 ref={activeTab === 'attendance' ? activeTabRef : null}
@@ -319,12 +319,12 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
               </button>
             </div>
 
-            <div className="modal-body communication-book-content">
+            <div className={`${styles.modalBody} ${styles.communicationBookContent}`}>
               {activeTab === 'personal' && (
-                <div className="communication-tab-panel">
+                <div className={`${styles.communicationTabPanel}`}>
 
-                  <div className="communication-book-header">
-                    <div className="communication-book-avatar">
+                  <div className={styles.communicationBookHeader}>
+                    <div className={styles.communicationBookAvatar}>
                       {childInfo.childrenResponse.avatar ? (
                         <img
                           src={childInfo.childrenResponse.avatar}
@@ -334,24 +334,24 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                         <FontAwesomeIcon icon="child" size="3x" />
                       )}
                     </div>
-                    <div className="communication-book-header-info">
+                    <div className={styles.communicationBookHeaderInfo}>
                       <h2>{childInfo.childrenResponse.name}</h2>
-                      <div className="communication-book-badges">
-                        <div className={`gender-badge ${childInfo.childrenResponse.gender === 'Male' ? 'male' : 'female'}`}>
+                      <div className={styles.communicationBookBadges}>
+                        <div className={`${styles.genderBadge} ${childInfo.childrenResponse.gender === 'Male' ? styles.male : styles.female}`}>
                           <FontAwesomeIcon icon={childInfo.childrenResponse.gender === 'Male' ? 'mars' : 'venus'} />
                           {childInfo.childrenResponse.gender === 'Male' ? 'Male' : 'Female'}
                         </div>
-                        <div className="age-badge">
+                        <div className={styles.ageBadge}>
                           <FontAwesomeIcon icon="birthday-cake" />
                           {calculateAge(childInfo.childrenResponse.birthday)}
                         </div>
                         {childInfo.childrenResponse.city && (
-                          <div className="city-badge">
+                          <div className={styles.cityBadge}>
                             <FontAwesomeIcon icon="map-marker-alt" />
                             {childInfo.childrenResponse.city}
                           </div>
                         )}
-                        <div className={`status-badge ${childInfo.childrenResponse.status === 'Active' ? 'active' : 'inactive'}`}>
+                        <div className={`${styles.statusBadge} ${childInfo.childrenResponse.status === 'Active' ? styles.active : styles.inactive}`}>
                           <FontAwesomeIcon icon={childInfo.childrenResponse.status === 'Active' ? 'check-circle' : 'times-circle'} />
                           {childInfo.childrenResponse.status === 'Active' ? 'Enrolled' : 'Not enrolled'}
                         </div>
@@ -359,43 +359,43 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                     </div>
                   </div>
 
-                  <div className="communication-book-section">
+                  <div className={styles.communicationBookSection}>
                     <h4>
                       <FontAwesomeIcon icon="info-circle" />
                       Detailed information
                     </h4>
-                    <div className="communication-book-info-grid">
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon="user" /> Name</span>
-                        <span className="info-value">{childInfo.childrenResponse.name}</span>
+                    <div className={styles.communicationBookInfoGrid}>
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="user" /> Name</span>
+                        <span className={styles.infoValue}>{childInfo.childrenResponse.name}</span>
                       </div>
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon="birthday-cake" /> Birthday</span>
-                        <span className="info-value">{formatDate(childInfo.childrenResponse.birthday)}</span>
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="birthday-cake" /> Birthday</span>
+                        <span className={styles.infoValue}>{formatDate(childInfo.childrenResponse.birthday)}</span>
                       </div>
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon={childInfo.childrenResponse.gender === 'Male' ? 'mars' : 'venus'} /> Gender</span>
-                        <span className="info-value">{childInfo.childrenResponse.gender === 'Male' ? 'Male' : 'Female'}</span>
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon={childInfo.childrenResponse.gender === 'Male' ? 'mars' : 'venus'} /> Gender</span>
+                        <span className={styles.infoValue}>{childInfo.childrenResponse.gender === 'Male' ? 'Male' : 'Female'}</span>
                       </div>
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon="map-marker-alt" /> City</span>
-                        <span className="info-value">{childInfo.childrenResponse.city || 'Not updated'}</span>
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="map-marker-alt" /> City</span>
+                        <span className={styles.infoValue}>{childInfo.childrenResponse.city || 'Not updated'}</span>
                       </div>
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon="school" /> Grade level</span>
-                        <span className="info-value">{childInfo.childrenResponse.gradeLevelName || 'Not determined'}</span>
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="school" /> Grade level</span>
+                        <span className={styles.infoValue}>{childInfo.childrenResponse.gradeLevelName || 'Not determined'}</span>
                       </div>
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon="calendar-plus" /> Enroll date</span>
-                        <span className="info-value">
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="calendar-plus" /> Enroll date</span>
+                        <span className={styles.infoValue}>
                           {childInfo.childrenResponse.enrollDate && childInfo.childrenResponse.enrollDate !== '0001-01-01T00:00:00'
                             ? formatDate(childInfo.childrenResponse.enrollDate)
                             : 'Not determined'}
                         </span>
                       </div>
-                      <div className="info-item">
-                        <span className="info-label"><FontAwesomeIcon icon="check-circle" /> Status</span>
-                        <span className="info-value status-text">
+                      <div className={styles.infoItem}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="check-circle" /> Status</span>
+                        <span className={`${styles.infoValue} ${styles.statusText}`}>
                           {childInfo.childrenResponse.status === 'Active' ? 'Enrolled' : 'Not enrolled'}
                         </span>
                       </div>
@@ -403,22 +403,18 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                   </div>
 
                   {childInfo.childrenResponse.birthCertificate && (
-                    <div className="communication-book-section">
+                    <div className={styles.communicationBookSection}>
                       <h4>
                         <FontAwesomeIcon icon="certificate" />
                         Birth certificate
                       </h4>
-                      <div className="birth-certificate-container">
+                      <div className={styles.birthCertificateContainer}>
                         <img
                           src={childInfo.childrenResponse.birthCertificate}
                           alt="Birth certificate"
-                          className="birth-certificate-img"
+                          className={styles.birthCertificateImg}
                           onClick={() => window.open(childInfo.childrenResponse.birthCertificate, '_blank')}
                         />
-                        <div className="view-certificate-overlay">
-                          <FontAwesomeIcon icon="search-plus" />
-                          <span>View details</span>
-                        </div>
                       </div>
                     </div>
                   )}
@@ -426,29 +422,29 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
               )}
 
               {activeTab === 'parent' && (
-                <div className="communication-tab-panel">
+                <div className={styles.communicationTabPanel}>
 
-                  <div className="communication-book-section">
+                  <div className={styles.communicationBookSection}>
                     <h4>
                       <FontAwesomeIcon icon="user-friends" />
                       Parent information
                     </h4>
-                    <div className="communication-book-info-grid">
-                      <div className="info-item highlight">
-                        <span className="info-label"><FontAwesomeIcon icon="user" /> Name</span>
-                        <span className="info-value">{childInfo.childrenResponse.parentName || 'Not updated'}</span>
+                    <div className={styles.communicationBookInfoGrid}>
+                      <div className={`${styles.infoItem} ${styles.highlight}`}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="user" /> Name</span>
+                        <span className={styles.infoValue}>{childInfo.childrenResponse.parentName || 'Not updated'}</span>
                       </div>
-                      <div className="info-item highlight">
-                        <span className="info-label"><FontAwesomeIcon icon="phone" /> Phone number</span>
-                        <span className="info-value">{childInfo.childrenResponse.phoneNumber || 'Not updated'}</span>
+                      <div className={`${styles.infoItem} ${styles.highlight}`}>
+                        <span className={styles.infoLabel}><FontAwesomeIcon icon="phone" /> Phone number</span>
+                        <span className={styles.infoValue}>{childInfo.childrenResponse.phoneNumber || 'Not updated'}</span>
                       </div>
                     </div>
 
-                    <div className="quick-contact">
-                      <button className="contact-btn contact-phone" onClick={() => window.location.href = `tel:${childInfo.childrenResponse.phoneNumber}`}>
+                    <div className={styles.quickContact}>
+                      <button className={`${styles.contactBtn} ${styles.contactPhone}`} onClick={() => window.location.href = `tel:${childInfo.childrenResponse.phoneNumber}`}>
                         <FontAwesomeIcon icon="phone" /> Call
                       </button>
-                      <button className="contact-btn contact-sms" onClick={() => window.location.href = `sms:${childInfo.childrenResponse.phoneNumber}`}>
+                      <button className={`${styles.contactBtn} ${styles.contactSms}`} onClick={() => window.location.href = `sms:${childInfo.childrenResponse.phoneNumber}`}>
                         <FontAwesomeIcon icon="sms" /> Send message
                       </button>
                     </div>
@@ -457,8 +453,8 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
               )}
 
               {activeTab === 'class' && (
-                <div className="communication-tab-panel">
-                  <div className="communication-book-summary-card">
+                <div className={styles.communicationTabPanel}>
+                  <div className={styles.communicationBookSummaryCard}>
                     <h5>
                       <FontAwesomeIcon icon="chalkboard" />
                       Class information
@@ -467,20 +463,20 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                   </div>
 
                   {academicYears.length > 0 && (
-                    <div className="academic-year-selector">
-                      <button 
-                        className="year-nav-button"
+                    <div className={styles.academicYearSelector}>
+                      <button
+                        className={styles.yearNavButton}
                         onClick={handlePrevYear}
                         disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                       >
                         <FontAwesomeIcon icon="chevron-left" />
                       </button>
-                      <div className="current-academic-year">
+                      <div className={styles.currentAcademicYear}>
                         <FontAwesomeIcon icon="calendar-alt" />
                         <span>{selectedAcademicYear}</span>
                       </div>
-                      <button 
-                        className="year-nav-button"
+                      <button
+                        className={styles.yearNavButton}
                         onClick={handleNextYear}
                         disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
                       >
@@ -489,15 +485,15 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                     </div>
                   )}
 
-                  <div className="class-selector">
+                  <div className={styles.classSelector}>
                     {filteredClasses.map((classItem, index) => (
                       <div
                         key={classItem.id}
-                        className={`class-card-small ${selectedClassIndex === index ? 'active' : ''} ${classItem.classResponse.gradeLevelName ? 'regular-class' : 'enrichment-class'}`}
+                        className={`${styles.classCardSmall} ${selectedClassIndex === index ? styles.active : ''} ${classItem.classResponse.gradeLevelName ? styles.regularClass : styles.enrichmentClass}`}
                         onClick={() => setSelectedClassIndex(index)}
                       >
-                        <div className="class-card-name">{classItem.classResponse.name}</div>
-                        <div className="class-card-grade">
+                        <div className={styles.classCardName}>{classItem.classResponse.name}</div>
+                        <div className={styles.classCardGrade}>
                           {classItem.classResponse.gradeLevelName ? (
                             <>
                               <FontAwesomeIcon icon="graduation-cap" />
@@ -514,78 +510,78 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                     ))}
                   </div>
 
-                  <div className="communication-book-section">
+                  <div className={styles.communicationBookSection}>
                     {selectedClassIndex !== null && filteredClasses.length > 0 && (
                       <>
-                        <div className="class-info-container">
-                          <div className="class-info-header">
-                            <div className="class-info-name">
+                        <div className={styles.classInfoContainer}>
+                          <div className={styles.classInfoHeader}>
+                            <div className={styles.className}>
                               <h3>{filteredClasses[selectedClassIndex].classResponse.name}</h3>
-                              <span className="class-grade-level">{filteredClasses[selectedClassIndex].classResponse.gradeLevelName || 'Enrichment'}</span>
+                              <span className={styles.classGradeLevel}>{filteredClasses[selectedClassIndex].classResponse.gradeLevelName || 'Enrichment'}</span>
                             </div>
-                            <div className="class-status-badge">
+                            <div className={styles.classStatusBadge}>
                               {filteredClasses[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}
                             </div>
                           </div>
 
-                          <div className="communication-book-info-grid">
-                            <div className="info-item">
-                              <span className="info-label"><FontAwesomeIcon icon="school" /> Class name</span>
-                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.name}</span>
+                          <div className={styles.communicationBookInfoGrid}>
+                            <div className={styles.infoItem}>
+                              <span className={styles.infoLabel}><FontAwesomeIcon icon="school" /> Class name</span>
+                              <span className={styles.infoValue}>{filteredClasses[selectedClassIndex].classResponse.name}</span>
                             </div>
                             {filteredClasses[selectedClassIndex].classResponse.gradeLevelName && (
-                              <div className="info-item">
-                                <span className="info-label"><FontAwesomeIcon icon="graduation-cap" /> Grade level</span>
-                                <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.gradeLevelName}</span>
+                              <div className={styles.infoItem}>
+                                <span className={styles.infoLabel}><FontAwesomeIcon icon="graduation-cap" /> Grade level</span>
+                                <span className={styles.infoValue}>{filteredClasses[selectedClassIndex].classResponse.gradeLevelName}</span>
                               </div>
                             )}
-                            <div className="info-item">
-                              <span className="info-label"><FontAwesomeIcon icon="book" /> Syllabus</span>
-                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.syllabusName}</span>
+                            <div className={styles.infoItem}>
+                              <span className={styles.infoLabel}><FontAwesomeIcon icon="book" /> Syllabus</span>
+                              <span className={styles.infoValue}>{filteredClasses[selectedClassIndex].classResponse.syllabusName}</span>
                             </div>
-                            <div className="info-item">
-                              <span className="info-label"><FontAwesomeIcon icon="calendar" /> Academic year</span>
-                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.academicYear}</span>
+                            <div className={styles.infoItem}>
+                              <span className={styles.infoLabel}><FontAwesomeIcon icon="calendar" /> Academic year</span>
+                              <span className={styles.infoValue}>{filteredClasses[selectedClassIndex].classResponse.academicYear}</span>
                             </div>
-                            <div className="info-item">
-                              <span className="info-label"><FontAwesomeIcon icon="users" /> Maximum number of students</span>
-                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.maxChildren} students</span>
+                            <div className={styles.infoItem}>
+                              <span className={styles.infoLabel}><FontAwesomeIcon icon="users" /> Maximum number of students</span>
+                              <span className={styles.infoValue}>{filteredClasses[selectedClassIndex].classResponse.maxChildren} students</span>
                             </div>
-                            <div className="info-item">
-                              <span className="info-label"><FontAwesomeIcon icon="flag" /> Status</span>
-                              <span className="info-value">{filteredClasses[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}</span>
+                            <div className={styles.infoItem}>
+                              <span className={styles.infoLabel}><FontAwesomeIcon icon="flag" /> Status</span>
+                              <span className={styles.infoValue}>{filteredClasses[selectedClassIndex].classResponse.status === 'Available' ? 'Active' : 'Closed'}</span>
                             </div>
                           </div>
 
-                          <div className="communication-book-class-capacity">
-                            <div className="capacity-bar">
+                          <div className={styles.communicationBookClassCapacity}>
+                            <div className={styles.capacityBar}>
                               <div
-                                className="capacity-filled"
+                                className={styles.capacityFilled}
                                 style={{ width: `${(filteredClasses[selectedClassIndex].classResponse.quantity / filteredClasses[selectedClassIndex].classResponse.maxChildren) * 100}%` }}
                               ></div>
                             </div>
-                            <div className="capacity-text">
+                            <div className={styles.capacityText}>
                               {filteredClasses[selectedClassIndex].classResponse.quantity}/{filteredClasses[selectedClassIndex].classResponse.maxChildren} students
                             </div>
                           </div>
 
                           {/* Phần giáo viên */}
-                          <h5 className="communication-book-teacher-section-title">Teacher</h5>
+                          <h5 className={styles.communicationBookTeacherSectionTitle}>Teacher</h5>
                           {filteredClasses[selectedClassIndex].teachers && filteredClasses[selectedClassIndex].teachers.length > 0 ? (
-                            <div className="communication-book-teachers-list">
+                            <div className={styles.communicationBookTeachersList}>
                               {filteredClasses[selectedClassIndex].teachers.map((teacher) => (
-                                <div key={teacher.id} className="communication-book-teacher-card">
-                                  <div className="communication-book-teacher-avatar">
+                                <div key={teacher.id} className={styles.communicationBookTeacherCard}>
+                                  <div className={styles.communicationBookTeacherAvatar}>
                                     <FontAwesomeIcon icon="user-tie" />
                                   </div>
-                                  <div className="communication-book-teacher-info">
+                                  <div className={styles.communicationBookTeacherInfo}>
                                     <h5>{teacher.fullName}</h5>
-                                    <div className="communication-book-teacher-contact">
-                                      <div className="communication-book-teacher-email">
+                                    <div className={styles.communicationBookTeacherContact}>
+                                      <div className={styles.communicationBookTeacherEmail}>
                                         <FontAwesomeIcon icon="envelope" />
                                         <span>{teacher.email}</span>
                                       </div>
-                                      <div className="communication-book-teacher-phone">
+                                      <div className={styles.communicationBookTeacherPhone}>
                                         <FontAwesomeIcon icon="phone" />
                                         <span>{teacher.phoneNumber}</span>
                                       </div>
@@ -595,7 +591,7 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                               ))}
                             </div>
                           ) : (
-                            <div className="communication-book-no-teachers-message">
+                            <div className={styles.communicationBookNoTeachersMessage}>
                               <FontAwesomeIcon icon="info-circle" />
                               <span>No teacher information</span>
                             </div>
@@ -608,8 +604,8 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
               )}
 
               {activeTab === 'attendance' && (
-                <div className="communication-tab-panel">
-                  <div className="communication-book-summary-card">
+                <div className={styles.communicationTabPanel}>
+                  <div className={styles.communicationBookSummaryCard}>
                     <h5>
                       <FontAwesomeIcon icon="calendar-check" />
                       Attendance
@@ -618,20 +614,20 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                   </div>
 
                   {academicYears.length > 0 && (
-                    <div className="academic-year-selector">
-                      <button 
-                        className="year-nav-button"
+                    <div className={styles.academicYearSelector}>
+                      <button
+                        className={styles.yearNavButton}
                         onClick={handlePrevYear}
                         disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                       >
                         <FontAwesomeIcon icon="chevron-left" />
                       </button>
-                      <div className="current-academic-year">
+                      <div className={styles.currentAcademicYear}>
                         <FontAwesomeIcon icon="calendar-alt" />
                         <span>{selectedAcademicYear}</span>
                       </div>
-                      <button 
-                        className="year-nav-button"
+                      <button
+                        className={styles.yearNavButton}
                         onClick={handleNextYear}
                         disabled={academicYears.indexOf(selectedAcademicYear) === academicYears.length - 1}
                       >
@@ -641,65 +637,65 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                   )}
 
                   {hasAttendanceData && (
-                    <div className="attendance-statistics">
-                      <div className="attendance-stat-card stat-attend">
-                        <div className="stat-number">{attendStats.attend}</div>
-                        <div className="communication-book-stat-label">Present</div>
+                    <div className={styles.attendanceStatistics}>
+                      <div className={`${styles.attendanceStatCard} ${styles.statAttend}`}>
+                        <div className={styles.statNumber}>{attendStats.attend}</div>
+                        <div className={styles.communicationBookStatLabel}>Present</div>
                       </div>
-                      <div className="attendance-stat-card stat-absent">
-                        <div className="stat-number">{attendStats.absent}</div>
-                        <div className="communication-book-stat-label">Absent</div>
+                      <div className={`${styles.attendanceStatCard} ${styles.statAbsent}`}>
+                        <div className={styles.statNumber}>{attendStats.absent}</div>
+                        <div className={styles.communicationBookStatLabel}>Absent</div>
                       </div>
                     </div>
                   )}
 
                   {filteredClasses.some(item => item.attendanceResponses && item.attendanceResponses.length > 0) ? (
-                    <div className="attendance-records">
+                    <div className={styles.attendanceRecords}>
                       {filteredClasses.map((classItem) => {
                         if (!classItem.attendanceResponses || classItem.attendanceResponses.length === 0) return null;
-                        
+
                         const groupedAttendance = groupAttendanceByMonth(classItem.attendanceResponses);
                         const availableMonths = Object.keys(groupedAttendance).sort((a, b) => {
                           const [monthA, yearA] = a.split('-').map(Number);
                           const [monthB, yearB] = b.split('-').map(Number);
                           return yearB - yearA || monthB - monthA;
                         });
-                        
+
                         const selectedMonth = selectedMonths[classItem.id] || (availableMonths.length > 0 ? availableMonths[0] : null);
-                        
-                        const monthNames = ["", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-                                          "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
-                        
+
+                        const monthNames = ["", "January", "February", "March", "April", "May", "June",
+                          "July", "August", "September", "October", "November", "December"];
+
                         // Format month year for display
                         let selectedMonthDisplay = '';
                         if (selectedMonth) {
                           const [month, year] = selectedMonth.split('-').map(Number);
                           selectedMonthDisplay = `${monthNames[month]} ${year}`;
                         }
-                        
+
                         return (
-                          <div key={classItem.id} className="class-attendance-block">
-                            <h5 className="class-attendance-title">
-                              <div className="class-title-content">
+                          <div key={classItem.id} className={styles.classAttendanceBlock}>
+                            <h5 className={styles.classAttendanceTitle}>
+                              <div className={styles.classTitleContent}>
                                 <FontAwesomeIcon icon="chalkboard" />
                                 <span>Class: {classItem.classResponse.name}</span>
                               </div>
-                              <div className={`class-type-badge ${classItem.classResponse.gradeLevelName ? 'regular' : 'enrichment'}`}>
+                              <div className={`${styles.classTypeBadge} ${classItem.classResponse.gradeLevelName ? styles.regular : styles.enrichment}`}>
                                 <FontAwesomeIcon icon={classItem.classResponse.gradeLevelName ? "graduation-cap" : "star"} />
                                 <span>{classItem.classResponse.gradeLevelName || "Enrichment"}</span>
                               </div>
                             </h5>
-                            
-                            <div className="month-selector">
-                              <div className="month-selector-buttons">
+
+                            <div className={styles.monthSelector}>
+                              <div className={styles.monthSelectorButtons}>
                                 {availableMonths.map(monthYear => {
                                   const [month, year] = monthYear.split('-').map(Number);
                                   const isSelected = selectedMonth === monthYear;
-                                  
+
                                   return (
-                                    <button 
+                                    <button
                                       key={monthYear}
-                                      className={`month-button ${isSelected ? 'active' : ''}`}
+                                      className={`${styles.monthButton} ${isSelected ? styles.active : ''}`}
                                       onClick={() => handleMonthSelect(classItem.id, monthYear)}
                                     >
                                       {monthNames[month]} {year}
@@ -708,14 +704,14 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                                 })}
                               </div>
                             </div>
-                            
+
                             {selectedMonth && groupedAttendance[selectedMonth] && (
-                              <div className="attendance-month">
-                                <div className="current-month-indicator">
+                              <div className={styles.attendanceMonth}>
+                                <div className={styles.currentMonthIndicator}>
                                   <FontAwesomeIcon icon="calendar-alt" />
                                   <span>Attendance for {selectedMonthDisplay}</span>
                                 </div>
-                                <div className="attendance-table">
+                                <div className={styles.attendanceTable}>
                                   <table>
                                     <thead>
                                       <tr>
@@ -726,10 +722,10 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                                     </thead>
                                     <tbody>
                                       {groupedAttendance[selectedMonth].map(record => (
-                                        <tr key={record.id} className={`attendance-${record.status.toLowerCase()}`}>
+                                        <tr key={record.id} className={`${styles.attendanceStatus} ${record.status.toLowerCase()}`}>
                                           <td>{formatDate(record.date)}</td>
                                           <td>
-                                            <span className={`attendance-status ${record.status.toLowerCase()}`}>
+                                            <span className={`${styles.attendanceStatus} ${styles[record.status.toLowerCase()]}`}>
                                               {mapAttendanceStatus(record.status)}
                                             </span>
                                           </td>
@@ -746,20 +742,20 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
                       })}
                     </div>
                   ) : (
-                    <div className="no-attendance-message">
+                    <div className={styles.noAttendanceMessage}>
                       <FontAwesomeIcon icon="info-circle" />
                       <span>No attendance information</span>
                     </div>
                   )}
 
-                  <div className="attendance-summary">
-                    <div className="attendance-legend">
-                      <div className="legend-item">
-                        <span className="legend-color attend"></span>
+                  <div className={styles.attendanceSummary}>
+                    <div className={styles.attendanceLegend}>
+                      <div className={styles.legendItem}>
+                        <span className={`${styles.legendColor} ${styles.attend}`}></span>
                         <span>Present</span>
                       </div>
-                      <div className="legend-item">
-                        <span className="legend-color absent"></span>
+                      <div className={styles.legendItem}>
+                        <span className={`${styles.legendColor} ${styles.absent}`}></span>
                         <span>Absent</span>
                       </div>
                     </div>
@@ -769,8 +765,8 @@ const ChildCommunicationBook = ({ isOpen, onClose, childId }) => {
             </div>
           </>
         ) : (
-          <div className="modal-body">
-            <div className="error-message">
+          <div className={styles.modalBody}>
+            <div className={styles.errorMessage}>
               <FontAwesomeIcon icon="exclamation-circle" />
               <p>No information found for the child</p>
             </div>
