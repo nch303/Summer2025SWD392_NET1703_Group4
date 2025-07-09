@@ -1,12 +1,12 @@
 /* Staff Dashboard Styles */
-.staff-dashboard-container {
+.staffDashboardContainer {
   padding: 24px;
   background-color: #f5f7fa;
   min-height: calc(100vh - 64px);
 }
 
 /* Welcome Header */
-.dashboard-welcome-header {
+.dashboardWelcomeHeader {
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
@@ -17,33 +17,33 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.welcome-content h1 {
+.welcomeContent h1 {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 4px;
   color: #262626;
 }
 
-.staff-name {
+.staffName {
   color: #4a6cf7;
 }
 
-.welcome-content p {
+.welcomeContent p {
   color: #595959;
   margin-bottom: 0;
 }
 
-.dashboard-date {
+.dashboardDate {
   color: #595959;
   font-size: 14px;
 }
 
 /* Stats Cards */
-.stats-row {
+.statsRow {
   margin-bottom: 24px;
 }
 
-.stat-card {
+.statCard {
   height: 100%;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -51,18 +51,18 @@
   overflow: hidden;
 }
 
-.stat-card .ant-statistic-title {
+.statCard .antStatisticTitle {
   color: #595959;
   font-size: 14px;
   margin-bottom: 12px;
 }
 
-.stat-card .ant-statistic-content {
+.statCard .antStatisticContent {
   font-size: 24px;
   font-weight: 600;
 }
 
-.stat-icon-wrapper {
+.statIconWrapper {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -76,13 +76,13 @@
 }
 
 /* Section Card */
-.section-card {
+.sectionCard {
   margin-bottom: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.staff-dashboard-section-title {
+.sectionTitle {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -91,13 +91,13 @@
 }
 
 /* Quick Access Cards */
-.quick-access-link {
+.quickAccessLink {
   text-decoration: none;
   display: block;
   height: 100%;
 }
 
-.quick-access-card {
+.quickAccessCard {
   height: 100%;
   transition: all 0.3s ease;
   position: relative;
@@ -106,19 +106,19 @@
   padding: 8px;
 }
 
-.quick-access-card:hover {
+.quickAccessCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.quick-access-header {
+.quickAccessHeader {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.quick-icon {
+.quickIcon {
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -128,21 +128,21 @@
   font-size: 20px;
 }
 
-.quick-access-header h3 {
+.quickAccessHeader h3 {
   font-size: 16px;
   font-weight: 600;
   margin: 0;
   color: #262626;
 }
 
-.quick-description {
+.quickDescription {
   color: #595959;
   font-size: 13px;
   margin-bottom: 16px;
   min-height: 40px;
 }
 
-.quick-access-arrow {
+.quickAccessArrow {
   position: absolute;
   bottom: 16px;
   right: 16px;
@@ -150,58 +150,58 @@
   transition: all 0.3s ease;
 }
 
-.quick-access-card:hover .quick-access-arrow {
+.quickAccessCard:hover .quickAccessArrow {
   transform: translateX(3px);
   color: #4a6cf7;
 }
 
 /* Applications List */
-.app-list-item {
+.appListItem {
   padding: 12px;
   border-radius: 8px;
   transition: all 0.2s;
 }
 
-.app-list-item:hover {
+.appListItem:hover {
   background-color: #f5f8ff;
 }
 
-.app-title {
+.appTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.app-description {
+.appDescription {
   display: flex;
   flex-direction: column;
 }
 
 /* Class Capacity List */
-.class-list-item {
+.classListItem {
   padding: 8px 0;
   margin-bottom: 0;
 }
 
-.class-capacity-item {
+.classCapacityItem {
   width: 100%;
 }
 
-.class-info {
+.classInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
 }
 
-.class-name {
+.className {
   display: flex;
   align-items: center;
   gap: 8px;
   max-width: 75%;
 }
 
-.class-name-text {
+.classNameText {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -209,23 +209,23 @@
   max-width: 150px;
 }
 
-.capacity-progress {
+.capacityProgress {
   margin-bottom: 0;
   height: 6px !important;
 }
 
 /* Todo List */
-.todo-card {
+.todoCard {
   margin-bottom: 24px;
 }
 
-.task-item-list {
+.taskItemList {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.task-item {
+.taskItem {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -235,19 +235,19 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-.task-item.priority-high {
+.taskItem.priorityHigh {
   border-left: 4px solid #ff4d4f;
 }
 
-.task-item.priority-medium {
+.taskItem.priorityMedium {
   border-left: 4px solid #faad14;
 }
 
-.task-item.priority-normal {
+.taskItem.priorityNormal {
   border-left: 4px solid #4a6cf7;
 }
 
-.task-icon {
+.taskIcon {
   font-size: 24px;
   width: 48px;
   height: 48px;
@@ -258,23 +258,23 @@
   border-radius: 10px;
 }
 
-.priority-high .task-icon {
+.priorityHigh .taskIcon {
   background-color: #ff4d4f;
 }
 
-.priority-medium .task-icon {
+.priorityMedium .taskIcon {
   background-color: #faad14;
 }
 
-.priority-normal .task-icon {
+.priorityNormal .taskIcon {
   background-color: #4a6cf7;
 }
 
-.task-content {
+.taskContent {
   flex: 1;
 }
 
-.task-title {
+.taskTitle {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -284,43 +284,51 @@
   color: #262626;
 }
 
-.task-description {
+.taskDescription {
   font-size: 14px;
   color: #595959;
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.stat-card, .section-card {
+.statCard,
+.sectionCard {
   animation: fadeIn 0.3s ease-out;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .dashboard-welcome-header {
+  .dashboardWelcomeHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
-  
-  .task-item {
+
+  .taskItem {
     flex-direction: column;
     align-items: flex-start;
   }
-  
-  .task-icon {
+
+  .taskIcon {
     margin-bottom: 12px;
   }
-  
-  .task-content {
+
+  .taskContent {
     margin-bottom: 16px;
   }
-  
-  .app-title {
+
+  .appTitle {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
@@ -328,65 +336,65 @@
 }
 
 /* Add these styles to make the class capacity list more compact */
-.class-capacity-card .ant-list {
+.classCapacityCard .antList {
   max-height: 350px;
   overflow-y: auto;
 }
 
-.class-list-item.compact {
+.classListItem.compact {
   padding: 8px 0;
   margin-bottom: 0;
 }
 
 /* Make the applications list height consistent */
-.app-list-item {
+.appListItem {
   padding: 12px;
   border-radius: 8px;
   transition: all 0.2s;
 }
 
 /* Make both cards the same height */
-.dashboard-sections .ant-list {
+.dashboardSections .antList {
   height: 350px;
   overflow-y: auto;
 }
 
 /* Custom scrollbar for lists */
-.dashboard-sections .ant-list::-webkit-scrollbar {
+.dashboardSections .antList::-webkit-scrollbar {
   width: 6px;
 }
 
-.dashboard-sections .ant-list::-webkit-scrollbar-track {
+.dashboardSections .antList::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 3px;
 }
 
-.dashboard-sections .ant-list::-webkit-scrollbar-thumb {
+.dashboardSections .antList::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 3px;
 }
 
-.staff-dashboard-ant-statistic-content{
+.staffDashboardAntStatisticContent {
   font-size: 24px;
   font-weight: 600;
 }
 
-.dashboard-sections .ant-list::-webkit-scrollbar-thumb:hover {
+.dashboardSections .antList::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
 
 /* Enhanced Class Capacity Styling */
-.class-capacity-card {
+.classCapacityCard {
   overflow: hidden;
 }
 
-.class-capacity-list {
+.classCapacityList {
   height: 350px;
   overflow-y: auto;
   padding-right: 10px;
 }
 
-.class-capacity-item-enhanced {
+.classCapacityItemEnhanced {
   cursor: pointer;
   padding: 12px;
   background-color: #fff;
@@ -396,26 +404,26 @@
   transition: all 0.2s ease;
 }
 
-.class-capacity-item-enhanced:hover {
+.classCapacityItemEnhanced:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
 }
 
-.class-main-info {
+.classMainInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.class-badge-name {
+.classBadgeName {
   display: flex;
   align-items: center;
   gap: 10px;
   max-width: 70%;
 }
 
-.class-type-badge {
+.classTypeBadge {
   min-width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -427,15 +435,15 @@
   color: white;
 }
 
-.class-type-badge.regular {
+.classTypeBadge.regular {
   background: linear-gradient(135deg, #4a6cf7, #2c4ad6);
 }
 
-.class-type-badge.enrichment {
+.classTypeBadge.enrichment {
   background: linear-gradient(135deg, #a46bf5, #8742e6);
 }
 
-.class-name-text {
+.classNameText {
   font-size: 14px;
   font-weight: 600;
   color: #262626;
@@ -445,7 +453,7 @@
   max-width: 200px;
 }
 
-.capacity-indicator {
+.capacityIndicator {
   font-size: 14px;
   font-weight: 600;
   padding: 4px 8px;
@@ -453,30 +461,30 @@
   background-color: #f5f7fa;
 }
 
-.capacity-full {
+.capacityFull {
   color: #ff4d4f;
 }
 
-.capacity-high {
+.capacityHigh {
   color: #faad14;
 }
 
-.capacity-medium {
+.capacityMedium {
   color: #52c41a;
 }
 
-.capacity-low {
+.capacityLow {
   color: #1890ff;
 }
 
-.capacity-progress-container {
+.capacityProgressContainer {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 8px;
 }
 
-.capacity-progress-bar {
+.capacityProgressBar {
   flex: 1;
   height: 6px;
   background-color: #f0f0f0;
@@ -484,28 +492,28 @@
   overflow: hidden;
 }
 
-.capacity-progress-fill {
+.capacityProgressFill {
   height: 100%;
   border-radius: 3px;
 }
 
-.capacity-progress-fill.full {
+.capacityProgressFill.full {
   background: linear-gradient(90deg, #ff4d4f, #ff7875);
 }
 
-.capacity-progress-fill.high {
+.capacityProgressFill.high {
   background: linear-gradient(90deg, #faad14, #ffc53d);
 }
 
-.capacity-progress-fill.medium {
+.capacityProgressFill.medium {
   background: linear-gradient(90deg, #52c41a, #73d13d);
 }
 
-.capacity-progress-fill.low {
+.capacityProgressFill.low {
   background: linear-gradient(90deg, #1890ff, #40a9ff);
 }
 
-.capacity-percentage {
+.capacityPercentage {
   font-size: 12px;
   font-weight: 600;
   color: #595959;
@@ -513,16 +521,16 @@
   text-align: right;
 }
 
-.class-teachers {
+.classTeachers {
   margin-top: 8px;
 }
 
-.teacher-avatars {
+.teacherAvatars {
   display: flex;
   gap: 4px;
 }
 
-.teacher-avatar {
+.teacherAvatar {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -536,41 +544,41 @@
   font-weight: 600;
 }
 
-.teacher-avatar.more {
+.teacherAvatar.more {
   background-color: #f0f0f0;
   color: #595959;
 }
 
 /* Custom scrollbar for lists */
-.class-capacity-list::-webkit-scrollbar {
+.classCapacityList::-webkit-scrollbar {
   width: 6px;
 }
 
-.class-capacity-list::-webkit-scrollbar-track {
+.classCapacityList::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 3px;
 }
 
-.class-capacity-list::-webkit-scrollbar-thumb {
+.classCapacityList::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 3px;
 }
 
-.class-capacity-list::-webkit-scrollbar-thumb:hover {
+.classCapacityList::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
 
 /* Add tooltip styling for class hover */
-.class-tooltip-content {
+.classTooltipContent {
   font-size: 13px;
   padding: 2px 0;
 }
 
-.tooltip-title {
+.tooltipTitle {
   font-weight: 600;
   margin-bottom: 4px;
 }
 
-.tooltip-content {
+.tooltipContent {
   color: rgba(255, 255, 255, 0.9);
 }

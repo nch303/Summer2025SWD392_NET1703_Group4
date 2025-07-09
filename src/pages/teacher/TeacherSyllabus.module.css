@@ -1,19 +1,19 @@
-.teacher-syllabus-container {
+.teacherSyllabusContainer {
   padding: 24px 0;
 }
 
-.syllabus-header-section {
+.syllabusHeaderSection {
   margin-bottom: 24px;
 }
 
-.header-top {
+.headerTop {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
 }
 
-.header-left h2 {
+.headerLeft h2 {
   margin-bottom: 8px;
   font-weight: 700;
   font-size: 28px;
@@ -23,19 +23,19 @@
   color: transparent;
 }
 
-.header-actions {
+.headerActions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
 }
 
-.search-filter {
+.searchFilter {
   display: flex;
   gap: 12px;
 }
 
-.loading-container {
+.loadingContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,33 +44,33 @@
   gap: 16px;
 }
 
-.syllabi-table {
+.syllabiTable {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.syllabus-tabs .ant-tabs-nav {
+.syllabusTabs .ant-tabs-nav {
   margin-bottom: 24px;
 }
 
-.syllabus-tabs .ant-tabs-tab {
+.syllabusTabs .ant-tabs-tab {
   padding: 12px 20px;
 }
 
-.syllabus-tabs .ant-tabs-tab-active {
+.syllabusTabs .ant-tabs-tab-active {
   font-weight: 600;
 }
 
 /* Progress cell styling */
-.progress-cell {
+.progressCell {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
 }
 
-.progress-bar {
+.progressBar {
   height: 8px;
   border-radius: 4px;
   background-color: #f5f5f5;
@@ -79,43 +79,43 @@
 }
 
 /* Syllabus detail styling */
-.syllabus-header {
+.syllabusHeader {
   display: flex;
   align-items: center;
   gap: 24px;
   margin-bottom: 24px;
 }
 
-.syllabus-avatar {
+.syllabusAvatar {
   background: linear-gradient(135deg, #1677ff, #39c0ed);
   color: white !important;
 }
 
-.syllabus-title h3 {
+.syllabusTitle h3 {
   margin-bottom: 8px;
 }
 
-.syllabus-tags {
+.syllabusTags {
   display: flex;
   gap: 8px;
 }
 
-.syllabus-descriptions {
+.syllabusDescriptions {
   margin-bottom: 24px;
 }
 
-.syllabus-units {
+.syllabusUnits {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.unit-card {
+.unitCard {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.unit-progress-bar {
+.unitProgressBar {
   height: 8px;
   background-color: #f5f5f5;
   border-radius: 4px;
@@ -123,12 +123,12 @@
   overflow: hidden;
 }
 
-.progress-fill {
+.progressFill {
   height: 100%;
   border-radius: 4px;
 }
 
-.unit-actions {
+.unitActions {
   display: flex;
   gap: 12px;
   margin-top: 16px;
@@ -136,30 +136,30 @@
 
 /* Responsive styling */
 @media (max-width: 992px) {
-  .header-top {
+  .headerTop {
     flex-direction: column;
     gap: 16px;
   }
-  
-  .header-right {
+
+  .headerRight {
     align-self: flex-start;
   }
-  
-  .header-actions {
+
+  .headerActions {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
-  .search-filter {
+
+  .searchFilter {
     width: 100%;
   }
-  
-  .search-filter .ant-input-search {
+
+  .searchFilter .ant-input-search {
     width: 100%;
   }
-  
-  .syllabus-header {
+
+  .syllabusHeader {
     flex-direction: column;
     align-items: flex-start;
   }

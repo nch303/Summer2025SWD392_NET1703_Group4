@@ -32,6 +32,21 @@ export const getChildById = async (id) => {
 };
 
 /**
+ * Lấy thông tin chi tiết một học sinh theo ID
+ * @param {string} id - ID của học sinh
+ * @returns {Promise<Object>} Thông tin chi tiết học sinh
+ */
+export const getClassChildrenByChildId = async (id) => {
+  try {
+    const response = await api.get(`/api/ClassChildren/GetByChildID/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching child details with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
  * Tạo mới học sinh
  * @param {Object} childData - Dữ liệu học sinh cần tạo
  * @returns {Promise<Object>} Thông tin học sinh đã tạo

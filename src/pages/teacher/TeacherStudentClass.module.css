@@ -1,19 +1,19 @@
-.teacher-student-class-container {
+.teacherStudentClassContainer {
   padding: 24px 0;
 }
 
-.class-student-header {
+.classStudentHeader {
   margin-bottom: 24px;
 }
 
-.header-top {
+.headerTop {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
 }
 
-.header-left h2 {
+.headerLeft h2 {
   margin-bottom: 8px;
   font-weight: 700;
   font-size: 28px;
@@ -23,19 +23,19 @@
   color: transparent;
 }
 
-.header-actions {
+.headerActions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
 }
 
-.search-filter {
+.searchFilter {
   display: flex;
   gap: 12px;
 }
 
-.loading-container {
+.loadingContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,59 +45,59 @@
 }
 
 /* Table styling */
-.students-table {
+.studentsTable {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.student-name-cell {
+.studentNameCell {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.student-info {
+.studentInfo {
   display: flex;
   flex-direction: column;
 }
 
-.student-id {
+.studentId {
   font-size: 12px;
 }
 
 /* Grid view styling */
-.student-card {
+.studentCard {
   transition: all 0.3s;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.student-card:hover {
+.studentCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
   border-color: #1890ff;
 }
 
-.student-card-content {
+.studentCardContent {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 8px 0;
 }
 
-.student-avatar {
+.studentAvatar {
   margin-bottom: 16px;
   border: 2px solid #f0f0f0;
 }
 
-.teacher-class-student-details {
+.teacherClassStudentDetails {
   width: 100%;
   text-align: center;
 
 }
 
-.student-name {
+.studentName {
   margin-bottom: 8px !important;
   font-weight: 600;
   overflow: hidden;
@@ -105,13 +105,13 @@
   white-space: nowrap;
 }
 
-.student-info-grid {
+.studentInfoGrid {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.student-city {
+.studentCity {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -119,36 +119,36 @@
 
 /* Responsive styling */
 @media (max-width: 992px) {
-  .header-top {
+  .headerTop {
     flex-direction: column;
     gap: 16px;
   }
 
-  .header-right {
+  .headerRight {
     align-self: flex-start;
   }
 
-  .header-actions {
+  .headerActions {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
 
-  .search-filter {
+  .searchFilter {
     width: 100%;
   }
 
-  .search-filter .ant-input-search {
+  .searchFilter .ant-input-search {
     width: 100%;
   }
 }
 
 /* Thêm CSS cho nút Back */
-.back-button {
+.backButton {
   margin-bottom: 16px;
 }
 
-.back-btn {
+.backBtn {
   display: flex;
   align-items: center;
   padding: 4px 12px;
@@ -157,25 +157,25 @@
   border-color: #1890ff;
 }
 
-.back-btn:hover {
+.backBtn:hover {
   color: #40a9ff;
   border-color: #40a9ff;
 }
 
-.back-btn .anticon {
+.backBtn .anticon {
   margin-right: 6px;
 }
 
 /* Thêm CSS cho modal chi tiết học sinh vào cuối file */
-.student-detail-modal .ant-modal-mask {
+.studentDetailModal .ant-modal-mask {
   background-color: rgba(0, 0, 0, 0.45);
 }
 
-.student-detail-modal {
+.studentDetailModal {
   z-index: 1050 !important;
 }
 
-.student-detail-modal .ant-modal-content {
+.studentDetailModal .ant-modal-content {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -183,11 +183,11 @@
   transform: translateZ(0);
 }
 
-.student-detail-modal .ant-modal-body {
+.studentDetailModal .ant-modal-body {
   padding: 0;
 }
 
-.modal-loading {
+.modalLoading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -196,12 +196,12 @@
   gap: 16px;
 }
 
-.student-detail-content {
+.studentDetailContent {
   padding: 0;
 }
 
 /* Header profile */
-.student-profile-header {
+.studentProfileHeader {
   display: flex;
   align-items: center;
   padding: 32px 24px;
@@ -211,7 +211,7 @@
   color: white;
 }
 
-.student-profile-header::after {
+.studentProfileHeader::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -221,32 +221,32 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.1), transparent);
 }
 
-.detail-avatar {
+.detailAvatar {
   border: 4px solid white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
-.student-profile-info {
+.studentProfileInfo {
   flex: 1;
   z-index: 1;
 }
 
-.student-detail-name {
+.studentDetailName {
   margin-bottom: 12px !important;
   font-weight: 700 !important;
   color: white !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.profile-tags {
+.profileTags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
 }
 
-.profile-tags .ant-tag {
+.profileTags .ant-tag {
   padding: 4px 12px;
   font-size: 14px;
   border-radius: 16px;
@@ -255,7 +255,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.student-id-detail {
+.studentIdDetail {
   display: inline-block;
   background: rgba(255, 255, 255, 0.3);
   color: white;
@@ -266,50 +266,50 @@
 }
 
 /* Tabs */
-.student-detail-tabs {
+.studentDetailTabs {
   padding: 0 24px;
   margin-top: 24px;
 }
 
-.tab-content {
+.tabContent {
   padding: 20px 0;
 }
 
 /* Contact tab */
-.contact-card {
+.contactCard {
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   border: none;
   overflow: hidden;
 }
 
-.contact-card .ant-card-body {
+.contactCard .ant-card-body {
   padding: 20px;
 }
 
-.parent-contact-info {
+.parentContactInfo {
   display: flex;
   align-items: flex-start;
   gap: 20px;
 }
 
-.parent-avatar {
+.parentAvatar {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   color: white;
   border: 3px solid white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.parent-details h4 {
+.parentDetails h4 {
   margin-bottom: 6px !important;
   color: #1890ff;
 }
 
-.contact-list {
+.contactList {
   margin-top: 16px;
 }
 
-.tsc-contact-item {
+.tscContactItem {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -320,11 +320,11 @@
   transition: all 0.3s;
 }
 
-.tsc-contact-item:hover {
+.tscContactItem:hover {
   background-color: #f0f0f0;
 }
 
-.tsc-contact-item .anticon {
+.tscContactItem .anticon {
   color: #1890ff;
   background-color: rgba(24, 144, 255, 0.1);
   padding: 8px;
@@ -333,7 +333,7 @@
 }
 
 /* Documents tab */
-.documents-tab {
+.documentsTab {
   max-height: 300px;
   overflow-y: auto;
   padding: 8px;
@@ -341,7 +341,7 @@
   background-color: #f9f9f9;
 }
 
-.document-item {
+.documentItem {
   padding: 16px;
   border-radius: 12px;
   transition: all 0.3s;
@@ -350,12 +350,12 @@
   border: 1px solid #f0f0f0;
 }
 
-.document-item:hover {
+.documentItem:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: #d9d9d9;
 }
 
-.document-icon {
+.documentIcon {
   font-size: 24px;
   color: white;
   background: linear-gradient(135deg, #1890ff, #096dd9);
@@ -364,20 +364,20 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.document-preview {
+.documentPreview {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.document-thumbnail {
+.documentThumbnail {
   border-radius: 8px;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Footer actions */
-.modal-actions {
+.modalActions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -388,7 +388,7 @@
   border-radius: 0 0 16px 16px;
 }
 
-.modal-actions .ant-btn-primary {
+.modalActions .ant-btn-primary {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   border: none;
   padding: 6px 16px;
@@ -396,33 +396,33 @@
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.35);
 }
 
-.modal-actions .ant-btn-default {
+.modalActions .ant-btn-default {
   border-color: #d9d9d9;
   color: #595959;
 }
 
 /* Modal enhancements với namespace tsc- (teacher-student-class) */
-.tsc-modal-wrapper .ant-modal-mask {
+.tscModalWrapper .ant-modal-mask {
   background-color: rgba(0, 0, 0, 0.45);
 }
 
-.tsc-modal-wrapper {
+.tscModalWrapper {
   z-index: 1050 !important;
   pointer-events: auto;
 }
 
-.tsc-modal-wrapper .ant-modal {
+.tscModalWrapper .ant-modal {
   top: 50px;
   padding-bottom: 50px;
 }
 
-.tsc-modal-wrapper .ant-modal-content {
+.tscModalWrapper .ant-modal-content {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* Tab content enhancements */
-.tsc-tab-statistics .ant-statistic {
+.tscTabStatistics .ant-statistic {
   background-color: #f8f8f8;
   padding: 16px;
   border-radius: 8px;
@@ -431,23 +431,23 @@
   border: 1px solid #f0f0f0;
 }
 
-.tsc-tab-statistics .ant-statistic:hover {
+.tscTabStatistics .ant-statistic:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: #d9d9d9;
 }
 
-.tsc-tab-statistics .ant-statistic-title {
+.tscTabStatistics .ant-statistic-title {
   color: #666;
   font-size: 14px;
   font-weight: 500;
 }
 
-.tsc-tab-statistics .ant-statistic-content {
+.tscTabStatistics .ant-statistic-content {
   color: #262626;
   font-size: 16px;
 }
 
-.tsc-tab-statistics .ant-statistic .anticon {
+.tscTabStatistics .ant-statistic .anticon {
   color: #1890ff;
   font-size: 16px;
   margin-right: 6px;
@@ -457,7 +457,7 @@
 }
 
 /* Document UI improvements */
-.tsc-doc-list .ant-list-item {
+.tscDocList .ant-list-item {
   margin-bottom: 12px;
   background-color: white;
   border-radius: 12px;
@@ -466,58 +466,58 @@
   border: 1px solid #f0f0f0;
 }
 
-.tsc-doc-list .ant-list-item:hover {
+.tscDocList .ant-list-item:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: #d9d9d9;
 }
 
-.tsc-doc-list .ant-list-item-meta-avatar {
+.tscDocList .ant-list-item-meta-avatar {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   padding: 12px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.tsc-doc-list .ant-list-item-meta-title {
+.tscDocList .ant-list-item-meta-title {
   font-weight: 600;
   color: #262626;
 }
 
-.tsc-doc-list .ant-list-item-meta-description {
+.tscDocList .ant-list-item-meta-description {
   color: #8c8c8c;
 }
 
-.tsc-doc-preview {
+.tscDocPreview {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.tsc-doc-thumbnail {
+.tscDocThumbnail {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
 }
 
-.tsc-doc-thumbnail:hover {
+.tscDocThumbnail:hover {
   transform: scale(1.05);
 }
 
 /* Contact information styling */
-.tsc-contact-info {
+.tscContactInfo {
   display: flex;
   align-items: flex-start;
   gap: 20px;
 }
 
-.tsc-parent-avatar {
+.tscParentAvatar {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   color: white;
   border: 3px solid white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.tsc-contact-detail {
+.tscContactDetail {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -528,12 +528,12 @@
   transition: all 0.3s;
 }
 
-.tsc-contact-detail:hover {
+.tscContactDetail:hover {
   background-color: #f0f0f0;
   transform: translateX(5px);
 }
 
-.tsc-contact-detail .anticon {
+.tscContactDetail .anticon {
   color: #1890ff;
   background-color: #e6f7ff;
   padding: 8px;
@@ -541,7 +541,7 @@
 }
 
 /* Modal actions styling */
-.tsc-modal-footer {
+.tscModalFooter {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -550,7 +550,7 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.tsc-action-button-primary {
+.tscActionButtonPrimary {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   border: none;
   padding: 6px 16px;
@@ -558,7 +558,7 @@
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.35);
 }
 
-.tsc-action-button-default {
+.tscActionButtonDefault {
   border-color: #d9d9d9;
   color: #595959;
   border-radius: 6px;
@@ -570,215 +570,333 @@
 }
 
 /* Enhanced Student Detail Modal */
-.tsc-enhanced-modal {
+.tscEnhancedModal {
   z-index: 1050 !important;
 }
 
-.tsc-enhanced-modal .ant-modal-content {
+.tscEnhancedModal :global(.ant-modal-content) {
   padding: 0;
-  border-radius: 24px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.15);
   border: none;
-  background: #fff;
 }
 
-.tsc-enhanced-modal .ant-modal-close {
-  right: 20px;
-  top: 20px;
-  border-radius: 50%;
-}
-
-.tsc-modal-close-icon {
-  background: rgba(255, 255, 255, 0.2);
+/* Modal Close Button */
+.tscModalCloseIcon {
+  background: rgba(255, 255, 255, 0.3);
   padding: 8px;
   border-radius: 50%;
   color: white;
   font-size: 16px;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(5px);
   transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.tsc-modal-close-icon:hover {
-  background: rgba(255, 255, 255, 0.4);
+.tscModalCloseIcon:hover {
+  background: rgba(255, 255, 255, 0.5);
   transform: rotate(90deg);
 }
 
-.tsc-modal-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* Modal Header */
-.tsc-modal-header {
+/* Modal Header with Gradient */
+.tscModalHeader {
   background: linear-gradient(135deg, #1890ff 0%, #0050b3 100%);
-  padding: 0;
+  padding: 28px 32px;
   position: relative;
   overflow: hidden;
+  border-bottom: none;
 }
 
-.tsc-modal-header::before {
+/* Header Design Elements */
+.tscModalHeader::before {
   content: '';
   position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  top: -80px;
+  right: -80px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
   border-radius: 50%;
 }
 
-.tsc-modal-header-content {
-  padding: 32px;
+.tscModalHeader::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 20%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+}
+
+/* Header Content Layout */
+.tscModalHeaderContent {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
   position: relative;
   z-index: 1;
 }
 
-.tsc-student-avatar {
+/* Student Avatar */
+.tscStudentAvatar {
   border: 5px solid white;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
-.tsc-header-info {
+/* Student Info Area */
+.tscHeaderInfo {
   color: white;
 }
 
-.tsc-student-name {
+/* Student Name */
+.tscStudentName {
   color: white !important;
-  margin-bottom: 12px !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 14px !important;
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  line-height: 1.1 !important;
 }
 
-.tsc-student-tags {
+/* Student Tags */
+.tscStudentTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
-.tsc-student-tags .ant-tag {
-  padding: 4px 12px;
+.tscStudentTags :global(.ant-tag) {
+  padding: 4px 14px;
   border-radius: 20px;
   font-weight: 500;
   font-size: 14px;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0;
 }
 
-.tsc-student-id {
+/* Student ID */
+.tscStudentId {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   color: white;
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 20px;
-  font-size: 13px;
-  backdrop-filter: blur(4px);
+  font-size: 14px;
+  backdrop-filter: blur(5px);
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Modal Body */
-.tsc-modal-body {
-  padding: 0 24px;
-  flex: 1;
-  position: relative;
+.tscModalBody {
+  padding: 5px 24px 20px;
+  background-color: #fff;
 }
 
-.tsc-detail-tabs {
-  margin-top: 24px;
+/* Tabs Design */
+.tscDetailTabs {
+  margin-top: 10px;
 }
 
-.tsc-detail-tabs .ant-tabs-nav {
-  margin-bottom: 20px;
+.tscDetailTabs :global(.ant-tabs-nav) {
+  margin-bottom: 24px;
 }
 
-.tsc-detail-tabs .ant-tabs-tab {
-  padding: 8px 16px;
+.tscDetailTabs :global(.ant-tabs-tab) {
+  padding: 12px 16px;
+  font-size: 15px;
   transition: all 0.3s;
+  margin: 0 5px 0 0;
 }
 
-.tsc-detail-tabs .ant-tabs-tab:hover {
+.tscDetailTabs :global(.ant-tabs-tab-btn) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tscDetailTabs :global(.ant-tabs-tab:hover) {
   color: #1890ff;
 }
 
-.tsc-detail-tabs .ant-tabs-tab-active {
+.tscDetailTabs :global(.ant-tabs-tab-active) {
   background-color: #e6f7ff;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
 }
 
-.tsc-detail-tabs .ant-tabs-ink-bar {
+.tscDetailTabs :global(.ant-tabs-ink-bar) {
   height: 3px;
   border-radius: 3px;
   background: linear-gradient(to right, #1890ff, #096dd9);
 }
 
-/* Contact Card */
-.tsc-contact-card {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  border: none;
-  overflow: hidden;
+/* Tab Statistics */
+.tscTabStatistics :global(.ant-statistic) {
+  background-color: #f9fbfd;
+  padding: 20px;
+  border-radius: 12px;
+  height: 100%;
+  transition: all 0.3s;
+  border: 1px solid #f0f7ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-.tsc-parent-details h4 {
+.tscTabStatistics :global(.ant-statistic:hover) {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  border-color: #d9e8ff;
+  transform: translateY(-3px);
+}
+
+.tscTabStatistics :global(.ant-statistic-title) {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.tscTabStatistics :global(.ant-statistic-content) {
+  color: #262626;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.tscTabStatistics :global(.ant-statistic .anticon) {
   color: #1890ff;
-  margin-bottom: 4px !important;
+  font-size: 16px;
+  margin-right: 8px;
+  background: rgba(24, 144, 255, 0.1);
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* Contact Card */
+.tscContactCard {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  border: none;
+}
+
+.tscContactInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 25px;
+  padding: 5px;
+}
+
+.tscParentAvatar {
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  color: white;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.tscParentDetails h4 {
+  color: #1890ff;
+  margin-bottom: 6px !important;
+  font-weight: 600;
+}
+
+.tscContactDetail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #f9fbfd;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: all 0.3s;
+  border: 1px solid #f0f7ff;
+}
+
+.tscContactDetail:hover {
+  background-color: #f0f7ff;
+  transform: translateX(5px);
+}
+
+.tscContactDetail .anticon {
+  color: #1890ff;
+  background-color: #e6f7ff;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 16px;
 }
 
 /* Documents Tab */
-.tsc-documents-tab {
-  background: #f9f9f9;
+.tscDocumentsTab {
+  background: #f9fbfd;
   border-radius: 12px;
-  padding: 16px;
+  padding: 20px;
+  border: 1px solid #f0f7ff;
 }
 
-.tsc-doc-list .ant-list-item {
-  margin-bottom: 12px;
+.tscDocList :global(.ant-list-item) {
+  margin-bottom: 16px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   padding: 16px;
   transition: all 0.3s;
+  border: 1px solid #f0f7ff;
 }
 
-.tsc-doc-icon {
+.tscDocList :global(.ant-list-item:hover) {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+.tscDocIcon {
   font-size: 24px;
   color: white;
   background: linear-gradient(135deg, #1890ff, #096dd9);
-  padding: 10px;
+  padding: 12px;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.25);
+}
+
+.tscDocThumbnail {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s;
+  border: 2px solid white;
+}
+
+.tscDocThumbnail:hover {
+  transform: scale(1.05);
 }
 
 /* Modal Footer */
-.tsc-modal-footer {
+.tscModalFooter {
   display: flex;
   justify-content: flex-end;
   gap: 16px;
   padding: 20px 24px;
-  background-color: #f9f9f9;
-  border-top: 1px solid #f0f0f0;
+  background-color: #f9fbfd;
+  border-top: 1px solid #f0f7ff;
 }
 
-.tsc-action-button-primary {
+.tscActionButtonPrimary {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   border: none;
-  padding: 8px 20px;
+  padding: 8px 22px;
   height: auto;
   border-radius: 8px;
   font-weight: 500;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.25);
   transition: all 0.3s;
 }
 
-.tsc-action-button-primary:hover {
+.tscActionButtonPrimary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.5);
+  box-shadow: 0 8px 20px rgba(24, 144, 255, 0.35);
 }
 
-.tsc-action-button-default {
+.tscActionButtonDefault {
   border: 1px solid #d9d9d9;
   color: #595959;
   border-radius: 8px;
@@ -786,13 +904,14 @@
   transition: all 0.3s;
 }
 
-.tsc-action-button-default:hover {
+.tscActionButtonDefault:hover {
   color: #1890ff;
   border-color: #1890ff;
+  background-color: #f0f7ff;
 }
 
-/* Modal Loading Style */
-.tsc-modal-loading {
+/* Loading State */
+.tscModalLoading {
   padding: 60px 0;
   display: flex;
   flex-direction: column;
@@ -800,27 +919,41 @@
   gap: 16px;
 }
 
-.tsc-loading-spinner .ant-spin-dot {
+.tscLoadingSpinner :global(.ant-spin-dot) {
   font-size: 36px;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .tsc-modal-header-content {
+  .tscModalHeaderContent {
     flex-direction: column;
     text-align: center;
+    padding: 20px;
   }
-  
-  .tsc-student-tags {
+
+  .tscStudentName {
+    font-size: 24px !important;
+  }
+
+  .tscStudentTags {
     justify-content: center;
   }
-  
-  .tsc-contact-info {
+
+  .tscContactInfo {
     flex-direction: column;
     align-items: center;
   }
-  
-  .tsc-parent-details {
+
+  .tscParentDetails {
     text-align: center;
+    width: 100%;
+  }
+  
+  .tscModalFooter {
+    flex-direction: column-reverse;
+  }
+  
+  .tscActionButtonPrimary, .tscActionButtonDefault {
+    width: 100%;
   }
 }

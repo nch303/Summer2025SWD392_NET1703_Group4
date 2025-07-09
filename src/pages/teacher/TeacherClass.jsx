@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Row, Col, Typography, Tag, Spin, Empty, Badge, Statistic, Input,
-  Segmented, Button, Tooltip, Progress, Tabs, Skeleton, Avatar, Dropdown
-} from 'antd';
-import {
+  Card, Row, Col, Tag, Empty, Input,
+  Segmented, Button, Progress, Tabs, Skeleton, Avatar, Dropdown,
+  Title, Text, Search,
   TeamOutlined, ReadOutlined, BookOutlined, SearchOutlined,
   AppstoreOutlined, UnorderedListOutlined, FilterOutlined,
   EllipsisOutlined, FileTextOutlined, UserOutlined, CalendarOutlined,
   PieChartOutlined
-} from '@ant-design/icons';
+} from '../../utils/AntComponents';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { getClassesByTeacherId, getStatusColor } from '../../services/TeacherService';
-import './TeacherClass.css';
-
-const { Title, Text, Paragraph } = Typography;
-const { Search } = Input;
+import styles from './TeacherClass.module.css';
 
 const TeacherClass = () => {
   const [classes, setClasses] = useState([]);
@@ -103,7 +99,7 @@ const TeacherClass = () => {
       {filteredClasses.map((classItem) => (
         <Col key={classItem.id} xs={24} sm={12} md={8} lg={8}>
           <Card
-            className="class-card"
+            className={styles.classCard}
             hoverable
             actions={[
               <div key="students">
@@ -121,34 +117,34 @@ const TeacherClass = () => {
               </Dropdown>
             ]}
           >
-            <div className="teacher-class-status-badge">
+            <div className={styles.teacherClassStatusBadge}>
               <Tag color={getStatusColor(classItem.status)}>
                 {classItem.status}
               </Tag>
             </div>
 
-            <Link to={`/teacher/classes/${classItem.id}`} className="content-link">
-              <div className="class-card-header">
-                <div className="class-avatar">
+            <Link to={`/teacher/classes/${classItem.id}`} className={styles.contentLink}>
+              <div className={styles.classCardHeader}>
+                <div className={styles.classAvatar}>
                   {classItem.name.charAt(0).toUpperCase()}
                 </div>
-                <div className="class-title-container">
-                  <Title level={4} className="class-name">{classItem.name}</Title>
-                  <div className="class-tags">
+                <div className={styles.classTitleContainer}>
+                  <Title level={4} className={styles.className}>{classItem.name}</Title>
+                  <div className={styles.classTags}>
                     {classItem.gradeLevelName && <Tag color="blue">{classItem.gradeLevelName}</Tag>}
                   </div>
                 </div>
               </div>
 
-              <div className="class-details">
-                <div className="class-info-row">
+              <div className={styles.classDetails}>
+                <div className={styles.classInfoRow}>
                   <Text type="secondary">Syllabus:</Text>
                   <Text strong ellipsis>{classItem.syllabusName}</Text>
                 </div>
 
-                <div className="class-info-row">
+                <div className={styles.classInfoRow}>
                   <Text type="secondary">Number of students:</Text>
-                  <div className="student-progress">
+                  <div className={styles.studentProgress}>
                     <Progress
                       percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)}
                       size="small"
@@ -167,24 +163,24 @@ const TeacherClass = () => {
 
   // Render list view
   const renderListView = () => (
-    <div className="class-list-view">
+    <div className={styles.classListView}>
       {filteredClasses.map((classItem) => (
-        <Card className="class-list-card" key={classItem.id} hoverable>
-          <div className="list-card-content">
-            <div className="list-card-left">
-              <Avatar size={60} className="list-avatar">
+        <Card className={styles.classListCard} key={classItem.id} hoverable>
+          <div className={styles.listCardContent}>
+            <div className={styles.listCardLeft}>
+              <Avatar size={60} className={styles.listAvatar}>
                 {classItem.name.charAt(0).toUpperCase()}
               </Avatar>
             </div>
 
-            <div className="list-card-middle">
-              <div className="list-card-title">
+            <div className={styles.listCardMiddle}>
+              <div className={styles.listCardTitle}>
                 <Title level={4}>{classItem.name}</Title>
                 <Tag color={getStatusColor(classItem.status)}>
                   {classItem.status}
                 </Tag>
               </div>
-              <div className="list-card-details">
+              <div className={styles.listCardDetails}>
                 <Tag icon={<BookOutlined />} color="processing">
                   {classItem.syllabusName}
                 </Tag>
@@ -202,17 +198,17 @@ const TeacherClass = () => {
               </div>
             </div>
 
-            <div className="list-card-right">
+            <div className={styles.listCardRight}>
               <Progress
                 type="circle"
                 percent={Math.round((classItem.quantity / classItem.maxChildren) * 100)}
-                width={50}
+                size={50}
                 format={() => `${Math.round((classItem.quantity / classItem.maxChildren) * 100)}%`}
                 status={classItem.quantity >= classItem.maxChildren ? "exception" : "active"}
               />
             </div>
 
-            <div className="list-card-actions">
+            <div className={styles.listCardActions}>
               <Link to={`/teacher/classes/${classItem.id}`}>
                 <Button type="primary" icon={<TeamOutlined />}>View class</Button>
               </Link>
@@ -228,7 +224,7 @@ const TeacherClass = () => {
 
   // Render empty state
   const renderEmpty = () => (
-    <div className="empty-state">
+    <div className={styles.emptyState}>
       <Empty
         image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
         imageStyle={{ height: 160 }}
@@ -251,43 +247,43 @@ const TeacherClass = () => {
 
   // Dashboard tổng quan
   const renderDashboard = () => (
-    <div className="class-dashboard">
+    <div className={styles.classDashboard}>
       <Row gutter={[24, 24]}>
         <Col xs={24} md={8}>
-          <Card className="dashboard-card total-classes">
-            <div className="dashboard-card-content">
-              <div className="dashboard-icon">
+          <Card className={`${styles.dashboardCard} ${styles.totalClasses}`}>
+            <div className={styles.dashboardCardContent}>
+              <div className={styles.dashboardIcon}>
                 <ReadOutlined />
               </div>
-              <div className="dashboard-info">
-                <div className="dashboard-value">{classes.length}</div>
-                <div className="dashboard-label">Total number of classes</div>
+              <div className={styles.dashboardInfo}>
+                <div className={styles.dashboardValue}>{classes.length}</div>
+                <div className={styles.dashboardLabel}>Total number of classes</div>
               </div>
             </div>
           </Card>
         </Col>
         <Col xs={24} md={8}>
-          <Card className="dashboard-card total-students">
-            <div className="dashboard-card-content">
-              <div className="dashboard-icon">
+          <Card className={`${styles.dashboardCard} ${styles.totalStudents}`}>
+            <div className={styles.dashboardCardContent}>
+              <div className={styles.dashboardIcon}>
                 <TeamOutlined />
               </div>
-              <div className="dashboard-info">
-                <div className="dashboard-value">{totalStudents}</div>
-                <div className="dashboard-label">Total number of students</div>
+              <div className={styles.dashboardInfo}>
+                <div className={styles.dashboardValue}>{totalStudents}</div>
+                <div className={styles.dashboardLabel}>Total number of students</div>
               </div>
             </div>
           </Card>
         </Col>
         <Col xs={24} md={8}>
-          <Card className="dashboard-card active-classes">
-            <div className="dashboard-card-content">
-              <div className="dashboard-icon">
+          <Card className={`${styles.dashboardCard} ${styles.activeClasses}`}>
+            <div className={styles.dashboardCardContent}>
+              <div className={styles.dashboardIcon}>
                 <BookOutlined />
               </div>
-              <div className="dashboard-info">
-                <div className="dashboard-value">{activeClasses}</div>
-                <div className="dashboard-label">Active classes</div>
+              <div className={styles.dashboardInfo}>
+                <div className={styles.dashboardValue}>{activeClasses}</div>
+                <div className={styles.dashboardLabel}>Active classes</div>
               </div>
             </div>
           </Card>
@@ -318,18 +314,18 @@ const TeacherClass = () => {
   ];
 
   return (
-    <div className="teacher-class-container">
-      <div className="class-header">
-        <div className="header-top">
-          <div className="header-left">
+    <div className={styles.teacherClassContainer}>
+      <div className={styles.classHeader}>
+        <div className={styles.headerTop}>
+          <div className={styles.headerLeft}>
             <Title level={2}>My classes</Title>
             <Text>Manage and view information about the classes assigned to me</Text>
           </div>
         </div>
 
         {!loading && classes.length > 0 && (
-          <div className="header-actions">
-            <div className="search-filter">
+          <div className={styles.headerActions}>
+            <div className={styles.searchFilter}>
               <Search
                 placeholder="Search classes..."
                 allowClear
@@ -381,9 +377,9 @@ const TeacherClass = () => {
       </div>
 
       {loading ? (
-        <div className="loading-state">
+        <div className={styles.loadingState}>
           {renderDashboard()}
-          <div className="skeleton-container">
+          <div className={styles.skeletonContainer}>
             <Row gutter={[24, 24]}>
               {renderSkeletons()}
             </Row>
@@ -395,7 +391,7 @@ const TeacherClass = () => {
 
           <Tabs
             defaultActiveKey="all"
-            className="class-tabs"
+            className={styles.classTabs}
             items={tabItems}
           />
         </>

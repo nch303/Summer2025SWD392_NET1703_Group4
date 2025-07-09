@@ -1,0 +1,902 @@
+.staffClassContainer {
+  padding: 24px;
+  background-color: #f5f7fa;
+  min-height: 90vh;
+}
+
+.staffClassPageHeader {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.staffClassPageTitle {
+  position: relative;
+  margin-bottom: 0 !important;
+  color: #262626;
+}
+
+.staffClassPageTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #1890ff, #52c41a);
+  border-radius: 2px;
+}
+
+.staffClassCard {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  border: none;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.staffCardTitleWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.staffCardTitleWithIcon :global(.anticon) {
+  color: #1890ff;
+}
+
+/* Academic year filter styling */
+.staffCardHeaderActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.staffAcademicYearFilter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.staffFilterLabel {
+  font-size: 14px;
+  color: #595959;
+  white-space: nowrap;
+}
+
+.staffAcademicYearDisplay {
+  min-width: 100px;
+  padding: 4px 12px;
+  background-color: #f5f8ff;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+/* Grade level filter styling */
+.staffGradeLevelFilter {
+  margin-left: 24px;
+}
+
+/* Section styling */
+.staffClassSection {
+  margin-bottom: 32px;
+}
+
+.staffClassSection:last-child {
+  margin-bottom: 0;
+}
+
+.staffClassSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #1890ff;
+}
+
+.staffClassSectionHeader.enrichment {
+  color: #722ed1;
+}
+
+.staffClassSectionIcon {
+  font-size: 18px;
+}
+
+.staffSectionEnrichmentIcon {
+  font-size: 18px;
+  color: #722ed1;
+}
+
+.staffSectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.staffSectionCount {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Grade level collapse panel styling */
+.staffClassLevelCollapse {
+  background: transparent;
+  border: none;
+}
+
+.staffClassLevelCollapse :global(.ant-collapse-item) {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px !important;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.staffClassLevelCollapse :global(.ant-collapse-header) {
+  background-color: #f5f8ff;
+  padding: 16px 20px !important;
+  align-items: center;
+}
+
+.staffGradeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.staffGradeName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.staffGradeCount {
+  margin-left: auto;
+}
+
+.staffClassLevelCollapse :global(.ant-collapse-content-box) {
+  padding: 16px !important;
+  background-color: #fff;
+}
+
+.staffClassSectionHeader.enrichment {
+  color: #722ed1;
+}
+
+/* Class cards styling */
+.staffClassCardContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.staffClassCard {
+  position: relative;
+  transition: all 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #f0f0f0;
+}
+
+.staffClassCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: #1890ff;
+}
+
+.staffClassCard.enrichment {
+  border-left: 3px solid #722ed1;
+}
+
+.staffClassCard.enrichment:hover {
+  border-color: #722ed1;
+}
+
+.staffClassCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.staffClassName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.staffClassInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.staffClassStaffTeachers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.staffClassTeacherTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.staffClassSyllabus {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.staffClassCapacity {
+  margin-top: auto;
+}
+
+.staffClassCapacityLabelContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.staffClassCapacityFull {
+  color: #ff4d4f;
+}
+
+.staffClassCardFooter {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Class Detail Modal */
+.staffClassDetailModal :global(.ant-modal-content) {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.staffClassDetailModal :global(.ant-modal-body) {
+  padding: 0;
+}
+
+.staffClassDetailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.staffClassDetailHeader.regular {
+  background: linear-gradient(135deg, #e6f7ff, #bae7ff);
+}
+
+.staffClassDetailHeader.enrichment {
+  background: linear-gradient(135deg, #f9f0ff, #efdbff);
+}
+
+.staffClassDetailTitle h2 {
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.staffClassDetailBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.staffClassDetailIcon {
+  margin-left: 16px;
+}
+
+.staffDetailIcon.enrichment {
+  color: #722ed1;
+}
+
+.staffKickStudentBtn.detailIcon.enrichment {
+  color: #722ed1;
+}
+
+.staffClassDetailIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.staffClassDetailIcon.regular {
+  background-color: #fff;
+  color: #1890ff;
+  border: 2px solid #91caff;
+}
+
+.staffClassDetailIcon.enrichment {
+  background-color: #fff;
+  color: #722ed1;
+  border: 2px solid #d3adf7;
+}
+
+/* Tabs styling */
+.staffClassDetailTabs {
+  padding: 16px 24px;
+}
+
+.staffClassDetailTabs :global(.ant-tabs-nav) {
+  margin-bottom: 24px;
+}
+
+.staffClassDetailTabContent {
+  padding-bottom: 24px;
+}
+
+.staffCapacityDonutDetailCard {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.staffClassDetailCard:last-child {
+  margin-bottom: 0;
+}
+
+.staffClassDetailCardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.staffDetailIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  background-color: #fff;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.staffDetailIcon.regular {
+  color: #1890ff;
+}
+
+.staffClassDetailItem {
+  margin-bottom: 16px;
+}
+
+.staffClassDetailItem:last-child {
+  margin-bottom: 0;
+}
+
+.staffClassDetailLabel {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 6px;
+}
+
+.staffClassDetailValue {
+  font-size: 15px;
+  color: #262626;
+  font-weight: 500;
+}
+
+.staffClassDetailValue.highlight {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+/* Schedule Display */
+.staffClassScheduleDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.staffClassScheduleDayTag {
+  font-size: 14px;
+  padding: 4px 12px;
+}
+
+/* Capacity Visualization */
+.staffClassCapacityCard {
+  background-color: #fafafa;
+}
+
+.staffClassCapacityVisualization {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.staffClassCapacityDonut {
+  margin-bottom: 24px;
+}
+
+.staffClassCapacityStats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 18px;
+}
+
+.staffClassCapacityStatItem {
+  text-align: center;
+}
+
+.staffClassCapacityStatValue {
+  font-size: 36px;
+  font-weight: 600;
+  color: #262626;
+  line-height: 1;
+}
+
+.staffClassCapacityStatLabel {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-top: 4px;
+}
+
+.staffClassCapacityStatDivider {
+  margin: 0 16px;
+  font-size: 36px;
+  font-weight: 300;
+  color: #d9d9d9;
+}
+
+.staffClassCapacityWarningAlert {
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+.staffClassCapacityDescription {
+  margin-top: 16px;
+  text-align: center;
+  color: #595959;
+  font-size: 14px;
+}
+
+/* Teacher section */
+.staffClassTeacherSection {
+  margin-top: 24px;
+}
+
+.staffClassTeachersAssignedList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.staffClassTeacherCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 140px;
+  transition: all 0.3s ease;
+}
+
+.staffClassTeacherCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.staffClassTeacherAvatar {
+  background-color: #1890ff;
+  margin-bottom: 12px;
+  border: 3px solid #e6f7ff;
+}
+
+.staffClassTeacherName {
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 8px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Class Status Card */
+.staffClassStatusCard {
+  margin-top: 24px;
+}
+
+.staffClassStatus {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.staffClassStatus.available {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.staffClassStatus.unavailable {
+  background-color: #fff7e6;
+  border: 1px solid #ffd591;
+}
+
+.staffClassStatus.finished {
+  background-color: #f0f0f0;
+  border: 1px solid #d9d9d9;
+}
+
+.staffClassStatusIcon {
+  font-size: 32px;
+  margin-right: 20px;
+}
+
+.staffClassStatus.available .staffClassStatusIcon {
+  color: #52c41a;
+}
+
+.staffClassStatus.unavailable .staffClassStatusIcon {
+  color: #fa8c16;
+}
+
+.staffClassStatus.finished .staffClassStatusIcon {
+  color: #8c8c8c;
+}
+
+.staffClassStatusValue {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.staffClassStatus.available .staffClassStatusValue {
+  color: #52c41a;
+}
+
+.staffClassStatus.unavailable .staffClassStatusValue {
+  color: #fa8c16;
+}
+
+.staffClassStatus.finished .staffClassStatusValue {
+  color: #595959;
+}
+
+.staffClassStatusDescription {
+  color: #595959;
+  font-size: 14px;
+}
+
+/* Attendance Tab */
+.staffAttendanceDateSelector {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.staffDateRadioGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.staffAttendanceSummaryCards {
+  margin-bottom: 24px;
+}
+
+.staffSummaryCard {
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.staffSummaryCard.present {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.staffSummaryCard.absent {
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+.staffSummaryIcon {
+  font-size: 28px;
+  margin-right: 16px;
+}
+
+.staffSummaryCard.present .staffSummaryIcon {
+  color: #52c41a;
+}
+
+.staffSummaryCard.absent .staffSummaryIcon {
+  color: #f5222d;
+}
+
+.staffSummaryCount {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.staffSummaryLabel {
+  font-size: 14px;
+  color: #595959;
+  margin-top: 4px;
+}
+
+.staffAttendanceTableContainer {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.staffAttendanceDateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #262626;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.staffAttendanceTableEnhanced {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.staffAttendanceTableEnhanced :global(.ant-table-thead > tr > th) {
+  background-color: #f5f8ff;
+  color: #262626;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .staffClassCardContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .staffClassDetailHeader {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+
+  .staffClassDetailIcon {
+    margin: 16px 0 0;
+  }
+
+  .staffAttendanceDateTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* List/Table styling */
+.staffClassListContainer {
+  margin-bottom: 16px;
+}
+
+.staffClassTable :global(.ant-table-thead > tr > th) {
+  background-color: #f5f8ff;
+  color: #262626;
+  font-weight: 500;
+}
+
+.staffClassTable :global(.ant-table-tbody > tr.regular-row:hover > td) {
+  background-color: rgba(24, 144, 255, 0.05);
+}
+
+.staffClassTable :global(.ant-table-tbody > tr.enrichment-row:hover > td) {
+  background-color: rgba(114, 46, 209, 0.05);
+}
+
+.staffClassCapacityCell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.staffClassNameCell {
+  font-weight: 600;
+  color: #262626;
+}
+
+/* Students Tab */
+.staffStudentsContainer {
+  margin-top: 8px;
+}
+
+.staffStudentsTable {
+  margin-top: 16px;
+}
+
+.staffStudentsTableEnhanced :global(.ant-table-thead > tr > th) {
+  background-color: #f5f8ff;
+  color: #262626;
+  font-weight: 500;
+}
+
+.staffStudentsTableEnhanced :global(.ant-pagination) {
+  margin-top: 16px;
+}
+
+.staffStudentAvatar {
+  margin-right: 12px;
+  background-color: #1890ff;
+}
+
+/* Add these styles at the end of the file */
+.staffKickStudentBtn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+}
+
+.staffKickStudentBtn:hover {
+  background-color: #ff7875;
+  color: white;
+}
+
+.staffKickStudentBtn:active {
+  background-color: #d9363e;
+  color: white;
+}
+
+/* Add these styles for the open class button */
+.staffOpenClassBtn {
+  background-color: #52c41a;
+  color: white;
+  border: none;
+}
+
+.staffOpenClassBtn:hover {
+  background-color: #73d13d;
+  color: white;
+}
+
+.staffOpenClassBtn:active {
+  background-color: #389e0d;
+  color: white;
+}
+
+/* Add these styles for the finish class button */
+.staffFinishClassBtn {
+  background-color: #fff;
+  color: #ff4d4f;
+  border: 1px solid #ff4d4f;
+}
+
+.staffFinishClassBtn:hover {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1px solid #ff7875;
+}
+
+.staffFinishClassBtn:active {
+  background-color: #fff1f0;
+  color: #d9363e;
+  border: 1px solid #d9363e;
+}
+
+/* Add animation for the clock icon */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.staffClassStatus.finished .staffClassStatusIcon {
+  animation: pulse 2s infinite;
+}
+
+/* Add to your CSS file */
+.staffUpgradeAlert {
+  margin-bottom: 16px;
+  border-left: 3px solid #1890ff;
+}
+
+.staffUpgradeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.staffUpgradeIcon {
+  font-size: 16px;
+}
+
+.staffStudentSelectionTable :global(.ant-table-selection-column) {
+  width: 60px;
+}
+
+/* Add the "ready for upgrade" style */
+.staffReadyForUpgrade {
+  background-color: rgba(24, 144, 255, 0.05);
+}
+
+.staffReadyForUpgrade td:first-child {
+  border-left: 3px solid #1890ff;
+}
+
+.staffUpgradeBtnDisabled {
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+.staffUpgradeBtn {
+  transition: all 0.3s;
+}
+
+.staffUpgradeBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.tabLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.staffActionButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Make sure all Ant Design components use :global() syntax */
+.staffClassTable :global(.ant-table) {
+  /* styles */
+}

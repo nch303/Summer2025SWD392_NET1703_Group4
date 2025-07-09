@@ -1,23 +1,23 @@
-.staff-assign-container {
+.staffAssignContainer {
   padding: 24px;
   background-color: #f5f7fa;
   min-height: 90vh;
 }
 
-.staff-assign-page-header {
+.staffAssignPageHeader {
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.staff-assign-page-title {
+.staffAssignPageTitle {
   position: relative;
   margin-bottom: 0 !important;
   color: #262626;
 }
 
-.staff-assign-page-title::after {
+.staffAssignPageTitle::after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -28,7 +28,7 @@
   border-radius: 2px;
 }
 
-.staff-assign-card {
+.staffAssignCard {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   border: none;
@@ -36,7 +36,7 @@
   overflow: hidden;
 }
 
-.card-title-with-icon {
+.cardTitleWithIcon {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -45,59 +45,59 @@
   color: #262626;
 }
 
-.card-title-with-icon .anticon {
+.cardTitleWithIcon :global(.anticon) {
   color: #1890ff;
 }
 
 /* Grade level collapse panel styling */
-.grade-collapse {
+.gradeCollapse {
   background: transparent;
   border: none;
 }
 
-.grade-collapse .ant-collapse-item {
+.gradeCollapse :global(.ant-collapse-item) {
   border: 1px solid #f0f0f0;
   border-radius: 8px !important;
   margin-bottom: 16px;
   overflow: hidden;
 }
 
-.grade-collapse .ant-collapse-header {
+.gradeCollapse :global(.ant-collapse-header) {
   background-color: #f5f8ff;
   padding: 16px 20px !important;
   align-items: center;
 }
 
-.grade-header {
+.gradeHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 }
 
-.grade-name {
+.gradeName {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
 }
 
-.grade-count {
+.gradeCount {
   margin-left: auto;
 }
 
-.grade-collapse .ant-collapse-content-box {
+.gradeCollapse :global(.ant-collapse-content-box) {
   padding: 16px !important;
   background-color: #fff;
 }
 
 /* Class cards styling */
-.class-card-container {
+.classCardContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
 }
 
-.class-card {
+.classCard {
   cursor: pointer;
   border: 1px solid #000000;
   border-radius: 8px;
@@ -105,18 +105,18 @@
   position: relative;
 }
 
-.class-card:hover {
+.classCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
 }
 
-.class-card.selected-class {
+.classCard.selectedClass {
   border-color: #1890ff;
   background-color: #e6f7ff;
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
 }
 
-.selected-icon {
+.selectedIcon {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -125,70 +125,70 @@
   z-index: 1;
 }
 
-.class-card-header {
+.classCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.class-name {
+.className {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
 }
 
-.class-info p {
+.classInfo p {
   margin-bottom: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.capacity-section {
+.capacitySection {
   margin-top: 8px;
 }
 
-.capacity-text {
+.capacityText {
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
 }
 
-.capacity-full {
+.capacityFull {
   color: #ff4d4f;
 }
 
 /* Student cards styling */
-.student-card-container {
+.studentCardContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.student-card {
+.studentCard {
   border: 1px solid #f0f0f0;
   border-radius: 8px;
   transition: all 0.3s;
   cursor: pointer;
 }
 
-.student-card:hover {
+.studentCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.student-card.selected-student {
+.studentCard.selectedStudent {
   border-color: #52c41a;
   background-color: #f6ffed;
 }
 
-.student-card[disabled] {
+.studentCard[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.student-card-header {
+.studentCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -197,56 +197,58 @@
   margin-bottom: 12px;
 }
 
-.student-card-content {
+.studentCardContent {
   display: flex;
   gap: 16px;
 }
 
-.student-avatar {
+.studentAvatar {
   border: 2px solid #f0f0f0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.student-info {
+.studentInfo {
   flex: 1;
 }
 
-.student-name {
+.studentName {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 8px;
   color: #262626;
 }
 
-.student-birthday, .student-gender {
+.studentBirthday,
+.studentGender {
   margin-bottom: 6px;
   font-size: 14px;
   color: #595959;
 }
 
-.student-birthday span, .student-gender span {
+.studentBirthday span,
+.studentGender span {
   color: #8c8c8c;
   margin-right: 4px;
 }
 
-.detail-button {
+.detailButton {
   padding: 0 8px;
   height: 28px;
 }
 
-.detail-button:hover {
+.detailButton:hover {
   color: #1890ff;
 }
 
 /* Assignment action area */
-.assignment-action {
+.assignmentAction {
   text-align: center;
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px dashed #f0f0f0;
-}
+}   
 
-.assignment-action .ant-btn {
+.assignmentAction :global(.ant-btn) {
   height: 48px;
   min-width: 280px;
   font-size: 16px;
@@ -255,17 +257,17 @@
   box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
 }
 
-.assignment-action .ant-btn:hover {
+.assignmentAction :global(.ant-btn:hover) {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(82, 196, 26, 0.3);
 }
 
 /* Student detail modal styling */
-.student-detail-content {
+.studentDetailContent {
   padding: 8px;
 }
 
-.student-detail-header {
+.studentDetailHeader {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -275,25 +277,25 @@
   margin-bottom: 20px;
 }
 
-.student-detail-avatar {
+.studentDetailAvatar {
   border: 3px solid #1890ff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.student-detail-title {
+.studentDetailTitle {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.student-detail-title h2 {
+.studentDetailTitle h2 {
   margin: 0;
   color: #262626;
   font-size: 24px;
   font-weight: 600;
 }
 
-.student-detail-item {
+.studentDetailItem {
   background-color: #fafafa;
   border-radius: 8px;
   padding: 12px 16px;
@@ -301,12 +303,12 @@
   border-left: 3px solid #e6f7ff;
 }
 
-.student-detail-item:hover {
+.studentDetailItem:hover {
   border-left-color: #1890ff;
   background-color: #f5faff;
 }
 
-.student-detail-label {
+.studentDetailLabel {
   font-weight: 600;
   color: #262626;
   margin-bottom: 8px;
@@ -314,18 +316,19 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .class-card-container,
-  .student-card-container {
+
+  .classCardContainer,
+  .studentCardContainer {
     grid-template-columns: 1fr;
   }
-  
-  .student-card-content {
+
+  .studentCardContent {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
-  .student-detail-header {
+
+  .studentDetailHeader {
     flex-direction: column;
     text-align: center;
     padding: 16px;
@@ -333,43 +336,43 @@
 }
 
 /* Selected class tag */
-.selected-class-tag {
+.selectedClassTag {
   font-size: 14px;
   padding: 4px 8px;
 }
 
 /* Drawer styling */
-.student-list-drawer .ant-drawer-header {
+.studentListDrawer :global(.ant-drawer-header) {
   padding: 16px 24px;
   background: #f5f8ff;
   border-bottom: 1px solid rgba(24, 144, 255, 0.1);
 }
 
-.drawer-header {
+.drawerHeader {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.drawer-title {
+.drawerTitle {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.drawer-title-text {
+.drawerTitleText {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
 }
 
-.drawer-subtitle {
+.drawerSubtitle {
   display: flex;
   gap: 8px;
 }
 
-.drawer-student-list {
+.drawerStudentList {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -377,7 +380,7 @@
   padding: 4px;
 }
 
-.drawer-student-card {
+.drawerStudentCard {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -389,17 +392,17 @@
   transition: all 0.3s;
 }
 
-.drawer-student-card:hover {
+.drawerStudentCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-color: #e6e6e6;
 }
 
-.drawer-student-card.selected-student {
+.drawerStudentCard.selectedStudent {
   background-color: #f6ffed;
   border-color: #b7eb8f;
 }
 
-.drawer-student-content {
+.drawerStudentContent {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -407,12 +410,12 @@
   min-width: 0;
 }
 
-.drawer-student-info {
+.drawerStudentInfo {
   flex: 1;
   min-width: 0;
 }
 
-.drawer-student-name {
+.drawerStudentName {
   margin: 0 0 6px 0;
   font-size: 15px;
   font-weight: 600;
@@ -422,7 +425,7 @@
   white-space: nowrap;
 }
 
-.drawer-student-details {
+.drawerStudentDetails {
   margin: 0;
   font-size: 13px;
   color: #8c8c8c;
@@ -431,24 +434,24 @@
   white-space: nowrap;
 }
 
-.detail-separator {
+.detailSeparator {
   margin: 0 6px;
 }
 
-.drawer-student-actions {
+.drawerStudentActions {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: 16px;
 }
 
-.drawer-detail-btn {
+.drawerDetailBtn {
   padding: 4px 8px;
   height: auto;
   color: #1890ff;
 }
 
-.drawer-footer-actions {
+.drawerFooterActions {
   position: sticky;
   bottom: 0;
   left: 0;
@@ -460,7 +463,7 @@
 }
 
 /* Make the drawer body fill the entire height */
-.ant-drawer-body {
+:global(.ant-drawer-body) {
   padding: 24px;
   height: calc(100% - 55px);
   overflow-y: auto;
@@ -468,62 +471,64 @@
   flex-direction: column;
 }
 
-.student-list-drawer .ant-drawer-body {
+.studentListDrawer :global(.ant-drawer-body) {
   padding-top: 16px;
   padding-bottom: 16px;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .student-list-drawer {
+  .studentListDrawer {
     width: 100% !important;
   }
-  
-  .drawer-student-card {
+
+  .drawerStudentCard {
     padding: 10px 12px;
   }
 }
 
 /* Toast notification styling */
-.assignment-success-notification {
+.assignmentSuccessNotification {
   background-color: #f6ffed;
   border-left: 4px solid #52c41a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
 }
 
-.assignment-success-notification .ant-notification-notice-message {
+.assignmentSuccessNotification :global(.ant-notification-notice-message) {
   color: #52c41a;
   font-weight: 600;
 }
 
-.assignment-success-notification .ant-notification-notice-description {
+.assignmentSuccessNotification :global(.ant-notification-notice-description) {
   color: rgba(0, 0, 0, 0.75);
 }
 
-.assignment-success-notification .ant-notification-notice-close {
+.assignmentSuccessNotification :global(.ant-notification-notice-close) {
   color: rgba(0, 0, 0, 0.45);
 }
 
 /* Academic year filter styling */
-.card-header-actions {
+.cardHeaderActions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
 }
 
-.academic-year-filter {
+.academicYearFilter {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.filter-label {
+.filterLabel {
   font-size: 14px;
   color: #595959;
   white-space: nowrap;
 }
 
-.academic-year-display {
+.academicYearDisplay {
   min-width: 100px;
   padding: 4px 12px;
   background-color: #f5f8ff;
@@ -535,21 +540,21 @@
 }
 
 /* Grade level filter styling */
-.grade-level-filter {
+.gradeLevelFilter {
   margin-left: 24px;
 }
 
 /* Student Detail Modal - new hierarchical design */
-.student-detail-modal .ant-modal-content {
+.studentDetailModal :global(.ant-modal-content) {
   border-radius: 12px;
   overflow: hidden;
 }
 
-.student-detail-modal .ant-modal-body {
+.studentDetailModal :global(.ant-modal-body) {
   padding: 0;
 }
 
-.student-detail-header {
+.studentDetailHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -558,38 +563,38 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.student-detail-title h2 {
+.studentDetailTitle h2 {
   margin: 0 0 10px 0;
   font-size: 22px;
   color: #262626;
   font-weight: 600;
 }
 
-.student-detail-badges {
+.studentDetailBadges {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.student-detail-card {
+.studentDetailCard {
   padding: 0;
   box-shadow: none;
 }
 
-.student-detail-card .ant-card-body {
+.studentDetailCard :global(.ant-card-body) {
   padding: 0;
 }
 
-.student-detail-section {
+.studentDetailSection {
   padding: 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.student-detail-section:last-child {
+.studentDetailSection:last-child {
   border-bottom: none;
 }
 
-.student-detail-section h3 {
+.studentDetailSection h3 {
   font-size: 16px;
   margin-bottom: 16px;
   color: #262626;
@@ -599,12 +604,212 @@
   gap: 8px;
 }
 
-.student-detail-section h3 .anticon,
-.student-detail-section h3 svg {
+.studentDetailSection h3 :global(.anticon),
+.studentDetailSection h3 svg {
   color: #1890ff;
 }
 
-.detail-value.highlight {
+.detailValue.highlight {
   color: #1890ff;
   font-weight: 600;
+}
+
+.capacityProgress {
+  margin-top: 4px;
+}
+
+.studentDetailModalWrapper :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* For proper Ant Design integration, add global styles for certain components */
+:global(.ant-drawer-body) {
+  padding: 24px;
+  height: calc(100% - 55px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.studentListDrawer :global(.ant-drawer-body) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+/* Fix for tag styles inside ant components */
+.studentDetailBadges :global(.ant-tag) {
+  margin-right: 0;
+}
+
+/* Fix for Ant Design collapse component styles */
+.gradeCollapse {
+  background: transparent;
+  border: none;
+}
+
+.gradeCollapse :global(.ant-collapse-item) {
+  border: 1px solid #f0f0f0;
+  border-radius: 8px !important;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.gradeCollapse :global(.ant-collapse-header) {
+  background-color: #f5f8ff;
+  padding: 16px 20px !important;
+  align-items: center;
+}
+
+.gradeCollapse :global(.ant-collapse-content-box) {
+  padding: 16px !important;
+  background-color: #fff;
+}
+
+/* Fix for student detail modal styles */
+.studentDetailModal :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.studentDetailModal :global(.ant-modal-body) {
+  padding: 0;
+}
+
+/* Fix for student detail card styles */
+.studentDetailCard :global(.ant-card-body) {
+  padding: 0;
+}
+
+/* Fix for drawer styles */
+.studentListDrawer :global(.ant-drawer-header) {
+  padding: 16px 24px;
+  background: #f5f8ff;
+  border-bottom: 1px solid rgba(24, 144, 255, 0.1);
+}
+
+/* Fix for assignment success notification */
+.assignmentSuccessNotification {
+  background-color: #f6ffed;
+  border-left: 4px solid #52c41a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.assignmentSuccessNotification :global(.ant-notification-notice-message) {
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.assignmentSuccessNotification :global(.ant-notification-notice-description) {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.assignmentSuccessNotification :global(.ant-notification-notice-close) {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* Fix for radio button group styles */
+.gradeLevelFilter :global(.ant-radio-button-wrapper) {
+  margin-right: 8px;
+}
+
+/* Fix for progress bar styles */
+.capacityProgress {
+  margin-top: 4px;
+}
+
+/* Fix for ant-drawer-body styles */
+:global(.ant-drawer-body) {
+  padding: 24px;
+  height: calc(100% - 55px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.studentListDrawer :global(.ant-drawer-body) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+/* Fix for student avatar styles */
+.studentAvatar {
+  border: 2px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix for tag styles inside ant components */
+.studentDetailBadges :global(.ant-tag) {
+  margin-right: 0;
+}
+
+/* Student Detail Item Styles */
+.detailItem {
+  margin-bottom: 16px;
+}
+
+.detailLabel {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.detailValue {
+  font-size: 15px;
+  color: #262626;
+  word-break: break-word;
+}
+
+/* For highlighted values */
+.detailValue.highlight {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+/* Add hover effect for better UX */
+.detailItem:hover .detailLabel {
+  color: #595959;
+}
+
+.detailItem:hover .detailValue {
+  color: #000000;
+}
+
+/* Add spacing between sections */
+.studentDetailSection {
+  padding: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.studentDetailSection:last-child {
+  border-bottom: none;
+}
+
+/* Improve appearance of contact information */
+.studentDetailSection h3 {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #262626;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Add some styling for the nested rows */
+.studentDetailCard :global(.ant-row) {
+  margin-bottom: 8px;
+}
+
+/* Add styling for links in detail values */
+.detailValue a {
+  color: #1890ff;
+  transition: all 0.2s;
+}
+
+.detailValue a:hover {
+  color: #40a9ff;
+  text-decoration: underline;
 }

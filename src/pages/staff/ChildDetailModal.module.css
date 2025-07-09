@@ -1,7 +1,7 @@
 /* src/pages/staff-children-management/ChildDetailModal.css */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap');
 
-.staff-children-modal-overlay {
+.staffChildrenModalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -16,7 +16,7 @@
   backdrop-filter: blur(3px);
 }
 
-.staff-children-detail-modal {
+.staffChildrenDetailModal {
   background-color: white;
   border-radius: 16px;
   max-width: 800px;
@@ -31,11 +31,18 @@
 }
 
 @keyframes staff-children-modalFadeIn {
-  from { opacity: 0; transform: scale(0.98) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.staff-children-modal-header {
+.staffChildrenModalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,7 +51,7 @@
   background-color: #f8fafc;
 }
 
-.staff-children-modal-header h2 {
+.staffChildrenModalHeader h2 {
   margin: 0;
   font-size: 20px;
   color: #2d3748;
@@ -54,11 +61,11 @@
   gap: 10px;
 }
 
-.staff-children-modal-header h2 i {
+.staffChildrenModalHeader h2 i {
   color: #4299e1;
 }
 
-.staff-children-close-modal {
+.staffChildrenCloseModal {
   background: transparent;
   border: none;
   width: 36px;
@@ -72,18 +79,18 @@
   transition: all 0.2s;
 }
 
-.staff-children-close-modal:hover {
+.staffChildrenCloseModal:hover {
   background-color: #edf2f7;
   color: #e53e3e;
 }
 
-.staff-children-modal-content {
+.staffChildrenModalContent {
   padding: 24px;
   overflow-y: auto;
 }
 
 /* Profile section */
-.staff-children-child-profile {
+.staffChildrenChildProfile {
   display: flex;
   gap: 24px;
   margin-bottom: 24px;
@@ -91,13 +98,13 @@
   border-bottom: 1px solid #edf2f7;
 }
 
-.staff-children-avatar-container {
+.staffChildrenAvatarContainer {
   flex-shrink: 0;
   position: relative;
   cursor: pointer;
 }
 
-.staff-children-avatar-large {
+.staffChildrenAvatarLarge {
   width: 140px;
   height: 140px;
   border-radius: 16px;
@@ -107,11 +114,11 @@
   transition: transform 0.3s;
 }
 
-.staff-children-avatar-large:hover {
+.staffChildrenAvatarLarge:hover {
   transform: scale(1.02);
 }
 
-.staff-children-zoom-hint {
+.staffChildrenZoomHint {
   position: absolute;
   bottom: 8px;
   right: 8px;
@@ -129,11 +136,11 @@
   transition: opacity 0.2s;
 }
 
-.staff-children-avatar-container:hover .staff-children-zoom-hint {
+.staffChildrenAvatarContainer:hover .staffChildrenZoomHint {
   opacity: 1;
 }
 
-.staff-children-avatar-placeholder-large {
+.staffChildrenAvatarPlaceholderLarge {
   width: 140px;
   height: 140px;
   border-radius: 16px;
@@ -148,25 +155,25 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.staff-children-child-info {
+.staffChildrenChildInfo {
   flex-grow: 1;
 }
 
-.staff-children-name-badge {
+.staffChildrenNameBadge {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.staff-children-name-badge h3 {
+.staffChildrenNameBadge h3 {
   margin: 0;
   font-size: 28px;
   font-weight: 800;
   color: #2d3748;
 }
 
-.staff-children-gender-tag {
+.staffChildrenGenderTag {
   font-size: 13px;
   font-weight: 600;
   padding: 4px 12px;
@@ -175,28 +182,28 @@
   align-items: center;
 }
 
-.staff-children-gender-tag.male {
+.staffChildrenGenderTag.male {
   background-color: rgba(66, 153, 225, 0.15);
   color: #3182ce;
 }
 
-.staff-children-gender-tag.female {
+.staffChildrenGenderTag.female {
   background-color: rgba(236, 72, 153, 0.15);
   color: #db2777;
 }
 
-.staff-children-gender-tag.other {
+.staffChildrenGenderTag.other {
   background-color: rgba(113, 128, 150, 0.15);
   color: #4a5568;
 }
 
-.staff-children-info-badges {
+.staffChildrenInfoBadges {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
 }
 
-.staff-children-info-badge {
+.staffChildrenInfoBadge {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -207,35 +214,35 @@
   transition: all 0.2s;
 }
 
-.staff-children-info-badge:hover {
+.staffChildrenInfoBadge:hover {
   background-color: #edf2f7;
   transform: translateY(-2px);
 }
 
-.staff-children-info-badge i {
+.staffChildrenInfoBadge i {
   font-size: 18px;
   color: #4299e1;
   width: 24px;
   text-align: center;
 }
 
-.staff-children-info-badge-text {
+.staffChildrenInfoBadgeText {
   display: flex;
   flex-direction: column;
 }
 
-.staff-children-badge-label {
+.staffChildrenBadgeLabel {
   font-size: 12px;
   color: #718096;
 }
 
-.staff-children-badge-value {
+.staffChildrenBadgeValue {
   font-weight: 600;
   color: #2d3748;
 }
 
 /* Tabs */
-.staff-children-tabs {
+.staffChildrenTabs {
   display: flex;
   gap: 2px;
   border-bottom: 1px solid #edf2f7;
@@ -243,7 +250,7 @@
   padding: 0 24px;
 }
 
-.staff-children-tab {
+.staffChildrenTab {
   padding: 12px 16px;
   color: #718096;
   font-weight: 600;
@@ -255,19 +262,19 @@
   transition: all 0.2s;
 }
 
-.staff-children-tab i {
+.staffChildrenTab i {
   font-size: 14px;
 }
 
-.staff-children-tab:hover {
+.staffChildrenTab:hover {
   color: #4a5568;
 }
 
-.staff-children-tab.active {
+.staffChildrenTab.active {
   color: #4299e1;
 }
 
-.staff-children-tab.active::after {
+.staffChildrenTab.active::after {
   content: '';
   position: absolute;
   bottom: -1px;
@@ -278,11 +285,11 @@
 }
 
 /* Info sections */
-.staff-children-info-section {
+.staffChildrenInfoSection {
   margin-bottom: 28px;
 }
 
-.staff-children-info-section h4 {
+.staffChildrenInfoSection h4 {
   font-size: 18px;
   margin: 0 0 16px 0;
   color: #2d3748;
@@ -291,18 +298,18 @@
   gap: 10px;
 }
 
-.staff-children-info-section h4 i {
+.staffChildrenInfoSection h4 i {
   color: #4299e1;
 }
 
 /* Info cards */
-.staff-children-info-cards {
+.staffChildrenInfoCards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
 }
 
-.staff-children-info-card {
+.staffChildrenInfoCard {
   background-color: #f7fafc;
   border-radius: 12px;
   padding: 16px;
@@ -313,12 +320,12 @@
   border: 1px solid #edf2f7;
 }
 
-.staff-children-info-card:hover {
+.staffChildrenInfoCard:hover {
   background-color: #edf2f7;
   transform: translateY(-2px);
 }
 
-.staff-children-info-card-icon {
+.staffChildrenInfoCardIcon {
   width: 42px;
   height: 42px;
   border-radius: 10px;
@@ -330,28 +337,28 @@
   font-size: 16px;
 }
 
-.staff-children-info-card-content {
+.staffChildrenInfoCardContent {
   flex: 1;
 }
 
-.staff-children-info-card-label {
+.staffChildrenInfoCardLabel {
   font-size: 13px;
   color: #718096;
   margin-bottom: 4px;
 }
 
-.staff-children-info-card-value {
+.staffChildrenInfoCardValue {
   font-weight: 600;
   color: #2d3748;
 }
 
 /* Document section */
-.staff-children-document-container {
+.staffChildrenDocumentContainer {
   display: flex;
   justify-content: center;
 }
 
-.staff-children-document-preview {
+.staffChildrenDocumentPreview {
   position: relative;
   max-width: 100%;
   border-radius: 12px;
@@ -361,21 +368,21 @@
   transition: transform 0.3s;
 }
 
-.staff-children-document-preview:hover {
+.staffChildrenDocumentPreview:hover {
   transform: translateY(-5px);
 }
 
-.staff-children-document-preview:hover .staff-children-document-overlay {
+.staffChildrenDocumentPreview:hover .staffChildrenDocumentOverlay {
   opacity: 1;
 }
 
-.staff-children-certificate {
+.staffChildrenCertificate {
   max-width: 100%;
   max-height: 300px;
   display: block;
 }
 
-.staff-children-document-overlay {
+.staffChildrenDocumentOverlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -389,23 +396,23 @@
   transition: opacity 0.2s;
 }
 
-.staff-children-document-overlay-content {
+.staffChildrenDocumentOverlayContent {
   color: white;
   text-align: center;
 }
 
-.staff-children-document-overlay-content i {
+.staffChildrenDocumentOverlayContent i {
   font-size: 24px;
   margin-bottom: 8px;
 }
 
-.staff-children-document-overlay-content span {
+.staffChildrenDocumentOverlayContent span {
   display: block;
   font-size: 14px;
   font-weight: 600;
 }
 
-.staff-children-no-document {
+.staffChildrenNoDocument {
   padding: 40px;
   border: 2px dashed #e2e8f0;
   border-radius: 12px;
@@ -415,17 +422,17 @@
   max-width: 400px;
 }
 
-.staff-children-no-document i {
+.staffChildrenNoDocument i {
   font-size: 48px;
   margin-bottom: 16px;
 }
 
-.staff-children-no-document p {
+.staffChildrenNoDocument p {
   margin: 0 0 16px 0;
   font-size: 16px;
 }
 
-.staff-children-upload-btn {
+.staffChildrenUploadBtn {
   padding: 8px 16px;
   background-color: #4299e1;
   color: white;
@@ -439,12 +446,12 @@
   gap: 8px;
 }
 
-.staff-children-upload-btn:hover {
+.staffChildrenUploadBtn:hover {
   background-color: #3182ce;
 }
 
 /* Footer */
-.staff-children-modal-footer {
+.staffChildrenModalFooter {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -453,7 +460,7 @@
   background-color: #f8fafc;
 }
 
-.staff-children-action-button {
+.staffChildrenActionButton {
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 600;
@@ -465,27 +472,27 @@
   border: none;
 }
 
-.staff-children-action-button.secondary {
+.staffChildrenActionButton.secondary {
   background-color: #edf2f7;
   color: #4a5568;
 }
 
-.staff-children-action-button.secondary:hover {
+.staffChildrenActionButton.secondary:hover {
   background-color: #e2e8f0;
   color: #2d3748;
 }
 
-.staff-children-action-button.primary {
+.staffChildrenActionButton.primary {
   background-color: #4299e1;
   color: white;
 }
 
-.staff-children-action-button.primary:hover {
+.staffChildrenActionButton.primary:hover {
   background-color: #3182ce;
 }
 
 /* Fullscreen image modal */
-.staff-children-fullscreen-overlay {
+.staffChildrenFullscreenOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -500,14 +507,14 @@
   padding: 40px;
 }
 
-.staff-children-fullscreen-actions {
+.staffChildrenFullscreenActions {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1200;
 }
 
-.staff-children-fullscreen-close {
+.staffChildrenFullscreenClose {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -521,12 +528,12 @@
   transition: all 0.2s;
 }
 
-.staff-children-fullscreen-close:hover {
+.staffChildrenFullscreenClose:hover {
   background-color: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
 
-.staff-children-fullscreen-image-container {
+.staffChildrenFullscreenImageContainer {
   max-width: 100%;
   max-height: calc(100vh - 120px);
   display: flex;
@@ -534,14 +541,14 @@
   justify-content: center;
 }
 
-.staff-children-fullscreen-image {
+.staffChildrenFullscreenImage {
   max-width: 100%;
   max-height: calc(100vh - 120px);
   object-fit: contain;
   border-radius: 4px;
 }
 
-.staff-children-image-caption {
+.staffChildrenImageCaption {
   margin-top: 20px;
   color: rgba(255, 255, 255, 0.7);
   font-size: 14px;
@@ -549,43 +556,43 @@
 
 /* Responsive */
 @media (max-width: 576px) {
-  .staff-children-modal-content {
+  .staffChildrenModalContent {
     padding: 16px;
   }
-  
-  .staff-children-child-profile {
+
+  .staffChildrenChildProfile {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
-  .staff-children-name-badge {
+
+  .staffChildrenNameBadge {
     flex-direction: column;
     gap: 8px;
   }
-  
-  .staff-children-info-badge {
+
+  .staffChildrenInfoBadge {
     width: 100%;
   }
-  
-  .staff-children-info-cards {
+
+  .staffChildrenInfoCards {
     grid-template-columns: 1fr;
   }
-  
-  .staff-children-tabs {
+
+  .staffChildrenTabs {
     margin: 0 -16px 16px;
     padding: 0 16px;
     overflow-x: auto;
   }
-  
-  .staff-children-tab {
+
+  .staffChildrenTab {
     padding: 12px 12px;
     font-size: 14px;
   }
 }
 
 /* Thêm style cho hiển thị ID */
-.staff-children-id-value {
+.staffChildrenIdValue {
   font-size: 0.8rem;
   font-family: monospace;
   max-width: 160px;
@@ -594,8 +601,340 @@
   white-space: nowrap;
 }
 
-.staff-children-id-value:hover {
+.staffChildrenIdValue:hover {
   overflow: visible;
   white-space: normal;
   word-break: break-all;
+}
+
+/* Parent Tab Styles */
+.parentInfoSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.parentInfoCard {
+  background-color: #f7fafc;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.parentInfoCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.parentInfoHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.parentInfoIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(66, 153, 225, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.parentInfoIcon i {
+  color: #3182ce;
+  font-size: 18px;
+}
+
+.parentInfoTitle {
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  font-size: 16px;
+}
+
+.parentInfoDetail {
+  color: #4a5568;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+/* Classes Tab Styles */
+.classesContainer {
+  margin-bottom: 30px;
+}
+
+.classCard {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid #edf2f7;
+  transition: all 0.3s ease;
+}
+
+.classCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.classHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(45deg, #ebf8ff, #e6fffa);
+  border-bottom: 1px solid #e6f6ff;
+}
+
+.classTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c5282;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.classTitle i {
+  color: #4299e1;
+}
+
+.classBody {
+  padding: 16px 20px;
+}
+
+.classInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.classInfoItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.classInfoLabel {
+  font-size: 12px;
+  color: #718096;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.classInfoLabel i {
+  color: #4299e1;
+}
+
+.classInfoValue {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+.classTeachers {
+  padding-top: 16px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.teachersTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4a5568;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.teachersTitle i {
+  color: #4299e1;
+}
+
+.teachersList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.teacherItem {
+  background-color: #ebf8ff;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #2b6cb0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.teacherItem i {
+  font-size: 12px;
+}
+
+/* Status badges */
+.statusBadge {
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statusActive {
+  background-color: #c6f6d5;
+  color: #276749;
+}
+
+.statusCompleted {
+  background-color: #bee3f8;
+  color: #2c5282;
+}
+
+.statusAttend {
+  background-color: #c6f6d5;
+  color: #276749;
+}
+
+.statusAbsent {
+  background-color: #fed7d7;
+  color: #c53030;
+}
+
+.statusLate {
+  background-color: #feebc8;
+  color: #c05621;
+}
+
+/* Attendance Tab Styles */
+.attendanceSection {
+  margin-bottom: 30px;
+}
+
+.attendanceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #edf2f7;
+}
+
+.attendanceTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.attendanceTitle i {
+  color: #4299e1;
+}
+
+.attendanceTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #edf2f7;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.attendanceTable th {
+  background-color: #f7fafc;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.attendanceTable td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #edf2f7;
+  vertical-align: middle;
+}
+
+.attendanceTable tr:last-child td {
+  border-bottom: none;
+}
+
+.attendanceTable tr:hover {
+  background-color: #f7fafc;
+}
+
+.attendanceDate {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.attendanceNotes {
+  max-width: 300px;
+  color: #4a5568;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.noAttendance {
+  text-align: center;
+  padding: 40px 0;
+  color: #a0aec0;
+}
+
+.noAttendance i {
+  font-size: 40px;
+  margin-bottom: 15px;
+  opacity: 0.6;
+}
+
+.noAttendance p {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* Loading state */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 0;
+}
+
+.loadingSpinner {
+  color: #4299e1;
+  font-size: 30px;
+  margin-bottom: 16px;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  color: #718096;
+  font-size: 16px;
+  font-weight: 500;
 }

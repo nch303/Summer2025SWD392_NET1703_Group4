@@ -1,29 +1,26 @@
-/* Main layout structure */
-.staff-layout {
+.staffLayout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.staff-container {
+.staffContainer {
   display: flex;
   flex: 1;
   padding-top: 20px;
   background-color: #f5f7fa;
 }
 
-/* Main content area */
-.staff-content {
+.staffContent {
   flex: 1;
   padding: 0 20px 20px 20px;
   transition: margin-left 0.3s ease;
-  min-width: 0; /* Ensure content can shrink if needed */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  min-width: 0;
+  overflow-x: hidden;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .staff-content {
+  .staffContent {
     margin-left: 0 !important;
     padding: 0 15px 15px 15px;
     width: 100%;

@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Spin, Avatar, Tag, Typography, Input, Radio,
+  Card, Button, Spin, Avatar, Tag, Typography, Radio,
   Row, Col, message, Modal, Tabs, Badge, Table, Alert,
-  Progress, Collapse, Empty, Tooltip, DatePicker, Popconfirm, Checkbox, notification
-} from 'antd';
-import {
+  Progress, Empty, Tooltip, Popconfirm, Checkbox,
   UserOutlined, InfoCircleOutlined, CheckCircleOutlined,
-  CalendarOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined,
-  BookOutlined, ScheduleOutlined, DeleteOutlined, WarningOutlined
-} from '@ant-design/icons';
-import './StaffClassPage.css';
-import { getAllClasses, getClassAttendance, getStudentsByClassId, kickStudentFromClass, kickStudentFromEnrichmentClass, openClass, finishClass, upgradeStudents, upgradeEnrichmentStudents } from '../../services/StaffService';
+  CalendarOutlined, TeamOutlined, CloseOutlined,
+  DeleteOutlined, WarningOutlined, Title, Text, TabPane
+} from '../../utils/AntComponents';
+import styles from './StaffClassPage.module.css';
+import { getAllClasses, getClassAttendance, 
+  getStudentsByClassId, kickStudentFromClass, 
+  kickStudentFromEnrichmentClass, openClass, 
+  finishClass, upgradeStudents, 
+  upgradeEnrichmentStudents } from '../../services/StaffService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 import { useCustomToast } from '../../components/toast/CustomToast';
-
-const { Title, Text } = Typography;
-const { TabPane } = Tabs;
 
 const StaffClassPage = () => {
   const [classes, setClasses] = useState([]);
@@ -251,10 +250,10 @@ const StaffClassPage = () => {
     setKickingStudent(true);
     try {
       // Choose the appropriate API based on whether it's an enrichment class
-      const response = selectedClass.epName 
+      const response = selectedClass.epName
         ? await kickStudentFromEnrichmentClass(childId, selectedClass.id)
         : await kickStudentFromClass(childId, selectedClass.id);
-        
+
       toast.success(response.message || 'Student removed from class successfully', {
         title: 'Student removed successfully',
         duration: 3000
@@ -337,7 +336,7 @@ const StaffClassPage = () => {
       render: (_, record) => {
         // For regular classes: disable for Graduated/Completed students
         // For enrichment classes: disable for Completed students
-        const isDisabled = selectedClass.epName 
+        const isDisabled = selectedClass.epName
           ? record.enrichmentClassChildrenStatus === 'Completed'
           : (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed');
 
@@ -416,7 +415,7 @@ const StaffClassPage = () => {
             default:
               color = 'default';
           }
-        } 
+        }
         // For regular classes
         else {
           switch (record.childrenGradeStatus) {
@@ -449,7 +448,7 @@ const StaffClassPage = () => {
       render: (_, record) => {
         // Hide delete button for Graduated/Completed students in regular classes
         // Hide delete button for Completed students in enrichment classes
-        const isCompleted = selectedClass?.epName 
+        const isCompleted = selectedClass?.epName
           ? record.enrichmentClassChildrenStatus === 'Completed'
           : (record.childrenGradeStatus === 'Graduated' || record.childrenGradeStatus === 'Completed');
 
@@ -473,7 +472,7 @@ const StaffClassPage = () => {
                 icon={<DeleteOutlined />}
                 size="small"
                 loading={kickingStudent}
-                className="staff-kick-student-btn"
+                className={styles.staffKickStudentBtn}
               >
                 Remove
               </Button>
@@ -584,8 +583,8 @@ const StaffClassPage = () => {
           if (selectedClass?.epName) {
             return student.enrichmentClassChildrenStatus !== 'Completed';
           } else {
-            return (student.childrenGradeStatus !== 'Graduated' && 
-                   student.childrenGradeStatus !== 'Completed');
+            return (student.childrenGradeStatus !== 'Graduated' &&
+              student.childrenGradeStatus !== 'Completed');
           }
         })
         .map(student => student.id);
@@ -599,9 +598,9 @@ const StaffClassPage = () => {
   // Update the toggleStudentSelection function
   const toggleStudentSelection = (studentId) => {
     const student = students.find(s => s.id === studentId);
-    
+
     // Check if student is eligible for selection based on class type
-    const isIneligible = selectedClass?.epName 
+    const isIneligible = selectedClass?.epName
       ? student.enrichmentClassChildrenStatus === 'Completed'
       : (student.childrenGradeStatus === 'Graduated' || student.childrenGradeStatus === 'Completed');
 
@@ -621,8 +620,8 @@ const StaffClassPage = () => {
         if (selectedClass?.epName) {
           return s.enrichmentClassChildrenStatus !== 'Completed';
         } else {
-          return (s.childrenGradeStatus !== 'Graduated' && 
-                 s.childrenGradeStatus !== 'Completed');
+          return (s.childrenGradeStatus !== 'Graduated' &&
+            s.childrenGradeStatus !== 'Completed');
         }
       });
 
@@ -633,9 +632,9 @@ const StaffClassPage = () => {
   };
 
   return (
-    <div className="staff-class-container">
-      <div className="staff-class-page-header">
-        <Title level={2} className="staff-class-page-title">Class management</Title>
+    <div className={styles.staffClassContainer}>
+      <div className={styles.staffClassPageHeader}>
+        <Title level={2} className={styles.staffClassPageTitle}>Class management</Title>
       </div>
 
       <Spin spinning={loading}>
@@ -643,12 +642,12 @@ const StaffClassPage = () => {
           {/* Class list section */}
           <Col span={24}>
             <Card
-              className="staff-class-card"
+              className={styles.staffClassCard}
               extra={
-                <div className="staff-card-header-actions">
+                <div className={styles.staffCardHeaderActions}>
                   {/* Bộ lọc theo năm học */}
-                  <div className="staff-academic-year-filter">
-                    <span className="staff-filter-label">Academic year:</span>
+                  <div className={styles.staffAcademicYearFilter}>
+                    <span className={styles.staffFilterLabel}>Academic year:</span>
                     <Button
                       icon={<FontAwesomeIcon icon="chevron-left" />}
                       size="small"
@@ -660,7 +659,7 @@ const StaffClassPage = () => {
                       }}
                       disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                     />
-                    <span className="staff-academic-year-display">
+                    <span className={styles.staffAcademicYearDisplay}>
                       {selectedAcademicYear || 'All'}
                     </span>
                     <Button
@@ -677,7 +676,7 @@ const StaffClassPage = () => {
                   </div>
 
                   {/* Bộ lọc theo cấp lớp */}
-                  <div className="staff-grade-level-filter">
+                  <div className={styles.staffGradeLevelFilter}>
                     <Radio.Group
                       value={selectedGradeLevel}
                       onChange={handleGradeLevelChange}
@@ -701,20 +700,20 @@ const StaffClassPage = () => {
             >
               {/* Regular Classes */}
               {classesByCategory.regularClasses?.length > 0 && (
-                <div className="staff-class-section">
-                  <div className="staff-class-section-header regular">
-                    <FontAwesomeIcon icon="graduation-cap" className="staff-class-section-icon" />
-                    <span className="staff-section-title">Regular classes</span>
-                    <Tag color="blue" className="staff-section-count">
+                <div className={styles.staffClassSection}>
+                  <div className={`${styles.staffClassSectionHeader} ${styles.regular}`}>
+                    <FontAwesomeIcon icon="graduation-cap" className={styles.staffClassSectionIcon} />
+                    <span className={styles.staffSectionTitle}>Regular classes</span>
+                    <Tag color="blue" className={styles.staffSectionCount}>
                       {classesByCategory.regularClasses.length} classes
                     </Tag>
                   </div>
 
-                  <div className="staff-class-list-container">
+                  <div className={styles.staffClassListContainer}>
                     <Table
                       dataSource={classesByCategory.regularClasses}
                       rowKey="id"
-                      rowClassName="staff-regular-row"
+                      rowClassName={styles.staffRegularRow}
                       onRow={(record) => ({
                         onClick: () => showClassDetail(record),
                         style: { cursor: 'pointer' }
@@ -724,13 +723,13 @@ const StaffClassPage = () => {
                           title: 'Class name',
                           dataIndex: 'name',
                           key: 'name',
-                          render: (text) => <span className="staff-class-name-cell">{text}</span>
+                          render: (text) => <span className={styles.staffClassNameCell}>{text}</span>
                         },
                         {
                           title: 'Grade level',
                           dataIndex: 'gradeLevelName',
                           key: 'gradeLevelName',
-                          render: (text) => text || <span className="staff-text-muted">-</span>
+                          render: (text) => text || <span className={styles.staffTextMuted}>-</span>
                         },
                         {
                           title: 'Status',
@@ -749,8 +748,8 @@ const StaffClassPage = () => {
                           key: 'quantity',
                           width: 200,
                           render: (quantity, record) => (
-                            <div className="staff-class-capacity-cell">
-                              <span className={quantity >= record.maxChildren ? 'staff-capacity-full' : ''}>
+                            <div className={styles.staffClassCapacityCell}>
+                              <span className={quantity >= record.maxChildren ? styles.staffCapacityFull : ''}>
                                 {quantity}/{record.maxChildren}
                               </span>
                               <Progress
@@ -767,7 +766,7 @@ const StaffClassPage = () => {
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
-                            <div className="staff-class-teacher-tags">
+                            <div className={styles.staffClassTeacherTags}>
                               {teacherNames && teacherNames.length > 0 ? (
                                 teacherNames.map((name, idx) => (
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -821,7 +820,7 @@ const StaffClassPage = () => {
                                   <Button
                                     type="default"
                                     danger
-                                    className="staff-finish-class-btn"
+                                    className={styles.staffFinishClassBtn}
                                     icon={<CloseOutlined />}
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
@@ -834,7 +833,7 @@ const StaffClassPage = () => {
                               {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
-                                  className="staff-open-class-btn"
+                                  className={styles.staffOpenClassBtn}
                                   icon={<CheckCircleOutlined />}
                                   size="small"
                                   onClick={(e) => handleOpenClass(record.id, e)}
@@ -848,7 +847,7 @@ const StaffClassPage = () => {
                         }
                       ]}
                       pagination={false}
-                      className="staff-class-table"
+                      className={styles.staffClassTable}
                     />
                   </div>
                 </div>
@@ -856,20 +855,20 @@ const StaffClassPage = () => {
 
               {/* Enrichment Classes */}
               {classesByCategory.enrichmentClasses?.length > 0 && (
-                <div className="staff-class-section">
-                  <div className="staff-class-section-header enrichment-class">
-                    <FontAwesomeIcon icon="star" className="staff-section-enrichment-icon" />
-                    <span className="staff-section-title">Enrichment classes</span>
-                    <Tag color="purple" className="staff-section-count">
+                <div className={styles.staffClassSection}>
+                  <div className={`${styles.staffClassSectionHeader} ${styles.enrichment}`}>
+                    <FontAwesomeIcon icon="star" className={styles.staffSectionEnrichmentIcon} />
+                    <span className={styles.staffSectionTitle}>Enrichment classes</span>
+                    <Tag color="purple" className={styles.staffSectionCount}>
                       {classesByCategory.enrichmentClasses.length} classes
                     </Tag>
                   </div>
 
-                  <div className="staff-class-list-container">
+                  <div className={styles.staffClassListContainer}>
                     <Table
                       dataSource={classesByCategory.enrichmentClasses}
                       rowKey="id"
-                      rowClassName="staff-enrichment-row"
+                      rowClassName={styles.staffEnrichmentRow}
                       onRow={(record) => ({
                         onClick: () => showClassDetail(record),
                         style: { cursor: 'pointer' }
@@ -879,13 +878,13 @@ const StaffClassPage = () => {
                           title: 'Class name',
                           dataIndex: 'name',
                           key: 'name',
-                          render: (text) => <span className="staff-class-name-cell">{text}</span>
+                          render: (text) => <span className={styles.staffClassNameCell}>{text}</span>
                         },
                         {
                           title: 'Program',
                           dataIndex: 'epName',
                           key: 'epName',
-                          render: (text) => text || <span className="staff-text-muted">-</span>
+                          render: (text) => text || <span className={styles.staffTextMuted}>-</span>
                         },
                         {
                           title: 'Status',
@@ -904,8 +903,8 @@ const StaffClassPage = () => {
                           key: 'quantity',
                           width: 200,
                           render: (quantity, record) => (
-                            <div className="staff-class-capacity-cell">
-                              <span className={quantity >= record.maxChildren ? 'staff-capacity-full' : ''}>
+                            <div className={styles.staffClassCapacityCell}>
+                              <span className={quantity >= record.maxChildren ? styles.staffCapacityFull : ''}>
                                 {quantity}/{record.maxChildren}
                               </span>
                               <Progress
@@ -922,7 +921,7 @@ const StaffClassPage = () => {
                           dataIndex: 'teacherNames',
                           key: 'teacherNames',
                           render: (teacherNames) => (
-                            <div className="staff-class-teacher-tags">
+                            <div className={styles.staffClassTeacherTags}>
                               {teacherNames && teacherNames.length > 0 ? (
                                 teacherNames.map((name, idx) => (
                                   <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -976,7 +975,7 @@ const StaffClassPage = () => {
                                   <Button
                                     type="default"
                                     danger
-                                    className="staff-finish-class-btn"
+                                    className={styles.staffFinishClassBtn}
                                     icon={<CloseOutlined />}
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
@@ -989,7 +988,7 @@ const StaffClassPage = () => {
                               {record.status !== 'Available' && record.status !== 'Finished' && (
                                 <Button
                                   type="success"
-                                  className="staff-open-class-btn"
+                                  className={styles.staffOpenClassBtn}
                                   icon={<CheckCircleOutlined />}
                                   size="small"
                                   onClick={(e) => handleOpenClass(record.id, e)}
@@ -1003,7 +1002,7 @@ const StaffClassPage = () => {
                         }
                       ]}
                       pagination={false}
-                      className="staff-class-table"
+                      className={styles.staffClassTable}
                     />
                   </div>
                 </div>
@@ -1025,15 +1024,15 @@ const StaffClassPage = () => {
         onCancel={() => setDetailModalVisible(false)}
         footer={null}
         width={900}
-        className="staff-class-detail-modal"
+        className={styles.staffClassDetailModal}
       >
         {selectedClass && (
-          <div className="staff-class-detail-content">
+          <div className={styles.staffClassDetailContent}>
             {/* Enhanced header with gradient background */}
-            <div className={`staff-class-detail-header ${selectedClass.epName ? 'enrichment' : 'regular'}`}>
-              <div className="staff-class-detail-title">
+            <div className={`${styles.staffClassDetailHeader} ${selectedClass.epName ? styles.enrichment : styles.regular}`}>
+              <div className={styles.staffClassDetailTitle}>
                 <h2>{selectedClass.name}</h2>
-                <div className="staff-class-detail-badges">
+                <div className={styles.staffClassDetailBadges}>
                   <Tag color={selectedClass.status === 'Available' ? 'green' : 'orange'}>
                     {selectedClass.status}
                   </Tag>
@@ -1045,13 +1044,13 @@ const StaffClassPage = () => {
                   <Tag color="gold">{selectedClass.academicYear}</Tag>
                 </div>
               </div>
-              <div className="staff-detail-icon">
+              <div className={styles.staffDetailIcon}>
                 {selectedClass.epName ? (
-                  <div className="staff-detail-icon enrichment">
+                  <div className={`${styles.staffDetailIcon} ${styles.enrichment}`}>
                     <FontAwesomeIcon icon="star" />
                   </div>
                 ) : (
-                  <div className="staff-detail-icon regular">
+                  <div className={`${styles.staffDetailIcon} ${styles.regular}`}>
                     <FontAwesomeIcon icon="graduation-cap" />
                   </div>
                 )}
@@ -1062,35 +1061,35 @@ const StaffClassPage = () => {
             <Tabs
               activeKey={activeTab}
               onChange={setActiveTab}
-              className="staff-class-detail-tabs"
+              className={styles.staffClassDetailTabs}
               type="card"
               items={[
                 {
                   key: "1",
                   label: (
-                    <span className="tab-label">
+                    <span className={styles.tabLabel}>
                       <InfoCircleOutlined /> Class information
                     </span>
                   ),
                   children: (
-                    <div className="staff-class-detail-tab-content">
+                    <div className={styles.staffClassDetailTabContent}>
                       <Row gutter={[24, 24]}>
                         {/* Left column: Basic Information */}
                         <Col span={14}>
                           <Card>
                             <Row gutter={[16, 16]}>
                               <Col span={16}>
-                                <div className="staff-class-detail-item">
-                                  <div className="staff-class-detail-label">Learning program:</div>
-                                  <div className="staff-class-detail-value">{selectedClass.syllabusName}</div>
+                                <div className={styles.staffClassDetailItem}> 
+                                  <div className={styles.staffClassDetailLabel}>Learning program:</div>
+                                  <div className={styles.staffClassDetailValue}>{selectedClass.syllabusName}</div>
                                 </div>
                               </Col>
 
                               {selectedClass.epName && (
                                 <Col span={12}>
-                                  <div className="staff-class-detail-item">
-                                    <div className="staff-class-detail-label">Enrichment program:</div>
-                                    <div className="staff-class-detail-value">
+                                  <div className={styles.staffClassDetailItem}>
+                                    <div className={styles.staffClassDetailLabel}>Enrichment program:</div>
+                                    <div className={styles.staffClassDetailValue}>
                                       <Tag color="purple">{selectedClass.epName}</Tag>
                                     </div>
                                   </div>
@@ -1099,11 +1098,11 @@ const StaffClassPage = () => {
 
                               {selectedClass.timetable && (
                                 <Col span={24}>
-                                  <div className="staff-class-detail-item">
-                                    <div className="staff-class-detail-label">Schedule:</div>
-                                    <div className="staff-class-detail-value highlight schedule-display">
+                                  <div className={styles.staffClassDetailItem}>
+                                    <div className={styles.staffClassDetailLabel}>Schedule:</div>
+                                    <div className={`${styles.staffClassDetailValue} ${styles.highlight} ${styles.scheduleDisplay}`}>
                                       {formatSchedule(selectedClass.timetable).split(', ').map((day, index) => (
-                                        <Tag key={index} color="blue" className="staff-schedule-day-tag">
+                                        <Tag key={index} color="blue" className={styles.staffScheduleDayTag}>
                                           {day}
                                         </Tag>
                                       ))}
@@ -1117,29 +1116,29 @@ const StaffClassPage = () => {
                           {/* Teacher section with enhanced visuals */}
                           <Card
                             title={
-                              <span className="staff-class-detail-card-title">
+                              <span className={styles.staffClassDetailCardTitle}>
                                 <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                               </span>
                             }
                             variant="borderless"
-                            className="staff-class-detail-card staff-class-teacher-section"
+                            className={styles.staffClassDetailCard}
                           >
                             {selectedClass.teacherNames && selectedClass.teacherNames.length > 0 ? (
-                              <div className="staff-class-teachers-assigned-list">
+                              <div className={styles.staffClassTeachersAssignedList}>
                                 {selectedClass.teacherNames.map((name, idx) => (
-                                  <div className="staff-class-teacher-card" key={idx}>
+                                  <div className={styles.staffClassTeacherCard} key={idx}>
                                     <Avatar
                                       icon={<UserOutlined />}
-                                      className="staff-class-teacher-avatar"
+                                      className={styles.staffClassTeacherAvatar}
                                       size={64}
                                     />
-                                    <div className="staff-class-teacher-name">{name}</div>
+                                    <div className={styles.staffClassName}>{name}</div>
                                     <Tag color="blue">Teacher</Tag>
                                   </div>
                                 ))}
                               </div>
                             ) : (
-                              <div className="staff-no-teachers">
+                              <div className={styles.staffNoTeachers}>
                                 <Empty
                                   description="No teacher assigned"
                                   image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -1153,15 +1152,15 @@ const StaffClassPage = () => {
                         <Col span={10}>
                           <Card
                             title={
-                              <span className="staff-class-detail-card-title">
+                              <span className={styles.staffClassDetailCardTitle}>
                                 <FontAwesomeIcon icon="users" /> Class capacity
                               </span>
                             }
                             variant="borderless"
-                            className="staff-class-detail-card staff-capacity-card"
+                            className={styles.staffClassDetailCard}
                           >
-                            <div className="staff-capacity-visualization">
-                              <div className="staff-capacity-donut-detail-card">
+                            <div className={styles.staffCapacityVisualization}>
+                              <div className={styles.staffCapacityDonutDetailCard}>
                                 <Progress
                                   type="circle"
                                   percent={Math.round((selectedClass.quantity / selectedClass.maxChildren) * 100)}
@@ -1170,15 +1169,15 @@ const StaffClassPage = () => {
                                   size={180}
                                 />
                               </div>
-                              <div className="staff-class-capacity-stats">
-                                <div className="staff-class-capacity-stat-item">
-                                  <div className="staff-class-capacity-stat-value">{selectedClass.quantity}</div>
-                                  <div className="staff-class-capacity-stat-label">Currently</div>
+                              <div className={styles.staffClassCapacityStats}>
+                                <div className={styles.staffClassCapacityStatItem}>
+                                  <div className={styles.staffClassCapacityStatValue}>{selectedClass.quantity}</div>
+                                  <div className={styles.staffClassCapacityStatLabel}>Currently</div>
                                 </div>
-                                <div className="staff-class-capacity-stat-divider">/</div>
-                                <div className="staff-class-capacity-stat-item">
-                                  <div className="staff-class-capacity-stat-value">{selectedClass.maxChildren}</div>
-                                  <div className="staff-class-capacity-stat-label">Maximum</div>
+                                <div className={styles.staffClassCapacityStatDivider}>/</div>
+                                <div className={styles.staffClassCapacityStatItem}>
+                                  <div className={styles.staffClassCapacityStatValue}>{selectedClass.maxChildren}</div>
+                                  <div className={styles.staffClassCapacityStatLabel}>Maximum</div>
                                 </div>
                               </div>
 
@@ -1188,11 +1187,11 @@ const StaffClassPage = () => {
                                   type="warning"
                                   showIcon
                                   icon={<FontAwesomeIcon icon="exclamation-triangle" />}
-                                  className="staff-class-capacity-warning-alert"
+                                  className={styles.staffClassCapacityWarningAlert}
                                 />
                               )}
 
-                              <div className="staff-class-capacity-description">
+                              <div className={styles.staffClassCapacityDescription}>
                                 <p>
                                   This class currently has <strong>{selectedClass.quantity}</strong> students,
                                   {selectedClass.quantity < selectedClass.maxChildren ?
@@ -1206,23 +1205,23 @@ const StaffClassPage = () => {
                           {/* Class status card */}
                           <Card
                             title={
-                              <span className="staff-class-detail-card-title">
+                              <span className={styles.staffClassDetailCardTitle}>
                                 <FontAwesomeIcon icon="clipboard-list" /> Status
                               </span>
                             }
                             variant="borderless"
-                            className="staff-class-detail-card staff-status-card"
+                            className={styles.staffClassDetailCard}
                           >
-                            <div className={`staff-class-status ${selectedClass.status.toLowerCase()}`}>
-                              <div className="staff-class-status-icon">
+                            <div className={`${styles.staffClassStatus} ${styles[selectedClass.status.toLowerCase()]}`}>
+                              <div className={styles.staffClassStatusIcon}>
                                 <FontAwesomeIcon
                                   icon={selectedClass.status === 'Available' ? 'check-circle' :
                                     selectedClass.status === 'Finished' ? 'history' : 'clock'}
                                 />
                               </div>
-                              <div className="staff-class-status-details">
-                                <div className="staff-class-status-value">{selectedClass.status}</div>
-                                <div className="staff-class-status-description">
+                              <div className={styles.staffClassStatusDetails}>
+                                <div className={styles.staffClassStatusValue}>{selectedClass.status}</div>
+                                <div className={styles.staffClassStatusDescription}>
                                   {selectedClass.status === 'Available'
                                     ? 'Class is open and can accept students.'
                                     : selectedClass.status === 'Finished'
@@ -1240,24 +1239,24 @@ const StaffClassPage = () => {
                 {
                   key: "2",
                   label: (
-                    <span className="tab-label">
+                    <span className={styles.tabLabel}>
                       <CalendarOutlined /> Attendance
                     </span>
                   ),
                   disabled: selectedClass.quantity === 0,
                   children: (
-                    <div className="staff-class-detail-tab-content">
+                    <div className={styles.staffClassDetailTabContent}>
                       <Spin spinning={attendanceLoading}>
                         {selectedClass.quantity > 0 ? (
                           <>
                             {Object.keys(groupedAttendance).length > 0 ? (
-                              <div className="staff-attendance-container">
-                                <div className="staff-attendance-date-selector">
+                              <div className={styles.staffAttendanceContainer}>
+                                <div className={styles.staffAttendanceDateSelector}>
                                   <Radio.Group
                                     buttonStyle="solid"
                                     defaultValue={activeDate}
                                     onChange={(e) => setActiveDate(e.target.value)}
-                                    className="staff-date-radio-group"
+                                    className={styles.staffDateRadioGroup}
                                   >
                                     {Object.keys(groupedAttendance).map(date => (
                                       <Radio.Button key={date} value={date}>
@@ -1270,42 +1269,42 @@ const StaffClassPage = () => {
                                 {Object.entries(groupedAttendance).map(([date, records]) => (
                                   <div
                                     key={date}
-                                    className="staff-attendance-date-section"
+                                    className={styles.staffAttendanceDateSection}
                                     style={{ display: activeDate === date ? 'block' : 'none' }}
                                   >
-                                    <div className="staff-attendance-summary-cards">
+                                    <div className={styles.staffAttendanceSummaryCards}>
                                       <Row gutter={16}>
                                         <Col span={12}>
-                                          <Card className="staff-summary-card present">
-                                            <div className="staff-summary-icon">
+                                          <Card className={`${styles.staffSummaryCard} ${styles.present}`}>
+                                            <div className={styles.staffSummaryIcon}>
                                               <FontAwesomeIcon icon="check-circle" />
                                             </div>
-                                            <div className="staff-summary-content">
-                                              <div className="staff-summary-count">
+                                            <div className={styles.staffSummaryContent}>
+                                              <div className={styles.staffSummaryCount}>
                                                 {records.filter(r => r.status === 'Attend').length}
                                               </div>
-                                              <div className="staff-summary-label">Present</div>
+                                              <div className={styles.staffSummaryLabel}>Present</div>
                                             </div>
                                           </Card>
                                         </Col>
                                         <Col span={12}>
-                                          <Card className="staff-summary-card absent">
-                                            <div className="staff-summary-icon">
+                                          <Card className={`${styles.staffSummaryCard} ${styles.absent}`}>
+                                            <div className={styles.staffSummaryIcon}>
                                               <FontAwesomeIcon icon="times-circle" />
                                             </div>
-                                            <div className="staff-summary-content">
-                                              <div className="staff-summary-count">
+                                            <div className={styles.staffSummaryContent}>
+                                              <div className={styles.staffSummaryCount}>
                                                 {records.filter(r => r.status === 'Absent').length}
                                               </div>
-                                              <div className="staff-summary-label">Absent</div>
+                                              <div className={styles.staffSummaryLabel}>Absent</div>
                                             </div>
                                           </Card>
                                         </Col>
                                       </Row>
                                     </div>
 
-                                    <div className="staff-attendance-table-container">
-                                      <h3 className="staff-attendance-date-title">
+                                    <div className={styles.staffAttendanceTableContainer}>
+                                      <h3 className={styles.staffAttendanceDateTitle}>
                                         <CalendarOutlined /> Attendance on {formatDate(date)}
                                       </h3>
 
@@ -1314,7 +1313,7 @@ const StaffClassPage = () => {
                                         columns={attendanceColumns}
                                         rowKey="id"
                                         pagination={false}
-                                        className="staff-attendance-table enhanced"
+                                        className={styles.staffAttendanceTableEnhanced}
                                       />
                                     </div>
                                   </div>
@@ -1342,21 +1341,21 @@ const StaffClassPage = () => {
                 {
                   key: "3",
                   label: (
-                    <span className="tab-label">
+                    <span className={styles.tabLabel}>
                       <TeamOutlined /> Students
                     </span>
                   ),
                   disabled: selectedClass.quantity === 0,
                   children: (
-                    <div className="staff-class-detail-tab-content">
+                    <div className={styles.staffClassDetailTabContent}>
                       <Spin spinning={studentsLoading}>
                         {selectedClass.quantity > 0 ? (
                           <>
                             {students && students.length > 0 ? (
-                              <div className="staff-class-students-container">
+                              <div className={styles.staffClassStudentsContainer}>
                                 <Card
                                   title={
-                                    <span className="staff-class-detail-card-title">
+                                    <span className={styles.staffClassDetailCardTitle}>
                                       <FontAwesomeIcon icon="user-graduate" /> List of students
                                     </span>
                                   }
@@ -1373,7 +1372,7 @@ const StaffClassPage = () => {
                                             onClick={selectedClass.epName ? handleUpgradeEnrichmentStudents : handleUpgradeStudents}
                                             disabled={selectedStudentIds.length === 0}
                                             loading={upgradingStudents}
-                                            className={selectedStudentIds.length === 0 ? "staff-upgrade-btn-disabled" : "staff-upgrade-btn"}
+                                            className={selectedStudentIds.length === 0 ? styles.staffUpgradeBtnDisabled : styles.staffUpgradeBtn}
                                           >
                                             {selectedClass.epName ? 'Upgrade Level' : 'Upgrade Grade'} {selectedStudentIds.length > 0 ? `(${selectedStudentIds.length})` : ''}
                                           </Button>
@@ -1381,7 +1380,7 @@ const StaffClassPage = () => {
                                       )}
                                     </div>
                                   }
-                                  className="staff-class-detail-card"
+                                  className={styles.staffClassDetailCard}
                                 >
                                   {selectedClass.status === 'Finished' && (
                                     <Alert
@@ -1399,7 +1398,7 @@ const StaffClassPage = () => {
                                     columns={studentColumns}
                                     rowKey="id"
                                     pagination={{ pageSize: 5 }}
-                                    className="staff-class-students-table enhanced"
+                                    className={styles.staffClassStudentsTableEnhanced}
                                   />
                                 </Card>
                               </div>

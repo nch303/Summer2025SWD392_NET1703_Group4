@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Card, Row, Col, Statistic, Button, Spin, Avatar,
-  List, Tag, Progress, Tabs, Badge, Empty, Tooltip
-} from 'antd';
-import {
+  List, Tag, Badge, Empty, Tooltip,
   AppstoreOutlined, TeamOutlined, UserOutlined,
-  FormOutlined, BookOutlined, ScheduleOutlined,
-  CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined,
-  FileTextOutlined, CalendarOutlined, BarChartOutlined,
-  ProfileOutlined, BellOutlined, EnvironmentOutlined
-} from '@ant-design/icons';
+  FormOutlined, BookOutlined, CalendarOutlined, BarChartOutlined,
+  ProfileOutlined
+} from '../../utils/AntComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './staffDashboard.css';
-import { getAllClasses, getAllApplications, getAllChildren, getAllTeachers } from '../../services/StaffService';
+import styles from './StaffDashboard.module.css';
+import {
+  getAllClasses, getAllApplications,
+  getAllChildren, getAllTeachers
+} from '../../services/StaffService';
 
 const StaffDashboard = () => {
   const navigate = useNavigate();
@@ -139,28 +138,28 @@ const StaffDashboard = () => {
   ];
 
   return (
-    <div className="staff-dashboard-container">
-      <div className="dashboard-welcome-header">
-        <div className="welcome-content">
-          <h1>Hello, <span className="staff-name">Staff</span></h1>
+    <div className={styles.staffDashboardContainer}>
+      <div className={styles.dashboardWelcomeHeader}>
+        <div className={styles.welcomeContent}>
+          <h1>Hello, <span className={styles.staffName}>Staff</span></h1>
           <p>Welcome back to Little Stars Preschool</p>
         </div>
-        <div className="dashboard-date">
+        <div className={styles.dashboardDate}>
           <CalendarOutlined /> {new Date().toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </div>
       </div>
 
       <Spin spinning={loading} tip="Loading data...">
         {/* Stats Row */}
-        <Row gutter={[24, 24]} className="stats-row">
+        <Row gutter={[24, 24]} className={styles.statsRow}>
           <Col xs={24} sm={12} lg={8}>
-            <Card variant="borderless" className="stat-card">
-              <div className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(74, 108, 247, 0.1)' }}>
+            <Card variant="borderless" className={styles.statCard}>
+              <div className={styles.statIconWrapper} style={{ backgroundColor: 'rgba(74, 108, 247, 0.1)' }}>
                 <BookOutlined style={{ color: '#4a6cf7' }} />
               </div>
               <Statistic
                 title="Active classes"
-                className="staff-dashboard-ant-statistic-content"
+                className={styles.antStatisticContent}
                 value={stats.totalClasses}
                 suffix={
                   <Tag color="blue">
@@ -171,8 +170,8 @@ const StaffDashboard = () => {
             </Card>
           </Col>
           <Col xs={24} sm={12} lg={8}>
-            <Card variant="borderless" className="stat-card">
-              <div className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(84, 214, 44, 0.1)' }}>
+            <Card variant="borderless" className={styles.statCard}>
+              <div className={styles.statIconWrapper} style={{ backgroundColor: 'rgba(84, 214, 44, 0.1)' }}>
                 <TeamOutlined style={{ color: '#54d62c' }} />
               </div>
               <Statistic
@@ -182,8 +181,8 @@ const StaffDashboard = () => {
             </Card>
           </Col>
           <Col xs={24} sm={12} lg={8}>
-            <Card variant="borderless" className="stat-card">
-              <div className="stat-icon-wrapper" style={{ backgroundColor: 'rgba(255, 171, 0, 0.1)' }}>
+            <Card variant="borderless" className={styles.statCard}>
+              <div className={styles.statIconWrapper} style={{ backgroundColor: 'rgba(255, 171, 0, 0.1)' }}>
                 <FormOutlined style={{ color: '#ffab00' }} />
               </div>
               <Statistic
@@ -209,30 +208,30 @@ const StaffDashboard = () => {
         {/* Quick Access Section */}
         <Card
           title={
-            <span className="staff-dashboard-section-title">
+            <span className={styles.sectionTitle}>
               <AppstoreOutlined /> Quick access
             </span>
           }
           variant="borderless"
-          className="section-card"
+          className={styles.sectionCard}
         >
           <Row gutter={[24, 24]}>
             {quickAccessLinks.map(link => (
               <Col xs={24} sm={12} md={8} key={link.path}>
-                <Link to={link.path} className="quick-access-link">
+                <Link to={link.path} className={styles.quickAccessLink}>
                   <Card
                     variant="borderless"
                     hoverable
-                    className="quick-access-card"
+                    className={styles.quickAccessCard}
                   >
-                    <div className="quick-access-header">
-                      <div className="quick-icon" style={{ backgroundColor: `${link.color}20`, color: link.color }}>
+                    <div className={styles.quickAccessHeader}>
+                      <div className={styles.quickIcon} style={{ backgroundColor: `${link.color}20`, color: link.color }}>
                         {link.icon}
                       </div>
                       <h3>{link.title}</h3>
                     </div>
-                    <p className="quick-description">{link.description}</p>
-                    <div className="quick-access-arrow">
+                    <p className={styles.quickDescription}>{link.description}</p>
+                    <div className={styles.quickAccessArrow}>
                       <FontAwesomeIcon icon="arrow-right" />
                     </div>
                   </Card>
@@ -242,17 +241,17 @@ const StaffDashboard = () => {
           </Row>
         </Card>
 
-        <Row gutter={[24, 24]} className="dashboard-sections">
+        <Row gutter={[24, 24]} className={styles.dashboardSections}>
           {/* Recent Applications */}
           <Col xs={24} lg={12}>
             <Card
               title={
-                <span className="staff-dashboard-section-title">
+                <span className={styles.sectionTitle}>
                   <FormOutlined /> Recent enrollment applications
                 </span>
               }
               variant="borderless"
-              className="section-card"
+              className={styles.sectionCard}
               extra={
                 <Link to="/staff/enrollment-applications">
                   View all
@@ -263,13 +262,13 @@ const StaffDashboard = () => {
                 <List
                   dataSource={recentApplications}
                   renderItem={(app) => (
-                    <List.Item key={app.eaid} className="app-list-item">
+                    <List.Item key={app.eaid} className={styles.appListItem}>
                       <List.Item.Meta
                         avatar={
                           <Avatar icon={<UserOutlined />} />
                         }
                         title={
-                          <div className="app-title">
+                          <div className={styles.appTitle}>
                             <span>{app.childrenName}</span>
                             <Tag color={
                               app.status === 'Paid' ? 'green' :
@@ -285,7 +284,7 @@ const StaffDashboard = () => {
                           </div>
                         }
                         description={
-                          <div className="app-description">
+                          <div className={styles.appDescription}>
                             <span>Parent: {app.parentName}</span>
                           </div>
                         }
@@ -303,12 +302,12 @@ const StaffDashboard = () => {
           <Col xs={24} lg={12}>
             <Card
               title={
-                <span className="staff-dashboard-section-title">
+                <span className={styles.sectionTitle}>
                   <BarChartOutlined /> Class status
                 </span>
               }
               variant="borderless"
-              className="section-card class-capacity-card"
+              className={styles.sectionCard}
               extra={
                 <Link to="/staff/classes">
                   View all
@@ -316,14 +315,14 @@ const StaffDashboard = () => {
               }
             >
               {classesByCapacity.length > 0 ? (
-                <div className="class-capacity-list">
+                <div className={styles.classCapacityList}>
                   {classesByCapacity.map((cls) => (
                     <Tooltip
                       key={cls.id}
                       title={
-                        <div className="class-tooltip-content">
-                          <div className="tooltip-title">Teacher:</div>
-                          <div className="tooltip-content">
+                        <div className={styles.classTooltipContent}>
+                          <div className={styles.tooltipTitle}>Teacher:</div>
+                          <div className={styles.tooltipContent}>
                             {cls.teacherNames && cls.teacherNames.length > 0 ?
                               cls.teacherNames.join(', ') :
                               'No teacher'
@@ -333,33 +332,33 @@ const StaffDashboard = () => {
                       }
                       placement="right"
                     >
-                      <div className="class-capacity-item-enhanced">
-                        <div className="class-main-info">
-                          <div className="class-badge-name">
-                            <div className={`class-type-badge ${cls.epName ? 'enrichment' : 'regular'}`}>
+                      <div className={styles.classCapacityItemEnhanced}>
+                        <div className={styles.classMainInfo}>
+                          <div className={styles.classBadgeName}>
+                            <div className={`${styles.classTypeBadge} ${cls.epName ? styles.enrichment : styles.regular}`}>
                               {cls.epName ? 'NK' : cls.gradeLevelName || 'L'}
                             </div>
-                            <div className="class-name-text">{cls.name}</div>
+                            <div className={styles.classNameText}>{cls.name}</div>
                           </div>
-                          <div className="capacity-indicator">
-                            <span className={cls.quantity >= cls.maxChildren ? 'capacity-full' :
-                              cls.capacityPercent >= 75 ? 'capacity-high' :
-                                cls.capacityPercent >= 50 ? 'capacity-medium' : 'capacity-low'}>
+                          <div className={styles.capacityIndicator}>
+                            <span className={cls.quantity >= cls.maxChildren ? styles.capacityFull :
+                              cls.capacityPercent >= 75 ? styles.capacityHigh :
+                                cls.capacityPercent >= 50 ? styles.capacityMedium : styles.capacityLow}>
                               {cls.quantity}/{cls.maxChildren}
                             </span>
                           </div>
                         </div>
-                        <div className="capacity-progress-container">
-                          <div className="capacity-progress-bar">
+                        <div className={styles.capacityProgressContainer}>
+                          <div className={styles.capacityProgressBar}>
                             <div
-                              className={`capacity-progress-fill ${cls.quantity >= cls.maxChildren ? 'full' :
-                                  cls.capacityPercent >= 75 ? 'high' :
-                                    cls.capacityPercent >= 50 ? 'medium' : 'low'
+                              className={`${styles.capacityProgressFill} ${cls.quantity >= cls.maxChildren ? styles.full :
+                                cls.capacityPercent >= 75 ? styles.high :
+                                  cls.capacityPercent >= 50 ? styles.medium : styles.low
                                 }`}
                               style={{ width: `${cls.capacityPercent}%` }}
                             />
                           </div>
-                          <div className="capacity-percentage">{cls.capacityPercent}%</div>
+                          <div className={styles.capacityPercentage}>{cls.capacityPercent}%</div>
                         </div>
                       </div>
                     </Tooltip>
@@ -373,29 +372,29 @@ const StaffDashboard = () => {
         </Row>
 
         {/* Todo list and notifications section */}
-        <Row gutter={[24, 24]} className="dashboard-sections">
+        <Row gutter={[24, 24]} className={styles.dashboardSections}>
           <Col xs={24} lg={24}>
             <Card
               title={
-                <span className="staff-dashboard-section-title">
+                <span className={styles.sectionTitle}>
                   <ProfileOutlined /> Tasks to do
                 </span>
               }
               variant="borderless"
-              className="section-card todo-card"
+              className={styles.sectionCard}
             >
-              <div className="task-item-list">
+              <div className={styles.taskItemList}>
                 {stats.pendingApplications > 0 && (
-                  <div className="task-item priority-high">
-                    <div className="task-icon">
+                  <div className={`${styles.taskItem} ${styles.priorityHigh}`}>
+                    <div className={styles.taskIcon}>
                       <FormOutlined />
                     </div>
-                    <div className="task-content">
-                      <div className="task-title">
+                    <div className={styles.taskContent}>
+                      <div className={styles.taskTitle}>
                         <span>Process enrollment applications</span>
                         <Badge count={stats.pendingApplications} style={{ backgroundColor: '#ff4d4f' }} />
                       </div>
-                      <div className="task-description">
+                      <div className={styles.taskDescription}>
                         There are {stats.pendingApplications} enrollment applications pending
                       </div>
                     </div>
@@ -409,15 +408,15 @@ const StaffDashboard = () => {
                   </div>
                 )}
 
-                <div className="task-item priority-medium">
-                  <div className="task-icon">
+                <div className={`${styles.taskItem} ${styles.priorityMedium}`}>
+                  <div className={styles.taskIcon}>
                     <BookOutlined />
                   </div>
-                  <div className="task-content">
-                    <div className="task-title">
+                  <div className={styles.taskContent}>
+                    <div className={styles.taskTitle}>
                       <span>Check class status</span>
                     </div>
-                    <div className="task-description">
+                    <div className={styles.taskDescription}>
                       Update class status and assign students
                     </div>
                   </div>
@@ -426,15 +425,15 @@ const StaffDashboard = () => {
                   </Button>
                 </div>
 
-                <div className="task-item priority-normal">
-                  <div className="task-icon">
+                <div className={`${styles.taskItem} ${styles.priorityNormal}`}>
+                  <div className={styles.taskIcon}>
                     <CalendarOutlined />
                   </div>
-                  <div className="task-content">
-                    <div className="task-title">
+                  <div className={styles.taskContent}>
+                    <div className={styles.taskTitle}>
                       <span>View schedule</span>
                     </div>
-                    <div className="task-description">
+                    <div className={styles.taskDescription}>
                       Check schedule and confirm class schedule
                     </div>
                   </div>

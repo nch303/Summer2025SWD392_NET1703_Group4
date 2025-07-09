@@ -5,7 +5,7 @@ import { getAllChildren } from '../../services/StaffService';
 import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
 import ChildDetailModal from './ChildDetailModal';
-import './ChildrenManagement.css';
+import styles from './ChildrenManagement.module.css';
 
 const ChildrenManagement = () => {
   const [children, setChildren] = useState([]);
@@ -140,26 +140,26 @@ const ChildrenManagement = () => {
   };
 
   return (
-    <div className="staff-children-page">
+    <div className={styles.staffChildrenPage}>
       <ProcessingSpinner isVisible={loading} message="Loading student list..." />
 
-      <div className="staff-children-filters">
-        <div className="staff-children-filter-row">
-          <div className="staff-children-filter-group staff-children-search-group">
+      <div className={styles.staffChildrenFilters}>
+        <div className={styles.staffChildrenFilterRow}>
+          <div className={`${styles.staffChildrenFilterGroup} ${styles.staffChildrenSearchGroup}`}>
             <input
               type="text"
               placeholder="Search by name or parent..."
-              className="staff-children-search-input"
+              className={styles.staffChildrenSearchInput}
               value={searchTerm}
               onChange={handleSearch}
             />
           </div>
 
-          <div className="staff-children-filter-group">
+          <div className={styles.staffChildrenFilterGroup}>
             <label htmlFor="genderFilter">Gender:</label>
             <select
               id="genderFilter"
-              className="staff-children-filter-select"
+              className={styles.staffChildrenFilterSelect}
               value={selectedGender}
               onChange={handleGenderFilter}
             >
@@ -171,7 +171,7 @@ const ChildrenManagement = () => {
           </div>
 
           <button
-            className="staff-children-filter-reset-button"
+            className={styles.staffChildrenFilterResetButton}
             onClick={handleResetFilters}
           >
             <i className="fas fa-sync-alt"></i> Refresh
@@ -179,28 +179,28 @@ const ChildrenManagement = () => {
         </div>
       </div>
 
-      <div className="staff-children-stats">
-        <div className="staff-children-stat-card">
-          <div className="staff-children-stat-title">Total students</div>
-          <div className="staff-children-stat-value">{children.length}</div>
+      <div className={styles.staffChildrenStats}>
+        <div className={styles.staffChildrenStatCard}>
+          <div className={styles.staffChildrenStatTitle}>Total students</div>
+          <div className={styles.staffChildrenStatValue}>{children.length}</div>
         </div>
-        <div className="staff-children-stat-card">
-          <div className="staff-children-stat-title">Male students</div>
-          <div className="staff-children-stat-value">
+        <div className={styles.staffChildrenStatCard}>
+          <div className={styles.staffChildrenStatTitle}>Male students</div>
+          <div className={styles.staffChildrenStatValue}>
             {children.filter(child => child.gender === 'Male').length}
           </div>
         </div>
-        <div className="staff-children-stat-card">
-          <div className="staff-children-stat-title">Female students</div>
-          <div className="staff-children-stat-value">
+        <div className={styles.staffChildrenStatCard}>
+          <div className={styles.staffChildrenStatTitle}>Female students</div>
+          <div className={styles.staffChildrenStatValue}>
             {children.filter(child => child.gender === 'Female').length}
           </div>
         </div>
       </div>
 
-      <div className="staff-children-table-container">
+      <div className={styles.staffChildrenTableContainer}>
         {currentChildren.length > 0 ? (
-          <table className="staff-children-table">
+          <table className={styles.staffChildrenTable}>
             <thead>
               <tr>
                 <th onClick={() => requestSort('name')}>
@@ -234,8 +234,8 @@ const ChildrenManagement = () => {
             <tbody>
               {currentChildren.map(child => (
                 <tr key={child.id}>
-                  <td className="staff-children-child-name">{child.name}</td>
-                  <td className="staff-children-child-avatar">
+                  <td className={styles.staffChildrenChildName}>{child.name}</td>
+                  <td className={styles.staffChildrenChildAvatar}>
                     {child.avatar ? (
                       <img
                         src={child.avatar}
@@ -243,22 +243,22 @@ const ChildrenManagement = () => {
                         onError={(e) => { e.target.src = '/images/default-avatar.png'; }}
                       />
                     ) : (
-                      <div className="staff-children-avatar-placeholder">
+                      <div className={styles.staffChildrenAvatarPlaceholder}>
                         {child.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </td>
                   <td>
-                    <div className="staff-children-birth-info">
+                    <div className={styles.staffChildrenBirthInfo}>
                       <div>{formatDate(child.birthday)}</div>
-                      <div className="staff-children-age">{calculateAge(child.birthday)} years</div>
+                      <div className={styles.staffChildrenAge}>{calculateAge(child.birthday)} years</div>
                     </div>
                   </td>
                   <td>{getGenderDisplay(child.gender)}</td>
                   <td>{child.city || 'Not specified'}</td>
-                  <td className="staff-children-actions-cell">
+                  <td className={styles.staffChildrenActionsCell}>
                     <button
-                      className="staff-children-action-btn staff-children-view-btn"
+                      className={`${styles.staffChildrenActionBtn} ${styles.staffChildrenViewBtn}`}
                       onClick={() => handleViewDetails(child)}
                       title="View details"
                     >
@@ -266,13 +266,13 @@ const ChildrenManagement = () => {
                     </button>
                     <Link
                       to={`/staff/children/edit/${child.id}`}
-                      className="staff-children-action-btn staff-children-edit-btn"
+                      className={`${styles.staffChildrenActionBtn} ${styles.staffChildrenEditBtn}`}
                       title="Edit"
                     >
                       <i className="fas fa-edit"></i>
                     </Link>
                     <button
-                      className="staff-children-action-btn staff-children-delete-btn"
+                      className={`${styles.staffChildrenActionBtn} ${styles.staffChildrenDeleteBtn}`}
                       onClick={() => {/* Handle delete */ }}
                       title="Delete"
                     >
@@ -284,7 +284,7 @@ const ChildrenManagement = () => {
             </tbody>
           </table>
         ) : (
-          <div className="staff-children-no-data">
+          <div className={styles.staffChildrenNoData}>
             {loading ? (
               <p>Loading data...</p>
             ) : (
@@ -298,38 +298,38 @@ const ChildrenManagement = () => {
       </div>
 
       {filteredChildren.length > 0 && (
-        <div className="staff-children-pagination">
+        <div className={styles.staffChildrenPagination}>
           <button
             onClick={() => paginate(1)}
             disabled={currentPage === 1}
-            className="staff-children-pagination-button staff-children-first-page"
+            className={`${styles.staffChildrenPaginationButton} ${styles.staffChildrenFirstPage}`}
           >
             <i className="fas fa-angle-double-left"></i>
           </button>
           <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
-            className="staff-children-pagination-button"
+            className={styles.staffChildrenPaginationButton}
           >
             <i className="fas fa-angle-left"></i>
           </button>
 
-          <div className="staff-children-pagination-info">
-            <span className="staff-children-current-page">{currentPage}</span>
-            <span className="staff-children-total-pages">/ {totalPages}</span>
+          <div className={styles.staffChildrenPaginationInfo}>
+            <span className={styles.staffChildrenCurrentPage}>{currentPage}</span>
+            <span className={styles.staffChildrenTotalPages}>/ {totalPages}</span>
           </div>
 
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="staff-children-pagination-button"
+            className={styles.staffChildrenPaginationButton}
           >
             <i className="fas fa-angle-right"></i>
           </button>
           <button
             onClick={() => paginate(totalPages)}
             disabled={currentPage === totalPages}
-            className="staff-children-pagination-button staff-children-last-page"
+            className={`${styles.staffChildrenPaginationButton} ${styles.staffChildrenLastPage}`}
           >
             <i className="fas fa-angle-double-right"></i>
           </button>

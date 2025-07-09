@@ -1,200 +1,202 @@
-.staff-assign-teacher {
+.staffAssignTeacher {
   padding: 20px;
 }
 
-.staff-assign-teacher .ant-card {
+.staffAssignTeacher :global(.ant-card) {
   margin-bottom: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
   border: 1.5px solid #e8f0fe;
 }
 
-.staff-assign-teacher .ant-table-thead > tr > th {
+.staffAssignTeacher :global(.ant-table-thead > tr > th) {
   background: #f0f4ff;
   color: #6b8afd;
   font-weight: 600;
   border-bottom: 1.5px solid #e8f0fe;
 }
 
-.staff-assign-teacher .ant-table-tbody > tr > td {
+.staffAssignTeacher :global(.ant-table-tbody > tr > td) {
   border-bottom: 1px solid #e8f0fe;
 }
 
-.staff-assign-teacher .ant-table-tbody > tr:hover > td {
+.staffAssignTeacher :global(.ant-table-tbody > tr:hover > td) {
   background: #f8fafc;
 }
 
-.staff-assign-teacher .ant-btn-primary {
+.staffAssignTeacher :global(.ant-btn-primary) {
   background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
   border: none;
 }
 
-.staff-assign-teacher .ant-btn-primary:hover {
+.staffAssignTeacher :global(.ant-btn-primary:hover) {
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
   border: none;
 }
 
-.assignment-form {
+.assignmentForm {
   padding: 16px;
 }
 
-.assignment-header {
+.assignmentHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.assignment-header h2 {
+.assignmentHeader h2 {
   margin: 0;
   color: #6b8afd;
 }
 
-.assign-teacher-container {
+.assignTeacherContainer {
   padding: 20px;
   background-color: #f5f5f5;
 }
 
-.list-card {
+.listCard {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
 
-.list-card .ant-card-head {
+.listCard :global(.ant-card-head) {
   background-color: #f0f7ff;
   border-radius: 8px 8px 0 0;
 }
 
-.assignment-card {
+.assignmentCard {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   margin-top: 20px;
   background-color: #fffdf0;
 }
 
-.class-info, .teacher-info {
+.classInfo,
+.teacherInfo {
   padding: 10px 0;
 }
 
-.class-name, .teacher-name {
+.className,
+.teacherName {
   font-weight: bold;
   font-size: 16px;
   margin-bottom: 8px;
   color: #1890ff;
 }
 
-.teacher-avatar {
+.teacherAvatar {
   border: 2px solid #f0f0f0;
   background-color: #e6f7ff;
 }
 
-.action-buttons {
+.actionButtons {
   display: flex;
   gap: 8px;
 }
 
-.detail-button {
+.detailButton {
   background-color: #f0f7ff;
 }
 
-.selected-button {
+.selectedButton {
   background-color: #52c41a;
   color: white;
 }
 
-.assign-button-container {
+.assignButtonContainer {
   margin-top: 16px;
   text-align: center;
 }
 
-.assign-button {
+.assignButton {
   min-width: 200px;
   height: 40px;
   font-size: 16px;
   font-weight: bold;
 }
 
-.custom-table .ant-table-tbody > tr.selected-row {
+.customTable :global(.ant-table-tbody > tr.selected-row) {
   background-color: #e6f7ff;
 }
 
 /* Teacher Detail Modal Styles */
-.teacher-detail {
+.teacherDetail {
   padding: 10px;
 }
 
-.teacher-detail-header {
+.teacherDetailHeader {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.detail-avatar {
+.detailAvatar {
   border: 3px solid #1890ff;
   background-color: #e6f7ff;
 }
 
-.teacher-detail-title {
+.teacherDetailTitle {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.teacher-detail-title h2 {
+.teacherDetailTitle h2 {
   margin: 0;
   color: #1890ff;
 }
 
-.detail-item {
+.detailItem {
   margin-bottom: 10px;
 }
 
-.detail-label {
+.detailLabel {
   font-weight: bold;
   color: #555;
   margin-bottom: 4px;
 }
 
 /* Add styling for the search inputs */
-.list-card .ant-card-extra .ant-input-search {
+.listCard :global(.ant-card-extra .ant-input-search) {
   margin-bottom: 0;
 }
 
 /* Make search inputs consistent across both cards */
-.list-card .ant-input-search .ant-input {
+.listCard :global(.ant-input-search .ant-input) {
   border-radius: 4px;
 }
 
 /* Add a little hover effect on search boxes */
-.list-card .ant-input-search:hover .ant-input {
+.listCard :global(.ant-input-search:hover .ant-input) {
   border-color: #40a9ff;
 }
 
 /* Make sure the extra area has enough space */
-.list-card .ant-card-head-wrapper {
+.listCard :global(.ant-card-head-wrapper) {
   align-items: center;
 }
 
-.teacher-assign-container {
+.teacherAssignContainer {
   padding: 24px;
   background-color: #f5f7fa;
   min-height: 90vh;
 }
 
-.teacher-assign-page-header {
+.teacherAssignPageHeader {
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.teacher-assign-page-title {
+.teacherAssignPageTitle {
   position: relative;
   margin-bottom: 0 !important;
   color: #262626;
 }
 
-.teacher-assign-page-title::after {
+.teacherAssignPageTitle::after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -205,7 +207,7 @@
   border-radius: 2px;
 }
 
-.teacher-assign-card {
+.teacherAssignCard {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   border: none;
@@ -213,7 +215,7 @@
   overflow: hidden;
 }
 
-.card-title-with-icon {
+.cardTitleWithIcon {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -222,59 +224,59 @@
   color: #262626;
 }
 
-.card-title-with-icon .anticon {
+.cardTitleWithIcon :global(.anticon) {
   color: #1890ff;
 }
 
 /* Grade level collapse panel styling */
-.teacher-grade-collapse {
+.teacherGradeCollapse {
   background: transparent;
   border: none;
 }
 
-.teacher-grade-collapse .ant-collapse-item {
+.teacherGradeCollapse :global(.ant-collapse-item) {
   border: 1px solid #f0f0f0;
   border-radius: 8px !important;
   margin-bottom: 16px;
   overflow: hidden;
 }
 
-.teacher-grade-collapse .ant-collapse-header {
+.teacherGradeCollapse :global(.ant-collapse-header) {
   background-color: #f5f8ff;
   padding: 16px 20px !important;
   align-items: center;
 }
 
-.teacher-grade-header {
+.teacherGradeHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 }
 
-.teacher-grade-name {
+.teacherGradeName {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
 }
 
-.teacher-grade-count {
+.teacherGradeCount {
   margin-left: auto;
 }
 
-.teacher-grade-collapse .ant-collapse-content-box {
+.teacherGradeCollapse :global(.ant-collapse-content-box) {
   padding: 16px !important;
   background-color: #fff;
 }
 
 /* Class cards styling */
-.teacher-class-card-container {
+.teacherClassCardContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
 }
 
-.teacher-class-card {
+.teacherClassCard {
   position: relative;
   transition: all 0.3s;
   height: 100%;
@@ -283,18 +285,18 @@
   border: 1px solid #000000;
 }
 
-.teacher-class-card:hover {
+.teacherClassCard:hover {
   transform: translateY(-6px);
   border: 1px solid #000000;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.teacher-class-card.teacher-selected-class {
+.teacherClassCard.teacherSelectedClass {
   border-color: #1890ff;
   background-color: #e6f7ff;
 }
 
-.teacher-selected-icon {
+.teacherSelectedIcon {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -303,7 +305,7 @@
   z-index: 1;
 }
 
-.teacher-class-card-header {
+.teacherClassCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -312,7 +314,7 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.teacher-class-name {
+.teacherClassName {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
@@ -321,50 +323,50 @@
   text-overflow: ellipsis;
 }
 
-.teacher-class-info-compact {
+.teacherClassInfoCompact {
   display: flex;
   flex-direction: column;
   gap: 12px;
   flex-grow: 1;
 }
 
-.teacher-class-main-info {
+.teacherClassMainInfo {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.teacher-class-tag {
+.teacherClassTag {
   margin: 0;
 }
 
-.teacher-assigned-compact {
+.teacherAssignedCompact {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.teacher-tag-container-compact {
+.teacherTagContainerCompact {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.teacher-capacity-compact {
+.teacherCapacityCompact {
   margin-top: auto;
 }
 
-.capacity-label-container {
+.capacityLabelContainer {
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
 }
 
-.capacity-full {
+.capacityFull {
   color: #ff4d4f;
 }
 
-.teacher-card-actions {
+.teacherCardActions {
   display: flex;
   justify-content: space-between;
   margin-top: 16px;
@@ -373,51 +375,51 @@
 }
 
 /* Enrichment class special styling */
-.enrichment-category .teacher-category-icon {
+.enrichmentCategory .teacherCategoryIcon {
   background-color: #f9f0ff;
   color: #722ed1;
 }
 
-.enrichment-category .teacher-category-name {
+.enrichmentCategory .teacherCategoryName {
   color: #722ed1;
 }
 
 /* Drawer styling */
-.teacher-list-drawer .ant-drawer-header {
+.teacherListDrawer :global(.ant-drawer-header) {
   padding: 16px 24px;
   background: #f5f8ff;
   border-bottom: 1px solid rgba(24, 144, 255, 0.1);
 }
 
-.teacher-drawer-header {
+.teacherDrawerHeader {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.teacher-drawer-title {
+.teacherDrawerTitle {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.teacher-drawer-title-text {
+.teacherDrawerTitleText {
   font-size: 16px;
   font-weight: 600;
   color: #262626;
 }
 
-.teacher-drawer-subtitle {
+.teacherDrawerSubtitle {
   display: flex;
   gap: 8px;
 }
 
-.teacher-search-container {
+.teacherSearchContainer {
   margin-left: 16px;
 }
 
-.teacher-drawer-list {
+.teacherDrawerList {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -425,7 +427,7 @@
   padding: 4px;
 }
 
-.teacher-drawer-card {
+.teacherDrawerCard {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -437,23 +439,23 @@
   transition: all 0.3s;
 }
 
-.teacher-drawer-card:hover {
+.teacherDrawerCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-color: #e6e6e6;
 }
 
-.teacher-drawer-card.teacher-selected {
+.teacherDrawerCard.teacherSelected {
   background-color: #f6ffed;
   border-color: #b7eb8f;
 }
 
-.teacher-drawer-card.teacher-already-assigned {
+.teacherDrawerCard.teacherAlreadyAssigned {
   background-color: #e6f7ff;
   border-color: #91caff;
   cursor: default;
 }
 
-.teacher-drawer-content {
+.teacherDrawerContent {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -461,17 +463,17 @@
   min-width: 0;
 }
 
-.teacher-avatar {
+.teacherAvatar {
   border: 2px solid #f0f0f0;
   background-color: #e6f7ff;
 }
 
-.teacher-drawer-info {
+.teacherDrawerInfo {
   flex: 1;
   min-width: 0;
 }
 
-.teacher-drawer-name {
+.teacherDrawerName {
   margin: 0 0 6px 0;
   font-size: 15px;
   font-weight: 600;
@@ -481,7 +483,7 @@
   white-space: nowrap;
 }
 
-.teacher-drawer-details {
+.teacherDrawerDetails {
   margin: 0;
   font-size: 13px;
   color: #8c8c8c;
@@ -490,24 +492,24 @@
   white-space: nowrap;
 }
 
-.detail-separator {
+.detailSeparator {
   margin: 0 6px;
 }
 
-.teacher-drawer-actions {
+.teacherDrawerActions {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: 16px;
 }
 
-.teacher-drawer-detail-btn {
+.teacherDrawerDetailBtn {
   padding: 4px 8px;
   height: auto;
   color: #1890ff;
 }
 
-.teacher-drawer-footer-actions {
+.teacherDrawerFooterActions {
   position: sticky;
   bottom: 0;
   left: 0;
@@ -519,11 +521,11 @@
 }
 
 /* Teacher detail modal styling */
-.teacher-detail-content {
+.teacherDetailContent {
   padding: 8px;
 }
 
-.teacher-detail-header {
+.teacherDetailHeader {
   display: flex;
   align-items: center;
   gap: 24px;
@@ -533,25 +535,25 @@
   margin-bottom: 20px;
 }
 
-.teacher-detail-avatar {
+.teacherDetailAvatar {
   border: 3px solid #1890ff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.teacher-detail-title {
+.teacherDetailTitle {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.teacher-detail-title h2 {
+.teacherDetailTitle h2 {
   margin: 0;
   color: #262626;
   font-size: 24px;
   font-weight: 600;
 }
 
-.teacher-detail-item {
+.teacherDetailItem {
   background-color: #fafafa;
   border-radius: 8px;
   padding: 12px 16px;
@@ -559,58 +561,58 @@
   border-left: 3px solid #e6f7ff;
 }
 
-.teacher-detail-item:hover {
+.teacherDetailItem:hover {
   border-left-color: #1890ff;
   background-color: #f5faff;
 }
 
-.teacher-detail-label {
+.teacherDetailLabel {
   font-weight: 600;
   color: #262626;
   margin-bottom: 8px;
 }
 
 /* Success notification styling */
-.teacher-assignment-success-notification {
+.teacherAssignmentSuccessNotification {
   background-color: #f6ffed;
   border-left: 4px solid #52c41a;
 }
 
-.teacher-assignment-success-notification .ant-notification-notice-message {
+.teacherAssignmentSuccessNotification :global(.ant-notification-notice-message) {
   color: #52c41a;
   font-weight: 600;
 }
 
-.teacher-assignment-success-notification .ant-notification-notice-description {
+.teacherAssignmentSuccessNotification :global(.ant-notification-notice-description) {
   color: rgba(0, 0, 0, 0.75);
 }
 
-.teacher-assignment-success-notification .ant-notification-notice-close {
+.teacherAssignmentSuccessNotification :global(.ant-notification-notice-close) {
   color: rgba(0, 0, 0, 0.45);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .teacher-class-card-container {
+  .teacherClassCardContainer {
     grid-template-columns: 1fr;
   }
-  
-  .teacher-list-drawer {
+
+  .teacherListDrawer {
     width: 100% !important;
   }
-  
-  .teacher-drawer-card {
+
+  .teacherDrawerCard {
     padding: 10px 12px;
   }
-  
-  .teacher-detail-header {
+
+  .teacherDetailHeader {
     flex-direction: column;
     text-align: center;
     padding: 16px;
   }
 }
 
-.teacher-category-header {
+.teacherCategoryHeader {
   margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 1px solid #e8e8e8;
@@ -618,7 +620,7 @@
   align-items: center;
 }
 
-.teacher-category-name {
+.teacherCategoryName {
   font-size: 18px;
   font-weight: 600;
   color: #1890ff;
@@ -627,7 +629,7 @@
   gap: 8px;
 }
 
-.teacher-category-icon {
+.teacherCategoryIcon {
   color: #1890ff;
   background-color: #e6f7ff;
   width: 32px;
@@ -639,16 +641,16 @@
 }
 
 /* Chi tiết lớp học modal - thiết kế mới */
-.class-detail-modal .ant-modal-content {
+.classDetailModal :global(.ant-modal-content) {
   border-radius: 12px;
   overflow: hidden;
 }
 
-.class-detail-modal .ant-modal-body {
+.classDetailModal :global(.ant-modal-body) {
   padding: 0;
 }
 
-.class-detail-header {
+.classDetailHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -657,24 +659,24 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.class-detail-title h2 {
+.classDetailTitle h2 {
   margin: 0 0 10px 0;
   font-size: 22px;
   color: #262626;
   font-weight: 600;
 }
 
-.class-detail-badges {
+.classDetailBadges {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.class-detail-icon {
+.classDetailIcon {
   margin-left: 16px;
 }
 
-.detail-icon {
+.detailIcon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -684,35 +686,35 @@
   font-size: 20px;
 }
 
-.detail-icon.regular {
+.detailIcon.regular {
   background-color: #e6f7ff;
   color: #1890ff;
 }
 
-.detail-icon.enrichment {
+.detailIcon.enrichment {
   background-color: #f9f0ff;
   color: #722ed1;
 }
 
-.class-detail-card {
+.classDetailCard {
   padding: 0;
   box-shadow: none;
 }
 
-.class-detail-card .ant-card-body {
+.classDetailCard :global(.ant-card-body) {
   padding: 0;
 }
 
-.class-detail-section {
+.classDetailSection {
   padding: 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.class-detail-section:last-child {
+.classDetailSection:last-child {
   border-bottom: none;
 }
 
-.class-detail-section h3 {
+.classDetailSection h3 {
   font-size: 16px;
   margin-bottom: 16px;
   color: #262626;
@@ -722,66 +724,66 @@
   gap: 8px;
 }
 
-.class-detail-section h3 .anticon,
-.class-detail-section h3 svg {
+.classDetailSection h3 :global(.anticon),
+.classDetailSection h3 svg {
   color: #1890ff;
 }
 
-.detail-item {
+.detailItem {
   margin-bottom: 12px;
 }
 
-.detail-label {
+.detailLabel {
   font-size: 14px;
   color: #8c8c8c;
   margin-bottom: 6px;
 }
 
-.detail-value {
+.detailValue {
   font-size: 15px;
   color: #262626;
   font-weight: 500;
 }
 
-.detail-value.highlight {
+.detailValue.highlight {
   color: #1890ff;
   font-weight: 600;
 }
 
-.capacity-summary {
+.capacitySummary {
   margin-bottom: 12px;
 }
 
-.capacity-numbers {
+.capacityNumbers {
   display: flex;
   align-items: baseline;
   margin-bottom: 8px;
 }
 
-.current-capacity {
+.currentCapacity {
   font-size: 24px;
   font-weight: 600;
   color: #262626;
 }
 
-.capacity-separator {
+.capacitySeparator {
   font-size: 20px;
   margin: 0 6px;
   color: #8c8c8c;
 }
 
-.max-capacity {
+.maxCapacity {
   font-size: 20px;
   color: #8c8c8c;
 }
 
-.capacity-label {
+.capacityLabel {
   margin-left: 8px;
   font-size: 15px;
   color: #8c8c8c;
 }
 
-.capacity-warning {
+.capacityWarning {
   color: #ff4d4f;
   font-size: 14px;
   margin-top: 8px;
@@ -790,13 +792,13 @@
   gap: 6px;
 }
 
-.teachers-assigned-list {
+.teachersAssignedList {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
 }
 
-.teacher-card {
+.teacherCard {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -806,14 +808,14 @@
   width: 100px;
 }
 
-.staff-assign-teacher-avatar {
+.staffAssignTeacherAvatar {
   background-color: #1890ff;
   border: 2px solid #d6e4ff;
   margin-bottom: 8px;
   font-size: 24px;
 }
 
-.teacher-name {
+.teacherName {
   text-align: center;
   font-size: 14px;
   max-width: 100%;
@@ -822,7 +824,7 @@
   white-space: nowrap;
 }
 
-.no-teachers {
+.noTeachers {
   background-color: #fafafa;
   padding: 24px;
   border-radius: 8px;
@@ -830,26 +832,26 @@
 }
 
 /* Academic year filter styling */
-.card-header-actions {
+.cardHeaderActions {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
 }
 
-.academic-year-filter {
+.academicYearFilter {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.filter-label {
+.filterLabel {
   font-size: 14px;
   color: #595959;
   white-space: nowrap;
 }
 
-.academic-year-display {
+.academicYearDisplay {
   min-width: 100px;
   padding: 4px 12px;
   background-color: #f5f8ff;
@@ -861,17 +863,17 @@
 }
 
 /* Nổi bật Academic Year tag */
-.academic-year-tag {
+.academicYearTag {
   font-weight: 600;
   padding: 2px 8px;
 }
 
 /* Đảm bảo selected class tag vẫn hiển thị tốt */
-.selected-class-tag {
+.selectedClassTag {
   margin: 0;
 }
 
 /* Grade level filter styling */
-.grade-level-filter {
+.gradeLevelFilter {
   margin-left: 24px;
 }

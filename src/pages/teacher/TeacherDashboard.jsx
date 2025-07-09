@@ -3,23 +3,26 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Card, Row, Col, Statistic, Table, Calendar, Badge, Spin,
   Tabs, Tag, Space, Button, Progress, List, Avatar, Select,
-  Tooltip, Alert
-} from 'antd';
-import {
+  Tooltip, Alert,
   TeamOutlined, BookOutlined, CalendarOutlined,
   ClockCircleOutlined, CheckCircleOutlined, FileTextOutlined,
+  
   BellOutlined, StarOutlined, EyeOutlined, PlusOutlined,
   LineChartOutlined, PieChartOutlined, BarChartOutlined,
   CheckOutlined, CloseOutlined, FileOutlined, SettingOutlined
-} from '@ant-design/icons';
+} from '../../utils/AntComponents';
 import { UserContext } from '../../contexts/UserContext';
-import { getClassesByTeacherId, getStatusColor, getAllSyllabi, getStudentsByClassId } from '../../services/TeacherService';
-import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title } from 'chart.js';
+import { getClassesByTeacherId, getStatusColor, 
+  getAllSyllabi, getStudentsByClassId } from '../../services/TeacherService';
+import { Chart as ChartJS, ArcElement, Tooltip as 
+  ChartTooltip, Legend, CategoryScale, LinearScale, 
+  PointElement, LineElement, BarElement, Title } from 'chart.js';
 import { Pie, Line, Bar } from 'react-chartjs-2';
-import './TeacherDashboard.css';
+import styles from './TeacherDashboard.module.css';
 
 // Register ChartJS components
-ChartJS.register(ArcElement, ChartTooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title);
+ChartJS.register(ArcElement, ChartTooltip, Legend, CategoryScale, 
+  LinearScale, PointElement, LineElement, BarElement, Title);
 
 const TeacherDashboard = () => {
   const { user } = useContext(UserContext);
@@ -211,16 +214,16 @@ const TeacherDashboard = () => {
   // Helper function to get class for schedule items
   const getListItemClass = (className) => {
     switch (className) {
-      case 'Sunshine Class': return 'sunshine-class';
-      case 'Rainbow Class': return 'rainbow-class';
-      case 'Stars Class': return 'stars-class';
+      case 'Sunshine Class': return 'sunshineClass';
+      case 'Rainbow Class': return 'rainbowClass';
+      case 'Stars Class': return 'starsClass';
       default: return '';
     }
   };
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className={styles.loadingContainer}>
         <Spin size="large" />
         <p>Loading dashboard data...</p>
       </div>
@@ -228,9 +231,9 @@ const TeacherDashboard = () => {
   }
 
   return (
-    <div className="teacher-dashboard">
-      <div className="dashboard-header">
-        <div className="dashboard-title-section">
+    <div className={styles.teacherDashboard}>
+      <div className={styles.dashboardHeader}>
+        <div className={styles.dashboardTitleSection}>
           <h2>Teacher Dashboard</h2>
         </div>
       </div>
@@ -246,42 +249,42 @@ const TeacherDashboard = () => {
       )}
 
       {/* Stats Overview */}
-      <div className="dashboard-stats-cards">
+      <div className={styles.dashboardStatsCards}>
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={12} lg={6}>
-            <Card className="stat-card">
+            <Card className={styles.statCard}>
               <Statistic
                 title="My Classes"
                 value={teacherClasses.length}
-                prefix={<BookOutlined className="stat-icon blue" />}
+                prefix={<BookOutlined className={`${styles.statIcon} ${styles.blue}`} />}
               />
             </Card>
           </Col>
           <Col xs={24} sm={12} lg={6}>
-            <Card className="stat-card">
+            <Card className={styles.statCard}>
               <Statistic
                 title="Total Students"
                 value={totalStudents}
-                prefix={<TeamOutlined className="stat-icon green" />}
+                prefix={<TeamOutlined className={`${styles.statIcon} ${styles.green}`} />}
               />
             </Card>
           </Col>
           <Col xs={24} sm={12} lg={6}>
-            <Card className="stat-card">
+            <Card className={styles.statCard}>
               <Statistic
                 title="Attendance Rate"
                 value={totalStudents ? Math.round((attendanceStats.present / totalStudents) * 100) : 0}
                 suffix="%"
-                prefix={<CheckCircleOutlined className="stat-icon orange" />}
+                prefix={<CheckCircleOutlined className={`${styles.statIcon} ${styles.orange}`} />}
               />
             </Card>
           </Col>
           <Col xs={24} sm={12} lg={6}>
-            <Card className="stat-card">
+            <Card className={styles.statCard}>
               <Statistic
                 title="Active Programs"
                 value={syllabi.length || 0}
-                prefix={<FileTextOutlined className="stat-icon purple" />}
+                prefix={<FileTextOutlined className={`${styles.statIcon} ${styles.purple}`} />}
               />
             </Card>
           </Col>
@@ -289,45 +292,45 @@ const TeacherDashboard = () => {
       </div>
 
       {/* Charts & Analytics Section */}
-      <h3 className="section-title">Analytics & Insights</h3>
-      <Row gutter={[24, 24]} className="charts-section">
+      <h3 className={styles.sectionTitle}>Analytics & Insights</h3>
+      <Row gutter={[24, 24]} className={styles.chartsSection}>
         <Col xs={24} md={12} lg={8}>
-          <Card title="Today's Attendance" className="chart-card">
-            <div className="chart-container">
+          <Card title="Today's Attendance" className={styles.chartCard}>
+            <div className={styles.chartContainer}>
               <Pie data={attendanceChartData} />
             </div>
-            <div className="chart-legend">
-              <div className="legend-item">
-                <span className="legend-dot" style={{ backgroundColor: '#4caf50' }}></span>
+            <div className={styles.chartLegend}>
+              <div className={styles.legendItem}>
+                <span className={styles.legendDot} style={{ backgroundColor: '#4caf50' }}></span>
                 <span>Present: {attendanceStats.present} students</span>
               </div>
-              <div className="legend-item">
-                <span className="legend-dot" style={{ backgroundColor: '#f44336' }}></span>
+              <div className={styles.legendItem}>
+                <span className={styles.legendDot} style={{ backgroundColor: '#f44336' }}></span>
                 <span>Absent: {attendanceStats.absent} students</span>
               </div>
             </div>
           </Card>
         </Col>
         <Col xs={24} md={12} lg={8}>
-          <Card title="Gender Distribution" className="chart-card">
-            <div className="chart-container">
+          <Card title="Gender Distribution" className={styles.chartCard}>
+            <div className={styles.chartContainer}>
               <Pie data={genderChartData} />
             </div>
-            <div className="chart-legend">
-              <div className="legend-item">
-                <span className="legend-dot" style={{ backgroundColor: '#2196f3' }}></span>
+            <div className={styles.chartLegend}>
+              <div className={styles.legendItem}>
+                <span className={styles.legendDot} style={{ backgroundColor: '#2196f3' }}></span>
                 <span>Male: {genderDistribution.male} students</span>
               </div>
-              <div className="legend-item">
-                <span className="legend-dot" style={{ backgroundColor: '#e91e63' }}></span>
+              <div className={styles.legendItem}>
+                <span className={styles.legendDot} style={{ backgroundColor: '#e91e63' }}></span>
                 <span>Female: {genderDistribution.female} students</span>
               </div>
             </div>
           </Card>
         </Col>
         <Col xs={24} lg={8}>
-          <Card title="Weekly Progress" className="chart-card">
-            <div className="chart-container">
+          <Card title="Weekly Progress" className={styles.chartCard}>
+            <div className={styles.chartContainer}>
               <Line
                 data={weeklyProgressData}
                 options={{
@@ -343,10 +346,10 @@ const TeacherDashboard = () => {
         </Col>
       </Row>
 
-      <Row gutter={[24, 24]} className="charts-section">
+      <Row gutter={[24, 24]} className={styles.chartsSection}>
         <Col xs={24} md={12}>
-          <Card title="Students Per Class" className="chart-card">
-            <div className="chart-container">
+          <Card title="Students Per Class" className={styles.chartCard}>
+            <div className={styles.chartContainer}>
               <Bar
                 data={classDataBySize}
                 options={{
@@ -361,12 +364,12 @@ const TeacherDashboard = () => {
           </Card>
         </Col>
         <Col xs={24} md={12}>
-          <Card title="My Classes" className="classes-card">
+          <Card title="My Classes" className={styles.classesCard}>
             <List
               itemLayout="horizontal"
               dataSource={teacherClasses}
               renderItem={(classItem) => (
-                <List.Item key={classItem.id} className="class-list-item">
+                <List.Item key={classItem.id} className={styles.classListItem}>
                   <List.Item.Meta
                     avatar={
                       <Avatar
@@ -380,7 +383,7 @@ const TeacherDashboard = () => {
                     }
                     title={<span>{classItem.name || `Class ${classItem.id}`}</span>}
                     description={
-                      <div className="class-item-details">
+                      <div className={styles.classItemDetails}>
                         <span>
                           <TeamOutlined /> {studentsByClass[classItem.id]?.length || 0} students
                         </span>
@@ -407,7 +410,7 @@ const TeacherDashboard = () => {
                 </List.Item>
               )}
             />
-            <div className="view-all-link">
+            <div className={styles.viewAllLink}>
               <Link to="/teacher/classes">Manage Classes</Link>
             </div>
           </Card>
@@ -415,23 +418,23 @@ const TeacherDashboard = () => {
       </Row>
 
       {/* Upcoming Activities Section */}
-      <Row gutter={[24, 24]} className="upcoming-section">
+      <Row gutter={[24, 24]} className={styles.upcomingSection}>
         <Col xs={24}>
-          <Card title="Teaching Program Progress" className="programs-card">
+          <Card title="Teaching Program Progress" className={styles.programsCard}>
             {syllabi.length > 0 ? (
               <Row gutter={[16, 16]}>
                 {syllabi.slice(0, 4).map((program) => (
                   <Col xs={24} sm={12} md={6} key={program.id}>
-                    <Card className="program-progress-card">
+                    <Card className={styles.programProgressCard}>
                       <h4>{program.title || program.name || `Program ${program.id}`}</h4>
                       <Progress
                         percent={program.progress || Math.floor(Math.random() * 100)}
                         status={program.status === 'Completed' ? 'success' : 'active'}
                       />
-                      <div className="program-details">
+                      <div className={styles.programDetails}>
                         <span>{program.description || 'Teaching program for students'}</span>
                         {program.deadline && (
-                          <div className="program-deadline">
+                          <div className={styles.programDeadline}>
                             <ClockCircleOutlined /> Deadline: {program.deadline}
                           </div>
                         )}
@@ -444,7 +447,7 @@ const TeacherDashboard = () => {
                 ))}
               </Row>
             ) : (
-              <div className="empty-state">
+              <div className={styles.emptyState}>
                 <p>No active teaching programs found.</p>
                 <Button type="primary">Browse Programs</Button>
               </div>

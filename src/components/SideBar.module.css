@@ -1,31 +1,7 @@
-/* Main layout structure */
-.teacher-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.teacher-container {
-  display: flex;
-  flex: 1;
-  padding-top: 20px;
-  background-color: #f5f9fa;
-}
-
-/* Main content area */
-.teacher-content {
-  flex: 1;
-  padding: 0 20px 20px 20px;
-  transition: margin-left 0.3s ease;
-  min-width: 0; /* Ensure content can shrink if needed */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-}
-
-/* Teacher Sidebar Styles */
-.teacher-sidebar {
+.staffSidebar {
   width: 280px;
   min-width: 280px;
-  background: linear-gradient(to bottom, #ffffff, #f5fbff);
+  background: linear-gradient(to bottom, #ffffff, #f8f9ff);
   box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
   border-radius: 16px;
   margin-left: 20px;
@@ -36,13 +12,13 @@
   height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: hidden;
   z-index: 10;
   flex-shrink: 0;
   border: 1px solid rgba(231, 235, 247, 0.8);
 }
 
-.teacher-sidebar-header {
+.staffSidebarHeader {
   padding: 24px;
   display: flex;
   align-items: center;
@@ -55,10 +31,10 @@
   z-index: 2;
 }
 
-.teacher-sidebar-title {
+.staffSidebarTitle {
   font-size: 20px;
   font-weight: 700;
-  background: linear-gradient(45deg, #3e8ed0, #6cb2eb);
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
@@ -69,7 +45,7 @@
   letter-spacing: -0.2px;
 }
 
-.teacher-sidebar-toggle {
+.staffSidebarToggle {
   background: none;
   border: none;
   color: #6b7280;
@@ -84,25 +60,25 @@
   min-height: 34px;
 }
 
-.teacher-sidebar-toggle:hover {
-  background-color: #eef7ff;
-  color: #3e8ed0;
+.staffSidebarToggle:hover {
+  background-color: #f0f0ff;
+  color: #4a6cf7;
   transform: scale(1.05);
 }
 
-.teacher-sidebar-toggle svg {
+.staffSidebarToggle svg {
   width: 18px;
   height: 18px;
 }
 
-.teacher-sidebar-nav {
+.staffSidebarNav {
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.teacher-sidebar-link {
+.staffSidebarLink {
   display: flex;
   align-items: center;
   padding: 14px 18px;
@@ -115,19 +91,19 @@
   overflow: hidden;
 }
 
-.teacher-sidebar-link::before {
+.staffSidebarLink::before {
   content: '';
   position: absolute;
   left: 0;
   width: 4px;
   height: 0;
-  background: linear-gradient(45deg, #3e8ed0, #6cb2eb);
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
   opacity: 0;
   transition: height 0.3s ease, opacity 0.3s;
   border-radius: 0 4px 4px 0;
 }
 
-.teacher-sidebar-icon {
+.staffSidebarIcon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,13 +113,13 @@
   transition: all 0.3s ease;
 }
 
-.teacher-sidebar-icon svg {
+.staffSidebarIcon svg {
   width: 20px;
   height: 20px;
   transition: transform 0.2s ease;
 }
 
-.teacher-sidebar-text {
+.staffSidebarText {
   font-size: 15px;
   font-weight: 500;
   white-space: nowrap;
@@ -152,76 +128,74 @@
   transition: all 0.3s ease;
 }
 
-.teacher-sidebar-link:hover {
-  background-color: rgba(62, 142, 208, 0.05);
-  color: #3e8ed0;
+.staffSidebarLink:hover {
+  background-color: rgba(74, 108, 247, 0.05);
+  color: #4a6cf7;
   transform: translateX(2px);
 }
 
-.teacher-sidebar-link:hover .teacher-sidebar-icon svg {
+.staffSidebarLink:hover .staffSidebarIcon svg {
   transform: scale(1.1);
 }
 
-.teacher-sidebar-link.active {
-  color: #3e8ed0;
-  background-color: rgba(62, 142, 208, 0.08);
+.staffSidebarLink.active {
+  color: #4a6cf7;
+  background-color: rgba(74, 108, 247, 0.08);
   font-weight: 600;
 }
 
-.teacher-sidebar-link.active::before {
+.staffSidebarLink.active::before {
   height: 70%;
   opacity: 1;
   top: 15%;
 }
 
-.teacher-sidebar-link.active .teacher-sidebar-icon {
+.staffSidebarLink.active .staffSidebarIcon {
   transform: scale(1.05);
 }
 
-/* Collapsed sidebar styles */
-.sidebar-collapsed .teacher-sidebar {
+.sidebarCollapsed .staffSidebar {
   width: 80px;
   min-width: 80px;
 }
 
-.sidebar-collapsed .teacher-sidebar-title {
+.sidebarCollapsed .staffSidebarTitle {
   opacity: 0;
   width: 0;
   margin: 0;
 }
 
-.sidebar-collapsed .teacher-sidebar-icon {
+.sidebarCollapsed .staffSidebarIcon {
   margin-right: 0;
 }
 
-.sidebar-collapsed .teacher-sidebar-text {
+.sidebarCollapsed .staffSidebarText {
   opacity: 0;
   width: 0;
   margin: 0;
 }
 
-.sidebar-collapsed .teacher-sidebar-link {
+.sidebarCollapsed .staffSidebarLink {
   justify-content: center;
   padding: 16px 12px;
 }
 
-.sidebar-collapsed .teacher-sidebar-link:hover {
+.sidebarCollapsed .staffSidebarLink:hover {
   transform: scale(1.05);
-  background-color: rgba(62, 142, 208, 0.08);
+  background-color: rgba(74, 108, 247, 0.08);
 }
 
-/* Tooltip for collapsed sidebar */
-.sidebar-collapsed .teacher-sidebar-link {
+.sidebarCollapsed .staffSidebarLink {
   position: relative;
 }
 
-.sidebar-collapsed .teacher-sidebar-link:hover::after {
+.sidebarCollapsed .staffSidebarLink:hover::after {
   content: attr(aria-label);
   position: absolute;
   left: 100%;
   top: 50%;
   transform: translateY(-50%);
-  background: linear-gradient(45deg, #3e8ed0, #6cb2eb);
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
   color: white;
   padding: 8px 14px;
   border-radius: 8px;
@@ -230,18 +204,24 @@
   white-space: nowrap;
   z-index: 100;
   margin-left: 12px;
-  box-shadow: 0 4px 12px rgba(62, 142, 208, 0.2);
+  box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
   animation: fadeIn 0.2s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-50%) translateX(-10px); }
-  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .teacher-sidebar {
+  .staffSidebar {
     position: fixed;
     left: 0;
     top: 70px;
@@ -251,20 +231,14 @@
     z-index: 1000;
     border-radius: 0;
   }
-  
-  .teacher-layout .teacher-sidebar {
+
+  .staffLayout .staffSidebar {
     transform: translateX(0);
   }
-  
-  .sidebar-collapsed .teacher-sidebar {
+
+  .sidebarCollapsed .staffSidebar {
     transform: translateX(-100%);
     width: 260px;
     min-width: 260px;
-  }
-  
-  .teacher-content {
-    margin-left: 0 !important;
-    padding: 0 15px 15px 15px;
-    width: 100%;
   }
 }

@@ -1,26 +1,26 @@
-.teacher-attendance-container {
+.teacherAttendanceContainer {
   padding: 24px 12px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.teacher-attendance-page-card {
+.teacherAttendancePageCard {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   background: #ffffff;
 }
 
-.teacher-attendance-header {
+.teacherAttendanceHeader {
   margin-bottom: 32px;
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 16px;
 }
 
-.teacher-attendance-title-section {
+.teacherAttendanceTitleSection {
   margin-bottom: 16px;
 }
 
-.teacher-attendance-header h2 {
+.teacherAttendanceHeader h2 {
   margin-bottom: 8px;
   font-weight: 700;
   font-size: 28px;
@@ -30,62 +30,62 @@
   color: transparent;
 }
 
-.teacher-attendance-description {
+.teacherAttendanceDescription {
   color: #595959;
   font-size: 16px;
   margin-bottom: 0;
 }
 
-.teacher-attendance-card {
+.teacherAttendanceCard {
   border-radius: 12px;
   margin-bottom: 24px;
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.teacher-attendance-card:hover {
+.teacherAttendanceCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   transform: translateY(-2px);
 }
 
-.teacher-attendance-actions {
+.teacherAttendanceActions {
   display: flex;
   justify-content: space-between;
   margin: 24px 0 8px;
   gap: 16px;
 }
 
-.teacher-action-spacer {
+.teacherActionSpacer {
   flex: 1;
 }
 
-.teacher-student-status-attend {
+.teacherStudentStatusAttend {
   color: #52c41a;
 }
 
-.teacher-student-status-absent {
+.teacherStudentStatusAbsent {
   color: #f5222d;
 }
 
-.teacher-status-badge-attend {
+.teacherStatusBadgeAttend {
   background-color: #f6ffed;
   border: 1px solid #b7eb8f;
   color: #52c41a;
 }
 
-.teacher-status-badge-absent {
+.teacherStatusBadgeAbsent {
   background-color: #fff1f0;
   border: 1px solid #ffa39e;
   color: #f5222d;
 }
 
-.teacher-attendance-table .ant-table-thead > tr > th {
+.teacherAttendanceTable .ant-table-thead>tr>th {
   background-color: #f0f7ff;
   font-weight: 600;
   padding: 16px 12px;
 }
 
-.teacher-attendance-date {
+.teacherAttendanceDate {
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -96,17 +96,17 @@
   width: fit-content;
 }
 
-.teacher-date-icon {
+.teacherDateIcon {
   color: #1890ff;
 }
 
-.teacher-attendance-summary {
+.teacherAttendanceSummary {
   display: flex;
   gap: 16px;
   margin-bottom: 32px;
 }
 
-.teacher-summary-card {
+.teacherSummaryCard {
   flex: 1;
   border-radius: 12px;
   padding: 20px;
@@ -114,22 +114,22 @@
   transition: all 0.3s ease;
 }
 
-.teacher-summary-card:hover {
+.teacherSummaryCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   transform: translateY(-2px);
 }
 
-.teacher-summary-card.present {
+.teacherSummaryCard.present {
   background-color: #f6ffed;
   border: 1px solid #b7eb8f;
 }
 
-.teacher-summary-card.absent {
+.teacherSummaryCard.absent {
   background-color: #fff1f0;
   border: 1px solid #ffa39e;
 }
 
-.teacher-summary-card-percentage {
+.teacherSummaryCardPercentage {
   background-color: #e6f7ff;
   border: 1px solid #91d5ff;
   display: flex;
@@ -138,88 +138,88 @@
   justify-content: center;
 }
 
-.teacher-summary-header {
+.teacherSummaryHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.teacher-info-icon {
+.teacherInfoIcon {
   color: #1890ff;
   cursor: pointer;
 }
 
-.teacher-summary-value {
+.teacherSummaryValue {
   font-size: 28px;
   font-weight: 700;
   margin: 8px 0;
 }
 
-.teacher-summary-subtitle {
+.teacherSummarySubtitle {
   color: #8c8c8c;
   font-size: 14px;
 }
 
-.teacher-attendance-progress {
+.teacherAttendanceProgress {
   margin-top: 8px;
 }
 
-.teacher-notes-input {
+.teacherNotesInput {
   margin-top: 4px;
   border-radius: 6px;
   resize: none;
 }
 
 @media (max-width: 992px) {
-  .teacher-attendance-summary {
+  .teacherAttendanceSummary {
     flex-wrap: wrap;
   }
-  
-  .teacher-summary-card {
+
+  .teacherSummaryCard {
     min-width: 45%;
   }
 }
 
 @media (max-width: 768px) {
-  .teacher-attendance-summary {
+  .teacherAttendanceSummary {
     flex-direction: column;
   }
-  
-  .teacher-status-radio-group {
+
+  .teacherStatusRadioGroup {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
-  .teacher-status-btn {
+
+  .teacherStatusBtn {
     width: 100%;
   }
-  
-  .teacher-attendance-actions {
+
+  .teacherAttendanceActions {
     flex-direction: column-reverse;
   }
-  
-  .teacher-back-button,
-  .teacher-attendance-actions button {
+
+  .teacherBackButton,
+  .teacherAttendanceActions button {
     width: 100%;
   }
 }
 
-.teacher-header-with-back {
+.teacherHeaderWithBack {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.teacher-back-button {
+.teacherBackButton {
   display: flex;
   align-items: center;
   font-size: 15px;
 }
 
-.teacher-loading-state {
+.teacherLoadingState {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -230,27 +230,27 @@
 }
 
 /* Add these styles for the success modal */
-.teacher-success-modal .ant-modal-content {
+.teacherSuccessModal .ant-modal-content {
   border-radius: 12px;
 }
 
-.teacher-success-modal-title {
+.teacherSuccessModalTitle {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.teacher-success-icon {
+.teacherSuccessIcon {
   color: #52c41a;
   font-size: 20px;
 }
 
-.teacher-success-modal .ant-modal-body {
+.teacherSuccessModal .ant-modal-body {
   padding: 24px;
   font-size: 16px;
 }
 
-.teacher-success-modal .ant-modal-footer {
+.teacherSuccessModal .ant-modal-footer {
   border-top: none;
   padding: 0 24px 24px;
 }
@@ -265,7 +265,7 @@
 }
 
 /* Add this to your CSS file to position toasts below navbar */
-.teacher-toast-container {
+.teacherToastContainer {
   padding-top: 10px !important;
 }
 
@@ -274,13 +274,13 @@
   top: 70px !important;
 }
 
-.teacher-toast-success {
+.teacherToastSuccess {
   background: #f6ffed !important;
   border-left: 4px solid #52c41a !important;
   color: #333333 !important;
 }
 
-.teacher-toast-error {
+.teacherToastError {
   background: #fff2f0 !important;
   border-left: 4px solid #ff4d4f !important;
   color: #333333 !important;

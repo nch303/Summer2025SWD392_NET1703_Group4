@@ -1,19 +1,19 @@
-.teacher-class-container {
+.teacherClassContainer {
   padding: 24px 0;
 }
 
-.class-header {
+.classHeader {
   margin-bottom: 32px;
 }
 
-.header-top {
+.headerTop {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
 }
 
-.header-left h2 {
+.headerLeft h2 {
   margin-bottom: 8px;
   font-weight: 700;
   font-size: 28px;
@@ -23,19 +23,20 @@
   color: transparent;
 }
 
-.header-actions {
+.headerActions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 16px;
 }
 
-.search-filter {
+.searchFilter {
   display: flex;
   gap: 12px;
 }
 
-.loading-container, .empty-state {
+.loadingContainer,
+.emptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,33 +49,33 @@
   text-align: center;
 }
 
-.skeleton-container {
+.skeletonContainer {
   margin-top: 24px;
 }
 
-.class-dashboard {
+.classDashboard {
   margin-bottom: 32px;
 }
 
-.dashboard-card {
+.dashboardCard {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.dashboard-card:hover {
+.dashboardCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-card-content {
+.dashboardCardContent {
   display: flex;
   align-items: center;
   padding: 8px;
 }
 
-.dashboard-icon {
+.dashboardIcon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,38 +86,38 @@
   margin-right: 16px;
 }
 
-.total-classes .dashboard-icon {
+.totalClasses .dashboardIcon {
   background-color: rgba(24, 144, 255, 0.1);
   color: #1890ff;
 }
 
-.total-students .dashboard-icon {
+.totalStudents .dashboardIcon {
   background-color: rgba(82, 196, 26, 0.1);
   color: #52c41a;
 }
 
-.active-classes .dashboard-icon {
+.activeClasses .dashboardIcon {
   background-color: rgba(250, 173, 20, 0.1);
   color: #faad14;
 }
 
-.dashboard-info {
+.dashboardInfo {
   flex: 1;
 }
 
-.dashboard-value {
+.dashboardValue {
   font-size: 32px;
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 4px;
 }
 
-.dashboard-label {
+.dashboardLabel {
   color: #8c8c8c;
   font-size: 14px;
 }
 
-.class-card {
+.classCard {
   height: 100%;
   border-radius: 12px;
   overflow: hidden;
@@ -125,26 +126,26 @@
   position: relative;
 }
 
-.class-card:hover {
+.classCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   border-color: #1890ff;
 }
 
-.teacher-class-status-badge {
+.teacherClassStatusBadge {
   position: absolute;
   top: 12px;
   right: 12px;
   z-index: 2;
 }
 
-.class-card-header {
+.classCardHeader {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.class-avatar {
+.classAvatar {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -159,25 +160,25 @@
   flex-shrink: 0;
 }
 
-.class-title-container {
+.classTitleContainer {
   flex-grow: 1;
   overflow: hidden;
 }
 
-.class-name {
+.className {
   margin-bottom: 8px !important;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.class-tags {
+.classTags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
 
-.class-details {
+.classDetails {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -185,62 +186,62 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.class-info-row {
+.classInfoRow {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.student-progress {
+.studentProgress {
   width: 100%;
 }
 
-.class-main-info {
+.classMainInfo {
   width: 100%;
   text-align: center;
 }
 
-.class-name-container {
+.classNameContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.grade-tag {
+.gradeTag {
   font-size: 12px;
 }
 
-.class-curriculum {
+.classCurriculum {
   display: flex;
   flex-direction: column;
   margin-bottom: 12px;
 }
 
-.curriculum-name {
+.curriculumName {
   font-weight: 500;
 }
 
-.student-count {
+.studentCount {
   display: flex;
   flex-direction: column;
   gap: 4px;
   margin-bottom: 8px;
 }
 
-.status-tag {
+.statusTag {
   font-weight: 500;
 }
 
-.class-card .ant-card-actions {
+.classCard .antCardActions {
   background-color: #fafafa;
 }
 
-.class-card .ant-card-actions > li {
+.classCard .antCardActions>li {
   margin: 8px 0;
 }
 
-.card-link-overlay {
+.cardLinkOverlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -249,14 +250,14 @@
   z-index: 1;
 }
 
-.class-title-section {
+.classTitleSection {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 10px;
 }
 
-.class-title-section h4 {
+.classTitleSection h4 {
   margin-bottom: 0;
   flex: 1;
   overflow: hidden;
@@ -264,150 +265,150 @@
   white-space: nowrap;
 }
 
-.class-info {
+.classInfo {
   margin-top: 20px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
 }
 
-.student-count-label {
+.studentCountLabel {
   color: #8c8c8c;
   font-size: 13px;
   margin-bottom: 8px;
 }
 
-.class-list-view {
+.classListView {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.class-list-card {
+.classListCard {
   border-radius: 12px;
   transition: all 0.3s;
 }
 
-.class-list-card:hover {
+.classListCard:hover {
   transform: translateX(8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-color: #1890ff;
 }
 
-.list-card-content {
+.listCardContent {
   display: flex;
   align-items: center;
 }
 
-.list-card-left {
+.listCardLeft {
   margin-right: 16px;
 }
 
-.list-avatar {
+.listAvatar {
   background: linear-gradient(135deg, #1677ff, #39c0ed);
   color: white;
   font-weight: 700;
   font-size: 20px;
 }
 
-.list-card-middle {
+.listCardMiddle {
   flex: 1;
 }
 
-.list-card-title {
+.listCardTitle {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
 }
 
-.list-card-title h4 {
+.listCardTitle h4 {
   margin: 0;
 }
 
-.list-card-details {
+.listCardDetails {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.list-card-right {
+.listCardRight {
   margin-left: 16px;
 }
 
-.class-tabs {
+.classTabs {
   margin-top: 24px;
 }
 
-.class-tabs .ant-tabs-nav {
+.classTabs .antTabsNav {
   margin-bottom: 24px;
 }
 
-.class-tabs .ant-tabs-tab {
+.classTabs .antTabsTab {
   padding: 12px 20px;
 }
 
-.class-tabs .ant-tabs-tab-active {
+.classTabs .antTabsTabActive {
   font-weight: 600;
 }
 
-.content-link {
+.contentLink {
   color: inherit;
   text-decoration: none;
   display: block;
 }
 
-.content-link:hover {
+.contentLink:hover {
   color: inherit;
 }
 
 @media (max-width: 992px) {
-  .header-top {
+  .headerTop {
     flex-direction: column;
     gap: 16px;
   }
-  
-  .header-right {
+
+  .headerRight {
     align-self: flex-start;
   }
-  
-  .header-actions {
+
+  .headerActions {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
-  .search-filter {
+
+  .searchFilter {
     width: 100%;
   }
-  
-  .search-filter .ant-input-search {
+
+  .searchFilter .antInputSearch {
     width: 100%;
   }
 }
 
 @media (max-width: 768px) {
-  .class-info {
+  .classInfo {
     grid-template-columns: 1fr;
   }
-  
-  .class-title-section {
+
+  .classTitleSection {
     flex-direction: column;
     gap: 8px;
   }
-  
-  .list-card-content {
+
+  .listCardContent {
     flex-direction: column;
     text-align: center;
   }
-  
-  .list-card-left,
-  .list-card-right {
+
+  .listCardLeft,
+  .listCardRight {
     margin: 0 0 16px;
   }
-  
-  .list-card-title,
-  .list-card-details {
+
+  .listCardTitle,
+  .listCardDetails {
     justify-content: center;
   }
 }

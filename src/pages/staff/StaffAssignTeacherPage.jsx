@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Spin, Avatar, Tag, Typography, Input,
-  Row, Col, message, Modal, Divider, Badge, Alert,
-  Progress, Checkbox, Collapse, Empty, Tooltip, Drawer, notification,
-  Select, Radio
-} from 'antd';
-import {
+  Card, Button, Spin, Avatar, Tag, Input,
+  Row, Col, message, Modal, Divider, Badge,
+  Progress, Checkbox, Collapse, Empty, Drawer,
+  Radio, Title, Text,
   UserOutlined, InfoCircleOutlined, CheckCircleOutlined,
-  WarningOutlined, TeamOutlined, AppstoreOutlined, CloseOutlined
-} from '@ant-design/icons';
-import './StaffAssignTeacherPage.css';
+  TeamOutlined, AppstoreOutlined, CloseOutlined,
+} from '../../utils/AntComponents';
+import styles from './StaffAssignTeacherPage.module.css';
 import { getAllTeachers, assignTeacher, getAllClasses } from '../../services/StaffService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-const { Title, Text } = Typography;
 
 const StaffAssignTeacherPage = () => {
   const [teachers, setTeachers] = useState([]);
@@ -350,11 +346,11 @@ const StaffAssignTeacherPage = () => {
   };
 
   return (
-    <div className="teacher-assign-container">
-      <div className="teacher-assign-page-header">
-        <Title level={2} className="teacher-assign-page-title">Assign Teacher to Class</Title>
+    <div className={styles.teacherAssignContainer}>
+      <div className={styles.teacherAssignPageHeader}>
+        <Title level={2} className={styles.teacherAssignPageTitle}>Assign Teacher to Class</Title>
         {selectedTeacher && (
-          <div className="teacher-counter">
+          <div className={styles.teacherCounter}>
             <Badge count={selectedTeacher ? 1 : 0} offset={[0, 10]}>
               <TeamOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
             </Badge>
@@ -368,16 +364,16 @@ const StaffAssignTeacherPage = () => {
           <Col span={24}>
             <Card
               title={
-                <div className="card-title-with-icon">
+                <div className={styles.cardTitleWithIcon}>
                   <AppstoreOutlined /> Classes by Category
                 </div>
               }
-              className="teacher-assign-card"
+              className={styles.teacherAssignCard}
               extra={
-                <div className="card-header-actions">
+                <div className={styles.cardHeaderActions}>
                   {/* Bộ lọc theo năm học */}
-                  <div className="academic-year-filter">
-                    <span className="filter-label">Academic year:</span>
+                  <div className={styles.academicYearFilter}>
+                    <span className={styles.filterLabel}>Academic year:</span>
                     <Button
                       icon={<FontAwesomeIcon icon="chevron-left" />}
                       size="small"
@@ -389,7 +385,7 @@ const StaffAssignTeacherPage = () => {
                       }}
                       disabled={academicYears.indexOf(selectedAcademicYear) === 0}
                     />
-                    <span className="academic-year-display">
+                    <span className={styles.academicYearDisplay}>
                       {selectedAcademicYear || 'All'}
                     </span>
                     <Button
@@ -406,7 +402,7 @@ const StaffAssignTeacherPage = () => {
                   </div>
 
                   {/* Bộ lọc theo cấp lớp */}
-                  <div className="grade-level-filter">
+                  <div className={styles.gradeLevelFilter}>
                     <Radio.Group
                       value={selectedGradeLevel}
                       onChange={handleGradeLevelChange}
@@ -429,7 +425,7 @@ const StaffAssignTeacherPage = () => {
 
                   {/* Hiển thị lớp đã chọn */}
                   {selectedClass && (
-                    <Tag color="blue" className="selected-class-tag">
+                    <Tag color="blue" className={styles.selectedClassTag}>
                       Selected: {selectedClass.name}
                     </Tag>
                   )}
@@ -439,59 +435,59 @@ const StaffAssignTeacherPage = () => {
               {Object.keys(classesByGrade).length > 0 ? (
                 <Collapse
                   defaultActiveKey={Object.keys(classesByGrade)}
-                  className="teacher-grade-collapse"
-                  bordered={false}
+                  className={styles.teacherGradeCollapse}
+                  variant="borderless" // Use this instead of bordered={false}
                   items={Object.entries(classesByGrade).map(([categoryName, classes]) => {
                     const isEnrichment = categoryName.startsWith('Enrichment');
                     return {
                       key: categoryName,
                       label: (
-                        <span className={`teacher-category-header ${categoryName === 'Enrichment' ? 'enrichment-category' : ''}`}>
-                          <span className="teacher-category-icon">
+                        <span className={`${styles.teacherCategoryHeader} ${categoryName === 'Enrichment' ? styles.enrichmentCategory : ''}`}>
+                          <span className={styles.teacherCategoryIcon}>
                             {categoryName === 'Enrichment' ?
                               <FontAwesomeIcon icon="star" /> :
                               <FontAwesomeIcon icon="graduation-cap" />
                             }
                           </span>
-                          <span className="teacher-category-name">{categoryName}</span>
-                          <Tag color={categoryName === 'Enrichment' ? "purple" : "blue"} className="teacher-grade-count">
+                          <span className={styles.teacherCategoryName}>{categoryName}</span>
+                          <Tag color={categoryName === 'Enrichment' ? "purple" : "blue"} className={styles.teacherGradeCount}>
                             {classes.length} {classes.length > 1 ? 'classes' : 'class'}
                           </Tag>
                         </span>
                       ),
                       children: (
-                        <div className="teacher-class-card-container">
+                        <div className={styles.teacherClassCardContainer}>
                           {classes.map(classItem => (
                             <Card
                               key={classItem.id}
-                              className={`teacher-class-card ${selectedClassId === classItem.id ? 'teacher-selected-class' : ''}`}
+                              className={`${styles.teacherClassCard} ${selectedClassId === classItem.id ? styles.teacherSelectedClass : ''}`}
                               hoverable
                               onClick={() => handleClassSelect(classItem)}
                             >
                               {selectedClassId === classItem.id && (
-                                <CheckCircleOutlined className="teacher-selected-icon" />
+                                <CheckCircleOutlined className={styles.teacherSelectedIcon} />
                               )}
 
-                              <div className="teacher-class-card-header">
-                                <span className="teacher-class-name">{classItem.name}</span>
+                              <div className={styles.teacherClassCardHeader}>
+                                <span className={styles.teacherClassName}>{classItem.name}</span>
                                 <Tag color={classItem.status === 'Available' ? 'green' : 'orange'}>
                                   {classItem.status}
                                 </Tag>
                               </div>
 
-                              <div className="teacher-class-info-compact">
+                              <div className={styles.teacherClassInfoCompact}>
                                 {/* Thông tin cơ bản quan trọng nhất */}
-                                <div className="teacher-class-main-info">
+                                <div className={styles.teacherClassMainInfo}>
                                   {/* Remove grade level badge for Mầm, Chồi, Lá and only keep for other types */}
                                   {classItem.epName ? (
-                                    <Tag color="purple" className="teacher-class-tag">{classItem.epName}</Tag>
+                                    <Tag color="purple" className={styles.teacherClassTag}>{classItem.epName}</Tag>
                                   ) : null}
                                 </div>
 
                                 {/* Hiển thị giáo viên đã phân công - luôn hiển thị */}
-                                <div className="teacher-assigned-compact">
+                                <div className={styles.teacherAssignedCompact}>
                                   <Text type="secondary">Teacher:</Text>
-                                  <div className="teacher-tag-container-compact">
+                                  <div className={styles.teacherTagContainerCompact}>
                                     {classItem.teacherNames && classItem.teacherNames.length > 0 ? (
                                       classItem.teacherNames.map((name, idx) => (
                                         <Tag key={idx} icon={<UserOutlined />}>{name}</Tag>
@@ -503,8 +499,8 @@ const StaffAssignTeacherPage = () => {
                                 </div>
 
                                 {/* Dung lượng lớp - hiển thị dạng progress */}
-                                <div className="teacher-capacity-compact">
-                                  <div className="capacity-label-container">
+                                <div className={styles.teacherCapacityCompact}>
+                                  <div className={styles.capacityLabelContainer}>
                                     <Text type="secondary">Capacity:</Text>
                                     <Text className={classItem.quantity >= classItem.maxChildren ? 'capacity-full' : ''}>
                                       {classItem.quantity}/{classItem.maxChildren}
@@ -519,7 +515,7 @@ const StaffAssignTeacherPage = () => {
                                 </div>
                               </div>
 
-                              <div className="teacher-card-actions">
+                              <div className={styles.teacherCardActions}>
                                 <Button
                                   type="default"
                                   size="small"
@@ -550,22 +546,29 @@ const StaffAssignTeacherPage = () => {
       {/* Teacher List Drawer */}
       <Drawer
         title={
-          <div className="teacher-drawer-header">
-            <div className="teacher-drawer-title">
+          <div className={styles.teacherDrawerHeader}>
+            <div className={styles.teacherDrawerTitle}>
               {selectedClass && (
                 <>
-                  <div className="teacher-drawer-title-text">
+                  <div className={styles.teacherDrawerTitleText}>
                     Teachers for {selectedClass.name}
                   </div>
-                  <div className="teacher-drawer-subtitle">
+                  {selectedClass.epName && (
+                    <div className={styles.teacherDrawerSubtitle}>
+                      <Tag color="purple">{selectedClass.epName}</Tag>
+                    </div>
+                  )}
+                  {selectedClass.gradeLevelName && (
+                  <div className={styles.teacherDrawerSubtitle}>
                     <Tag color="blue">
                       {selectedClass.gradeLevelName}
                     </Tag>
                   </div>
+                  )}
                 </>
               )}
             </div>
-            <div className="teacher-search-container">
+            <div className={styles.teacherSearchContainer}>
               <Input.Search
                 placeholder="Search teachers"
                 allowClear
@@ -580,10 +583,10 @@ const StaffAssignTeacherPage = () => {
         onClose={closeDrawer}
         open={drawerVisible}
         closeIcon={<CloseOutlined />}
-        className="teacher-list-drawer"
+        className={styles.teacherListDrawer}
       >
         {filteredTeachers.length > 0 ? (
-          <div className="teacher-drawer-list">
+          <div className={styles.teacherDrawerList}>
             {filteredTeachers.map(teacher => {
               const isSelected = selectedTeacherId === teacher.id;
               const isAssignedToClass = selectedClass?.teacherNames?.includes(teacher.fullName);
@@ -591,26 +594,26 @@ const StaffAssignTeacherPage = () => {
               return (
                 <div
                   key={teacher.id}
-                  className={`teacher-drawer-card ${isSelected ? 'teacher-selected' : ''} ${isAssignedToClass ? 'teacher-already-assigned' : ''}`}
+                  className={`${styles.teacherDrawerCard} ${isSelected ? styles.teacherSelected : ''} ${isAssignedToClass ? styles.teacherAlreadyAssigned : ''}`}
                   onClick={() => !isAssignedToClass && handleTeacherSelect(teacher)}
                 >
-                  <div className="teacher-drawer-content">
+                  <div className={styles.teacherDrawerContent}>
                     <Avatar
                       icon={<UserOutlined />}
                       size={54}
-                      className="staff-assign-teacher-avatar"
+                      className={styles.teacherDrawerAvatar}
                     />
-                    <div className="teacher-drawer-info">
-                      <h3 className="teacher-drawer-name">{teacher.fullName}</h3>
-                      <p className="teacher-drawer-details">
+                    <div className={styles.teacherDrawerInfo}>
+                      <h3 className={styles.teacherDrawerName}>{teacher.fullName}</h3>
+                      <p className={styles.teacherDrawerDetails}>
                         {teacher.email}
-                        <span className="detail-separator">•</span>
+                        <span className={styles.detailSeparator}>•</span>
                         {teacher.phoneNumber}
                       </p>
                     </div>
                   </div>
 
-                  <div className="teacher-drawer-actions">
+                  <div className={styles.teacherDrawerActions}>
                     {isAssignedToClass ? (
                       <Tag color="green">Already Assigned</Tag>
                     ) : (
@@ -629,7 +632,7 @@ const StaffAssignTeacherPage = () => {
                         e.stopPropagation();
                         showTeacherDetail(teacher);
                       }}
-                      className="teacher-drawer-detail-btn"
+                      className={styles.teacherDrawerDetailBtn}
                     />
                   </div>
                 </div>
@@ -642,7 +645,7 @@ const StaffAssignTeacherPage = () => {
 
         {/* Bottom actions in drawer */}
         {selectedTeacher && (
-          <div className="teacher-drawer-footer-actions">
+          <div className={styles.teacherDrawerFooterActions}>
             <Button
               type="primary"
               onClick={handleAssign}
@@ -670,14 +673,14 @@ const StaffAssignTeacherPage = () => {
         width={700}
       >
         {selectedTeacher && (
-          <div className="teacher-detail-content">
-            <div className="teacher-detail-header">
+          <div className={styles.teacherDetailContent}>
+            <div className={styles.teacherDetailHeader}>
               <Avatar
                 icon={<UserOutlined />}
                 size={100}
-                className="teacher-detail-avatar"
+                className={styles.teacherDetailAvatar}
               />
-              <div className="teacher-detail-title">
+              <div className={styles.teacherDetailTitle}>
                 <h2>{selectedTeacher.fullName}</h2>
                 <Tag color="blue">{selectedTeacher.roleName}</Tag>
               </div>
@@ -687,20 +690,20 @@ const StaffAssignTeacherPage = () => {
 
             <Row gutter={[16, 16]}>
               <Col span={12}>
-                <div className="teacher-detail-item">
-                  <div className="teacher-detail-label">Email:</div>
+                <div className={styles.teacherDetailItem}>
+                  <div className={styles.teacherDetailLabel}>Email:</div>
                   <div>{selectedTeacher.email}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="teacher-detail-item">
-                  <div className="teacher-detail-label">Phone Number:</div>
+                <div className={styles.teacherDetailItem}>
+                  <div className={styles.teacherDetailLabel}>Phone Number:</div>
                   <div>{selectedTeacher.phoneNumber}</div>
                 </div>
               </Col>
               <Col span={12}>
-                <div className="teacher-detail-item">
-                  <div className="teacher-detail-label">Status:</div>
+                <div className={styles.teacherDetailItem}>
+                  <div className={styles.teacherDetailLabel}>Status:</div>
                   <div>
                     <Tag color={selectedTeacher.status === 'Active' ? 'green' : 'red'}>
                       {selectedTeacher.status}
@@ -709,8 +712,8 @@ const StaffAssignTeacherPage = () => {
                 </div>
               </Col>
               <Col span={12}>
-                <div className="teacher-detail-item">
-                  <div className="teacher-detail-label">Address:</div>
+                <div className={styles.teacherDetailItem}>
+                  <div className={styles.teacherDetailLabel}>Address:</div>
                   <div>{selectedTeacher.address || 'Not provided'}</div>
                 </div>
               </Col>
@@ -740,15 +743,15 @@ const StaffAssignTeacherPage = () => {
           </Button>
         ]}
         width={700}
-        className="class-detail-modal"
+        className={styles.classDetailModal}
       >
         {selectedClassDetail && (
-          <div className="class-detail-content">
+          <div className={styles.classDetailContent}>
             {/* Header với tên lớp và trạng thái */}
-            <div className="class-detail-header">
-              <div className="class-detail-title">
+            <div className={styles.classDetailHeader}>
+              <div className={styles.classDetailTitle}>
                 <h2>{selectedClassDetail.name}</h2>
-                <div className="class-detail-badges">
+                <div className={styles.classDetailBadges}>
                   <Tag color={selectedClassDetail.status === 'Available' ? 'green' : 'orange'}>
                     {selectedClassDetail.status}
                   </Tag>
@@ -760,13 +763,13 @@ const StaffAssignTeacherPage = () => {
                   <Tag color="gold">{selectedClassDetail.academicYear}</Tag>
                 </div>
               </div>
-              <div className="class-detail-icon">
+              <div className={styles.classDetailIcon}>
                 {selectedClassDetail.epName ? (
-                  <div className="detail-icon enrichment">
+                  <div className={`${styles.detailIcon} ${styles.enrichment}`}>
                     <FontAwesomeIcon icon="star" />
                   </div>
                 ) : (
-                  <div className="detail-icon regular">
+                  <div className={`${styles.detailIcon} ${styles.regular}`}>
                     <FontAwesomeIcon icon="graduation-cap" />
                   </div>
                 )}
@@ -774,23 +777,23 @@ const StaffAssignTeacherPage = () => {
             </div>
 
             {/* Thông tin cơ bản */}
-            <Card bordered={false} className="class-detail-card">
-              <div className="class-detail-section">
+            <Card variant="borderless" className={styles.classDetailCard}>
+              <div className={styles.classDetailSection}>
                 <h3>
                   <FontAwesomeIcon icon="info-circle" /> Basic information
                 </h3>
                 <Row gutter={[24, 16]}>
                   <Col span={12}>
-                    <div className="detail-item">
-                      <div className="detail-label">Syllabus:</div>
-                      <div className="detail-value">{selectedClassDetail.syllabusName}</div>
+                    <div className={styles.detailItem}>
+                      <div className={styles.detailLabel}>Syllabus:</div>
+                      <div className={styles.detailValue}>{selectedClassDetail.syllabusName}</div>
                     </div>
                   </Col>
                   {selectedClassDetail.timetable && (
                     <Col span={12}>
-                      <div className="detail-item">
-                        <div className="detail-label">Schedule:</div>
-                        <div className="detail-value highlight">
+                      <div className={styles.detailItem}>
+                        <div className={styles.detailLabel}>Schedule:</div>
+                        <div className={styles.detailValue}>
                           {formatSchedule(selectedClassDetail.timetable)}
                         </div>
                       </div>
@@ -800,46 +803,46 @@ const StaffAssignTeacherPage = () => {
               </div>
 
               {/* Sĩ số lớp */}
-              <div className="class-detail-section">
+              <div className={styles.classDetailSection}>
                 <h3>
                   <FontAwesomeIcon icon="users" /> Class capacity
                 </h3>
-                <div className="capacity-summary">
-                  <div className="capacity-numbers">
-                    <span className="current-capacity">{selectedClassDetail.quantity}</span>
-                    <span className="capacity-separator">/</span>
-                    <span className="max-capacity">{selectedClassDetail.maxChildren}</span>
-                    <span className="capacity-label">students</span>
+                <div className={styles.capacitySummary}>
+                  <div className={styles.capacityNumbers}>
+                    <span className={styles.currentCapacity}>{selectedClassDetail.quantity}</span>
+                    <span className={styles.capacitySeparator}>/</span>
+                    <span className={styles.maxCapacity}>{selectedClassDetail.maxChildren}</span>
+                    <span className={styles.capacityLabel}>students</span>
                   </div>
                   <Progress
                     percent={(selectedClassDetail.quantity / selectedClassDetail.maxChildren) * 100}
                     status={selectedClassDetail.quantity >= selectedClassDetail.maxChildren ? "exception" : "active"}
-                    strokeWidth={10}
+                    size={{ strokeWidth: 10 }} // Proper way to use size with a strokeWidth
                   />
                 </div>
                 {selectedClassDetail.quantity >= selectedClassDetail.maxChildren && (
-                  <div className="capacity-warning">
+                  <div className={styles.capacityWarning}>
                     <FontAwesomeIcon icon="exclamation-triangle" /> Class is at maximum capacity
                   </div>
                 )}
               </div>
 
               {/* Giáo viên */}
-              <div className="class-detail-section">
+              <div className={styles.classDetailSection}>
                 <h3>
                   <FontAwesomeIcon icon="chalkboard-teacher" /> Teacher
                 </h3>
                 {selectedClassDetail.teacherNames && selectedClassDetail.teacherNames.length > 0 ? (
-                  <div className="teachers-assigned-list">
+                  <div className={styles.teachersAssignedList}>
                     {selectedClassDetail.teacherNames.map((name, idx) => (
-                      <div className="teacher-card" key={idx}>
-                        <Avatar icon={<UserOutlined />} className="staff-assign-teacher-avatar" />
-                        <div className="teacher-name">{name}</div>
+                      <div className={styles.teacherCard} key={idx}>
+                        <Avatar icon={<UserOutlined />} className={styles.staffAssignTeacherAvatar} />
+                        <div className={styles.teacherName}>{name}</div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="no-teachers">
+                  <div className={styles.noTeachers}>
                     <Empty
                       description="No teacher assigned"
                       image={Empty.PRESENTED_IMAGE_SIMPLE}

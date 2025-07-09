@@ -7,10 +7,11 @@ import {
   faBell, faPaperPlane, faMoneyBillWave, faUserGraduate, faChevronUp, faChevronDown,
   faAngleLeft, faAngleRight, faAngleDoubleLeft, faAngleDoubleRight
 } from '@fortawesome/free-solid-svg-icons';
-import { getAllApplications, getApplicationDetail, approveApplication, rejectApplication, createNotification } from '../../services/StaffService';
+import { getAllApplications, getApplicationDetail, 
+  approveApplication, rejectApplication, createNotification } from '../../services/StaffService';
 import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
 import { useCustomToast } from '../../components/toast/CustomToast';
-import './EnrollmentApplicationManagement.css';
+import styles from './EnrollmentApplicationManagement.module.css';
 
 const EnrollmentApplicationManagement = () => {
   const [applications, setApplications] = useState([]);
@@ -193,28 +194,28 @@ const EnrollmentApplicationManagement = () => {
   const getStatusBadge = (status) => {
     switch (status.toLowerCase()) {
       case 'approved':
-        return <span className="status-badge approved">
+        return <span className={`${styles.statusBadge} ${styles.approved}`}>
           <FontAwesomeIcon icon={faCheckCircle} />
             Approved
         </span>;
       case 'rejected':
       case 'reject':
-        return <span className="status-badge rejected">
+        return <span className={`${styles.statusBadge} ${styles.rejected}`}>
           <FontAwesomeIcon icon={faBan} />
           Rejected
         </span>;
       case 'paid':
-        return <span className="status-badge paid">
+        return <span className={`${styles.statusBadge} ${styles.paid}`}>
           <FontAwesomeIcon icon={faMoneyBillWave} />
           Paid
         </span>;
       case 'enrolled':
-        return <span className="status-badge enrolled">
+        return <span className={`${styles.statusBadge} ${styles.enrolled}`}>
           <FontAwesomeIcon icon={faUserGraduate} />
           Enrolled
         </span>;
       default:
-        return <span className="status-badge pending">
+        return <span className={`${styles.statusBadge} ${styles.pending}`}>
           <FontAwesomeIcon icon={faClock} />
           Pending
         </span>;
@@ -265,13 +266,13 @@ const EnrollmentApplicationManagement = () => {
   };
   
   return (
-    <div className="enrollment-management">
+    <div className={styles.enrollmentManagement}>
       <toast.ToastContainer position="top-right" />
       
-      <div className="enrollment-management__header">
-        <h1 className="enrollment-management__title">Enrollment application management</h1>
-        <div className="enrollment-management__search">
-          <FontAwesomeIcon icon={faSearch} className="enrollment-management__search-icon" />
+      <div className={styles.enrollmentManagementHeader}>
+        <h1 className={styles.enrollmentManagementTitle}>Enrollment application management</h1>
+        <div className={styles.enrollmentManagementSearch}>
+          <FontAwesomeIcon icon={faSearch} className={styles.enrollmentManagementSearchIcon} />
           <input
             type="text"
             placeholder="Search by child name, parent name, phone number..."
@@ -282,11 +283,11 @@ const EnrollmentApplicationManagement = () => {
       </div>
       
       {!loading && !error && (
-        <div className="dashboard-stats-container">
-          <div className="dashboard-stats-header">
-            <h3 className="dashboard-stats-title">Enrollment application statistics</h3>
+        <div className={styles.dashboardStatsContainer}>
+          <div className={styles.dashboardStatsHeader}>
+            <h3 className={styles.dashboardStatsTitle}>Enrollment application statistics</h3>
             <button 
-              className="dashboard-stats-toggle" 
+              className={styles.dashboardStatsToggle} 
               onClick={toggleStats}
               title={statsCollapsed ? "Expand" : "Collapse"}
             >
@@ -294,79 +295,79 @@ const EnrollmentApplicationManagement = () => {
             </button>
           </div>
           
-          <div className={`dashboard-stats ${statsCollapsed ? 'collapsed' : ''}`}>
-            <div className="stat-card total">
-              <div className="stat-card__header">
-                <h3 className="stat-card__title">Total applications</h3>
-                <div className="stat-card__icon">
+          <div className={`${styles.dashboardStats} ${statsCollapsed ? styles.collapsed : ''}`}>
+            <div className={`${styles.statCard} ${styles.total}`}>
+              <div className={styles.statCardHeader}>
+                <h3 className={styles.statCardTitle}>Total applications</h3>
+                <div className={styles.statCardIcon}>
                   <FontAwesomeIcon icon={faFileAlt} />
                 </div>
               </div>
-              <p className="stat-card__value">{getTotalApplications()}</p>
-              <p className="stat-card__description">Total applications</p>
+              <p className={styles.statCardValue}>{getTotalApplications()}</p>
+              <p className={styles.statCardDescription}>Total applications</p>
             </div>
             
-            <div className="stat-card pending">
-              <div className="stat-card__header">
-                <h3 className="stat-card__title">Pending</h3>
-                <div className="stat-card__icon">
+            <div className={`${styles.statCard} ${styles.pending}`}>
+              <div className={styles.statCardHeader}>
+                <h3 className={styles.statCardTitle}>Pending</h3>
+                <div className={styles.statCardIcon}>
                   <FontAwesomeIcon icon={faClipboardList} />
                 </div>
               </div>
-              <p className="stat-card__value">{getPendingApplications()}</p>
-              <p className="stat-card__description">Applications pending</p>
+              <p className={styles.statCardValue}>{getPendingApplications()}</p>
+              <p className={styles.statCardDescription}>Applications pending</p>
             </div>
             
-            <div className="stat-card approved">
-              <div className="stat-card__header">
-                <h3 className="stat-card__title">Approved</h3>
-                <div className="stat-card__icon">
+            <div className={`${styles.statCard} ${styles.approved}`}>
+              <div className={styles.statCardHeader}>
+                <h3 className={styles.statCardTitle}>Approved</h3>
+                <div className={styles.statCardIcon}>
                   <FontAwesomeIcon icon={faCheck} />
                 </div>
               </div>
-              <p className="stat-card__value">{getApprovedApplications()}</p>
-              <p className="stat-card__description">Applications approved</p>
+              <p className={styles.statCardValue}>{getApprovedApplications()}</p>
+              <p className={styles.statCardDescription}>Applications approved</p>
             </div>
             
-            <div className="stat-card rejected">
-              <div className="stat-card__header">
-                <h3 className="stat-card__title">Rejected</h3>
-                <div className="stat-card__icon">
+            <div className={`${styles.statCard} ${styles.rejected}`}>
+              <div className={styles.statCardHeader}>
+                <h3 className={styles.statCardTitle}>Rejected</h3>
+                <div className={styles.statCardIcon}>
                   <FontAwesomeIcon icon={faBan} />
                 </div>
               </div>
-              <p className="stat-card__value">{getRejectedApplications()}</p>
-              <p className="stat-card__description">Applications rejected</p>
+              <p className={styles.statCardValue}>{getRejectedApplications()}</p>
+              <p className={styles.statCardDescription}>Applications rejected</p>
             </div>
             
-            <div className="stat-card paid">
-              <div className="stat-card__header">
-                <h3 className="stat-card__title">Paid</h3>
-                <div className="stat-card__icon">
+            <div className={`${styles.statCard} ${styles.paid}`}>
+              <div className={styles.statCardHeader}>
+                <h3 className={styles.statCardTitle}>Paid</h3>
+                <div className={styles.statCardIcon}>
                   <FontAwesomeIcon icon={faMoneyBillWave} />
                 </div>
               </div>
-              <p className="stat-card__value">{getPaidApplications()}</p>
-              <p className="stat-card__description">Applications paid</p>
+              <p className={styles.statCardValue}>{getPaidApplications()}</p>
+              <p className={styles.statCardDescription}>Applications paid</p>
             </div>
             
-            <div className="stat-card enrolled">
-              <div className="stat-card__header">
-                <h3 className="stat-card__title">Enrolled</h3>
-                <div className="stat-card__icon">
+            <div className={`${styles.statCard} ${styles.enrolled}`}>
+              <div className={styles.statCardHeader}>
+                <h3 className={styles.statCardTitle}>Enrolled</h3>
+                <div className={styles.statCardIcon}>
                   <FontAwesomeIcon icon={faUserGraduate} />
                 </div>
               </div>
-              <p className="stat-card__value">{getEnrolledApplications()}</p>
-              <p className="stat-card__description">Applications enrolled</p>
+              <p className={styles.statCardValue}>{getEnrolledApplications()}</p>
+              <p className={styles.statCardDescription}>Applications enrolled</p>
             </div>
           </div>
         </div>
       )}
       
       {error && (
-        <div className="message error-message">
-          <div className="message-icon">
+        <div className={`${styles.message} ${styles.errorMessage}`}>
+          <div className={`${styles.messageIcon} ${styles.errorIcon}`}>
             <FontAwesomeIcon icon={faTimes} />
           </div>
           <span>{error}</span>
@@ -374,12 +375,12 @@ const EnrollmentApplicationManagement = () => {
       )}
       
       {!loading && !error && (
-        <div className="filter-section">
-          <div className="filter-label">
+        <div className={styles.filterSection}>
+          <div className={styles.filterLabel}>
             <FontAwesomeIcon icon={faFilter} /> Filter by status:
           </div>
           <select 
-            className="filter-select"
+            className={styles.filterSelect}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -394,19 +395,19 @@ const EnrollmentApplicationManagement = () => {
       )}
       
       {loading ? (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
           <p>Loading enrollment application list...</p>
         </div>
       ) : (
         <>
           {filteredApplications.length === 0 ? (
-            <div className="empty-state">
+            <div className={styles.emptyState}>
               <FontAwesomeIcon icon={faFileAlt} size="4x" />
               <p>No enrollment application found</p>
               {statusFilter !== 'all' && (
                 <button 
-                  className="action-button view"
+                  className={`${styles.actionButton} ${styles.view}`}
                   onClick={() => setStatusFilter('all')}
                 >
                   View all applications
@@ -414,8 +415,8 @@ const EnrollmentApplicationManagement = () => {
               )}
             </div>
           ) : (
-            <div className="table-responsive">
-              <table className="data-table">
+            <div className={styles.tableResponsive}>
+              <table className={styles.dataTable}>
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -430,22 +431,22 @@ const EnrollmentApplicationManagement = () => {
                   {currentApplications.map((application) => (
                     <tr 
                       key={application.id} 
-                      className="application-row"
+                      className={styles.applicationRow}
                       onClick={() => handleViewDetail(application)}
                     >
                       <td>#{application.id.substring(0, 6)}</td>
                       
                       <td>
-                        <div className="child-cell">
+                        <div className={styles.childCell}>
                           <img 
                             src={application.avatar} 
                             alt={application.childrenName} 
-                            className="child-avatar" 
+                            className={styles.childAvatar} 
                             onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + application.childrenName }} 
                           />
-                          <div className="child-info-container">
-                            <div className="list-child-name">{application.childrenName}</div>
-                            <div className="child-birthdate">
+                          <div className={styles.childInfoContainer}>
+                            <div className={styles.listChildName}>{application.childrenName}</div>
+                            <div className={styles.childBirthdate}>
                               <FontAwesomeIcon icon={faCalendarAlt} size="xs" />
                               {formatDate(application.birthday)}
                             </div>
@@ -454,9 +455,9 @@ const EnrollmentApplicationManagement = () => {
                       </td>
                       
                       <td>
-                        <div className="parent-cell">
-                          <div className="parent-name">{application.parentName}</div>
-                          <div className="parent-phone">
+                        <div className={styles.parentCell}>
+                          <div className={styles.parentName}>{application.parentName}</div>
+                          <div className={styles.parentPhone}>
                             <FontAwesomeIcon icon={faPhone} size="xs" />
                             {application.parentPhone}
                           </div>
@@ -464,9 +465,9 @@ const EnrollmentApplicationManagement = () => {
                       </td>
                       
                       <td>
-                        <div className="date-cell">
-                          <div className="date-primary">{formatDate(application.enrollDate)}</div>
-                          <div className="date-secondary">
+                        <div className={styles.dateCell}>
+                          <div className={styles.datePrimary}>{formatDate(application.enrollDate)}</div>
+                          <div className={styles.dateSecondary}>
                             {new Date(application.enrollDate).toLocaleTimeString('vi-VN', {
                               hour: '2-digit',
                               minute: '2-digit'
@@ -479,11 +480,11 @@ const EnrollmentApplicationManagement = () => {
                         {getStatusBadge(application.status)}
                       </td>
                       
-                      <td className="actions-cell" onClick={(e) => e.stopPropagation()}>
+                      <td className={styles.actionsCell} onClick={(e) => e.stopPropagation()}>
                         {application.status.toLowerCase() === 'pending' && (
                           <>
                             <button 
-                              className="approve enrollment-action-button" 
+                              className={`${styles.approve} ${styles.enrollmentActionButton}`} 
                               onClick={(e) => {
                                 e.stopPropagation();
                                 openNotificationModal('approve', application);
@@ -492,7 +493,7 @@ const EnrollmentApplicationManagement = () => {
                               <FontAwesomeIcon icon={faCheck} /> Approve
                             </button>
                             <button 
-                              className="reject enrollment-action-button" 
+                              className={`${styles.reject} ${styles.enrollmentActionButton}`} 
                               onClick={(e) => {
                                 e.stopPropagation();
                                 openNotificationModal('reject', application);
@@ -513,11 +514,11 @@ const EnrollmentApplicationManagement = () => {
       )}
       
       {filteredApplications.length > 0 && (
-        <div className="enrollment-pagination">
+        <div className={styles.enrollmentPagination}>
           <button 
             onClick={() => paginate(1)} 
             disabled={currentPage === 1}
-            className="enrollment-pagination-button enrollment-first-page"
+            className={`${styles.enrollmentPaginationButton} ${styles.enrollmentFirstPage}`}
             title="First page"
           >
             <FontAwesomeIcon icon={faAngleDoubleLeft} />
@@ -525,21 +526,21 @@ const EnrollmentApplicationManagement = () => {
           <button 
             onClick={() => paginate(currentPage - 1)} 
             disabled={currentPage === 1}
-            className="enrollment-pagination-button"
+            className={styles.enrollmentPaginationButton}
             title="Previous page"
           >
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           
-          <div className="enrollment-pagination-info">
-            <span className="enrollment-current-page">{currentPage}</span>
-            <span className="enrollment-total-pages">/ {totalPages}</span>
+          <div className={styles.enrollmentPaginationInfo}>
+            <span className={styles.enrollmentCurrentPage}>{currentPage}</span>
+            <span className={styles.enrollmentTotalPages}>/ {totalPages}</span>
           </div>
           
           <button 
             onClick={() => paginate(currentPage + 1)} 
             disabled={currentPage === totalPages}
-            className="enrollment-pagination-button"
+            className={styles.enrollmentPaginationButton}
             title="Next page"
           >
             <FontAwesomeIcon icon={faAngleRight} />
@@ -547,7 +548,7 @@ const EnrollmentApplicationManagement = () => {
           <button 
             onClick={() => paginate(totalPages)} 
             disabled={currentPage === totalPages}
-            className="enrollment-pagination-button enrollment-last-page"
+            className={`${styles.enrollmentPaginationButton} ${styles.enrollmentLastPage}`}
             title="Last page"
           >
             <FontAwesomeIcon icon={faAngleDoubleRight} />
@@ -556,9 +557,9 @@ const EnrollmentApplicationManagement = () => {
       )}
       
       {isModalOpen && applicationDetail && (
-        <div className="enrollment-detail-modal" onClick={closeModal}>
+        <div className={styles.enrollmentDetailModal} onClick={closeModal}>
           <div 
-            className="enrollment-detail-content" 
+            className={styles.enrollmentDetailContent} 
             onClick={(e) => e.stopPropagation()}
             style={{ 
               willChange: 'transform, opacity', 
@@ -566,39 +567,39 @@ const EnrollmentApplicationManagement = () => {
               overscrollBehavior: 'contain' 
             }}
           >
-            <div className="enrollment-detail-header">
-              <h2 className="enrollment-detail-title">
+            <div className={styles.enrollmentDetailHeader}>
+              <h2 className={styles.enrollmentDetailTitle}>
                   <FontAwesomeIcon icon={faFileAlt} /> Enrollment application detail
               </h2>
-              <button className="enrollment-detail-close" onClick={closeModal}>
+              <button className={styles.enrollmentDetailClose} onClick={closeModal}>
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
             
-            <div className="enrollment-detail-body">
-              <div className="enrollment-detail-section">
-                <div className="enrollment-detail-section-header">
-                  <div className="enrollment-detail-section-icon child-info-icon">
+            <div className={styles.enrollmentDetailBody}>
+              <div className={styles.enrollmentDetailSection}>
+                <div className={styles.enrollmentDetailSectionHeader}>
+                  <div className={styles.enrollmentDetailSectionIcon}>
                     <FontAwesomeIcon icon={faChild} />
                   </div>
-                  <h3 className="enrollment-detail-section-title">Child information</h3>
+                  <h3 className={styles.enrollmentDetailSectionTitle}>Child information</h3>
                 </div>
                 
-                <div className="enrollment-detail-grid">
-                  <div className="enrollment-child-profile">
+                <div className={styles.enrollmentDetailGrid}>
+                  <div className={styles.enrollmentChildProfile}>
                     <img 
                       src={applicationDetail.avatar} 
                       alt={applicationDetail.childrenName} 
-                      className="enrollment-child-image"
+                      className={styles.enrollmentChildImage}
                       onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + applicationDetail.childrenName }}
                     />
-                    <div className="enrollment-child-name">{applicationDetail.childrenName}</div>
-                    <div className="enrollment-child-bio">
-                      <div className="enrollment-child-bio-item">
+                    <div className={styles.enrollmentChildName}>{applicationDetail.childrenName}</div>
+                    <div className={styles.enrollmentChildBio}>
+                      <div className={styles.enrollmentChildBioItem}>
                         <FontAwesomeIcon icon={faCalendarAlt} />
                         {formatDate(applicationDetail.birthday)}
                       </div>
-                      <div className="enrollment-child-bio-item">
+                      <div className={styles.enrollmentChildBioItem}>
                         <FontAwesomeIcon icon={faVenusMars} />
                         {applicationDetail.gender === 'Male' ? 'Nam' : 'Nữ'}
                       </div>
@@ -606,37 +607,37 @@ const EnrollmentApplicationManagement = () => {
                   </div>
                   
                   <div>
-                    <div className="enrollment-detail-item">
-                      <div className="enrollment-detail-label">
+                    <div className={styles.enrollmentDetailItem}>
+                      <div className={styles.enrollmentDetailLabel}>
                         <FontAwesomeIcon icon={faCalendarAlt} /> Birthday
                       </div>
-                      <div className="enrollment-detail-value">{formatDate(applicationDetail.birthday)}</div>
+                      <div className={styles.enrollmentDetailValue}>{formatDate(applicationDetail.birthday)}</div>
                     </div>
                     
-                    <div className="enrollment-detail-item">
-                      <div className="enrollment-detail-label">
+                    <div className={styles.enrollmentDetailItem}>
+                      <div className={styles.enrollmentDetailLabel}>
                         <FontAwesomeIcon icon={faVenusMars} /> Gender
                       </div>
-                      <div className="enrollment-detail-value">{applicationDetail.gender === 'Male' ? 'Nam' : 'Nữ'}</div>
+                      <div className={styles.enrollmentDetailValue}>{applicationDetail.gender === 'Male' ? 'Nam' : 'Nữ'}</div>
                     </div>
                     
-                    <div className="enrollment-detail-item">
-                      <div className="enrollment-detail-label">
+                    <div className={styles.enrollmentDetailItem}>
+                      <div className={styles.enrollmentDetailLabel}>
                         <FontAwesomeIcon icon={faMapMarkerAlt} /> Place of birth
                       </div>
-                      <div className="enrollment-detail-value">{applicationDetail.city}</div>
+                      <div className={styles.enrollmentDetailValue}>{applicationDetail.city}</div>
                     </div>
                     
-                    <div className="enrollment-detail-item">
-                      <div className="enrollment-detail-label">
+                    <div className={styles.enrollmentDetailItem}>
+                      <div className={styles.enrollmentDetailLabel}>
                         <FontAwesomeIcon icon={faFileContract} /> Birth certificate
                       </div>
-                      <div className="enrollment-detail-value">
+                      <div className={styles.enrollmentDetailValue}>
                         <a 
                           href={applicationDetail.birthCertificate} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="enrollment-document-link"
+                          className={styles.enrollmentDocumentLink}
                         >
                           <FontAwesomeIcon icon={faFileAlt} /> View birth certificate
                         </a>
@@ -646,99 +647,99 @@ const EnrollmentApplicationManagement = () => {
                 </div>
               </div>
               
-              <div className="enrollment-detail-section">
-                <div className="enrollment-detail-section-header">
-                  <div className="enrollment-detail-section-icon parent-info-icon">
+              <div className={styles.enrollmentDetailSection}>
+                <div className={styles.enrollmentDetailSectionHeader}>
+                  <div className={styles.enrollmentDetailSectionIcon}>
                     <FontAwesomeIcon icon={faUser} />
                   </div>
-                  <h3 className="enrollment-detail-section-title">Parent information</h3>
+                  <h3 className={styles.enrollmentDetailSectionTitle}>Parent information</h3>
                 </div>
                 
-                <div className="enrollment-detail-grid">
-                  <div className="enrollment-detail-item">
-                    <div className="enrollment-detail-label">
+                <div className={styles.enrollmentDetailGrid}>
+                  <div className={styles.enrollmentDetailItem}>
+                    <div className={styles.enrollmentDetailLabel}>
                       <FontAwesomeIcon icon={faUser} /> Full name
                     </div>
-                    <div className="enrollment-detail-value">{applicationDetail.parentName}</div>
+                    <div className={styles.enrollmentDetailValue}>{applicationDetail.parentName}</div>
                   </div>
                   
-                  <div className="enrollment-detail-item">
-                    <div className="enrollment-detail-label">
+                  <div className={styles.enrollmentDetailItem}>
+                    <div className={styles.enrollmentDetailLabel}>
                         <FontAwesomeIcon icon={faPhone} /> Phone
                     </div>
-                    <div className="enrollment-detail-value">{applicationDetail.parentPhone}</div>
+                    <div className={styles.enrollmentDetailValue}>{applicationDetail.parentPhone}</div>
                   </div>
                   
-                  <div className="enrollment-detail-item" style={{ gridColumn: "1 / -1" }}>
-                    <div className="enrollment-detail-label">
+                  <div className={styles.enrollmentDetailItem} style={{ gridColumn: "1 / -1" }}>
+                    <div className={styles.enrollmentDetailLabel}>
                       <FontAwesomeIcon icon={faMapMarkerAlt} /> Address
                     </div>
-                    <div className="enrollment-detail-value">{applicationDetail.address}</div>
+                    <div className={styles.enrollmentDetailValue}>{applicationDetail.address}</div>
                   </div>
                 </div>
               </div>
               
-              <div className="enrollment-detail-section">
-                <div className="enrollment-detail-section-header">
-                  <div className="enrollment-detail-section-icon registration-info-icon">
+              <div className={styles.enrollmentDetailSection}>
+                <div className={styles.enrollmentDetailSectionHeader}>
+                  <div className={styles.enrollmentDetailSectionIcon}>
                     <FontAwesomeIcon icon={faClipboardList} />
                   </div>
-                  <h3 className="enrollment-detail-section-title">Enrollment information</h3>
+                  <h3 className={styles.enrollmentDetailSectionTitle}>Enrollment information</h3>
                 </div>
                 
-                <div className="enrollment-detail-grid">
-                  <div className="enrollment-detail-item">
-                    <div className="enrollment-detail-label">
+                <div className={styles.enrollmentDetailGrid}>
+                  <div className={styles.enrollmentDetailItem}>
+                    <div className={styles.enrollmentDetailLabel}>
                       <FontAwesomeIcon icon={faClipboardList} /> Class
                     </div>
-                    <div className="enrollment-detail-value">
+                    <div className={styles.enrollmentDetailValue}>
                       {applicationDetail.gradeLevelName || "Không có dữ liệu"}
                     </div>
                   </div>
                   
-                  <div className="enrollment-detail-item">
-                    <div className="enrollment-detail-label">
+                  <div className={styles.enrollmentDetailItem}>
+                    <div className={styles.enrollmentDetailLabel}>
                       <FontAwesomeIcon icon={faFileAlt} /> Tuition fee
                     </div>
-                    <div className="enrollment-detail-value">
+                    <div className={styles.enrollmentDetailValue}>
                       {applicationDetail.gradeLevelFee ? `${applicationDetail.gradeLevelFee.toLocaleString('vi-VN')} VNĐ` : "0 VNĐ"}
                     </div>
                   </div>
                   
-                  <div className="enrollment-detail-item">
-                    <div className="enrollment-detail-label">
+                  <div className={styles.enrollmentDetailItem}>
+                    <div className={styles.enrollmentDetailLabel}>
                       <FontAwesomeIcon icon={faCalendarAlt} /> Enrollment date
                     </div>
-                    <div className="enrollment-detail-value">{formatDate(applicationDetail.enrollDate)}</div>
+                    <div className={styles.enrollmentDetailValue}>{formatDate(applicationDetail.enrollDate)}</div>
                   </div>
                   
-                  <div className="enrollment-detail-item">
-                    <div className="enrollment-detail-label">
+                  <div className={styles.enrollmentDetailItem}>
+                    <div className={styles.enrollmentDetailLabel}>
                       <FontAwesomeIcon icon={faClipboardList} /> Status
                     </div>
-                    <div className="enrollment-detail-value">
+                    <div className={styles.enrollmentDetailValue}>
                       {applicationDetail.status.toLowerCase() === 'approved' ? (
-                        <span className="status-badge approved">
+                        <span className={`${styles.statusBadge} ${styles.approved}`}>
                           <FontAwesomeIcon icon={faCheckCircle} />
                           Approved
                         </span>
                       ) : applicationDetail.status.toLowerCase() === 'rejected' || applicationDetail.status.toLowerCase() === 'reject' ? (
-                        <span className="status-badge rejected">
+                        <span className={`${styles.statusBadge} ${styles.rejected}`}>
                           <FontAwesomeIcon icon={faBan} />
                           Rejected
                         </span>
                       ) : applicationDetail.status.toLowerCase() === 'paid' ? (
-                        <span className="status-badge paid">
+                        <span className={`${styles.statusBadge} ${styles.paid}`}>
                           <FontAwesomeIcon icon={faMoneyBillWave} />
                           Paid
                         </span>
                       ) : applicationDetail.status.toLowerCase() === 'enrolled' ? (
-                        <span className="status-badge enrolled">
+                        <span className={`${styles.statusBadge} ${styles.enrolled}`}>
                           <FontAwesomeIcon icon={faUserGraduate} />
                           Enrolled
                         </span>
                       ) : (
-                        <span className="status-badge pending">
+                        <span className={`${styles.statusBadge} ${styles.pending}`}>
                           <FontAwesomeIcon icon={faClock} />
                             Pending
                         </span>
@@ -750,15 +751,15 @@ const EnrollmentApplicationManagement = () => {
             </div>
             
             {selectedApplication && selectedApplication.status.toLowerCase() === 'pending' && (
-              <div className="enrollment-modal-actions">
+              <div className={styles.enrollmentModalActions}>
                 <button 
-                  className="reject enrollment-action-button" 
+                  className={`${styles.reject} ${styles.enrollmentActionButton}`} 
                   onClick={() => openNotificationModal('reject', selectedApplication)}
                 >
                   <FontAwesomeIcon icon={faBan} /> Reject
                 </button>
                 <button 
-                  className="approve enrollment-action-button" 
+                  className={`${styles.approve} ${styles.enrollmentActionButton}`} 
                   onClick={() => openNotificationModal('approve', selectedApplication)}
                 >
                   <FontAwesomeIcon icon={faCheck} /> Approve
@@ -770,20 +771,20 @@ const EnrollmentApplicationManagement = () => {
       )}
       
       {showNotificationModal && (
-        <div className="enrollment-notification-modal" onClick={handleNotificationClose}>
-          <div className="enrollment-notification-content" onClick={(e) => e.stopPropagation()}>
-            <div className="enrollment-notification-header">
-              <h2 className="enrollment-notification-title">
+        <div className={styles.enrollmentNotificationModal} onClick={handleNotificationClose}>
+          <div className={styles.enrollmentNotificationContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.enrollmentNotificationHeader}>
+              <h2 className={styles.enrollmentNotificationTitle}>
                 <FontAwesomeIcon icon={faBell} /> Send notification to parent
               </h2>
-              <button className="enrollment-notification-close" onClick={handleNotificationClose}>
+              <button className={styles.enrollmentNotificationClose} onClick={handleNotificationClose}>
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
             
-            <form onSubmit={handleNotificationSubmit} className="enrollment-notification-form">
-              <div className="enrollment-notification-body">
-                <div className="enrollment-notification-info">
+            <form onSubmit={handleNotificationSubmit} className={styles.enrollmentNotificationForm}>
+              <div className={styles.enrollmentNotificationBody}>
+                <div className={styles.enrollmentNotificationInfo}>
                   <p>
                     <strong>To:</strong> {selectedApplication.parentName}
                   </p>
@@ -795,7 +796,7 @@ const EnrollmentApplicationManagement = () => {
                   </p>
                 </div>
                 
-                <div className="enrollment-notification-field">
+                <div className={styles.enrollmentNotificationField}>
                   <label htmlFor="title">Notification title</label>
                   <input
                     type="text"
@@ -807,7 +808,7 @@ const EnrollmentApplicationManagement = () => {
                   />
                 </div>
                 
-                <div className="enrollment-notification-field">
+                <div className={styles.enrollmentNotificationField}>
                   <label htmlFor="content">Notification content</label>
                   <textarea
                     id="content"
@@ -820,17 +821,17 @@ const EnrollmentApplicationManagement = () => {
                 </div>
               </div>
               
-              <div className="enrollment-notification-actions">
+              <div className={styles.enrollmentNotificationActions}>
                 <button 
                   type="button" 
-                  className="enrollment-action-button reject"
+                  className={`${styles.reject} ${styles.enrollmentActionButton}`}
                   onClick={handleNotificationClose}
                 >
                   <FontAwesomeIcon icon={faTimes} /> Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className={`enrollment-action-button ${notificationAction === 'approve' ? 'approve' : 'reject'}`}
+                  className={`${styles.enrollmentActionButton} ${notificationAction === 'approve' ? styles.approve : styles.reject}`}
                 >
                   <FontAwesomeIcon icon={faPaperPlane} /> Send and {notificationAction === 'approve' ? 'approve' : 'reject'}
                 </button>
