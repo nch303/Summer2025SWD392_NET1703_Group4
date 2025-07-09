@@ -3,8 +3,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { resetPassword } from '../../services/AuthService';
 import styles from './ResetPasswordPage.module.css';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 
 const ResetPasswordPage = () => {
   const { token } = useParams();

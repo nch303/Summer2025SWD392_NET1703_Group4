@@ -2,9 +2,9 @@ import React, { useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import ScrollToTopButton from '../components/scroll-button/ScrollToTopButton';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import Sidebar from '../components/Sidebar';
-import PageLoadingScreen from '../components/loading/PageLoadingScreen';
+import PageLoadingScreen from '../components/PageLoadingScreen';
 import styles from './StaffLayout.module.css';
 
 const StaffLayout = () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
-import { useCustomToast } from '../../components/toast/CustomToast';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
 import { getPaymentDetails } from '../../services/PaymentHistoryService';
 import styles from './PaymentFail.module.css';
 

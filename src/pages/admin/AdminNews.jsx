@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   Card, Button, Table, Input, Form, Upload, message,
-  Space, Tag, Tooltip, Popconfirm, Spin, Empty, Descriptions, Modal, Select, Switch
-} from 'antd';
-import { 
+  Space, Tag, Tooltip, Popconfirm, Spin, Empty, Descriptions, Modal, Select, Switch,
   PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, SearchOutlined,
   UndoOutlined, EyeOutlined
-} from '@ant-design/icons';
-import './AdminNews.css';
+} from '../../utils/AntComponents';
+import styles from './AdminNews.module.css';
 import { getAllNews, getNewsById, createNews, updateNews, deleteNews, searchNews, updateNewsStatus } from '../../services/AdminService';
 
 const AdminNews = () => {
@@ -37,15 +35,15 @@ const AdminNews = () => {
     try {
       setNewsLoading(true);
       const response = await getAllNews(page, pageSize);
-      
+
       // Extract data based on API response format
       const { totalCount, pageNumber, pageSize: responsePageSize, data } = response;
-      
+
       // Filter out deleted news unless showDeleted is true
-      const filteredData = showDeleted 
+      const filteredData = showDeleted
         ? data || []
         : (data || []).filter(item => item.status !== 'Deleted');
-      
+
       setNewsItems(filteredData);
       setPagination({
         total: totalCount,
@@ -69,26 +67,26 @@ const AdminNews = () => {
       setIsSearching(false);
       return fetchNews();
     }
-    
+
     try {
       setNewsLoading(true);
       setSearchKeyword(value);
-      
+
       // Call the search API
       const response = await searchNews(value);
-      
+
       console.log("Search response:", response); // Debug the response structure
-      
+
       // Check if we have results
       // Note: The structure might be just 'response' or 'response.data' depending on your API
       const searchResults = response.data || response || [];
-      
+
       if (searchResults && searchResults.length > 0) {
         // Filter out deleted news unless showDeleted is true
         const filteredData = showDeleted
           ? searchResults
           : searchResults.filter(item => item.status !== 'Deleted');
-          
+
         setNewsItems(filteredData);
         setPagination({
           ...pagination,
@@ -133,15 +131,15 @@ const AdminNews = () => {
   const showModal = async (type, record = null) => {
     setModalType(type);
     form.resetFields();
-    
+
     // Reset original images
     setOriginalNewsImages({ image: null, banner: null });
-    
+
     if (record && type === 'edit-news') {
       try {
         setNewsLoading(true);
         const newsDetail = await getNewsById(record.id);
-        
+
         // Set form fields
         form.setFieldsValue({
           id: newsDetail.id,
@@ -149,13 +147,13 @@ const AdminNews = () => {
           content: newsDetail.content,
           status: newsDetail.status || 'Published',
         });
-        
+
         // Store original image URLs
         setOriginalNewsImages({
           image: newsDetail.image,
           banner: newsDetail.banner
         });
-        
+
         // Set image fileList if exists
         if (newsDetail.image) {
           form.setFieldsValue({
@@ -167,7 +165,7 @@ const AdminNews = () => {
             }]
           });
         }
-        
+
         // Set banner fileList if exists
         if (newsDetail.banner) {
           form.setFieldsValue({
@@ -179,7 +177,7 @@ const AdminNews = () => {
             }]
           });
         }
-        
+
       } catch (error) {
         console.error("Failed to fetch news details:", error);
         message.error("Could not load news information");
@@ -187,7 +185,7 @@ const AdminNews = () => {
         setNewsLoading(false);
       }
     }
-    
+
     setIsModalVisible(true);
   };
 
@@ -195,24 +193,24 @@ const AdminNews = () => {
     try {
       const values = await form.validateFields();
       const isEdit = modalType === 'edit-news';
-      
+
       // Create FormData
       const formData = new FormData();
       formData.append('Title', values.title);
       formData.append('Content', values.content);
       formData.append('Status', values.status || 'Published');
-      
+
       // Get current date/time in Vietnam timezone (GMT+7)
       const now = new Date();
       // Convert to Vietnam time (UTC+7)
       const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
       const formattedDate = vietnamTime.toISOString();
       formData.append('PublishDate', formattedDate);
-      
+
       if (isEdit) {
         formData.append('Id', values.id);
       }
-      
+
       // Handle image file
       if (values.image && values.image[0]) {
         if (values.image[0].originFileObj) {
@@ -223,7 +221,7 @@ const AdminNews = () => {
           formData.append('ExistingImage', originalNewsImages.image);
         }
       }
-      
+
       // Handle banner file
       if (values.banner && values.banner[0]) {
         if (values.banner[0].originFileObj) {
@@ -234,9 +232,9 @@ const AdminNews = () => {
           formData.append('ExistingBanner', originalNewsImages.banner);
         }
       }
-      
+
       setNewsLoading(true);
-      
+
       try {
         if (isEdit) {
           await updateNews(values.id, formData);
@@ -249,7 +247,7 @@ const AdminNews = () => {
           // Go to page 1 only for new items
           fetchNews(1, pagination.pageSize);
         }
-        
+
         setIsModalVisible(false);
       } catch (error) {
         console.error('Error:', error);
@@ -268,31 +266,31 @@ const AdminNews = () => {
         message.error('Cannot delete news: ID is missing');
         return;
       }
-      
+
       // Get the current news item to send all required fields
       const newsDetail = await getNewsById(id);
-      
+
       // Create FormData for the update
       const formData = new FormData();
       formData.append('Id', id);
       formData.append('Title', newsDetail.title);
       formData.append('Content', newsDetail.content);
       formData.append('Status', 'Deleted');  // Change status to Deleted
-      
+
       if (newsDetail.image) {
         formData.append('ExistingImage', newsDetail.image);
       }
-      
+
       if (newsDetail.banner) {
         formData.append('ExistingBanner', newsDetail.banner);
       }
-      
+
       // Get current date in Vietnam timezone
       const now = new Date();
       const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
       const formattedDate = vietnamTime.toISOString();
       formData.append('PublishDate', formattedDate);
-      
+
       // Use the regular update endpoint
       await updateNews(id, formData);
       message.success('News has been moved to trash');
@@ -309,31 +307,31 @@ const AdminNews = () => {
         message.error('Cannot restore news: ID is missing');
         return;
       }
-      
+
       // Get the current news item to send all required fields
       const newsDetail = await getNewsById(id);
-      
+
       // Create FormData for the update
       const formData = new FormData();
       formData.append('Id', id);
       formData.append('Title', newsDetail.title);
       formData.append('Content', newsDetail.content);
       formData.append('Status', 'Published');
-      
+
       if (newsDetail.image) {
         formData.append('ExistingImage', newsDetail.image);
       }
-      
+
       if (newsDetail.banner) {
         formData.append('ExistingBanner', newsDetail.banner);
       }
-      
+
       // Get current date in Vietnam timezone
       const now = new Date();
       const vietnamTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
       const formattedDate = vietnamTime.toISOString();
       formData.append('PublishDate', formattedDate);
-      
+
       // Use the regular update endpoint
       await updateNews(id, formData);
       message.success('News has been restored successfully');
@@ -352,13 +350,13 @@ const AdminNews = () => {
   };
 
   return (
-    <div className="admin-news">
+    <div className={styles.adminNews}>
       <Card>
         <Space style={{ marginBottom: 16 }}>
-          <Input.Search 
-            placeholder="Search news..." 
+          <Input.Search
+            placeholder="Search news..."
             style={{ width: 300 }}
-            allowClear 
+            allowClear
             onSearch={handleSearch}
             loading={newsLoading && isSearching}
             enterButton={<Button icon={<SearchOutlined />}>Search</Button>}
@@ -375,44 +373,44 @@ const AdminNews = () => {
             />
           </Space>
         </Space>
-        <Table 
+        <Table
           dataSource={newsItems}
           loading={newsLoading}
           rowKey="id"
           columns={[
-            { 
-              title: 'ID', 
-              dataIndex: 'id', 
-              width: '10%' 
+            {
+              title: 'ID',
+              dataIndex: 'id',
+              width: '10%'
             },
-            { 
-              title: 'Title', 
-              dataIndex: 'title', 
-              width: '40%' 
+            {
+              title: 'Title',
+              dataIndex: 'title',
+              width: '40%'
             },
-            { 
+            {
               title: 'Status',
               dataIndex: 'status',
               width: '10%',
               render: (status) => (
                 <Tag color={
-                  status === 'Published' ? 'green' : 
-                  status === 'Draft' ? 'orange' : 
-                  status === 'Deleted' ? 'red' : 'default'
+                  status === 'Published' ? 'green' :
+                    status === 'Draft' ? 'orange' :
+                      status === 'Deleted' ? 'red' : 'default'
                 }>
                   {status || 'N/A'}
                 </Tag>
               )
             },
-            { 
-              title: 'Image', 
+            {
+              title: 'Image',
               dataIndex: 'image',
               width: '20%',
               render: (url) => url ? (
-                <img 
-                  src={url} 
-                  alt="thumbnail" 
-                  style={{ width: 80, height: 45, objectFit: 'cover', cursor: 'pointer' }} 
+                <img
+                  src={url}
+                  alt="thumbnail"
+                  style={{ width: 80, height: 45, objectFit: 'cover', cursor: 'pointer' }}
                   onClick={() => window.open(url, '_blank')}
                 />
               ) : 'No image'
@@ -422,7 +420,7 @@ const AdminNews = () => {
               width: '20%',
               render: (_, record) => (
                 <Space>
-                  <Button 
+                  <Button
                     icon={<EyeOutlined />}
                     onClick={() => showNewsDetail(record)}
                     size="small"
@@ -430,8 +428,8 @@ const AdminNews = () => {
                   />
                   {record.status !== 'Deleted' ? (
                     <>
-                      <Button 
-                        icon={<EditOutlined />} 
+                      <Button
+                        icon={<EditOutlined />}
                         onClick={() => showModal('edit-news', record)}
                         size="small"
                         title="Edit"
@@ -440,9 +438,9 @@ const AdminNews = () => {
                         title="Are you sure you want to delete this news?"
                         onConfirm={() => handleSoftDelete(record.id)}
                       >
-                        <Button 
-                          icon={<DeleteOutlined />} 
-                          danger 
+                        <Button
+                          icon={<DeleteOutlined />}
+                          danger
                           size="small"
                           title="Delete"
                         />
@@ -453,8 +451,8 @@ const AdminNews = () => {
                       title="Are you sure you want to restore this news?"
                       onConfirm={() => handleRestore(record.id)}
                     >
-                      <Button 
-                        icon={<UndoOutlined />} 
+                      <Button
+                        icon={<UndoOutlined />}
                         type="primary"
                         size="small"
                         title="Restore"
@@ -475,7 +473,7 @@ const AdminNews = () => {
           }}
         />
       </Card>
-      
+
       {/* News Detail Modal */}
       <Modal
         title="News Details"
@@ -489,9 +487,9 @@ const AdminNews = () => {
         width={800}
       >
         {selectedNews && (
-          <div className="news-detail-container">
-            <h2 className="news-title">{selectedNews.title}</h2>
-            
+          <div className={styles.newsDetailContainer}>
+            <h2 className={styles.newsTitle}>{selectedNews.title}</h2>
+
             <Descriptions bordered column={1}>
               <Descriptions.Item label="ID">{selectedNews.id}</Descriptions.Item>
               <Descriptions.Item label="Content">
@@ -508,31 +506,31 @@ const AdminNews = () => {
                 </Tag>
               </Descriptions.Item>
             </Descriptions>
-            
+
             <div style={{ marginTop: '20px', display: 'flex', gap: '20px' }}>
               <div style={{ flex: 1 }}>
                 <h3>Thumbnail Image</h3>
                 {selectedNews.image ? (
                   <div style={{ border: '1px solid #f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                    <img 
-                      src={selectedNews.image} 
-                      alt="Thumbnail" 
-                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }} 
+                    <img
+                      src={selectedNews.image}
+                      alt="Thumbnail"
+                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }}
                     />
                   </div>
                 ) : (
                   <Empty description="No thumbnail image" />
                 )}
               </div>
-              
+
               <div style={{ flex: 1 }}>
                 <h3>Banner Image</h3>
                 {selectedNews.banner ? (
                   <div style={{ border: '1px solid #f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                    <img 
-                      src={selectedNews.banner} 
-                      alt="Banner" 
-                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }} 
+                    <img
+                      src={selectedNews.banner}
+                      alt="Banner"
+                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }}
                     />
                   </div>
                 ) : (
@@ -543,7 +541,7 @@ const AdminNews = () => {
           </div>
         )}
       </Modal>
-      
+
       {/* Add/Edit News Modal */}
       <Modal
         title={modalType === 'add-news' ? 'Add New News' : 'Edit News'}

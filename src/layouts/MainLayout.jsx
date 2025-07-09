@@ -2,8 +2,8 @@ import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import ScrollToTopButton from '../components/scroll-button/ScrollToTopButton';
-import PageLoadingScreen from '../components/loading/PageLoadingScreen';
+import ScrollToTopButton from '../components/ScrollToTopButton';
+import PageLoadingScreen from '../components/PageLoadingScreen';
 
 const MainLayout = () => {
   return (

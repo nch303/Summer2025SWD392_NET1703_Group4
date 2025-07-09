@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getTuitionFeesByCurrentAccount, createPaymentUrlForTuitionFee } from '../../services/TuitionFeeService';
-import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 import styles from './TuitionFee.module.css';
 
 const TuitionFeePage = () => {

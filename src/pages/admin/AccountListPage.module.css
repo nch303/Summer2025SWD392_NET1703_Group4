@@ -1,4 +1,4 @@
-.account-list-container {
+.accountListContainer {
   padding: 24px;
   background: #fff;
   min-height: 100%;
@@ -6,7 +6,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.account-list-header {
+.accountListHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,61 +14,61 @@
   flex-wrap: wrap;
 }
 
-.account-list-header h1 {
+.accountListHeader h1 {
   margin: 0;
   font-size: 24px;
   color: #1890ff;
 }
 
-.account-list-actions {
+.accountListActions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 16px;
 }
 
-.create-account-btn {
+.createAccountBtn {
   background-color: #52c41a;
   border-color: #52c41a;
   margin-right: 8px;
 }
 
-.create-account-btn:hover,
-.create-account-btn:focus {
+.createAccountBtn:hover,
+.createAccountBtn:focus {
   background-color: #73d13d;
   border-color: #73d13d;
 }
 
 @media (max-width: 768px) {
-  .account-list-header {
+  .accountListHeader {
     flex-direction: column;
     align-items: flex-start;
   }
-  
-  .account-list-actions {
+
+  .accountListActions {
     margin-top: 16px;
     width: 100%;
   }
 }
 
-.account-details {
+.accountDetails {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.detail-row {
+.detailRow {
   display: flex;
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 10px;
 }
 
-.detail-label {
+.detailLabel {
   width: 150px;
   font-weight: 600;
   color: #555;
 }
 
-.detail-value {
+.detailValue {
   flex: 1;
 }

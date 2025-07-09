@@ -3,7 +3,8 @@ import {
   Segmented, Button, Tooltip, Progress, Tabs, Skeleton, Avatar, Dropdown,
   List, Modal, Space, Table, Form, Select, DatePicker, TimePicker, Radio,
   Checkbox, Switch, Popconfirm, Menu, Divider, Result, Alert, Calendar, Image,
-  message, Descriptions, Drawer, Collapse
+  message, Descriptions, Drawer, Collapse, Upload, InputNumber, notification,
+  Breadcrumb, Steps, Layout, theme,
 } from 'antd';
 
 import {
@@ -17,7 +18,14 @@ import {
   CheckOutlined, FileOutlined, SettingOutlined, StarOutlined,
   IdcardOutlined, SortAscendingOutlined, CloseCircleOutlined,
   InfoCircleOutlined, SaveOutlined, UndoOutlined, BookFilled,
-  FormOutlined, ProfileOutlined, DeleteOutlined, WarningOutlined
+  FormOutlined, ProfileOutlined, DeleteOutlined, WarningOutlined,
+  DollarOutlined, DownloadOutlined, EditOutlined, RedoOutlined,
+  ExclamationCircleFilled, UserAddOutlined, ReloadOutlined,
+  NotificationOutlined, FileProtectOutlined, MenuUnfoldOutlined,
+  MenuFoldOutlined, LogoutOutlined, DashboardOutlined, ExclamationCircleOutlined,
+  UploadOutlined, FileSearchOutlined, DownOutlined, ScheduleOutlined, StopOutlined,
+  TrophyOutlined, UpOutlined, FileExcelOutlined, LoadingOutlined, MinusCircleOutlined,
+  LeftOutlined, RightOutlined
 } from '@ant-design/icons';
 
 const { Title, Text, Paragraph, TabPane } = Typography;
@@ -30,7 +38,8 @@ export {
   Segmented, Button, Tooltip, Progress, Tabs, Skeleton, Avatar, Dropdown,
   List, Modal, Space, Table, Form, Select, DatePicker, TimePicker, Radio,
   Checkbox, Switch, Popconfirm, Menu, Divider, Result, Alert, Calendar, Image,
-  message, BookFilled, Descriptions, Drawer, Collapse, TabPane,
+  message, BookFilled, Descriptions, Drawer, Collapse, TabPane, Upload, InputNumber,
+  notification, Breadcrumb, Steps, Layout, theme,
 
   Title, Text, Paragraph, Search, Option, RangePicker, TextArea,
 
@@ -44,5 +53,12 @@ export {
   CheckOutlined, FileOutlined, SettingOutlined, StarOutlined,
   IdcardOutlined, SortAscendingOutlined, CloseCircleOutlined,
   InfoCircleOutlined, SaveOutlined, UndoOutlined,
-  FormOutlined, ProfileOutlined, DeleteOutlined, WarningOutlined
+  FormOutlined, ProfileOutlined, DeleteOutlined, WarningOutlined,
+  DollarOutlined, DownloadOutlined, EditOutlined, RedoOutlined,
+  ExclamationCircleFilled, UserAddOutlined, ReloadOutlined,
+  NotificationOutlined, FileProtectOutlined, MenuUnfoldOutlined,
+  MenuFoldOutlined, LogoutOutlined, DashboardOutlined, ExclamationCircleOutlined,
+  UploadOutlined, FileSearchOutlined, DownOutlined, ScheduleOutlined, StopOutlined,
+  TrophyOutlined, UpOutlined, FileExcelOutlined, LoadingOutlined, MinusCircleOutlined,
+  LeftOutlined, RightOutlined
 };

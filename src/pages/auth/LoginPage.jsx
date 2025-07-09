@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
 import { loginUser } from '../../services/AuthService';
 import { ROUTES } from '../../constants/routes';
 import styles from './LoginPage.module.css';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useCustomToast } from '../../components/CustomToast';
 import { useUser } from '../../contexts/UserContext';
 
 const LoginPage = () => {

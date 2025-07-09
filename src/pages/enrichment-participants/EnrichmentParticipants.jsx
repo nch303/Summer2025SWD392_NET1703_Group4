@@ -1,34 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card,
-  Select,
-  Table,
-  Space,
-  Input,
-  Tag,
-  Typography,
-  Row,
-  Col,
-  Spin,
-  Empty,
-  Avatar,
-  Divider,
-  Button,
-  Popconfirm,
-  message,
-} from "antd";
-import {
-  SearchOutlined,
-  PieChartOutlined,
-  BarChartOutlined,
-  TeamOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  DollarOutlined,
-} from "@ant-design/icons";
+  Card, Select, Table, Space,
+  Input, Tag, Typography, Row,
+  Col, Spin, Empty, Avatar,
+  Divider, Button, Popconfirm, message,
+  SearchOutlined, PieChartOutlined,
+  BarChartOutlined, TeamOutlined,
+  CheckCircleOutlined, CloseCircleOutlined, DollarOutlined
+} from "../../utils/AntComponents";
 import { Pie, Bar } from "react-chartjs-2";
 import dayjs from "dayjs";
-import "./EnrichmentParticipants.css";
+import styles from "./EnrichmentParticipants.module.css";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -41,23 +23,17 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
-  getAllEnrichmentPrograms,
-  getAllClasses,
-  getStudentsByEnrichmentId,
-  getEnrichmentInvoiceDetails,
+  getAllEnrichmentPrograms, getAllClasses,
+  getStudentsByEnrichmentId, getEnrichmentInvoiceDetails,
   kickChildFromEnrichmentClass,
-} from "./EnrichmentParticipantsService";
+} from "../../services/EnrichmentParticipantsService";
 
 // Register ChartJS components
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-  ChartDataLabels
+  CategoryScale, LinearScale,
+  BarElement, ArcElement,
+  Title, Tooltip,
+  Legend, ChartDataLabels
 );
 
 const { Title: AntTitle, Text } = Typography;
@@ -148,7 +124,7 @@ const EnrichmentParticipants = () => {
       labels: labels,
       datasets: [
         {
-          label: "Số học sinh",
+          label: "Number of students",
           data: data,
           backgroundColor: backgroundColors,
           borderColor: backgroundColors.map((color) =>
@@ -224,7 +200,7 @@ const EnrichmentParticipants = () => {
       labels: labels,
       datasets: [
         {
-          label: "Số học sinh hiện tại",
+          label: "Current number of students",
           data: data,
           backgroundColor: "rgba(76, 131, 255, 0.8)",
           borderColor: "rgba(76, 131, 255, 1)",
@@ -536,45 +512,45 @@ const EnrichmentParticipants = () => {
   };
 
   return (
-    <Card className="stats-card">
-      <div className="staff-header-section">
+    <Card className={styles.statsCard}>
+      <div className={styles.staffHeaderSection}>
         <AntTitle level={2}>
-          <PieChartOutlined className="staff-header-section-icon" />
+          <PieChartOutlined className={styles.staffHeaderSectionIcon} />
           Enrichment program statistics
         </AntTitle>
-        <Text type="secondary" className="description-text">
+        <Text type="secondary" className={styles.descriptionText}>
           General and detailed information about the number of students participating in enrichment programs
         </Text>
       </div>
 
       {loading && !pieChartData ? (
-        <div className="loading-container">
+        <div className={styles.loadingContainer}>
           <Spin size="large" />
         </div>
       ) : (
         pieChartData && (
-          <div className="pie-chart-container">
+          <div className={styles.pieChartContainer}>
             <Pie data={pieChartData} options={pieChartOptions} />
           </div>
         )
       )}
 
-      <Divider className="section-divider" />
+      <Divider className={styles.sectionDivider} />
 
-      <div className="staff-filter-section">
-        <div className="staff-section-header">
-          <BarChartOutlined className="staff-section-icon" />
+      <div className={styles.staffFilterSection}>
+        <div className={styles.staffSectionHeader}>
+          <BarChartOutlined className={styles.staffSectionIcon} />
           <Text strong>Filter data</Text>
         </div>
-        <Row gutter={[64, 24]} className="staff-filter-row">
+        <Row gutter={[64, 24]} className={styles.staffFilterRow}>
           <Col xs={24} md={12}>
-            <div className="staff-filter-label">Enrichment program type:</div>
+            <div className={styles.staffFilterLabel}>Enrichment program type:</div>
             <Select
               placeholder="Select enrichment program type"
               style={{ width: "100%" }}
               onChange={(value) => setSelectedType(value)}
               value={selectedType}
-              className="styled-select"
+              className={styles.styledSelect}
             >
               {programTypes.map((type) => (
                 <Option key={type} value={type}>
@@ -586,13 +562,13 @@ const EnrichmentParticipants = () => {
 
           {selectedType && (
             <Col xs={24} md={12}>
-              <div className="staff-filter-label">Enrichment program:</div>
+              <div className={styles.staffFilterLabel}>Enrichment program:</div>
               <Select
                 placeholder={`Select enrichment program ${selectedType}`}
                 style={{ width: "100%" }}
                 onChange={(value) => setSelectedProgram(value)}
                 value={selectedProgram}
-                className="styled-select"
+                className={styles.styledSelect}
               >
                 {filteredPrograms.map((program) => (
                   <Option key={program.id} value={program.id}>
@@ -611,13 +587,13 @@ const EnrichmentParticipants = () => {
       </div>
 
       {selectedType && (
-        <div className="chart-section">
+        <div className={styles.chartSection}>
           {loading && !barChartData ? (
-            <div className="loading-container">
+            <div className={styles.loadingContainer}>
               <Spin size="large" />
             </div>
           ) : barChartData ? (
-            <div className="bar-chart-container">
+            <div className={styles.barChartContainer}>
               <Bar data={barChartData} options={barChartOptions} />
             </div>
           ) : (
@@ -631,14 +607,14 @@ const EnrichmentParticipants = () => {
 
       {selectedProgram && (
         <>
-          <Divider className="section-divider" />
-          <div className="staff-students-section">
-            <div className="staff-section-header">
-              <TeamOutlined className="staff-section-icon" />
+          <Divider className={styles.sectionDivider} />
+          <div className={styles.staffStudentsSection}>
+            <div className={styles.staffSectionHeader}>
+              <TeamOutlined className={styles.staffSectionIcon} />
               <Text strong>Student list</Text>
             </div>
-            <div className="table-header">
-              <AntTitle level={4} className="table-title">
+            <div className={styles.tableHeader}>
+              <AntTitle level={4} className={styles.tableTitle}>
                 Students participating ({students.length})
                 {filteredPrograms.find((p) => p.id === selectedProgram)
                   ?.isDelete && (
@@ -653,13 +629,13 @@ const EnrichmentParticipants = () => {
                   prefix={<SearchOutlined />}
                   onChange={(e) => setSearchText(e.target.value)}
                   allowClear
-                  className="search-input"
+                  className={styles.searchInput}
                 />
               </Space>
             </div>
 
             {loading ? (
-              <div className="loading-container">
+              <div className={styles.loadingContainer}>
                 <Spin size="large" />
               </div>
             ) : (
@@ -669,7 +645,7 @@ const EnrichmentParticipants = () => {
                 rowKey="id"
                 pagination={{ pageSize: 10 }}
                 locale={{ emptyText: "No students found" }}
-                className="styled-table"
+                className={styles.styledTable}
               />
             )}
           </div>

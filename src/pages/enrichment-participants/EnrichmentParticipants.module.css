@@ -1,10 +1,9 @@
-/* EnrichmentParticipants.css */
-.enrichment-participants {
+.enrichmentParticipants {
   padding: 24px;
   background-color: #f5f8ff;
 }
 
-.stats-card {
+.statsCard {
   box-shadow: 0 6px 16px rgba(107, 138, 253, 0.12);
   border-radius: 16px;
   margin-bottom: 24px;
@@ -12,43 +11,43 @@
   border: none;
 }
 
-.staff-header-section {
+.staffHeaderSection {
   margin-bottom: 24px;
   text-align: center;
 }
 
-.staff-header-section h2 {
+.staffHeaderSection h2 {
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
 
-.description-text {
+.descriptionText {
   font-size: 16px;
 }
 
-.staff-section-icon {
+.staffSectionIcon {
   margin-right: 10px;
   color: #5c7cfa;
 }
 
-.staff-header-section-icon {
+.staffHeaderSectionIcon {
   margin-right: 15px;
   color: #5c7cfa;
 }
 
-.staff-section-header {
+.staffSectionHeader {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
   font-size: 18px;
 }
 
-.section-divider {
+.sectionDivider {
   margin: 32px 0;
 }
 
-.staff-filter-section {
+.staffFilterSection {
   margin: 20px 0;
   padding: 20px;
   background-color: #f9fbff;
@@ -56,28 +55,28 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
-.staff-filter-row {
+  .staffFilterRow {
   margin-bottom: 16px;
 }
 
-.staff-filter-label {
+.staffFilterLabel {
   margin-bottom: 10px;
   font-weight: 500;
   color: #4c6ef5;
   font-size: 15px;
 }
 
-.styled-select {
+.styledSelect {
   border-radius: 8px;
   height: 42px;
 }
 
-.styled-select .ant-select-selector {
+.styledSelect :global(.ant-select-selector) {
   border-radius: 8px !important;
   height: 42px !important;
 }
 
-.pie-chart-container {
+.pieChartContainer {
   height: 400px;
   display: flex;
   justify-content: center;
@@ -90,16 +89,16 @@
   transition: all 0.3s ease;
 }
 
-.pie-chart-container:hover {
+.pieChartContainer:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(107, 138, 253, 0.15);
 }
 
-.chart-section {
+.chartSection {
   margin: 30px 0;
 }
 
-.bar-chart-container {
+.barChartContainer {
   height: 400px;
   padding: 20px;
   background-color: #fff;
@@ -108,19 +107,19 @@
   transition: all 0.3s ease;
 }
 
-.bar-chart-container:hover {
+.barChartContainer:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(107, 138, 253, 0.15);
 }
 
-.staff-students-section {
+.staffStudentsSection {
   padding: 20px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.table-header {
+.tableHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,98 +128,98 @@
   gap: 16px;
 }
 
-.table-title {
+.tableTitle {
   margin: 0 !important;
   color: #333;
 }
 
-.search-input {
+.searchInput {
   width: 250px;
   border-radius: 8px;
   height: 40px;
 }
 
-.loading-container {
+.loadingContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 300px;
 }
 
-.styled-empty {
+    .styledEmpty {
   margin: 40px 0;
 }
 
-.styled-table {
+.styledTable {
   border-radius: 8px;
   overflow: hidden;
 }
 
-.styled-table .ant-table-thead > tr > th {
+.styledTable :global(.ant-table-thead > tr > th) {
   background-color: #f0f4ff;
   color: #4c6ef5;
 }
 
 /* Responsive styling */
 @media (max-width: 768px) {
-  .enrichment-participants {
+  .enrichmentParticipants {
     padding: 16px;
   }
   
-  .table-header {
+  .tableHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
   
-  .pie-chart-container,
-  .bar-chart-container {
+  .pieChartContainer,
+  .barChartContainer {
     height: 350px;
     padding: 15px;
   }
   
-  .filter-section,
-  .staff-students-section {
+  .staffFilterSection,
+  .staffStudentsSection {
     padding: 15px;
   }
   
-  .search-input {
+  .searchInput {
     width: 100%;
   }
 }
 
 @media (max-width: 576px) {
-  .pie-chart-container,
-  .bar-chart-container {
+  .pieChartContainer,
+  .barChartContainer {
     height: 300px;
     padding: 10px;
   }
   
-  .filter-row {
+  .staffFilterRow {
     margin-bottom: 8px;
   }
   
-  .staff-students-section {
+  .staffStudentsSection {
     padding: 12px;
   }
   
-  .section-divider {
+    .sectionDivider {
     margin: 20px 0;
   }
 }
 
 /* Add to EnrichmentParticipants.css */
-.ant-tag-green {
+:global(.ant-tag-green) {
   background: rgba(82, 196, 26, 0.1);
   border-color: #52c41a;
 }
 
-.ant-tag-orange {
+:global(.ant-tag-orange) {
   background: rgba(250, 140, 22, 0.1);
   border-color: #fa8c16;
 }
 
-.ant-tag {
+:global(.ant-tag) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -229,12 +228,12 @@
   font-size: 13px;
 }
 
-.ant-popconfirm-buttons .ant-btn-primary.ant-btn-dangerous {
+:global(.ant-popconfirm-buttons .ant-btn-primary.ant-btn-dangerous) {
   background-color: #ff4d4f;
   border-color: #ff4d4f;
 }
 
-.ant-popconfirm-buttons .ant-btn-primary.ant-btn-dangerous:hover {
+:global(.ant-popconfirm-buttons .ant-btn-primary.ant-btn-dangerous:hover) {
   background-color: #ff7875;
   border-color: #ff7875;
 }

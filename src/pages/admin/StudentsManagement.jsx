@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   Card, Button, Table, Input, Form, DatePicker, Upload, message,
-  Space, Spin, Select, Modal, Row, Col, Image
-} from 'antd';
-import { 
-  EditOutlined, UploadOutlined, ExclamationCircleOutlined
-} from '@ant-design/icons';
-import './StudentsManagement.css';
+  Space, Spin, Select, Modal, Row, Col, Image, Tag, Tooltip, Avatar,
+  EditOutlined, UploadOutlined, ExclamationCircleOutlined, UserOutlined,
+  FilterOutlined, FileSearchOutlined, ReloadOutlined, EyeOutlined
+} from '../../utils/AntComponents';
+import styles from './StudentsManagement.module.css';
 import dayjs from 'dayjs';
 import { searchStudents, fetchAllStudents, updateStudent } from '../../services/AdminService';
 
@@ -18,6 +17,14 @@ const StudentsManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [formErrors, setFormErrors] = useState({});
+  const [filterGender, setFilterGender] = useState(null);
+  const [filterCity, setFilterCity] = useState(null);
+  const [studentStats, setStudentStats] = useState({
+    total: 0,
+    male: 0,
+    female: 0,
+    other: 0
+  });
 
   useEffect(() => {
     if (searchText.trim() === '') {
@@ -26,6 +33,19 @@ const StudentsManagement = () => {
       searchStudentsHandler(searchText);
     }
   }, [searchText]);
+  
+  useEffect(() => {
+    if (children.length > 0) {
+      // Calculate stats
+      const stats = {
+        total: children.length,
+        male: children.filter(c => c.gender === 'Male').length,
+        female: children.filter(c => c.gender === 'Female').length,
+        other: children.filter(c => c.gender === 'Other').length
+      };
+      setStudentStats(stats);
+    }
+  }, [children]);
 
   const fetchChildren = async () => {
     try {
@@ -47,18 +67,25 @@ const StudentsManagement = () => {
       content: (
         <div>
           <div><ExclamationCircleOutlined /> {messageText}</div>
-          <div className="error-detail">{errorDetail}</div>
+          <div className={styles.errorDetail}>{errorDetail}</div>
         </div>
       ),
       duration: 5
     });
   };
 
-  // Filter children based on search text
-  const filteredChildren = children.filter(child => 
-    child.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-    child.parentName?.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // Filter children based on search text and filters
+  const filteredChildren = children.filter(child => {
+    const matchesSearch = child.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+                         child.parentName?.toLowerCase().includes(searchText.toLowerCase());
+    const matchesGender = filterGender ? child.gender === filterGender : true;
+    const matchesCity = filterCity ? child.city === filterCity : true;
+    
+    return matchesSearch && matchesGender && matchesCity;
+  });
+
+  // Get unique cities for filtering
+  const uniqueCities = [...new Set(children.map(child => child.city).filter(Boolean))];
 
   // Search students
   const searchStudentsHandler = async (query) => {
@@ -71,6 +98,13 @@ const StudentsManagement = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetFilters = () => {
+    setSearchText('');
+    setFilterGender(null);
+    setFilterCity(null);
+    fetchChildren();
   };
 
   const showEditModal = (record) => {
@@ -94,7 +128,7 @@ const StudentsManagement = () => {
     try {
       const values = await form.validateFields();
       setFormErrors({});
-      
+
       if (values.birthday && dayjs.isDayjs(values.birthday)) {
         values.birthday = values.birthday.format('YYYY-MM-DD');
       }
@@ -139,116 +173,246 @@ const StudentsManagement = () => {
     }
   };
 
+  const getGenderColor = (gender) => {
+    switch(gender) {
+      case 'Male': return 'blue';
+      case 'Female': return 'pink';
+      case 'Other': return 'purple';
+      default: return 'default';
+    }
+  };
+
   return (
-    <div className="students-management">
-      <Card title="Students Management">
-        <Space style={{ marginBottom: 16 }}>
-          <Input.Search 
-            placeholder="Search students..." 
-            style={{ width: 300 }} 
-            onSearch={(value) => setSearchText(value)}
-            allowClear
-            enterButton
-          />
-        </Space>
-        <Spin spinning={loading}>
-          <Table 
-            dataSource={filteredChildren}
-            columns={[
-              {
-                title: 'Avatar',
-                dataIndex: 'avatar',
-                render: (url) => url ? <img src={url} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} /> : null,
-              },
-              { title: 'Name', dataIndex: 'name' },
-              {
-                title: 'Birthday',
-                dataIndex: 'birthday',
-                render: (date) => date ? new Date(date).toLocaleDateString() : '',
-              },
-              { title: 'Gender', dataIndex: 'gender' },
-              { title: 'City', dataIndex: 'city' },
-              { title: 'Parent', dataIndex: 'parentName' },
-              { title: 'Phone', dataIndex: 'phoneNumber' },
-              {
-                title: 'Birth Certificate',
-                dataIndex: 'birthCertificate',
-                render: (url) => url ? (
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      background: 'linear-gradient(90deg, #c3aed6 0%, #f5d0fe 100%)',
-                      color: '#7c3aed',
-                      padding: '2px 12px',
-                      borderRadius: '8px',
-                      textDecoration: 'underline',
-                      fontWeight: 500,
-                      boxShadow: '0 1px 4px 0 rgba(195,174,214,0.10)',
-                      transition: 'background 0.3s, color 0.3s',
-                      display: 'inline-block',
-                    }}
-                    onMouseOver={e => {
-                      e.currentTarget.style.background = 'linear-gradient(90deg, #b39ddb 0%, #e0c3fc 100%)';
-                      e.currentTarget.style.color = '#5b21b6';
-                    }}
-                    onMouseOut={e => {
-                      e.currentTarget.style.background = 'linear-gradient(90deg, #c3aed6 0%, #f5d0fe 100%)';
-                      e.currentTarget.style.color = '#7c3aed';
-                    }}
-                  >
-                    View
-                  </a>
-                ) : '',
-              },
-              {
-                title: 'Actions',
-                render: (_, record) => (
-                  <Button icon={<EditOutlined />} onClick={() => showEditModal(record)}>
-                    Edit
-                  </Button>
-                ),
-              },
-            ]}
-            rowKey="id"
-            pagination={{ pageSize: 10 }}
-          />
-        </Spin>
+    <div className={styles.studentsManagement}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>Student Management</h1>
+        <div className={styles.statCards}>
+          <Card className={styles.statCard}>
+            <div className={styles.statCardContent}>
+              <UserOutlined className={styles.statIcon} />
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>{studentStats.total}</div>
+                <div className={styles.statLabel}>Total Students</div>
+              </div>
+            </div>
+          </Card>
+          <Card className={styles.statCard}>
+            <div className={styles.statCardContent}>
+              <div className={`${styles.statIcon} ${styles.maleIcon}`}>M</div>
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>{studentStats.male}</div>
+                <div className={styles.statLabel}>Male Students</div>
+              </div>
+            </div>
+          </Card>
+          <Card className={styles.statCard}>
+            <div className={styles.statCardContent}>
+              <div className={`${styles.statIcon} ${styles.femaleIcon}`}>F</div>
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>{studentStats.female}</div>
+                <div className={styles.statLabel}>Female Students</div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      <Card className={styles.mainCard}>
+        <div className={styles.filterSection}>
+          <div className={styles.searchWrapper}>
+            <Input.Search
+              placeholder="Search by name or parent..."
+              allowClear
+              enterButton={<Button type="primary" icon={<FileSearchOutlined />}>Search</Button>}
+              size="large"
+              onSearch={(value) => setSearchText(value)}
+              onChange={(e) => setSearchText(e.target.value)}
+              value={searchText}
+              className={styles.searchInput}
+            />
+          </div>
+          
+          <div className={styles.filterControls}>
+            <Select
+              placeholder="Filter by Gender"
+              allowClear
+              style={{ width: 160 }}
+              onChange={(value) => setFilterGender(value)}
+              value={filterGender}
+              className={styles.filterSelect}
+            >
+              <Select.Option value="Male">Male</Select.Option>
+              <Select.Option value="Female">Female</Select.Option>
+              <Select.Option value="Other">Other</Select.Option>
+            </Select>
+            
+            <Select
+              placeholder="Filter by City"
+              allowClear
+              style={{ width: 180 }}
+              onChange={(value) => setFilterCity(value)}
+              value={filterCity}
+              className={styles.filterSelect}
+            >
+              {uniqueCities.map(city => (
+                <Select.Option key={city} value={city}>{city}</Select.Option>
+              ))}
+            </Select>
+            
+            <Button 
+              icon={<ReloadOutlined />} 
+              onClick={resetFilters}
+              className={styles.resetButton}
+            >
+              Reset Filters
+            </Button>
+          </div>
+        </div>
+        
+        <div className={styles.tableWrapper}>
+          <Spin spinning={loading}>
+            <Table
+              dataSource={filteredChildren}
+              columns={[
+                {
+                  title: 'Student',
+                  key: 'student',
+                  render: (_, record) => (
+                    <div className={styles.studentCell}>
+                      <Avatar
+                        size={46}
+                        src={record.avatar}
+                        icon={!record.avatar && <UserOutlined />}
+                        className={styles.studentAvatar}
+                      />
+                      <div className={styles.studentInfo}>
+                        <div className={styles.studentName}>{record.name}</div>
+                        <div className={styles.studentDetails}>
+                          <Tag color={getGenderColor(record.gender)}>{record.gender}</Tag>
+                          {record.city && <span>{record.city}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  title: 'Birthday',
+                  dataIndex: 'birthday',
+                  render: (date) => date ? (
+                    <div className={styles.birthdayCell}>
+                      {new Date(date).toLocaleDateString()}
+                      <span className={styles.ageLabel}>
+                        ({dayjs().diff(dayjs(date), 'year')} years old)
+                      </span>
+                    </div>
+                  ) : '-',
+                  sorter: (a, b) => new Date(a.birthday) - new Date(b.birthday),
+                },
+                {
+                  title: 'Parent Contact',
+                  key: 'parentContact',
+                  render: (_, record) => (
+                    <div className={styles.parentInfo}>
+                      <div className={styles.parentName}>{record.parentName || '-'}</div>
+                      <div className={styles.phoneNumber}>{record.phoneNumber || '-'}</div>
+                    </div>
+                  ),
+                },
+                {
+                  title: 'Documents',
+                  key: 'documents',
+                  render: (_, record) => (
+                    <div className={styles.documentLinks}>
+                      {record.birthCertificate ? (
+                        <Tooltip title="View birth certificate">
+                          <a
+                            href={record.birthCertificate}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.documentLink}
+                          >
+                            <EyeOutlined /> Certificate
+                          </a>
+                        </Tooltip>
+                      ) : (
+                        <Tag color="error">Missing</Tag>
+                      )}
+                    </div>
+                  ),
+                },
+                {
+                  title: 'Actions',
+                  key: 'actions',
+                  render: (_, record) => (
+                    <Button 
+                      type="primary"
+                      icon={<EditOutlined />} 
+                      onClick={() => showEditModal(record)}
+                      className={styles.editButton}
+                    >
+                      Edit
+                    </Button>
+                  ),
+                },
+              ]}
+              rowKey="id"
+              pagination={{ 
+                pageSize: 10,
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50'],
+                showTotal: (total) => `Total ${total} students` 
+              }}
+              rowClassName={styles.tableRow}
+              className={styles.studentsTable}
+              locale={{
+                emptyText: (
+                  <div className={styles.emptyState}>
+                    <UserOutlined className={styles.emptyIcon} />
+                    <p>No students found</p>
+                    <Button type="primary" onClick={resetFilters}>Clear filters</Button>
+                  </div>
+                )
+              }}
+            />
+          </Spin>
+        </div>
       </Card>
 
       <Modal
-        title="Edit Student" 
+        title="Edit Student Information"
         open={isModalVisible}
         onOk={handleEditOk}
         onCancel={() => setIsModalVisible(false)}
         width={800}
-        bodyStyle={{ padding: '24px' }}
+        styles={{
+          body: { padding: '24px' }
+        }}
         style={{ top: 20 }}
         centered
       >
-        <Form 
-          form={form} 
+        <Form
+          form={form}
           layout="vertical"
           style={{ marginBottom: 0 }}
+          className={styles.editStudentForm}
         >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="id" hidden>
                 <Input />
               </Form.Item>
-              <Form.Item 
-                name="name" 
-                label="Student Name" 
+              <Form.Item
+                name="name"
+                label="Student Name"
                 rules={[{ required: true }]}
                 validateStatus={formErrors.name ? 'error' : ''}
                 help={formErrors.name}
-              > 
+              >
                 <Input />
               </Form.Item>
-              <Form.Item 
-                name="birthday" 
-                label="Birthday" 
+              <Form.Item
+                name="birthday"
+                label="Birthday"
                 rules={[
                   { required: true, message: 'Please select birthday' },
                   {
@@ -262,53 +426,53 @@ const StudentsManagement = () => {
                 ]}
                 validateStatus={formErrors.birthday ? 'error' : ''}
                 help={formErrors.birthday}
-              > 
-                <DatePicker 
-                  style={{ width: '100%' }} 
-                  format="YYYY-MM-DD" 
+              >
+                <DatePicker
+                  style={{ width: '100%' }}
+                  format="YYYY-MM-DD"
                   disabledDate={current => current && current > dayjs().endOf('day')}
                 />
               </Form.Item>
-              <Form.Item 
-                name="gender" 
-                label="Gender" 
+              <Form.Item
+                name="gender"
+                label="Gender"
                 rules={[{ required: true }]}
                 validateStatus={formErrors.gender ? 'error' : ''}
                 help={formErrors.gender}
-              > 
+              >
                 <Select>
                   <Select.Option value="Male">Male</Select.Option>
                   <Select.Option value="Female">Female</Select.Option>
                   <Select.Option value="Other">Other</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item 
-                name="city" 
+              <Form.Item
+                name="city"
                 label="City"
                 validateStatus={formErrors.city ? 'error' : ''}
                 help={formErrors.city}
-              > 
+              >
                 <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item 
-                name="parentName" 
+              <Form.Item
+                name="parentName"
                 label="Parent Name"
                 validateStatus={formErrors.parentName ? 'error' : ''}
                 help={formErrors.parentName}
-              > 
+              >
                 <Input />
               </Form.Item>
-              <Form.Item 
-                name="phoneNumber" 
+              <Form.Item
+                name="phoneNumber"
                 label="Phone Number"
                 validateStatus={formErrors.phoneNumber ? 'error' : ''}
                 help={formErrors.phoneNumber}
-              > 
+              >
                 <Input />
               </Form.Item>
-              
+
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item
@@ -319,12 +483,12 @@ const StudentsManagement = () => {
                     validateStatus={formErrors.avatar ? 'error' : ''}
                     help={formErrors.avatar}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className={styles.uploadContainer}>
                       {selectedStudent?.avatar && (
-                        <Image 
-                          src={selectedStudent.avatar} 
-                          alt="Current avatar" 
-                          style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }}
+                        <Image
+                          src={selectedStudent.avatar}
+                          alt="Current avatar"
+                          className={styles.previewImage}
                           preview={true}
                         />
                       )}
@@ -333,9 +497,10 @@ const StudentsManagement = () => {
                         maxCount={1}
                         accept="image/*"
                         showUploadList={false}
+                        className={styles.uploadButton}
                       >
-                        <Button icon={<UploadOutlined />} size="small">
-                          Change Avatar
+                        <Button icon={<UploadOutlined />}>
+                          {selectedStudent?.avatar ? 'Change Avatar' : 'Upload Avatar'}
                         </Button>
                       </Upload>
                     </div>
@@ -350,20 +515,15 @@ const StudentsManagement = () => {
                     validateStatus={formErrors.birthCertificate ? 'error' : ''}
                     help={formErrors.birthCertificate}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className={styles.uploadContainer}>
                       {selectedStudent?.birthCertificate && (
-                        <Button 
-                          type="primary" 
-                          href={selectedStudent.birthCertificate} 
+                        <Button
+                          type="primary"
+                          href={selectedStudent.birthCertificate}
                           target="_blank"
-                          style={{
-                            background: 'linear-gradient(90deg, #c3aed6 0%, #f5d0fe 100%)',
-                            border: 'none',
-                            height: 'auto',
-                            padding: '4px 12px'
-                          }}
+                          className={styles.viewDocButton}
                         >
-                          View current certificate
+                          <EyeOutlined /> View Certificate
                         </Button>
                       )}
                       <Upload
@@ -371,9 +531,10 @@ const StudentsManagement = () => {
                         maxCount={1}
                         accept="image/*"
                         showUploadList={false}
+                        className={styles.uploadButton}
                       >
-                        <Button icon={<UploadOutlined />} size="small">
-                          Change Certificate
+                        <Button icon={<UploadOutlined />}>
+                          {selectedStudent?.birthCertificate ? 'Change Certificate' : 'Upload Certificate'}
                         </Button>
                       </Upload>
                     </div>

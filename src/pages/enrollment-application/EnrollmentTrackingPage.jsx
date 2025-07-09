@@ -6,8 +6,8 @@ import {
   createPaymentUrlForEnrollment, getInvoiceDetails,
   getApplicationDescription
 } from '../../services/EnrollmentApplicationService';
-import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 import styles from './EnrollmentTrackingPage.module.css';
 
 const EnrollmentTrackingPage = () => {

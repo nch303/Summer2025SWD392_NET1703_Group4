@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Checkbox, Spin, message, Divider, Badge, Input, Select, Tag, Modal, Button } from 'antd';
+import {
+  Card, Checkbox, Spin, message,
+  Divider, Badge, Input, Select,
+  Tag, Modal, Button
+} from '../../utils/AntComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './SendAnnouncementPage.css';
+import styles from './SendAnnouncementPage.module.css';
 import { sendAnnouncement, getAllAccounts } from '../../services/AdminService';
 
 const { Option } = Select;
@@ -63,9 +67,9 @@ const SendAnnouncementPage = () => {
   const handleSelectAllByRole = (role) => {
     const accountsByRole = accounts.filter(account => account.roleName === role);
     const accountIdsByRole = accountsByRole.map(account => account.id);
-    
+
     const allSelected = accountIdsByRole.every(id => selectedAccountIds.includes(id));
-    
+
     if (allSelected) {
       setSelectedAccountIds(prev => prev.filter(id => !accountIdsByRole.includes(id)));
     } else {
@@ -76,7 +80,7 @@ const SendAnnouncementPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (selectedAccountIds.length === 0) {
       message.warning('Please select at least one account to send announcement');
       return;
@@ -89,14 +93,14 @@ const SendAnnouncementPage = () => {
         title: form.title,
         content: form.content
       };
-      
+
       await sendAnnouncement(data);
       message.success('Announcement sent successfully');
-      
+
       // Lưu số lượng tài khoản đã gửi và hiện modal
       setSentCount(selectedAccountIds.length);
       setSuccessModal(true);
-      
+
       // Reset form và selections
       setForm({ title: '', content: '' });
       setSelectedAccountIds([]);
@@ -118,22 +122,22 @@ const SendAnnouncementPage = () => {
 
   // Filter accounts based on search term and selected role
   const filteredAccounts = accounts.filter(account => {
-    const matchesSearch = 
-      (account.fullName && account.fullName.toLowerCase().includes(searchTerm)) || 
+    const matchesSearch =
+      (account.fullName && account.fullName.toLowerCase().includes(searchTerm)) ||
       (account.email && account.email.toLowerCase().includes(searchTerm)) ||
       (account.username && account.username.toLowerCase().includes(searchTerm));
-    
+
     const matchesRole = selectedRole ? account.roleName === selectedRole : true;
-    
+
     return matchesSearch && matchesRole;
   });
 
-  const allSelected = filteredAccounts.length > 0 && 
-    selectedAccountIds.length >= filteredAccounts.length && 
+  const allSelected = filteredAccounts.length > 0 &&
+    selectedAccountIds.length >= filteredAccounts.length &&
     filteredAccounts.every(account => selectedAccountIds.includes(account.id));
 
   const getRoleTagColor = (role) => {
-    switch(role) {
+    switch (role) {
       case 'Admin': return 'red';
       case 'Staff': return 'blue';
       case 'Teacher': return 'green';
@@ -144,7 +148,7 @@ const SendAnnouncementPage = () => {
 
   const getSelectedCountByRole = (role) => {
     const accountsByRole = accounts.filter(account => account.roleName === role);
-    const selectedAccountsByRole = accountsByRole.filter(account => 
+    const selectedAccountsByRole = accountsByRole.filter(account =>
       selectedAccountIds.includes(account.id)
     );
     return selectedAccountsByRole.length;
@@ -156,86 +160,85 @@ const SendAnnouncementPage = () => {
   };
 
   return (
-    <div className="admin-content send-announcement-page">
-      <Card className="announcement-card">
-        <div className="announcement-header">
-          <h1 className="announcement-title">
-            <FontAwesomeIcon icon="paper-plane" className="announcement-icon" /> 
+    <div className={`${styles.adminContent} ${styles.sendAnnouncementPage}`}>
+      <Card className={styles.announcementCard}>
+        <div className={styles.announcementHeader}>
+          <h1 className={styles.announcementTitle}>
+            <FontAwesomeIcon icon="paper-plane" className={styles.announcementIcon} />
             Send announcement
           </h1>
-          <p className="announcement-subtitle">
+          <p className={styles.announcementSubtitle}>
             Create and send announcements to users in the system
           </p>
         </div>
 
-        <Divider className="section-divider">
-          <span className="divider-text">Announcement content</span>
+        <Divider className={styles.sectionDivider}>
+          <span className={styles.dividerText}>Announcement content</span>
         </Divider>
-        
-        <form className="announcement-form" onSubmit={handleSubmit}>
+
+        <form className={styles.announcementForm} onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">
-              <FontAwesomeIcon icon="heading" className="label-icon" />
+            <label className={styles.formLabel}>
+              <FontAwesomeIcon icon="heading" className={styles.labelIcon} />
               Announcement title
             </label>
             <Input
-              className="announcement-input" 
-              name="title" 
-              placeholder="Enter announcement title" 
-              value={form.title} 
+              className={styles.announcementInput}
+              name="title"
+              placeholder="Enter announcement title"
+              value={form.title}
               onChange={handleChange}
-              prefix={<FontAwesomeIcon icon="envelope" className="input-icon" />}
-              required 
+              required
             />
           </div>
-          
-          <div className="form-group">
-            <label className="form-label">
-              <FontAwesomeIcon icon="file-alt" className="label-icon" /> 
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>
+              <FontAwesomeIcon icon="file-alt" className={styles.labelIcon} />
               Announcement content
             </label>
-            <Input.TextArea 
-              className="announcement-textarea" 
-              name="content" 
-              placeholder="Enter detailed announcement content" 
-              value={form.content} 
+            <Input.TextArea
+              className={styles.announcementTextarea}
+              name="content"
+              placeholder="Enter detailed announcement content"
+              value={form.content}
               onChange={handleChange}
               rows={4}
-              required 
+              required
             />
           </div>
-          
-          <Divider className="section-divider">
-            <span className="divider-text">Select recipients</span>
+
+          <Divider className={styles.sectionDivider}>
+            <span className={styles.dividerText}>Select recipients</span>
           </Divider>
-          
-          <div className="account-selection-container">
-            <div className="account-selection-header">
-              <div className="selection-status">
-                <FontAwesomeIcon icon="users" className="users-icon" />
-                <Badge 
-                  count={selectedAccountIds.length} 
-                  className="selected-badge"
+
+          <div className={styles.accountSelectionContainer}>
+            <div className={styles.accountSelectionHeader}>
+              <div className={styles.selectionStatus}>
+                <FontAwesomeIcon icon="users" className={styles.usersIcon} />
+                <Badge
+                  count={selectedAccountIds.length}
+                  className={styles.selectedBadge}
                   style={{ backgroundColor: selectedAccountIds.length ? '#ff7e29' : '#d9d9d9' }}
                   overflowCount={999}
                 />
               </div>
 
-              <div className="filters-container">
-                <div className="search-container">
-                  <Input 
-                    placeholder="Search account..." 
+              <div className={styles.filtersContainer}>
+                <div className={styles.searchContainer}>
+                  <Input
+                    placeholder="Search account..."
                     prefix={<FontAwesomeIcon icon="search" className="search-icon" />}
                     onChange={handleSearchChange}
-                    className="search-input"
+                    className={styles.searchInput}
                   />
                 </div>
-                <div className="role-filter">
-                  <Select 
-                    placeholder="Filter by role" 
-                    onChange={handleRoleChange} 
+                <div className={styles.roleFilter}>
+                  <Select
+                    placeholder="Filter by role"
+                    onChange={handleRoleChange}
                     allowClear
-                    className="role-select"
+                    className={styles.roleSelect}
                     value={selectedRole}
                   >
                     {uniqueRoles.map(role => (
@@ -247,34 +250,34 @@ const SendAnnouncementPage = () => {
                 </div>
               </div>
             </div>
-            
-            <div className="select-all-container">
-              <Checkbox 
+
+            <div className={styles.selectAllContainer}>
+              <Checkbox
                 checked={allSelected}
                 onChange={handleSelectAll}
                 disabled={fetchingAccounts || filteredAccounts.length === 0}
-                className="select-all-checkbox"
+                className={styles.selectAllCheckbox}
               >
-                <span className="select-all-text">Select all accounts</span>
+                <span className={styles.selectAllText}>Select all accounts</span>
               </Checkbox>
-              <span className="account-count">
-                <Badge count={selectedAccountIds.length} style={{ backgroundColor: '#ff7e29' }} /> 
-                <span className="count-text">{selectedAccountIds.length} / {filteredAccounts.length} accounts selected</span>
+              <span className={styles.accountCount}>
+                <Badge count={selectedAccountIds.length} style={{ backgroundColor: '#ff7e29' }} />
+                <span className={styles.countText}>{selectedAccountIds.length} / {filteredAccounts.length} accounts selected</span>
               </span>
             </div>
-            
+
             {/* Role-based selection */}
-            <div className="role-selection-container">
+            <div className={styles.roleSelectionContainer}>
               {uniqueRoles.map(role => (
-                <div key={role} className="role-selection-item">
-                  <Checkbox 
+                <div key={role} className={styles.roleSelectionItem}>
+                  <Checkbox
                     checked={isAllRoleSelected(role)}
                     onChange={() => handleSelectAllByRole(role)}
-                    className="role-checkbox"
+                    className={styles.roleCheckbox}
                   >
-                    <div className="role-info">
+                    <div className={styles.roleInfo}>
                       <Tag color={getRoleTagColor(role)}>{role}</Tag>
-                      <span className="role-count">
+                      <span className={styles.roleCount}>
                         {getSelectedCountByRole(role)} / {accounts.filter(acc => acc.roleName === role).length} selected
                       </span>
                     </div>
@@ -282,34 +285,34 @@ const SendAnnouncementPage = () => {
                 </div>
               ))}
             </div>
-            
-            <div className="accounts-list">
+
+            <div className={styles.accountsList}>
               {fetchingAccounts ? (
-                <div className="loading-accounts">
+                <div className={styles.loadingAccounts}>
                   <Spin size="large" />
                   <span>Loading account list...</span>
                 </div>
               ) : filteredAccounts.length > 0 ? (
-                <div className="account-checkboxes">
+                <div className={styles.accountCheckboxes}>
                   {filteredAccounts.map(account => (
-                    <div key={account.id} className={`account-checkbox-item ${selectedAccountIds.includes(account.id) ? 'selected' : ''}`}>
+                    <div key={account.id} className={`${styles.accountCheckboxItem} ${selectedAccountIds.includes(account.id) ? styles.selected : ''}`}>
                       <Checkbox
                         checked={selectedAccountIds.includes(account.id)}
                         onChange={() => handleAccountSelection(account.id)}
                       >
-                        <div className="account-info">
-                          <span className="account-name">
-                            <FontAwesomeIcon icon="user" className="account-icon" /> 
+                        <div className={styles.accountInfo}>
+                          <span className={styles.accountName}>
+                            <FontAwesomeIcon icon="user" className={styles.accountIcon} />
                             {account.fullName || "No name"}
                           </span>
                           {account.email && (
-                            <span className="account-email">
-                              <FontAwesomeIcon icon="envelope" className="email-icon" /> 
+                            <span className={styles.accountEmail}>
+                              <FontAwesomeIcon icon="envelope" className={styles.emailIcon} />
                               {account.email}
                             </span>
                           )}
-                          <span className="account-role">
-                            <FontAwesomeIcon icon="id-badge" className="role-icon" />
+                          <span className={styles.accountRole}>
+                            <FontAwesomeIcon icon="id-badge" className={styles.roleIcon} />
                             <Tag color={getRoleTagColor(account.roleName)}>{account.roleName}</Tag>
                           </span>
                         </div>
@@ -318,33 +321,33 @@ const SendAnnouncementPage = () => {
                   ))}
                 </div>
               ) : (
-                <div className="no-accounts">
-                  <FontAwesomeIcon icon="exclamation-circle" className="empty-icon" />
+                <div className={styles.noAccounts}>
+                  <FontAwesomeIcon icon="exclamation-circle" className={styles.emptyIcon} />
                   {searchTerm ? "No matching account found" : "No account found"}
                 </div>
               )}
             </div>
           </div>
-          
-          <div className="form-actions">
-            <button 
-              className="announcement-btn" 
-              type="submit" 
+
+          <div className={styles.formActions}>
+            <button
+              className={styles.announcementBtn}
+              type="submit"
               disabled={loading || selectedAccountIds.length === 0}
             >
               {loading ? (
                 <>
-                  <Spin size="small" className="btn-spinner" /> Sending...
+                  <Spin size="small" className={styles.btnSpinner} /> Sending...
                 </>
               ) : (
                 <>
-                  <FontAwesomeIcon icon="paper-plane" className="btn-icon" /> Send announcement
+                  <FontAwesomeIcon icon="paper-plane" className={styles.btnIcon} /> Send announcement
                 </>
               )}
             </button>
-            
+
             {selectedAccountIds.length > 0 && (
-              <div className="selected-info">
+              <div className={styles.selectedInfo}>
                 Announcement will be sent to {selectedAccountIds.length} accounts
               </div>
             )}
@@ -363,7 +366,7 @@ const SendAnnouncementPage = () => {
           </Button>
         ]}
       >
-        <div className="success-message">
+        <div className={styles.successMessage}>
           <FontAwesomeIcon icon="check-circle" style={{ color: '#52c41a', fontSize: '32px', marginBottom: '16px' }} />
           <p>Announcement sent successfully to {sentCount} accounts!</p>
         </div>

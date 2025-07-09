@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { confirmEmail } from '../../services/AuthService';
 import { ROUTES } from '../../constants/routes';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useCustomToast } from '../../components/CustomToast';
 import styles from './ConfirmEmailPage.module.css';
 
 const ConfirmEmailPage = () => {

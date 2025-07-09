@@ -1,43 +1,43 @@
 import React, { useEffect, createContext, useState, useContext } from 'react';
-import './ProcessingSpinner.css';
+import styles from './ProcessingSpinner.module.css';
 
-const ProcessingSpinner = ({ 
-  isVisible = false, 
+const ProcessingSpinner = ({
+  isVisible = false,
   message = 'Processing',
-  preventNavigation = true 
+  preventNavigation = true
 }) => {
   // Prevent navigation when active
   useEffect(() => {
     if (!isVisible || !preventNavigation) return;
-    
+
     const handleBeforeUnload = (e) => {
       e.preventDefault();
       e.returnValue = '';
       return '';
     };
-    
+
     // Prevent navigation away
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [isVisible, preventNavigation]);
-  
+
   if (!isVisible) return null;
-  
+
   return (
-    <div className="processing-overlay">
-      <div className="processing-container">
-        <div className="spinner-container">
-          <div className="processing-spinner"></div>
+    <div className={styles.processingOverlay}>
+      <div className={styles.processingContainer}>
+        <div className={styles.spinnerContainer}>
+          <div className={styles.processingSpinner}></div>
         </div>
-        <div className="processing-text">
+        <div className={styles.processingText}>
           <p>{message}</p>
-          <div className="processing-dots">
-            <span className="dot dot1">.</span>
-            <span className="dot dot2">.</span>
-            <span className="dot dot3">.</span>
+          <div className={styles.processingDots}>
+            <span className={`${styles.dot} ${styles.dot1}`}></span>
+            <span className={`${styles.dot} ${styles.dot2}`}></span>
+            <span className={`${styles.dot} ${styles.dot3}`}></span>
           </div>
         </div>
       </div>

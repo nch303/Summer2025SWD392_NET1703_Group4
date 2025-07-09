@@ -1,20 +1,20 @@
-.admin-navbar-wrapper {
+.adminNavbarWrapper {
   background: #fff;
   min-height: 100vh;
 }
 
-.admin-layout {
+.adminLayout {
   min-height: 100vh;
   background: transparent;
 }
 
-.admin-sider {
+.adminSider {
   background: linear-gradient(180deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
   box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
   border-right: 1.5px solid #e8f0fe;
 }
 
-.admin-logo {
+.adminLogo {
   height: 64px;
   display: flex;
   align-items: center;
@@ -23,7 +23,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.admin-logo h2 {
+.adminLogo h2 {
   color: white;
   margin: 0;
   font-size: 18px;
@@ -31,11 +31,11 @@
 }
 
 /* Ẩn header trắng cũ */
-.admin-header {
+.adminHeader {
   display: none;
 }
 
-.admin-content {
+.adminContent {
   margin: 32px 24px 24px 24px;
   padding: 24px;
   background: #fff;
@@ -46,49 +46,49 @@
 }
 
 /* Đảm bảo không bị trùng lặp border zigzag của navbar */
-.navbar-decoration {
+.navbarDecoration {
   z-index: 2;
 }
 
-.header-left {
+.headerLeft {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.header-left h1 {
+.headerLeft h1 {
   margin: 0;
   color: #001529;
   font-size: 20px;
 }
 
-.trigger-button {
+.triggerButton {
   font-size: 18px;
   padding: 0 12px;
   cursor: pointer;
   transition: color 0.3s;
 }
 
-.trigger-button:hover {
+.triggerButton:hover {
   color: #6b8afd;
 }
 
-.header-right {
+.headerRight {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.notification-badge {
+.notificationBadge {
   cursor: pointer;
 }
 
-.notification-button {
+.notificationButton {
   font-size: 18px;
   padding: 0 12px;
 }
 
-.user-profile {
+.userProfile {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -98,7 +98,7 @@
   transition: background-color 0.3s;
 }
 
-.user-profile:hover {
+.userProfile:hover {
   background-color: rgba(0, 0, 0, 0.025);
 }
 
@@ -108,28 +108,33 @@
 }
 
 /* Style cho menu bên trái (sidebar) */
-.admin-sider .ant-menu {
+.adminSider :global(.ant-menu) {
   background: transparent !important;
 }
-.admin-sider .ant-menu-item {
+
+.adminSider :global(.ant-menu-item) {
   border-radius: 8px;
   margin: 6px 8px;
   font-weight: 500;
   color: #fff !important;
   transition: background 0.2s, color 0.2s;
 }
-.admin-sider .ant-menu-item-selected {
+
+.adminSider :global(.ant-menu-item-selected) {
   background: rgba(255, 255, 255, 0.2) !important;
   color: #fff !important;
 }
-.admin-sider .ant-menu-item:hover {
+
+.adminSider :global(.ant-menu-item:hover) {
   background: rgba(255, 255, 255, 0.15) !important;
   color: #fff !important;
 }
-.admin-sider .ant-menu-item .anticon {
+
+.adminSider :global(.ant-menu-item .anticon) {
   color: #fff !important;
 }
-.admin-sider .ant-menu-item-selected .anticon,
-.admin-sider .ant-menu-item:hover .anticon {
+
+.adminSider :global(.ant-menu-item-selected .anticon),
+.adminSider :global(.ant-menu-item:hover .anticon) {
   color: #fff !important;
-} 
+}

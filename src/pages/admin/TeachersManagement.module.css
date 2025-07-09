@@ -1,4 +1,4 @@
-.teachers-management-container {
+.teachersManagementContainer {
   padding: 24px;
   background: #fff;
   min-height: 100%;
@@ -6,7 +6,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.teachers-management-header {
+.teachersManagementHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,13 +14,13 @@
   flex-wrap: wrap;
 }
 
-.teachers-management-header h1 {
+.teachersManagementHeader h1 {
   margin: 0;
   font-size: 24px;
   color: #1890ff;
 }
 
-.teachers-management-actions {
+.teachersManagementActions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -28,36 +28,36 @@
 }
 
 @media (max-width: 768px) {
-  .teachers-management-header {
+  .teachersManagementHeader {
     flex-direction: column;
     align-items: flex-start;
   }
   
-  .teachers-management-actions {
+  .teachersManagementActions {
     margin-top: 16px;
     width: 100%;
   }
 }
 
 /* Teacher details styles */
-.teacher-details {
+.teacherDetails {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.detail-row {
+.detailRow {
   display: flex;
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 10px;
 }
 
-.detail-label {
+.detailLabel {
   width: 150px;
   font-weight: 600;
   color: #555;
 }
 
-.detail-value {
+.detailValue {
   flex: 1;
 }

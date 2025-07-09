@@ -15,7 +15,7 @@ import { getAllClasses, getClassAttendance,
   upgradeEnrichmentStudents } from '../../services/StaffService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useCustomToast } from '../../components/CustomToast';
 
 const StaffClassPage = () => {
   const [classes, setClasses] = useState([]);

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllChildren } from '../../services/StaffService';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 import ChildDetailModal from './ChildDetailModal';
 import styles from './ChildrenManagement.module.css';
 

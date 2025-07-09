@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import ScrollToTop from '../components/scroll-button/ScrollToTop';
-import LoadingCover from '../components/loading-cover/LoadingCover';
-import { ProcessingSpinnerProvider } from '../components/spinner/ProcessingSpinner';
+import ScrollToTop from '../components/ScrollToTop';
+import { ProcessingSpinnerProvider } from '../components/ProcessingSpinner';
 // Layout
 import MainLayout from '../layouts/MainLayout';
 import StaffLayout from '../layouts/StaffLayout';
@@ -66,8 +65,8 @@ import TeacherCheckAttendance from '../pages/teacher/TeacherCheckAttendance';
 import TeacherAttendanceAll from '../pages/teacher/TeacherAttendanceAll';
 
 // Route Guards
-import ProtectedRoute from '../components/route-guard/ProtectedRoute';
-import AuthRoute from '../components/route-guard/AuthRoute';
+import ProtectedRoute from '../routers/ProtectedRoute';
+import AuthRoute from '../routers/AuthRoute';
 import { UserProvider } from '../contexts/UserContext';
 
 

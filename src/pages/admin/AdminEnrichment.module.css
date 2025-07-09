@@ -1,14 +1,14 @@
-.admin-enrichment {
+.adminEnrichment {
   padding: 20px;
 }
 
-.enrichment-card {
+.enrichmentCard {
   box-shadow: 0 4px 12px rgba(107, 138, 253, 0.12);
   border-radius: 12px;
   margin-bottom: 24px;
 }
 
-.enrichment-header {
+.enrichmentHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,7 +17,7 @@
   gap: 16px;
 }
 
-.enrichment-header h2 {
+.enrichmentHeader h2 {
   margin: 0;
   background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
   -webkit-background-clip: text;
@@ -25,122 +25,122 @@
   background-clip: text;
 }
 
-.admin-enrichment .ant-table-thead > tr > th {
+.adminEnrichment :global(.ant-table-thead > tr > th) {
   background: #f0f4ff;
   color: #6b8afd;
   font-weight: 600;
 }
 
-.admin-enrichment .ant-table-tbody > tr:hover > td {
+.adminEnrichment :global(.ant-table-tbody > tr:hover > td) {
   background: #f8fafc;
 }
 
-.admin-enrichment .ant-tag {
+.adminEnrichment :global(.ant-tag) {
   border-radius: 12px;
   padding: 0 10px;
   font-weight: 500;
 }
 
-.admin-enrichment .ant-btn {
+.adminEnrichment :global(.ant-btn) {
   border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.admin-enrichment .ant-btn-primary {
+.adminEnrichment :global(.ant-btn-primary) {
   background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
   border: none;
   transition: all 0.3s;
 }
 
-.admin-enrichment .ant-btn-primary:hover {
+.adminEnrichment :global(.ant-btn-primary:hover) {
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(107, 138, 253, 0.2);
 }
 
-.admin-enrichment .ant-btn-primary.ant-btn-dangerous {
+    .adminEnrichment :global(.ant-btn-primary.ant-btn-dangerous) {
   background: linear-gradient(90deg, #ff4d4f 0%, #ff7875 100%);
 }
 
-.admin-enrichment .ant-btn-primary.ant-btn-dangerous:hover {
+.adminEnrichment :global(.ant-btn-primary.ant-btn-dangerous:hover) {
   background: linear-gradient(90deg, #f5222d 0%, #ff4d4f 100%);
 }
 
-.admin-enrichment .ant-modal-content {
+.adminEnrichment :global(.ant-modal-content) {
   border-radius: 12px;
   overflow: hidden;
 }
 
-.admin-enrichment .ant-modal-header {
+.adminEnrichment :global(.ant-modal-header) {
   background: #f8fafc;
   border-bottom: 1.5px solid #e8f0fe;
 }
 
-.admin-enrichment .ant-modal-title {
+.adminEnrichment :global(.ant-modal-title) {
   color: #6b8afd;
   font-weight: 600;
 }
 
-.admin-enrichment .ant-form-item-label > label {
+.adminEnrichment :global(.ant-form-item-label > label) {
   color: #6b8afd;
   font-weight: 500;
 }
 
-.admin-enrichment .ant-input,
-.admin-enrichment .ant-select-selector,
-.admin-enrichment .ant-picker {
+.adminEnrichment :global(.ant-input),
+.adminEnrichment :global(.ant-select-selector),
+.adminEnrichment :global(.ant-picker) {
   border-color: #e8f0fe;
   border-radius: 8px;
 }
 
-.admin-enrichment .ant-input:hover,
-.admin-enrichment .ant-select-selector:hover,
-.admin-enrichment .ant-picker:hover {
+.adminEnrichment :global(.ant-input:hover),
+.adminEnrichment :global(.ant-select-selector:hover),
+.adminEnrichment :global(.ant-picker:hover) {
   border-color: #6b8afd;
 }
 
-.admin-enrichment .ant-input:focus,
-.admin-enrichment .ant-select-selector:focus,
-.admin-enrichment .ant-picker-focused {
+.adminEnrichment :global(.ant-input:focus),
+.adminEnrichment :global(.ant-select-selector:focus),
+.adminEnrichment :global(.ant-picker-focused) {
   border-color: #6b8afd;
   box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
 }
 
 /* Styling for deleted rows */
-.admin-enrichment .deleted-row {
+.adminEnrichment .deletedRow {
   background-color: #fff1f0;
   opacity: 0.85;
 }
 
-.admin-enrichment .deleted-row:hover > td {
+.adminEnrichment .deletedRow:hover > td {
   background-color: #ffebe9 !important;
 }
 
 /* Styling for restore button */
-.admin-enrichment .restore-button {
+.adminEnrichment .restoreButton {
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
 }
 
-.admin-enrichment .restore-button:hover {
+.adminEnrichment .restoreButton:hover {
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
 }
 
 @media (max-width: 768px) {
-  .enrichment-header {
+  .enrichmentHeader {
     flex-direction: column;
     align-items: flex-start;
   }
 }
 
-.admin-enrichment .ant-picker-header-view {
+.adminEnrichment :global(.ant-picker-header-view) {
   flex: auto;
   text-align: center;
 }
 
-.admin-enrichment .ant-picker-header-super-next-btn,
-.admin-enrichment .ant-picker-header-next-btn {
+.adminEnrichment :global(.ant-picker-header-super-next-btn),
+.adminEnrichment :global(.ant-picker-header-next-btn) {
   display: inline-block !important;
   position: relative !important;
   visibility: visible !important;

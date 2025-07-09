@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './CustomToast.css';
+import styles from './CustomToast.module.css';
 
 const TOAST_TYPES = {
   SUCCESS: 'success',
@@ -8,29 +8,29 @@ const TOAST_TYPES = {
   INFO: 'info'
 };
 
-const CustomToast = ({ 
-  message, 
-  type = TOAST_TYPES.SUCCESS, 
-  title, 
-  duration = 3000, 
-  onClose 
+const CustomToast = ({
+  message,
+  type = TOAST_TYPES.SUCCESS,
+  title,
+  duration = 3000,
+  onClose
 }) => {
   const [visible, setVisible] = useState(true);
   const [progress, setProgress] = useState(100);
   const progressRef = useRef(null);
-  
+
   useEffect(() => {
     // Set animation duration
     if (progressRef.current) {
       progressRef.current.style.animationDuration = `${duration}ms`;
     }
-    
+
     // Timer to remove toast
     const timer = setTimeout(() => {
       setVisible(false);
       if (onClose) onClose();
     }, duration);
-    
+
     return () => {
       clearTimeout(timer);
     };
@@ -80,17 +80,17 @@ const CustomToast = ({
   };
 
   return (
-    <div className={`custom-toast ${type}-toast`}>
-      <div className={`custom-toast-icon ${type}-icon`}>
+    <div className={`${styles.customToast} ${getTypeClass(type)}`}>
+      <div className={`${styles.customToastIcon} ${type === 'success' ? styles.successIcon : type === 'error' ? styles.errorIcon : type === 'warning' ? styles.warningIcon : styles.infoIcon}`}>
         {getIconByType()}
       </div>
-      <div className="custom-toast-content">
-        <span className="custom-toast-title">{title || getDefaultTitle()}</span>
-        <span className="custom-toast-message">{message}</span>
+      <div className={styles.customToastContent}>
+        <span className={styles.customToastTitle}>{title || getDefaultTitle()}</span>
+        <span className={styles.customToastMessage}>{message}</span>
       </div>
-      <div 
+      <div
         ref={progressRef}
-        className={`custom-toast-progress ${type}-progress`}
+        className={`${styles.customToastProgress} ${type === 'success' ? styles.successProgress : type === 'error' ? styles.errorProgress : type === 'warning' ? styles.warningProgress : styles.infoProgress}`}
       ></div>
     </div>
   );
@@ -133,17 +133,17 @@ export const useCustomToast = () => {
     // Tách thông báo thành 2 nhóm: success và các loại khác
     const successToasts = toasts.filter(toast => toast.type === TOAST_TYPES.SUCCESS);
     const otherToasts = toasts.filter(toast => toast.type !== TOAST_TYPES.SUCCESS);
-    
+
     return (
       <>
         {/* Overlay backdrop when success toasts are present */}
         {successToasts.length > 0 && (
-          <div className="toast-overlay"></div>
+          <div className={styles.toastOverlay}></div>
         )}
-        
+
         {/* Container cho thông báo success - luôn ở center */}
         {successToasts.length > 0 && (
-          <div className="custom-toast-container center">
+          <div className={`${styles.customToastContainer} ${getPositionClass(position)}`}>
             {successToasts.map((toast) => (
               <CustomToast
                 key={toast.id}
@@ -153,10 +153,10 @@ export const useCustomToast = () => {
             ))}
           </div>
         )}
-        
+
         {/* Container cho các thông báo khác - sử dụng position được truyền vào */}
         {otherToasts.length > 0 && (
-          <div className={`custom-toast-container ${position}`}>
+          <div className={`${styles.customToastContainer} ${getPositionClass(position)}`}>
             {otherToasts.map((toast) => (
               <CustomToast
                 key={toast.id}
@@ -182,3 +182,28 @@ export const useCustomToast = () => {
 
 export { TOAST_TYPES };
 export default CustomToast;
+
+// Đối với position, sử dụng hàm để chuyển đổi position thành tên class CSS module
+const getPositionClass = (position) => {
+  const positionMap = {
+    'top-right': styles.topRight,
+    'top-left': styles.topLeft,
+    'bottom-right': styles.bottomRight,
+    'bottom-left': styles.bottomLeft,
+    'top-center': styles.topCenter,
+    'center': styles.center,
+    'bottom-center': styles.bottomCenter
+  };
+  return positionMap[position] || styles.center;
+};
+
+// Đối với type, sử dụng hàm để chuyển đổi type thành tên class CSS module
+const getTypeClass = (type) => {
+  const typeMap = {
+    'success': styles.successToast,
+    'error': styles.errorToast,
+    'warning': styles.warningToast,
+    'info': styles.infoToast
+  };
+  return typeMap[type] || '';
+};

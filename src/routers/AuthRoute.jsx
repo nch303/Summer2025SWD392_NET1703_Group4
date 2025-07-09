@@ -1,8 +1,8 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useUser } from '../../contexts/UserContext';
-import ProcessingSpinner from '../spinner/ProcessingSpinner';
-import { ROUTES } from '../../constants/routes';
+import { useUser } from '../contexts/UserContext';
+import ProcessingSpinner from '../components/ProcessingSpinner';
+import { ROUTES } from '../constants/routes';
 
 /**
  * A route wrapper that redirects authenticated users away from login-related pages

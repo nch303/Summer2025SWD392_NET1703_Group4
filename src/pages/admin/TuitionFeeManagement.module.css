@@ -1,11 +1,11 @@
-.admin-tuition-management {
+.adminTuitionManagement {
   padding: 24px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
 }
 
-.admin-tuition-header {
+.adminTuitionHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -15,11 +15,11 @@
   position: relative;
 }
 
-.admin-tuition-header h2 {
+.adminTuitionHeader h2 {
   margin-bottom: 0;
 }
 
-.admin-tuition-filter-container {
+.adminTuitionFilterContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -27,7 +27,7 @@
   padding-right: 0;
 }
 
-.admin-tuition-filter-groups {
+.adminTuitionFilterGroups {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
@@ -37,49 +37,49 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.admin-tuition-filter-section {
+.adminTuitionFilterSection {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.admin-tuition-filter-section.grade-section {
+.adminTuitionFilterSection.gradeSection {
   flex-grow: 1;
 }
 
-.filter-label {
+.filterLabel {
   font-weight: bold;
   white-space: nowrap;
 }
 
-.grade-tags {
+.gradeTags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.grade-tag {
+.gradeTag {
   cursor: pointer;
   user-select: none;
   padding: 5px 12px;
   font-size: 14px;
 }
 
-.grade-tag:hover {
+.gradeTag:hover {
   opacity: 0.8;
 }
 
-.admin-tuition-form-buttons {
+.adminTuitionFormButtons {
   display: flex;
   justify-content: flex-end;
   width: 100%;
 }
 
-.admin-tuition-management .ant-table-wrapper {
+.adminTuitionManagement :global(.ant-table-wrapper) {
   margin-top: 20px;
 }
 
-.year-navigator {
+.yearNavigator {
   display: flex;
   align-items: center;
   border: 1px solid #e8e8e8;
@@ -88,7 +88,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.year-display {
+.yearDisplay {
   padding: 6px 24px;
   font-weight: bold;
   min-width: 120px;
@@ -98,7 +98,7 @@
   border-right: 1px solid #e8e8e8;
 }
 
-.year-navigator .ant-btn {
+.yearNavigator :global(.ant-btn) {
   border: none;
   border-radius: 0;
   height: 34px;
@@ -110,16 +110,16 @@
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .admin-tuition-header {
+  .adminTuitionHeader {
     flex-direction: column;
     align-items: flex-start;
   }
-  
-  .admin-tuition-filter-container {
+
+  .adminTuitionFilterContainer {
     margin-top: 15px;
   }
 
-  .add-tuition-button {
+  .addTuitionButton {
     position: static;
     margin-top: 16px;
     width: 100%;
@@ -127,13 +127,13 @@
 }
 
 /* Add creative styling for grade level selector */
-.grade-level-selector {
+.gradeLevelSelector {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-.grade-level-item {
+.gradeLevelItem {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -149,18 +149,18 @@
   background-color: #fafafa;
 }
 
-.grade-level-item:hover {
+.gradeLevelItem:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
 }
 
-.grade-level-item.active {
+.gradeLevelItem.active {
   border-color: #1890ff;
   background-color: #e6f7ff;
   transform: translateY(-2px);
 }
 
-.grade-level-icon {
+.gradeLevelIcon {
   font-size: 24px;
   margin-bottom: 6px;
   display: flex;
@@ -174,51 +174,51 @@
   z-index: 1;
 }
 
-.grade-level-item:nth-child(1) .grade-level-icon {
+.gradeLevelItem:nth-child(1) .gradeLevelIcon {
   background-color: #ffe7ba;
 }
 
-.grade-level-item:nth-child(2) .grade-level-icon {
+.gradeLevelItem:nth-child(2) .gradeLevelIcon {
   background-color: #d9f7be;
 }
 
-.grade-level-item:nth-child(3) .grade-level-icon {
+.gradeLevelItem:nth-child(3) .gradeLevelIcon {
   background-color: #bae7ff;
 }
 
-.grade-level-item.active:nth-child(1) .grade-level-icon {
+.gradeLevelItem.active:nth-child(1) .gradeLevelIcon {
   background-color: #fa8c16;
 }
 
-.grade-level-item.active:nth-child(2) .grade-level-icon {
+.gradeLevelItem.active:nth-child(2) .gradeLevelIcon {
   background-color: #52c41a;
 }
 
-.grade-level-item.active:nth-child(3) .grade-level-icon {
+.gradeLevelItem.active:nth-child(3) .gradeLevelIcon {
   background-color: #1890ff;
 }
 
-.grade-level-item.all .grade-level-icon {
+.gradeLevelItem.all .gradeLevelIcon {
   background-color: #f5f5f5;
 }
 
-.grade-level-item.all.active .grade-level-icon {
+.gradeLevelItem.all.active .gradeLevelIcon {
   background-color: #722ed1;
 }
 
-.grade-level-name {
+.gradeLevelName {
   font-weight: 500;
   margin-top: 5px;
   text-align: center;
   transition: all 0.3s;
 }
 
-.grade-level-item.active .grade-level-name {
+.gradeLevelItem.active .gradeLevelName {
   color: #1890ff;
   font-weight: bold;
 }
 
-.grade-level-item:after {
+.gradeLevelItem:after {
   content: '';
   position: absolute;
   width: 100%;
@@ -231,7 +231,7 @@
   transform: scale(5);
 }
 
-.grade-level-item:active:after {
+.gradeLevelItem:active:after {
   opacity: 1;
   background: radial-gradient(circle, rgba(24, 144, 255, 0.1) 30%, transparent 70%);
   transform: scale(0);
@@ -239,12 +239,12 @@
 }
 
 /* Style the button at the end */
-.admin-tuition-filter-container > .ant-btn {
+.adminTuitionFilterContainer> :global(.ant-btn) {
   margin-left: auto;
 }
 
 /* Move button out of filter container */
-.add-tuition-button {
+.addTuitionButton {
   position: absolute;
   top: 0;
   right: 0;
@@ -253,35 +253,35 @@
 }
 
 /* Clean date picker styling */
-.ant-picker-dropdown {
+:global(.ant-picker-dropdown) {
   z-index: 1100 !important;
   position: absolute !important;
 }
 
-.ant-picker-dropdown .ant-picker-panel-container {
+:global(.ant-picker-dropdown .ant-picker-panel-container) {
   width: 280px !important;
-  box-shadow: 0 3px 6px -4px rgba(0,0,0,0.12), 0 6px 16px 0 rgba(0,0,0,0.08);
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08);
   background: white;
 }
 
-.ant-picker-dropdown .ant-picker-panel {
+:global(.ant-picker-dropdown .ant-picker-panel) {
   width: 100% !important;
 }
 
-.ant-picker-dropdown .ant-picker-content {
+:global(.ant-picker-dropdown .ant-picker-content) {
   width: 100% !important;
   table-layout: fixed;
 }
 
-.ant-picker-dropdown .ant-picker-content th,
-.ant-picker-dropdown .ant-picker-content td {
+:global(.ant-picker-dropdown .ant-picker-content th),
+:global(.ant-picker-dropdown .ant-picker-content td) {
   height: 28px !important;
   width: 28px !important;
   padding: 0 !important;
   text-align: center;
 }
 
-.ant-picker-dropdown .ant-picker-cell-inner {
+:global(.ant-picker-dropdown .ant-picker-cell-inner) {
   width: 24px !important;
   height: 24px !important;
   line-height: 24px !important;
@@ -290,23 +290,23 @@
 }
 
 /* Make sure the modal is clean */
-.ant-modal-body {
+:global(.ant-modal-body) {
   position: relative;
 }
 
-.fee-items-container {
+.feeItemsContainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.fee-item-row {
+.feeItemRow {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.grade-level-radio-group {
+.gradeLevelRadioGroup {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
@@ -314,13 +314,13 @@
   justify-content: center;
 }
 
-.grade-radio-content {
+.gradeRadioContent {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.grade-radio-icon {
+.gradeRadioIcon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -331,6 +331,6 @@
 }
 
 /* Colored background for each grade level icon */
-.grade-radio-content:has(+ .ant-radio-inner:checked) .grade-radio-icon {
+.gradeRadioContent:has(+ :global(.ant-radio-inner:checked)) .gradeRadioIcon {
   background-color: rgba(24, 144, 255, 0.1);
 }

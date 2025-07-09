@@ -1,8 +1,8 @@
-.admin-dashboard {
+.adminDashboard {
   padding: 20px;
 }
 
-.admin-dashboard h1 {
+.adminDashboard h1 {
   margin-bottom: 24px;
   color: #6b8afd;
   font-size: 28px;
@@ -13,11 +13,11 @@
   background-clip: text;
 }
 
-.stats-row {
+.statsRow {
   margin-bottom: 24px;
 }
 
-.stats-row .ant-card {
+.statsRow :global(.ant-card) {
   height: 100%;
   border-radius: 18px;
   box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
@@ -26,62 +26,62 @@
   transition: all 0.3s;
 }
 
-.stats-row .ant-card:hover {
+.statsRow :global(.ant-card:hover) {
   box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
   transform: translateY(-2px) scale(1.02);
   border-color: #6b8afd;
 }
 
-.stats-row .ant-statistic-title {
+.statsRow :global(.ant-statistic-title) {
   font-size: 16px;
   color: #6b8afd;
   font-weight: 600;
 }
 
-.stats-row .ant-statistic-content {
+.statsRow :global(.ant-statistic-content) {
   font-size: 28px;
   color: #a5b4fc;
   font-weight: 700;
 }
 
-.stats-row .anticon {
+.statsRow :global(.anticon) {
   color: #6b8afd;
   font-size: 28px;
 }
 
 /* Tabs styling */
-.admin-dashboard .ant-tabs {
+.adminDashboard :global(.ant-tabs) {
   background: #fff;
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
 }
 
-.admin-dashboard .ant-tabs-nav {
+.adminDashboard :global(.ant-tabs-nav) {
   margin-bottom: 24px;
 }
 
-.admin-dashboard .ant-tabs-tab {
+.adminDashboard :global(.ant-tabs-tab) {
   padding: 12px 24px;
   transition: all 0.3s;
 }
 
-.admin-dashboard .ant-tabs-tab:hover {
+.adminDashboard :global(.ant-tabs-tab:hover) {
   color: #6b8afd;
 }
 
-.admin-dashboard .ant-tabs-tab-active {
+.adminDashboard :global(.ant-tabs-tab-active) {
   background: #f0f4ff;
   border-radius: 8px;
 }
 
-.admin-dashboard .ant-tabs-tab-active .ant-tabs-tab-btn {
+.adminDashboard :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
   color: #6b8afd !important;
   font-weight: 600;
 }
 
 /* Card styling */
-.admin-dashboard .ant-card {
+.adminDashboard :global(.ant-card) {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
   border: 1.5px solid #e8f0fe;
@@ -89,129 +89,129 @@
   transition: all 0.3s;
 }
 
-.admin-dashboard .ant-card:hover {
+.adminDashboard :global(.ant-card:hover) {
   box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
   border-color: #6b8afd;
 }
 
-.admin-dashboard .ant-card-head {
+.adminDashboard :global(.ant-card-head) {
   border-bottom: 1.5px solid #e8f0fe;
 }
 
-.admin-dashboard .ant-card-head-title {
+.adminDashboard :global(.ant-card-head-title) {
   color: #6b8afd;
   font-weight: 600;
   font-size: 18px;
 }
 
 /* Table styling */
-.admin-dashboard .ant-table {
+.adminDashboard :global(.ant-table) {
   background: transparent;
 }
 
-.admin-dashboard .ant-table-thead > tr > th {
+.adminDashboard :global(.ant-table-thead > tr > th) {
   background: #f0f4ff;
   color: #6b8afd;
   font-weight: 600;
   border-bottom: 1.5px solid #e8f0fe;
 }
 
-.admin-dashboard .ant-table-tbody > tr > td {
+.adminDashboard :global(.ant-table-tbody > tr > td) {
   border-bottom: 1px solid #e8f0fe;
 }
 
-.admin-dashboard .ant-table-tbody > tr:hover > td {
+.adminDashboard :global(.ant-table-tbody > tr:hover > td) {
   background: #f8fafc;
 }
 
 /* Button styling */
-.admin-dashboard .ant-btn-primary {
+.adminDashboard :global(.ant-btn-primary) {
   background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
   border: none;
 }
 
-.admin-dashboard .ant-btn-primary:hover {
+.adminDashboard :global(.ant-btn-primary:hover) {
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
   border: none;
 }
 
-.admin-dashboard .ant-btn-default {
+.adminDashboard :global(.ant-btn-default) {
   color: #6b8afd;
   border-color: #6b8afd;
   background: #f8fafc;
 }
 
-.admin-dashboard .ant-btn-default:hover {
+.adminDashboard :global(.ant-btn-default:hover) {
   color: #a5b4fc;
   border-color: #a5b4fc;
   background: #f8fafc;
 }
 
 /* Form styling */
-.admin-dashboard .ant-form-item-label > label {
+.adminDashboard :global(.ant-form-item-label > label) {
   color: #6b8afd;
   font-weight: 500;
 }
 
-.admin-dashboard .ant-input,
-.admin-dashboard .ant-select-selector {
+.adminDashboard :global(.ant-input),
+.adminDashboard :global(.ant-select-selector) {
   border-color: #e8f0fe !important;
   border-radius: 8px !important;
 }
 
-.admin-dashboard .ant-input:hover,
-.admin-dashboard .ant-select-selector:hover {
+.adminDashboard :global(.ant-input:hover),
+.adminDashboard :global(.ant-select-selector:hover) {
   border-color: #6b8afd !important;
 }
 
-.admin-dashboard .ant-input:focus,
-.admin-dashboard .ant-select-selector:focus {
+.adminDashboard :global(.ant-input:focus),
+.adminDashboard :global(.ant-select-selector:focus) {
   border-color: #6b8afd !important;
   box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2) !important;
 }
 
 /* Calendar styling */
-.admin-dashboard .ant-picker-calendar {
+.adminDashboard :global(.ant-picker-calendar) {
   background: #f8fafc;
   border-radius: 12px;
   padding: 12px;
 }
 
-.admin-dashboard .ant-picker-calendar-header {
+.adminDashboard :global(.ant-picker-calendar-header) {
   padding: 12px;
 }
 
-.admin-dashboard .ant-picker-calendar-date {
+.adminDashboard :global(.ant-picker-calendar-date) {
   border: 1px solid #e8f0fe;
   border-radius: 8px;
   margin: 2px;
 }
 
-.admin-dashboard .ant-picker-calendar-date:hover {
+.adminDashboard :global(.ant-picker-calendar-date:hover) {
   background: #f8fafc;
 }
 
-.admin-dashboard .ant-picker-calendar-date-today {
+.adminDashboard :global(.ant-picker-calendar-date-today) {
   border-color: #6b8afd;
 }
 
 /* Modal styling */
-.admin-dashboard .ant-modal-content {
+.adminDashboard :global(.ant-modal-content) {
   border-radius: 12px;
   overflow: hidden;
 }
 
-.admin-dashboard .ant-modal-header {
+.adminDashboard :global(.ant-modal-header) {
   background: #f8fafc;
   border-bottom: 1.5px solid #e8f0fe;
 }
 
-.admin-dashboard .ant-modal-title {
+.adminDashboard :global(.ant-modal-title) {
   color: #6b8afd;
   font-weight: 600;
 }
 
-.admin-dashboard .ant-modal-footer {
+.adminDashboard :global(.ant-modal-footer) {
   border-top: 1.5px solid #e8f0fe;
   padding: 16px 24px;
 }
@@ -230,31 +230,31 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .admin-dashboard {
+  .adminDashboard {
     padding: 12px;
   }
 
-  .admin-dashboard .ant-tabs {
+  .adminDashboard :global(.ant-tabs) {
     padding: 12px;
   }
 
-  .stats-row .ant-statistic-content {
+  .statsRow :global(.ant-statistic-content) {
     font-size: 22px;
   }
 
-  .admin-dashboard .ant-card {
+  .adminDashboard :global(.ant-card) {
     margin-bottom: 16px;
   }
 }
 
-.dashboard-header {
+.dashboardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
 }
 
-.dashboard-header h2 {
+.dashboardHeader h2 {
   margin: 0;
   color: #333;
   background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
@@ -263,20 +263,20 @@
   background-clip: text;
 }
 
-.year-filter {
+.yearFilter {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.loading-container {
+.loadingContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 400px;
 }
 
-.stat-card {
+.statCard {
   height: 100%;
   border-radius: 18px;
   box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
@@ -285,13 +285,13 @@
   transition: all 0.3s;
 }
 
-.stat-card:hover {
+.statCard:hover {
   box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
   transform: translateY(-2px) scale(1.02);
   border-color: #6b8afd;
 }
 
-.chart-card {
+.chartCard {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
   border: 1.5px solid #e8f0fe;
@@ -300,20 +300,20 @@
   margin-bottom: 24px;
 }
 
-.chart-card:hover {
+.chartCard:hover {
   box-shadow: 0 6px 18px rgba(107, 138, 253, 0.16);
   border-color: #e0e7ff;
 }
 
-.chart-card .ant-card-head {
+.chartCard :global(.ant-card-head) {
   border-bottom: 1px solid #e8f0fe;
 }
 
-.chart-card .ant-card-head-title {
+.chartCard :global(.ant-card-head-title) {
   padding: 12px 0;
 }
 
-.chart-card .ant-card-head-title h4 {
+.chartCard :global(.ant-card-head-title h4) {
   margin: 0;
   display: flex;
   align-items: center;
@@ -321,87 +321,87 @@
   color: #5c7cfa;
 }
 
-.pie-container {
+.pieContainer {
   display: flex;
   flex-direction: column;
   height: 100%;
   align-items: center;
 }
 
-.pie-stats {
+.pieStats {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.pie-stat-item {
+.pieStatItem {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 500;
 }
 
-.pie-stat-total {
+.pieStatTotal {
   margin-top: 8px;
   font-weight: 600;
   border-top: 1px dashed #e8f0fe;
   padding-top: 8px;
 }
 
-.mt-16 {
+.mt16 {
   margin-top: 16px;
 }
 
 /* Styling for tabs */
-.chart-card .ant-tabs-nav {
+.chartCard :global(.ant-tabs-nav) {
   margin-bottom: 20px;
 }
 
-.chart-card .ant-tabs-tab {
+.chartCard :global(.ant-tabs-tab) {
   padding: 8px 16px;
 }
 
-.chart-card .ant-tabs-tab:hover {
+.chartCard :global(.ant-tabs-tab:hover) {
   color: #6b8afd;
 }
 
-.chart-card .ant-tabs-tab-active {
+.chartCard :global(.ant-tabs-tab-active) {
   background: #f0f4ff;
   border-radius: 8px;
 }
 
-.chart-card .ant-tabs-tab-active .ant-tabs-tab-btn {
+.chartCard :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
   color: #6b8afd !important;
   font-weight: 600;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .dashboard-header {
+  .dashboardHeader {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
-  .pie-container {
+
+  .pieContainer {
     flex-direction: column;
   }
-  
-  .pie-stats {
+
+  .pieStats {
     margin-top: 20px;
     margin-left: 0;
   }
 }
 
 /* Add these styles to AdminPage.css */
-.dashboard-actions {
+.dashboardActions {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.export-btn {
+.exportBtn {
   background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
   border: none;
   border-radius: 8px;
@@ -411,7 +411,7 @@
   transition: all 0.3s;
 }
 
-.export-btn:hover {
+.exportBtn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(107, 138, 253, 0.2);
   background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
@@ -419,18 +419,18 @@
 
 /* Update responsive styling */
 @media (max-width: 768px) {
-  .dashboard-actions {
+  .dashboardActions {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
     gap: 12px;
   }
-  
-  .year-filter {
+
+  .yearFilter {
     width: 100%;
   }
-  
-  .export-btn {
+
+  .exportBtn {
     width: 100%;
     justify-content: center;
   }

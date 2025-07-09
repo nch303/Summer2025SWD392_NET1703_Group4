@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Table, Button, Space, Popconfirm, message, Tag, Modal, Form, 
-  Input, InputNumber, DatePicker, Select, Spin, Typography, Switch
-} from 'antd';
-import { 
-  PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined, 
+import {
+  Card, Table, Button, Space, Popconfirm, message, Tag, Modal, Form,
+  Input, InputNumber, DatePicker, Select, Spin, Typography, Switch,
+  PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined,
   CloseCircleOutlined, DollarOutlined, UndoOutlined, TrophyOutlined
-} from '@ant-design/icons';
+} from '../../utils/AntComponents';
 import dayjs from 'dayjs';
-import './AdminEnrichment.css';
-import { 
-  getAllEnrichmentPrograms, getEnrichmentProgramById, 
+import styles from './AdminEnrichment.module.css';
+import {
+  getAllEnrichmentPrograms, getEnrichmentProgramById,
   createEnrichmentProgram, updateEnrichmentProgram, deleteEnrichmentProgram,
   restoreEnrichmentProgram, getAllProgramTypes
 } from '../../services/AdminService';
@@ -64,19 +62,19 @@ const AdminEnrichment = () => {
   const showModal = (type, record = null) => {
     form.resetFields();
     setModalType(type);
-    
+
     if (type === 'edit' && record) {
       setSelectedProgram(record);
       form.setFieldsValue({
         ...record,
         level: record.level || 1,
-        dates: record.startDate && record.endDate ? 
+        dates: record.startDate && record.endDate ?
           [dayjs(record.startDate), dayjs(record.endDate)] : undefined
       });
     } else {
       setSelectedProgram(null);
     }
-    
+
     setModalVisible(true);
   };
 
@@ -84,10 +82,10 @@ const AdminEnrichment = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       // Extract startDate and endDate from the date range picker
       const [startDate, endDate] = values.dates || [];
-      
+
       const programData = {
         name: values.name,
         description: values.description,
@@ -106,10 +104,10 @@ const AdminEnrichment = () => {
         await createEnrichmentProgram(programData);
         message.success('Enrichment program created successfully');
       }
-      
+
       setModalVisible(false);
       fetchPrograms();
-      
+
     } catch (error) {
       message.error(`Failed to ${modalType} enrichment program: ${error.message}`);
     }
@@ -250,19 +248,19 @@ const AdminEnrichment = () => {
       render: (_, record) => (
         <Space size="small" wrap>
           {record.isDelete ? (
-            <Button 
-              type="primary" 
-              icon={<UndoOutlined />} 
+            <Button
+              type="primary"
+              icon={<UndoOutlined />}
               onClick={() => handleRestore(record)}
-              className="restore-button"
+              className={styles.restoreButton}
             >
               Restore
             </Button>
           ) : (
             <>
-              <Button 
-                type="primary" 
-                icon={<EditOutlined />} 
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
                 onClick={() => showModal('edit', record)}
               >
                 Edit
@@ -273,9 +271,9 @@ const AdminEnrichment = () => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button 
-                  type="primary" 
-                  danger 
+                <Button
+                  type="primary"
+                  danger
                   icon={<DeleteOutlined />}
                 >
                   Delete
@@ -293,14 +291,14 @@ const AdminEnrichment = () => {
     (program) =>
       (showDeleted || !program.isDelete) &&
       (program.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-       program.description?.toLowerCase().includes(searchText.toLowerCase()) ||
-       program.type?.toLowerCase().includes(searchText.toLowerCase()))
+        program.description?.toLowerCase().includes(searchText.toLowerCase()) ||
+        program.type?.toLowerCase().includes(searchText.toLowerCase()))
   );
 
   return (
-    <div className="admin-enrichment">
-      <Card className="enrichment-card">
-        <div className="enrichment-header">
+    <div className={styles.adminEnrichment}>
+      <Card className={styles.enrichmentCard}>
+        <div className={styles.enrichmentHeader}>
           <Title level={2}>Enrichment Programs Management</Title>
           <Space wrap>
             <Input.Search
@@ -315,9 +313,9 @@ const AdminEnrichment = () => {
               checkedChildren="Show Deleted"
               unCheckedChildren="Hide Deleted"
             />
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />} 
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
               onClick={() => showModal('add')}
             >
               Add Program
@@ -326,12 +324,12 @@ const AdminEnrichment = () => {
         </div>
 
         <Spin spinning={loading}>
-          <Table 
-            dataSource={filteredPrograms} 
+          <Table
+            dataSource={filteredPrograms}
             columns={columns}
             rowKey="id"
             pagination={{ pageSize: 10 }}
-            rowClassName={(record) => record.isDelete ? 'deleted-row' : ''}
+            rowClassName={(record) => record.isDelete ? styles.deletedRow : ''}
           />
         </Spin>
       </Card>
@@ -348,26 +346,26 @@ const AdminEnrichment = () => {
         <Form
           form={form}
           layout="vertical"
-          initialValues={{ 
+          initialValues={{
             maxChildren: 30,
             typeProgramID: 2,
             level: 1
           }}
         >
-          <Form.Item 
-            name="name" 
+          <Form.Item
+            name="name"
             label="Program Name"
             rules={[{ required: true, message: 'Please enter program name' }]}
           >
             <Input placeholder="e.g. Swimming Class - Summer 2025" />
           </Form.Item>
-          
-          <Form.Item 
-            name="type" 
+
+          <Form.Item
+            name="type"
             label="Program Type"
             rules={[{ required: true, message: 'Please select program type' }]}
           >
-            <Select 
+            <Select
               placeholder="Select program type"
               onChange={(value, option) => {
                 // Set the corresponding typeProgramID based on selected type
@@ -380,8 +378,8 @@ const AdminEnrichment = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item 
-            name="level" 
+          <Form.Item
+            name="level"
             label="Program Level"
             rules={[{ required: true, message: 'Please select program level' }]}
           >
@@ -393,22 +391,22 @@ const AdminEnrichment = () => {
               <Option value={5}>Level 5 - Expert</Option>
             </Select>
           </Form.Item>
-          
-          <Form.Item 
-            name="description" 
+
+          <Form.Item
+            name="description"
             label="Description"
             rules={[{ required: true, message: 'Please enter description' }]}
           >
             <Input.TextArea rows={4} placeholder="Program description" />
           </Form.Item>
-          
-          <Form.Item 
-            name="dates" 
+
+          <Form.Item
+            name="dates"
             label="Program Duration"
             rules={[{ required: true, message: 'Please select start and end dates' }]}
           >
-            <RangePicker 
-              style={{ width: '100%' }} 
+            <RangePicker
+              style={{ width: '100%' }}
               format="DD/MM/YYYY"
               disabledDate={(current) => current && current < dayjs().startOf('day')}
               inputReadOnly={false}
@@ -421,23 +419,23 @@ const AdminEnrichment = () => {
               }}
             />
           </Form.Item>
-          
-          <Form.Item 
-            name="maxChildren" 
+
+          <Form.Item
+            name="maxChildren"
             label="Maximum Children"
             rules={[{ required: true, message: 'Please enter maximum children' }]}
           >
             <InputNumber min={1} max={200} style={{ width: '100%' }} />
           </Form.Item>
-          
-          <Form.Item 
-            name="fee" 
+
+          <Form.Item
+            name="fee"
             label="Fee (VND)"
             rules={[{ required: true, message: 'Please enter fee' }]}
           >
-            <InputNumber 
-              min={0} 
-              step={10000} 
+            <InputNumber
+              min={0}
+              step={10000}
               style={{ width: '100%' }}
               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
@@ -445,9 +443,9 @@ const AdminEnrichment = () => {
             />
           </Form.Item>
 
-          <Form.Item 
-            name="typeProgramID" 
-            label="Program Type ID" 
+          <Form.Item
+            name="typeProgramID"
+            label="Program Type ID"
             hidden={true}
           >
             <InputNumber />

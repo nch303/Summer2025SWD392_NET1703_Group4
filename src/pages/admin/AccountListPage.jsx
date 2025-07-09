@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Button, Input, Select, Popconfirm, Modal, Form } from 'antd';
-import { SearchOutlined, ReloadOutlined, EditOutlined, LockOutlined, UnlockOutlined, UserAddOutlined, DeleteOutlined, RedoOutlined, ExclamationCircleFilled, EyeOutlined } from '@ant-design/icons';
-import { fetchPaginatedAccounts, searchAccounts, 
-  changeAccountStatus, createAccount, fetchRoles, 
-  updateAccount, banAccount, restoreAccount } from '../../services/AdminService';
-import { useCustomToast } from '../../components/toast/CustomToast';
-import './AccountListPage.css';
+import {
+  Table, Tag, Space, Button, Input,
+  Select, Popconfirm,
+  Modal, Form,
+  EditOutlined,
+  UserAddOutlined, DeleteOutlined,
+  RedoOutlined, ExclamationCircleFilled, EyeOutlined, 
+  SearchOutlined, ReloadOutlined
+}
+  from '../../utils/AntComponents';
+import {
+  fetchPaginatedAccounts, searchAccounts,
+  changeAccountStatus, createAccount, fetchRoles,
+  updateAccount, banAccount, restoreAccount
+} from '../../services/AdminService';
+import { useCustomToast } from '../../components/CustomToast';
+import styles from './AccountListPage.module.css';
 
 const { Option } = Select;
 
@@ -27,7 +37,7 @@ const AccountListPage = () => {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
-  
+
   // Pagination state
   const [pagination, setPagination] = useState({
     current: 1,
@@ -162,10 +172,10 @@ const AccountListPage = () => {
     setFilterStatus(null);
     setIsSearching(false);
     form.resetFields();
-    
+
     // Xóa timer debounce hiện tại
     clearTimeout(debounceTimer);
-    
+
     // Reset to first page when filters are cleared
     loadAccounts(1, pagination.pageSize);
   };
@@ -186,25 +196,25 @@ const AccountListPage = () => {
     try {
       setCreateLoading(true);
       const values = await form.validateFields();
-      
+
       const createdAccount = await createAccount(values);
       setIsModalVisible(false);
       form.resetFields();
-      
+
       toast.success(`Account created successfully: ${createdAccount.fullName}`, {
         title: 'Account Created',
         duration: 2000
       });
-      
+
       loadAccounts(pagination.current, pagination.pageSize);
     } catch (error) {
       if (error.errorFields) {
         return; // Form validation error, handled by antd form
       }
-      
+
       // Extract error message directly from the response
       const errorMessage = error.response?.data?.message || '';
-      
+
       if (errorMessage === 'This email already exists.') {
         toast.error('This email is already registered in the system. Please use a different email address.', {
           title: 'Email Already Exists',
@@ -252,11 +262,11 @@ const AccountListPage = () => {
       if (roles.length === 0) {
         await loadRoles();
       }
-      
+
       let roleId = null;
-      
+
       console.log('Account data before edit:', account);
-      
+
       // Nếu chỉ có roleName nhưng không có roleId
       if (account.roleName && !account.roleId) {
         // Tìm roleId từ danh sách roles đã tải
@@ -272,14 +282,14 @@ const AccountListPage = () => {
         roleId = account.roleId;
         console.log('Using existing roleId:', roleId);
       }
-      
+
       // Đảm bảo roleId là số nguyên nếu nó tồn tại
       if (roleId) {
         roleId = parseInt(roleId, 10);
       }
-      
+
       console.log('Final roleId being set:', roleId);
-      
+
       // Điền thông tin vào form
       editForm.setFieldsValue({
         fullName: account.fullName,
@@ -288,7 +298,7 @@ const AccountListPage = () => {
         roleId: roleId,
         address: account.address
       });
-      
+
       setIsEditModalVisible(true);
     } catch (error) {
       console.error('Error in showEditModal:', error);
@@ -305,43 +315,43 @@ const AccountListPage = () => {
     try {
       setUpdateLoading(true);
       const values = await editForm.validateFields();
-      
+
       // If password is empty, remove it from the request
       if (!values.password) {
         delete values.password;
       }
-      
+
       // Ensure address is included (even if empty)
       if (values.address === undefined) {
         values.address = '';
       }
-      
+
       // Ensure roleId is a number as required by the API
       if (values.roleId && typeof values.roleId === 'string') {
         values.roleId = parseInt(values.roleId, 10);
       }
-      
+
       // Call the API
       await updateAccount(currentAccount.id, values);
-      
+
       setIsEditModalVisible(false);
       editForm.resetFields();
-      
+
       toast.success(`Account updated successfully: ${values.fullName}`, {
         title: 'Account Updated',
         duration: 2000
       });
-      
+
       loadAccounts(pagination.current, pagination.pageSize);
     } catch (error) {
       console.error('Update error details:', error);
-      
+
       if (error.errorFields) {
         return; // Form validation error, handled by antd form
       }
-      
+
       const errorMessage = error.response?.data?.message || '';
-      
+
       if (errorMessage === 'This email already exists.') {
         toast.error('This email is already registered in the system. Please use a different email address.', {
           title: 'Email Already Exists',
@@ -410,7 +420,7 @@ const AccountListPage = () => {
     setSelectedAccount(account);
     setIsDetailsModalVisible(true);
   };
-  
+
   const handleDetailsCancel = () => {
     setIsDetailsModalVisible(false);
   };
@@ -418,7 +428,7 @@ const AccountListPage = () => {
   const filteredAccounts = accounts.filter(account => {
     const matchesRole = filterRole === null || account.roleName === filterRole;
     const matchesStatus = filterStatus === null || account.status === filterStatus;
-    
+
     return matchesRole && matchesStatus;
   });
 
@@ -488,16 +498,16 @@ const AccountListPage = () => {
   ];
 
   return (
-    <div className="account-list-container">
+    <div className={styles.accountListContainer}>
       <toast.ToastContainer position="top-right" />
-      <div className="account-list-header">
+      <div className={styles.accountListHeader}>
         <h1>Account Management</h1>
-        <div className="account-list-actions">
-          <Button 
-            type="primary" 
-            icon={<UserAddOutlined />} 
+        <div className={styles.accountListActions}>
+          <Button
+            type="primary"
+            icon={<UserAddOutlined />}
             onClick={showModal}
-            className="create-account-btn"
+            className={styles.createAccountBtn}
           >
             Create Account
           </Button>
@@ -539,8 +549,8 @@ const AccountListPage = () => {
             <Option value="Active">Active</Option>
             <Option value="Banned">Banned</Option>
           </Select>
-          <Button 
-            icon={<ReloadOutlined />} 
+          <Button
+            icon={<ReloadOutlined />}
             onClick={resetFilters}
             loading={loading}
           >
@@ -567,16 +577,16 @@ const AccountListPage = () => {
       {/* Create Account Modal */}
       <Modal
         title="Create New Account"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
-            loading={createLoading} 
+          <Button
+            key="submit"
+            type="primary"
+            loading={createLoading}
             onClick={handleCreate}
           >
             Create
@@ -630,8 +640,8 @@ const AccountListPage = () => {
             label="Role"
             rules={[{ required: true, message: 'Please select a role!' }]}
           >
-            <Select 
-              placeholder="Select a role" 
+            <Select
+              placeholder="Select a role"
               loading={rolesLoading}
             >
               {roles.map(role => (
@@ -645,16 +655,16 @@ const AccountListPage = () => {
       {/* Edit Account Modal */}
       <Modal
         title="Edit Account"
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onCancel={handleEditCancel}
         footer={[
           <Button key="back" onClick={handleEditCancel}>
             Cancel
           </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
-            loading={updateLoading} 
+          <Button
+            key="submit"
+            type="primary"
+            loading={updateLoading}
             onClick={handleUpdate}
           >
             Update
@@ -707,8 +717,8 @@ const AccountListPage = () => {
             label="Role"
             rules={[{ required: true, message: 'Please select a role!' }]}
           >
-            <Select 
-              placeholder="Select a role" 
+            <Select
+              placeholder="Select a role"
               loading={rolesLoading}
             >
               {roles.map(role => (
@@ -728,7 +738,7 @@ const AccountListPage = () => {
       {/* Details Modal */}
       <Modal
         title="Account Details"
-        visible={isDetailsModalVisible}
+        open={isDetailsModalVisible}
         onCancel={handleDetailsCancel}
         footer={[
           <Button key="close" onClick={handleDetailsCancel}>
@@ -738,47 +748,47 @@ const AccountListPage = () => {
         width={700}
       >
         {selectedAccount && (
-          <div className="account-details">
-            <div className="detail-row">
-              <div className="detail-label">Full Name:</div>
-              <div className="detail-value">{selectedAccount.fullName}</div>
+          <div className={styles.accountDetails}>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Full Name:</div>
+              <div className={styles.detailValue}>{selectedAccount.fullName}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Email:</div>
-              <div className="detail-value">{selectedAccount.email}</div>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Email:</div>
+              <div className={styles.detailValue}>{selectedAccount.email}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Phone Number:</div>
-              <div className="detail-value">{selectedAccount.phoneNumber}</div>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Phone Number:</div>
+              <div className={styles.detailValue}>{selectedAccount.phoneNumber}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Address:</div>
-              <div className="detail-value">{selectedAccount.address || 'N/A'}</div>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Address:</div>
+              <div className={styles.detailValue}>{selectedAccount.address || 'N/A'}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Role:</div>
-              <div className="detail-value">
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Role:</div>
+              <div className={styles.detailValue}>
                 <Tag color={selectedAccount.roleName === 'Admin' ? 'blue' : selectedAccount.roleName === 'Staff' ? 'purple' : selectedAccount.roleName === 'Teacher' ? 'cyan' : 'green'}>
                   {selectedAccount.roleName}
                 </Tag>
               </div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Status:</div>
-              <div className="detail-value">
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Status:</div>
+              <div className={styles.detailValue}>
                 <Tag color={getStatusColor(selectedAccount.status)}>
                   {selectedAccount.status}
                 </Tag>
               </div>
             </div>
-            
+
             {/* Action buttons */}
-            <div className="detail-row" style={{ marginTop: 16, borderBottom: 'none' }}>
-              <div className="detail-label">Actions:</div>
-              <div className="detail-value">
+            <div className={styles.detailRow} style={{ marginTop: 16, borderBottom: 'none' }}>
+              <div className={styles.detailLabel}>Actions:</div>
+              <div className={styles.detailValue}>
                 <Space size="middle">
-                  <Button 
-                    icon={<EditOutlined />} 
+                  <Button
+                    icon={<EditOutlined />}
                     type="primary"
                     onClick={() => {
                       handleDetailsCancel();
@@ -787,7 +797,7 @@ const AccountListPage = () => {
                   >
                     Edit
                   </Button>
-                  
+
                   {/* Ban button - only show when account is not banned */}
                   {selectedAccount.status !== 'Banned' && (
                     <Popconfirm

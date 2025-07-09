@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getChildById, getParentById, 
   submitEnrollmentApplication, getGradeLevels } from '../../services/EnrollmentApplicationService';
 import styles from './EnrollmentApplicationPage.module.css';
-import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 
 const EnrollmentApplicationPage = () => {
   const [child, setChild] = useState(null);

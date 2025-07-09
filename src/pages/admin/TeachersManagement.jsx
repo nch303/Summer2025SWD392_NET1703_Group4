@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Button, Input, Modal, Form, Popconfirm, Spin } from 'antd';
-import { 
+import { Table, Tag, Space, 
+  Button, Input, Modal, 
+  Form, Popconfirm, Spin,
   SearchOutlined, ReloadOutlined, EditOutlined, EyeOutlined, 
   DeleteOutlined, RedoOutlined, UserAddOutlined 
-} from '@ant-design/icons';
+} from '../../utils/AntComponents';
 import { 
   fetchTeachers, updateTeacher, deleteTeacher, restoreTeacher, searchTeachers 
 } from '../../services/AdminService';
-import { useCustomToast } from '../../components/toast/CustomToast';
-import './TeachersManagement.css';
+import { useCustomToast } from '../../components/CustomToast';
+import styles from './TeachersManagement.module.css';
 
 const TeachersManagement = () => {
   const [teachers, setTeachers] = useState([]);
@@ -262,11 +263,11 @@ const TeachersManagement = () => {
   ];
 
   return (
-    <div className="teachers-management-container">
+    <div className={styles.teachersManagementContainer}>
       <toast.ToastContainer position="top-right" />
-      <div className="teachers-management-header">
+      <div className={styles.teachersManagementHeader}>
         <h1>Teacher Management</h1>
-        <div className="teachers-management-actions">
+        <div className={styles.teachersManagementActions}>
           <Input
             placeholder="Search teachers by name, email or phone"
             prefix={<SearchOutlined />}
@@ -312,7 +313,7 @@ const TeachersManagement = () => {
       {/* Edit Teacher Modal */}
       <Modal
         title="Edit Teacher"
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onCancel={handleEditCancel}
         footer={[
           <Button key="back" onClick={handleEditCancel}>
@@ -372,7 +373,7 @@ const TeachersManagement = () => {
       {/* Teacher Details Modal */}
       <Modal
         title="Teacher Details"
-        visible={isDetailsModalVisible}
+        open={isDetailsModalVisible}
         onCancel={handleDetailsCancel}
         footer={[
           <Button key="back" onClick={handleDetailsCancel}>
@@ -381,26 +382,26 @@ const TeachersManagement = () => {
         ]}
       >
         {selectedTeacher && (
-          <div className="teacher-details">
-            <div className="detail-row">
-              <div className="detail-label">Full Name:</div>
-              <div className="detail-value">{selectedTeacher.fullName}</div>
+          <div className={styles.teacherDetails}>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Full Name:</div>
+              <div className={styles.detailValue}>{selectedTeacher.fullName}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Email:</div>
-              <div className="detail-value">{selectedTeacher.email}</div>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Email:</div>
+              <div className={styles.detailValue}>{selectedTeacher.email}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Phone Number:</div>
-              <div className="detail-value">{selectedTeacher.phoneNumber}</div>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Phone Number:</div>
+              <div className={styles.detailValue}>{selectedTeacher.phoneNumber}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Address:</div>
-              <div className="detail-value">{selectedTeacher.address || 'N/A'}</div>
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Address:</div>
+              <div className={styles.detailValue}>{selectedTeacher.address || 'N/A'}</div>
             </div>
-            <div className="detail-row">
-              <div className="detail-label">Status:</div>
-              <div className="detail-value">
+            <div className={styles.detailRow}>
+              <div className={styles.detailLabel}>Status:</div>
+              <div className={styles.detailValue}>
                 <Tag color={getStatusColor(selectedTeacher.status)}>
                   {selectedTeacher.status}
                 </Tag>

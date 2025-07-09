@@ -9,8 +9,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getAllApplications, getApplicationDetail, 
   approveApplication, rejectApplication, createNotification } from '../../services/StaffService';
-import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { useProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 import styles from './EnrollmentApplicationManagement.module.css';
 
 const EnrollmentApplicationManagement = () => {

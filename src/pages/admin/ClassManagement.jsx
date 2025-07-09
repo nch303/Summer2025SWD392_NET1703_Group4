@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Space, Button, Tag, Card, Input, Select, Row, Col, Typography, Spin, Modal, Descriptions, List, Avatar, Empty, Divider, Progress, Tabs, Statistic, Form, InputNumber, notification, Badge, Alert, Checkbox } from 'antd';
-import { SearchOutlined, PlusOutlined, ReloadOutlined, UserOutlined, BookOutlined, ScheduleOutlined, TeamOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, StopOutlined, InfoCircleOutlined, EditOutlined, SaveOutlined, MailOutlined, PhoneOutlined, HomeOutlined, DeleteOutlined, UndoOutlined, TrophyOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
-import { getAllClasses, getClassDetail, updateClass, 
-  getStudentDetail, getTeacherDetail, createClass, getAllSyllabi, 
-  getAllGradeLevels, getAllEnrichmentPrograms, 
-  deleteClass, restoreClass } from '../../services/AdminService';
-import './ClassManagement.css';
+import {
+  Table, Space, Button, Tag,
+  Card, Input, Select, Row, Col,
+  Typography, Spin, Modal, Descriptions,
+  List, Avatar, Empty, Divider, Progress,
+  Tabs, Statistic, Form, InputNumber,
+  notification, Badge, Alert, Checkbox,
+  SearchOutlined, PlusOutlined, ReloadOutlined,
+  UserOutlined, BookOutlined, ScheduleOutlined,
+  TeamOutlined, FileTextOutlined, CheckCircleOutlined,
+  CloseCircleOutlined, ExclamationCircleOutlined,
+  StopOutlined, InfoCircleOutlined, EditOutlined,
+  SaveOutlined, MailOutlined, PhoneOutlined,
+  HomeOutlined, DeleteOutlined, UndoOutlined,
+  TrophyOutlined, UpOutlined, DownOutlined,
+  StarOutlined
+} from '../../utils/AntComponents';
+import {
+  getAllClasses, getClassDetail, updateClass,
+  getStudentDetail, getTeacherDetail, createClass, getAllSyllabi,
+  getAllGradeLevels, getAllEnrichmentPrograms,
+  deleteClass, restoreClass
+} from '../../services/AdminService';
+import styles from './ClassManagement.module.css';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -93,7 +110,7 @@ const ClassManagement = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth(); // 0-11 (0 is January)
-    
+
     // If current date is after June 1st (month 5), use next academic year
     if (currentMonth >= 5) { // June (5) and later
       return `${currentYear}-${currentYear + 1}`;
@@ -112,17 +129,17 @@ const ClassManagement = () => {
     if (editingClass) {
       // Get the syllabus name for display
       const syllabusName = editingClass.syllabusName || "Unknown Syllabus";
-      
+
       // Set form values 
       form.setFieldsValue({
         name: editingClass.name,
         syllabusID: editingClass.syllabusID, // Use the existing syllabusID
         maxChildren: editingClass.maxChildren,
       });
-      
+
       // Set current syllabus name for display
       setCurrentSyllabusName(syllabusName);
-      
+
       // Make sure syllabi are loaded for the dropdown
       if (syllabi.length === 0) {
         loadFormOptions();
@@ -134,7 +151,7 @@ const ClassManagement = () => {
     try {
       setLoading(true);
       const data = await getAllClasses();
-      
+
       // Debug log to see data structure
       if (data.length > 0) {
         console.log('Class data structure example:', data[0]);
@@ -143,7 +160,7 @@ const ClassManagement = () => {
           console.log(`Class ID: ${item.id}, Name: ${item.name}, Status: ${item.status}, isDeleted: ${item.isDeleted}`);
         });
       }
-      
+
       setClasses(data);
       setLoading(false);
     } catch (error) {
@@ -180,19 +197,19 @@ const ClassManagement = () => {
     if (e) {
       e.stopPropagation();
     }
-    
+
     // Make sure syllabi are loaded
     if (syllabi.length === 0) {
       loadFormOptions();
     }
-    
+
     // Log toàn bộ dữ liệu để debug
     console.log('Class data for edit:', classData);
-    
+
     // Tìm ID syllabus chính xác
     let syllabusId = parseInt(classData.syllabusID) || 0;
     const syllabusName = classData.syllabusName || "Select syllabus";
-    
+
     // Nếu ID là 0 nhưng có tên syllabus, tìm ID từ danh sách syllabi
     if (syllabusId === 0 && syllabusName && syllabusName !== "Select syllabus" && syllabi.length > 0) {
       const foundSyllabus = syllabi.find(s => s.name === syllabusName);
@@ -201,17 +218,17 @@ const ClassManagement = () => {
         console.log(`Found syllabus ID ${syllabusId} for "${syllabusName}"`);
       }
     }
-    
+
     setSelectedSyllabusId(syllabusId);
     setSelectedSyllabusName(syllabusName);
     console.log(`Initial syllabus selection: ID=${syllabusId}, Name=${syllabusName}`);
-    
+
     // Set form values for other fields
     form.setFieldsValue({
       name: classData.name,
       maxChildren: classData.maxChildren,
     });
-    
+
     setEditingClass(classData);
     setEditVisible(true);
   };
@@ -241,7 +258,7 @@ const ClassManagement = () => {
         setShowSyllabusDropdown(false);
       }
     }
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -251,10 +268,10 @@ const ClassManagement = () => {
   // Update handleUpdateClass to include the selected syllabus
   const handleUpdateClass = async (values) => {
     if (!editingClass) return;
-    
+
     try {
       setEditLoading(true);
-      
+
       if (!selectedSyllabusId) {
         notification.error({
           message: 'Validation Error',
@@ -263,27 +280,27 @@ const ClassManagement = () => {
         setEditLoading(false);
         return;
       }
-      
+
       // Combine form values with selected syllabus
       const updatedValues = {
         ...values,
         syllabusID: parseInt(selectedSyllabusId), // Đảm bảo syllabusID là số nguyên
         maxChildren: parseInt(values.maxChildren) // Đảm bảo maxChildren là số nguyên
       };
-      
+
       console.log('Sending update with values:', updatedValues);
-      
+
       await updateClass(editingClass.id, updatedValues);
-      
+
       // Show success notification
       notification.success({
         message: 'Class Updated',
         description: `${values.name} has been successfully updated.`,
       });
-      
+
       // Refresh class list
       fetchClasses();
-      
+
       // Close modal
       setEditVisible(false);
       setEditingClass(null);
@@ -293,13 +310,13 @@ const ClassManagement = () => {
       setEditLoading(false);
     } catch (error) {
       console.error('Failed to update class:', error);
-      
+
       // Show error notification with details if available
       notification.error({
         message: 'Update Failed',
         description: error.response?.data?.message || 'There was an error updating the class. Please try again.',
       });
-      
+
       setEditLoading(false);
     }
   };
@@ -338,26 +355,26 @@ const ClassManagement = () => {
   const filteredClasses = classes.filter((classItem) => {
     // Name search
     const matchesSearch = classItem.name?.toLowerCase().includes(searchText.toLowerCase());
-    
+
     // Status filter
     const matchesStatus = statusFilter === 'All' || classItem.status === statusFilter;
-    
+
     // Grade level filter - Check multiple possible property names and handle type conversion
     const gradeId = parseInt(gradeLevelFilter);
-    const matchesGradeLevel = 
-      gradeLevelFilter === 'All' || 
-      (classItem.gradeLevelID && parseInt(classItem.gradeLevelID) === gradeId) || 
+    const matchesGradeLevel =
+      gradeLevelFilter === 'All' ||
+      (classItem.gradeLevelID && parseInt(classItem.gradeLevelID) === gradeId) ||
       (classItem.gradeLevelId && parseInt(classItem.gradeLevelId) === gradeId) ||
       (classItem.gradeLevelName && gradeLevels.some(g => g.id === gradeId && g.name === classItem.gradeLevelName));
-    
+
     // Enrichment program filter - Check multiple possible property names and handle type conversion
     const enrichmentId = parseInt(enrichmentFilter);
-    const matchesEnrichment = 
-      enrichmentFilter === 'All' || 
-      (classItem.enrichmentProgramId && parseInt(classItem.enrichmentProgramId) === enrichmentId) || 
+    const matchesEnrichment =
+      enrichmentFilter === 'All' ||
+      (classItem.enrichmentProgramId && parseInt(classItem.enrichmentProgramId) === enrichmentId) ||
       (classItem.enrichmentProgramID && parseInt(classItem.enrichmentProgramID) === enrichmentId) ||
       (classItem.epName && enrichmentPrograms.some(e => e.id === enrichmentId && e.name === classItem.epName));
-    
+
     return matchesSearch && matchesStatus && matchesGradeLevel && matchesEnrichment;
   });
 
@@ -381,18 +398,18 @@ const ClassManagement = () => {
     .filter((classItem) => {
       // Search by name
       const matchesSearch = classItem.name?.toLowerCase().includes(regularSearchText.toLowerCase());
-      
+
       // Filter by status
       const matchesStatus = regularStatusFilter === 'All' || classItem.status === regularStatusFilter;
-      
+
       // Filter by grade level
       const gradeId = parseInt(regularGradeLevelFilter);
-      const matchesGradeLevel = 
-        regularGradeLevelFilter === 'All' || 
-        (classItem.gradeLevelID && parseInt(classItem.gradeLevelID) === gradeId) || 
+      const matchesGradeLevel =
+        regularGradeLevelFilter === 'All' ||
+        (classItem.gradeLevelID && parseInt(classItem.gradeLevelID) === gradeId) ||
         (classItem.gradeLevelId && parseInt(classItem.gradeLevelId) === gradeId) ||
         (classItem.gradeLevelName && gradeLevels.some(g => g.id === gradeId && g.name === classItem.gradeLevelName));
-      
+
       return matchesSearch && matchesStatus && matchesGradeLevel;
     });
 
@@ -402,25 +419,25 @@ const ClassManagement = () => {
     .filter((classItem) => {
       // Search by name
       const matchesSearch = classItem.name?.toLowerCase().includes(enrichmentSearchText.toLowerCase());
-      
+
       // Filter by status
       const matchesStatus = enrichmentStatusFilter === 'All' || classItem.status === enrichmentStatusFilter;
-      
+
       // Filter by enrichment program
       const enrichmentId = parseInt(enrichmentProgramFilter);
-      const matchesEnrichment = 
-        enrichmentProgramFilter === 'All' || 
-        (classItem.enrichmentProgramId && parseInt(classItem.enrichmentProgramId) === enrichmentId) || 
+      const matchesEnrichment =
+        enrichmentProgramFilter === 'All' ||
+        (classItem.enrichmentProgramId && parseInt(classItem.enrichmentProgramId) === enrichmentId) ||
         (classItem.enrichmentProgramID && parseInt(classItem.enrichmentProgramID) === enrichmentId) ||
         (classItem.epName && enrichmentPrograms.some(e => e.id === enrichmentId && e.name === classItem.epName));
-      
+
       return matchesSearch && matchesStatus && matchesEnrichment;
     });
 
   // Columns for Regular Classes
   const regularColumns = [
     {
-      title: () => <div className="column-title">#</div>,
+      title: () => <div className={styles.columnTitle}>#</div>,
       key: 'index',
       width: '5%',
       render: (_, __, index) => (
@@ -428,7 +445,7 @@ const ClassManagement = () => {
       ),
     },
     {
-      title: () => <div className="column-title">Class Name</div>,
+      title: () => <div className={styles.columnTitle}>Class Name</div>,
       dataIndex: 'name',
       key: 'name',
       width: '20%',
@@ -436,7 +453,7 @@ const ClassManagement = () => {
       render: (text) => <Text strong>{text}</Text>,
     },
     {
-      title: () => <div className="column-title">Grade / Syllabus</div>,
+      title: () => <div className={styles.columnTitle}>Grade / Syllabus</div>,
       key: 'gradeAndSyllabus',
       width: '20%',
       render: (_, record) => (
@@ -447,14 +464,14 @@ const ClassManagement = () => {
       ),
     },
     {
-      title: () => <div className="column-title">Capacity</div>,
+      title: () => <div className={styles.columnTitle}>Capacity</div>,
       key: 'capacity',
       width: '20%',
       render: (_, record) => (
         <div className="capacity-column">
-          <Progress 
-            percent={Math.round((record.quantity / record.maxChildren) * 100)} 
-            size="small" 
+          <Progress
+            percent={Math.round((record.quantity / record.maxChildren) * 100)}
+            size="small"
             status={record.quantity >= record.maxChildren ? "exception" : "active"}
             format={() => `${record.quantity}/${record.maxChildren}`}
             strokeColor={{
@@ -471,12 +488,12 @@ const ClassManagement = () => {
       sorter: (a, b) => (a.quantity / a.maxChildren) - (b.quantity / b.maxChildren),
     },
     {
-      title: () => <div className="column-title">Status</div>,
+      title: () => <div className={styles.columnTitle}>Status</div>,
       dataIndex: 'status',
       key: 'status',
       width: '15%',
       render: (status) => (
-        <Tag 
+        <Tag
           color={getStatusColor(status)}
           icon={status === 'Available' ? <CheckCircleOutlined /> : status === 'Full' ? <CloseCircleOutlined /> : <InfoCircleOutlined />}
           className="status-tag-table"
@@ -494,7 +511,7 @@ const ClassManagement = () => {
       onFilter: (value, record) => record.status === value,
     },
     {
-      title: () => <div className="column-title">Actions</div>,
+      title: () => <div className={styles.columnTitle}>Actions</div>,
       key: 'actions',
       width: '20%',
       render: (_, record) => renderActionButtons(record),
@@ -504,7 +521,7 @@ const ClassManagement = () => {
   // Columns for Enrichment Classes
   const enrichmentColumns = [
     {
-      title: () => <div className="column-title">#</div>,
+      title: () => <div className={styles.columnTitle}>#</div>,
       key: 'index',
       width: '5%',
       render: (_, __, index) => (
@@ -512,7 +529,7 @@ const ClassManagement = () => {
       ),
     },
     {
-      title: () => <div className="column-title">Class Name</div>,
+      title: () => <div className={styles.columnTitle}>Class Name</div>,
       dataIndex: 'name',
       key: 'name',
       width: '20%',
@@ -520,7 +537,7 @@ const ClassManagement = () => {
       render: (text) => <Text strong>{text}</Text>,
     },
     {
-      title: () => <div className="column-title">Enrichment Program / Syllabus</div>,
+      title: () => <div className={styles.columnTitle}>Enrichment Program / Syllabus</div>,
       key: 'enrichmentAndSyllabus',
       width: '25%',
       render: (_, record) => (
@@ -534,14 +551,14 @@ const ClassManagement = () => {
       ),
     },
     {
-      title: () => <div className="column-title">Capacity</div>,
+      title: () => <div className={styles.columnTitle}>Capacity</div>,
       key: 'capacity',
       width: '15%',
       render: (_, record) => (
         <div className="capacity-column">
-          <Progress 
-            percent={Math.round((record.quantity / record.maxChildren) * 100)} 
-            size="small" 
+          <Progress
+            percent={Math.round((record.quantity / record.maxChildren) * 100)}
+            size="small"
             status={record.quantity >= record.maxChildren ? "exception" : "active"}
             format={() => `${record.quantity}/${record.maxChildren}`}
             strokeColor={{
@@ -558,12 +575,12 @@ const ClassManagement = () => {
       sorter: (a, b) => (a.quantity / a.maxChildren) - (b.quantity / b.maxChildren),
     },
     {
-      title: () => <div className="column-title">Status</div>,
+      title: () => <div className={styles.columnTitle}>Status</div>,
       dataIndex: 'status',
       key: 'status',
       width: '15%',
       render: (status) => (
-        <Tag 
+        <Tag
           color={getStatusColor(status)}
           icon={status === 'Available' ? <CheckCircleOutlined /> : status === 'Full' ? <CloseCircleOutlined /> : <InfoCircleOutlined />}
           className="status-tag-table"
@@ -581,7 +598,7 @@ const ClassManagement = () => {
       onFilter: (value, record) => record.status === value,
     },
     {
-      title: () => <div className="column-title">Actions</div>,
+      title: () => <div className={styles.columnTitle}>Actions</div>,
       key: 'actions',
       width: '20%',
       render: (_, record) => renderActionButtons(record),
@@ -591,19 +608,19 @@ const ClassManagement = () => {
   // Helper function for action buttons to avoid code duplication
   const renderActionButtons = (record) => {
     // Enhanced check for deleted status to cover all possible variations
-    const isDeleted = 
-      record.isDeleted === true || 
-      record.deleted === true || 
+    const isDeleted =
+      record.isDeleted === true ||
+      record.deleted === true ||
       record.isDeleted === 1 ||
       record.deleted === 1 ||
-      record.status === "Deleted" || 
+      record.status === "Deleted" ||
       record.Status === "Deleted";
-    
+
     return (
       <div onClick={e => e.stopPropagation()}>
-        <Space size="middle" className="action-buttons">
-          <Button 
-            type="primary" 
+        <Space size="middle" className={styles.actionButtons}>
+          <Button
+            type="primary"
             icon={<FileTextOutlined />}
             onClick={() => showClassDetail(record.id)}
             size="middle"
@@ -711,7 +728,7 @@ const ClassManagement = () => {
         getAllGradeLevels(),
         getAllEnrichmentPrograms()
       ]);
-      
+
       setSyllabi(syllabiData);
       setGradeLevels(gradeLevelsData);
       setEnrichmentPrograms(enrichmentProgramsData);
@@ -754,7 +771,7 @@ const ClassManagement = () => {
         });
         return;
       }
-      
+
       // Check if enrichmentProgramId is selected but no timetable days are selected
       if (values.enrichmentProgramId && (!values.timetable || values.timetable.length === 0)) {
         notification.error({
@@ -763,38 +780,38 @@ const ClassManagement = () => {
         });
         return;
       }
-      
+
       // Format timetable value (only if enrichmentProgramId is selected)
       const formattedValues = {
         ...values,
       };
-      
+
       if (values.enrichmentProgramId) {
         formattedValues.timetable = formatTimetableValue(values.timetable);
       } else {
         // For regular classes (with gradeLevelID), don't include timetable
         formattedValues.timetable = "";
       }
-      
+
       setCreateLoading(true);
       await createClass(formattedValues);
-      
+
       // Show success notification
       notification.success({
         message: 'Class Created',
         description: `${values.name} has been successfully created.`,
       });
-      
+
       // Refresh the class list
       fetchClasses();
-      
+
       // Close modal
       setCreateVisible(false);
       createForm.resetFields();
       setClassTypeSelection(null);
     } catch (error) {
       console.error('Failed to create class:', error);
-      
+
       // Show error notification
       notification.error({
         message: 'Creation Failed',
@@ -812,7 +829,7 @@ const ClassManagement = () => {
     setStatusFilter('All');
     setGradeLevelFilter('All');
     setEnrichmentFilter('All');
-    
+
     // Reload data
     fetchClasses();
     loadFormOptions();
@@ -834,26 +851,26 @@ const ClassManagement = () => {
   // Add function to handle class deletion
   const handleDeleteClass = async () => {
     if (!deletingClass) return;
-    
+
     try {
       setDeleteLoading(true);
       await deleteClass(deletingClass.id);
-      
+
       // Show success notification
       notification.success({
         message: 'Class Deleted',
         description: `${deletingClass.name} has been successfully deleted.`,
       });
-      
+
       // Refresh class list
       fetchClasses();
-      
+
       // Close modal
       setDeleteConfirmVisible(false);
       setDeletingClass(null);
     } catch (error) {
       console.error('Failed to delete class:', error);
-      
+
       // Show error notification
       notification.error({
         message: 'Deletion Failed',
@@ -880,28 +897,28 @@ const ClassManagement = () => {
   // Update the handleRestoreClass function to add more logging
   const handleRestoreClass = async () => {
     if (!restoringClass) return;
-    
+
     try {
       setRestoreLoading(true);
       console.log(`Attempting to restore class with ID: ${restoringClass.id}`);
       const response = await restoreClass(restoringClass.id);
       console.log('Restore API response:', response);
-      
+
       // Show success notification
       notification.success({
         message: 'Class Restored',
         description: `${restoringClass.name} has been successfully restored.`,
       });
-      
+
       // Refresh class list
       fetchClasses();
-      
+
       // Close modal
       setRestoreConfirmVisible(false);
       setRestoringClass(null);
     } catch (error) {
       console.error('Failed to restore class:', error);
-      
+
       // Show error notification
       notification.error({
         message: 'Restoration Failed',
@@ -944,12 +961,12 @@ const ClassManagement = () => {
     setRegularSearchText('');
     setRegularStatusFilter('All');
     setRegularGradeLevelFilter('All');
-    
+
     // Reset filters cho lớp enrichment
     setEnrichmentSearchText('');
     setEnrichmentStatusFilter('All');
     setEnrichmentProgramFilter('All');
-    
+
     // Reload dữ liệu
     fetchClasses();
     loadFormOptions();
@@ -960,7 +977,7 @@ const ClassManagement = () => {
     setRegularSearchText('');
     setRegularStatusFilter('All');
     setRegularGradeLevelFilter('All');
-    
+
     // Reload data
     fetchClasses();
     loadFormOptions();
@@ -971,7 +988,7 @@ const ClassManagement = () => {
     setEnrichmentSearchText('');
     setEnrichmentStatusFilter('All');
     setEnrichmentProgramFilter('All');
-    
+
     // Reload data
     fetchClasses();
     loadFormOptions();
@@ -987,77 +1004,77 @@ const ClassManagement = () => {
   };
 
   return (
-    <div className="class-management-container">
-      <div className="page-header">
-        <Title level={2} className="page-title">Class Management</Title>
-        <div className="header-underline"></div>
+    <div className={styles.classManagementContainer}>
+      <div className={styles.pageHeader}>
+        <Title level={2} className={styles.pageTitle}>Class Management</Title>
+        <div className={styles.headerUnderline}></div>
       </div>
-      
+
       {/* Stats Cards */}
-      <Row gutter={[16, 16]} className="stats-row">
+      <Row gutter={[16, 16]} className={styles.statsRow}>
         <Col xs={24} sm={8}>
-          <Card className="stat-card">
-            <Statistic 
-              title={<span className="stat-title">Total Classes</span>} 
-              value={totalClasses} 
-              prefix={<BookOutlined />} 
+          <Card className={styles.statCard}>
+            <Statistic
+              title={<span className={styles.statTitle}>Total Classes</span>}
+              value={totalClasses}
+              prefix={<BookOutlined />}
               valueStyle={{ color: '#1890ff', fontWeight: 'bold' }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card className="stat-card">
-            <Statistic 
-              title={<span className="stat-title">Available Classes</span>} 
-              value={availableClasses} 
-              prefix={<CheckCircleOutlined />} 
+          <Card className={styles.statCard}>
+            <Statistic
+              title={<span className={styles.statTitle}>Available Classes</span>}
+              value={availableClasses}
+              prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#52c41a', fontWeight: 'bold' }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={8}>
-          <Card className="stat-card">
-            <Statistic 
-              title={<span className="stat-title">Full Classes</span>} 
-              value={fullClasses} 
+          <Card className={styles.statCard}>
+            <Statistic
+              title={<span className={styles.statTitle}>Full Classes</span>}
+              value={fullClasses}
               prefix={<CloseCircleOutlined />}
-              valueStyle={{ color: '#faad14', fontWeight: 'bold' }}  
+              valueStyle={{ color: '#faad14', fontWeight: 'bold' }}
             />
           </Card>
         </Col>
       </Row>
-      
-      <div className="class-list-section">
-        <div className="class-list-header">
-          <div className="section-title">
+
+      <div className={styles.classListSection}>
+        <div className={styles.classListHeader}>
+          <div className={styles.sectionTitle}>
             <Title level={4}>Class List</Title>
-            <div className="section-underline"></div>
+            <div className={styles.sectionUnderline}></div>
           </div>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
-            className="add-button"
+            className={styles.addButton}
             size="large"
             onClick={showCreateModal}
           >
             Add New Class
           </Button>
         </div>
-        
-        <Divider className="header-divider" />
-        
+
+        <Divider className={styles.headerDivider} />
+
         {/* Regular Classes Section */}
-        <div className="regular-class-section">
-          <div className="section-title" onClick={toggleRegularSection} style={{ cursor: 'pointer' }}>
+        <div className={styles.regularClassSection}>
+          <div className={styles.sectionTitle} onClick={toggleRegularSection} style={{ cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Title level={5}><BookOutlined /> Regular Classes ({filteredRegularClasses.length})</Title>
               {regularClassesCollapsed ? <DownOutlined /> : <UpOutlined />}
             </div>
           </div>
-          
+
           {!regularClassesCollapsed && (
             <>
-              <div className="filter-section">
+              <div className={styles.filterSection}>
                 <Row gutter={[16, 16]} align="middle">
                   <Col xs={24} sm={12} md={10} lg={10}>
                     <Input
@@ -1066,7 +1083,7 @@ const ClassManagement = () => {
                       allowClear
                       value={regularSearchText}
                       onChange={(e) => handleRegularSearch(e.target.value)}
-                      className="search-input"
+                      className={styles.searchInput}
                       size="large"
                     />
                   </Col>
@@ -1075,7 +1092,7 @@ const ClassManagement = () => {
                       value={regularStatusFilter}
                       style={{ width: '100%' }}
                       onChange={handleRegularStatusFilter}
-                      className="status-select"
+                      className={styles.statusSelect}
                       size="large"
                       placeholder="Filter by status"
                     >
@@ -1100,9 +1117,9 @@ const ClassManagement = () => {
                   <Col xs={24} sm={12} md={5} lg={5}>
                     <Select
                       value={regularGradeLevelFilter}
-                      style={{ width: '100%' , borderRadius: '10px' ,padding: 0}}
+                      style={{ width: '100%', borderRadius: '10px', padding: 0 }}
                       onChange={handleRegularGradeLevelFilter}
-                      className="grade-select"
+                      className={styles.gradeSelect}
                       size="large"
                       placeholder="Filter by grade"
                       loading={loadingOptions}
@@ -1114,8 +1131,8 @@ const ClassManagement = () => {
                     </Select>
                   </Col>
                   <Col xs={24} sm={12} md={4} lg={4}>
-                    <Button 
-                      icon={<ReloadOutlined />} 
+                    <Button
+                      icon={<ReloadOutlined />}
                       onClick={handleRegularResetFilters}
                       style={{ width: '100%' }}
                       size="large"
@@ -1125,21 +1142,21 @@ const ClassManagement = () => {
                   </Col>
                 </Row>
               </div>
-              
-              <div className="table-container">
+
+              <div className={styles.tableContainer}>
                 <Spin spinning={loading}>
-                  <Table 
-                    columns={regularColumns} 
-                    dataSource={filteredRegularClasses} 
+                  <Table
+                    columns={regularColumns}
+                    dataSource={filteredRegularClasses}
                     rowKey="id"
-                    pagination={{ 
+                    pagination={{
                       pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `Total ${total} regular classes`,
                       pageSizeOptions: ['10', '20', '50'],
                     }}
-                    className="classes-table regular-table"
-                    rowClassName="table-row"
+                    className={styles.classesTable}
+                    rowClassName={styles.tableRow}
                     onRow={(record) => ({
                       onClick: () => showClassDetail(record.id)
                     })}
@@ -1154,17 +1171,17 @@ const ClassManagement = () => {
         </div>
 
         {/* Enrichment Classes Section */}
-        <div className="enrichment-class-section">
-          <div className="section-title" onClick={toggleEnrichmentSection} style={{ cursor: 'pointer' }}>
+        <div className={styles.enrichmentClassSection}>
+          <div className={styles.sectionTitle} onClick={toggleEnrichmentSection} style={{ cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Title level={5}><TrophyOutlined /> Enrichment Classes ({filteredEnrichmentClasses.length})</Title>
+              <Title level={5}><StarOutlined /> Enrichment Classes ({filteredEnrichmentClasses.length})</Title>
               {enrichmentClassesCollapsed ? <DownOutlined /> : <UpOutlined />}
             </div>
           </div>
-          
+
           {!enrichmentClassesCollapsed && (
             <>
-              <div className="filter-section">
+              <div className={styles.filterSection}>
                 <Row gutter={[16, 16]} align="middle">
                   <Col xs={24} sm={12} md={7} lg={7}>
                     <Input
@@ -1173,7 +1190,7 @@ const ClassManagement = () => {
                       allowClear
                       value={enrichmentSearchText}
                       onChange={(e) => handleEnrichmentSearch(e.target.value)}
-                      className="search-input"
+                      className={styles.searchInput}
                       size="large"
                     />
                   </Col>
@@ -1182,7 +1199,7 @@ const ClassManagement = () => {
                       value={enrichmentStatusFilter}
                       style={{ width: '100%' }}
                       onChange={handleEnrichmentStatusFilter}
-                      className="status-select"
+                      className={styles.statusSelect}
                       size="large"
                       placeholder="Filter by status"
                     >
@@ -1209,7 +1226,7 @@ const ClassManagement = () => {
                       value={enrichmentProgramFilter}
                       style={{ width: '100%' }}
                       onChange={handleEnrichmentProgramFilter}
-                      className="enrichment-select"
+                      className={styles.enrichmentSelect}
                       size="large"
                       placeholder="Filter by enrichment program"
                       loading={loadingOptions}
@@ -1223,8 +1240,8 @@ const ClassManagement = () => {
                     </Select>
                   </Col>
                   <Col xs={24} sm={12} md={5} lg={5}>
-                    <Button 
-                      icon={<ReloadOutlined />} 
+                    <Button
+                      icon={<ReloadOutlined />}
                       onClick={handleEnrichmentResetFilters}
                       style={{ width: '100%' }}
                       size="large"
@@ -1234,21 +1251,21 @@ const ClassManagement = () => {
                   </Col>
                 </Row>
               </div>
-              
-              <div className="table-container">
+
+              <div className={styles.tableContainer}>
                 <Spin spinning={loading}>
-                  <Table 
-                    columns={enrichmentColumns} 
-                    dataSource={filteredEnrichmentClasses} 
+                  <Table
+                    columns={enrichmentColumns}
+                    dataSource={filteredEnrichmentClasses}
                     rowKey="id"
-                    pagination={{ 
+                    pagination={{
                       pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `Total ${total} enrichment classes`,
                       pageSizeOptions: ['10', '20', '50'],
                     }}
-                    className="classes-table enrichment-table"
-                    rowClassName="table-row"
+                    className={styles.classesTable}
+                    rowClassName={styles.tableRow}
                     onRow={(record) => ({
                       onClick: () => showClassDetail(record.id)
                     })}
@@ -1266,15 +1283,15 @@ const ClassManagement = () => {
       {/* Class Detail Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <FileTextOutlined className="modal-icon" />
+          <div className={styles.modalTitle}>
+            <FileTextOutlined className={styles.modalIcon} />
             <span>Class Details</span>
           </div>
         }
         open={detailVisible}
         onCancel={handleDetailModalClose}
         width={800}
-        className="class-detail-modal"
+        className={styles.classDetailModal}
         footer={[
           <Button key="close" onClick={handleDetailModalClose} size="large">
             Close
@@ -1283,42 +1300,42 @@ const ClassManagement = () => {
       >
         <Spin spinning={detailLoading}>
           {selectedClass && (
-            <div className="class-detail-content">
-              <div className="class-header">
-                <div className="class-name">
+            <div className={styles.classDetailContent}>
+              <div className={styles.classHeader}>
+                <div className={styles.className}>
                   <Title level={3}>{selectedClass.name}</Title>
-                  <Tag color={getStatusColor(selectedClass.status)} className="status-tag">
+                  <Tag color={getStatusColor(selectedClass.status)} className={styles.statusTag}>
                     {selectedClass.status}
                   </Tag>
                 </div>
               </div>
-              
-              <Tabs defaultActiveKey="overview" className="class-detail-tabs">
-                <TabPane 
+
+              <Tabs defaultActiveKey="overview" className={styles.classDetailTabs}>
+                <TabPane
                   tab={
                     <span>
                       <FileTextOutlined /> Overview
                     </span>
-                  } 
+                  }
                   key="overview"
                 >
-                  <div className="overview-section">
+                  <div className={styles.overviewSection}>
                     <Row gutter={[24, 24]}>
                       <Col xs={24} md={12}>
-                        <Card className="info-card" title="Class Information">
-                          <div className="info-item">
+                        <Card className={styles.infoCard} title="Class Information">
+                          <div className={styles.infoItem}>
                             <Text strong>Grade Level:</Text>
                             <Text>{selectedClass.gradeLevelName || 'Not specified'}</Text>
                           </div>
-                          <div className="info-item">
+                          <div className={styles.infoItem}>
                             <Text strong>Syllabus:</Text>
                             <Text>{selectedClass.syllabusName || 'Not specified'}</Text>
                           </div>
                         </Card>
                       </Col>
                       <Col xs={24} md={12}>
-                        <Card className="info-card" title="Capacity Information">
-                          <div className="capacity-wrapper">
+                        <Card className={styles.infoCard} title="Capacity Information">
+                          <div className={styles.capacityWrapper}>
                             <Progress
                               type="circle"
                               percent={Math.round((selectedClass.quantity / selectedClass.maxChildren) * 100)}
@@ -1326,7 +1343,7 @@ const ClassManagement = () => {
                               width={120}
                               status={selectedClass.quantity >= selectedClass.maxChildren ? "exception" : "normal"}
                             />
-                            <div className="capacity-text">
+                            <div className={styles.capacityText}>
                               <Text>{selectedClass.quantity} students currently enrolled</Text>
                               <Text type="secondary">{selectedClass.maxChildren - selectedClass.quantity} spots remaining</Text>
                             </div>
@@ -1336,44 +1353,44 @@ const ClassManagement = () => {
                     </Row>
                   </div>
                 </TabPane>
-                
-                <TabPane 
+
+                <TabPane
                   tab={
                     <span>
                       <TeamOutlined /> Teachers
                     </span>
-                  } 
+                  }
                   key="teachers"
                 >
-                  <div className="list-section">
+                  <div className={styles.listSection}>
                     {selectedClass.classTeachers && selectedClass.classTeachers.length > 0 ? (
-                      <div className="teachers-grid">
+                      <div className={styles.teachersGrid}>
                         {selectedClass.classTeachers.map(teacher => (
-                          <Card 
-                            key={teacher.teacherID} 
-                            className="admin-teacher-card" 
+                          <Card
+                            key={teacher.teacherID}
+                            className={styles.adminTeacherCard}
                             hoverable
                             onClick={() => showTeacherDetail(teacher.teacherID)}
                           >
-                            <div className="admin-teacher-card-content">
-                              <div className="teacher-avatar-container">
-                                <Avatar 
-                                  size={70} 
+                            <div className={styles.adminTeacherCardContent}>
+                              <div className={styles.teacherAvatarContainer}>
+                                <Avatar
+                                  size={70}
                                   src={teacher.avatar || null}
-                                  icon={!teacher.avatar ? <UserOutlined /> : null} 
-                                  className="teacher-avatar" 
+                                  icon={!teacher.avatar ? <UserOutlined /> : null}
+                                  className={styles.teacherAvatar}
                                 />
-                                <Tag color="blue" className="teacher-tag">
+                                <Tag color="blue" className={styles.teacherTag}>
                                   Teacher
                                 </Tag>
                               </div>
-                              <div className="teacher-info">
-                                <Title level={5} className="teacher-name">{teacher.teacherName}</Title>
+                              <div className={styles.teacherInfo}>
+                                <Title level={5} className={styles.teacherName}>{teacher.teacherName}</Title>
                                 <Button
                                   type="primary"
                                   size="small"
                                   icon={<FileTextOutlined />}
-                                  className="view-teacher-btn"
+                                  className={styles.viewTeacherBtn}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     showTeacherDetail(teacher.teacherID);
@@ -1387,68 +1404,68 @@ const ClassManagement = () => {
                         ))}
                       </div>
                     ) : (
-                      <Empty 
+                      <Empty
                         description={
-                          <div className="empty-message">
+                          <div className={styles.emptyMessage}>
                             <Title level={5}>No Teachers Assigned</Title>
                             <Text type="secondary">This class doesn't have any teachers assigned yet.</Text>
                           </div>
                         }
-                        image={Empty.PRESENTED_IMAGE_SIMPLE} 
-                        className="empty-data"
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        className={styles.emptyData}
                       />
                     )}
                   </div>
                 </TabPane>
-                
-                <TabPane 
+
+                <TabPane
                   tab={
                     <span>
                       <UserOutlined /> Students ({selectedClass.quantity || 0})
                     </span>
-                  } 
+                  }
                   key="students"
                 >
-                  <div className="list-section">
+                  <div className={styles.listSection}>
                     {selectedClass.classChildrens && selectedClass.classChildrens.length > 0 ? (
                       <>
-                        <div className="student-header">
+                        <div className={styles.studentHeader}>
                           <Title level={5}>Enrolled Students</Title>
-                          <Badge 
-                            count={selectedClass.classChildrens.length} 
-                            style={{ backgroundColor: '#52c41a' }} 
+                          <Badge
+                            count={selectedClass.classChildrens.length}
+                            style={{ backgroundColor: '#52c41a' }}
                           />
                         </div>
-                        
-                        <div className="students-grid">
+
+                        <div className={styles.studentsGrid}>
                           {selectedClass.classChildrens.map((student, index) => (
-                            <Card 
+                            <Card
                               key={student.childrenID}
-                              className="admin-student-card" 
+                              className={styles.adminStudentCard}
                               hoverable
                               onClick={() => showStudentDetail(student.childrenID)}
                             >
-                              <div className="student-number">{index + 1}</div>
-                              <div className="admin-student-card-inner">
-                                <Avatar 
-                                  size={60} 
+                              <div className={styles.studentNumber}>{index + 1}</div>
+                              <div className={styles.adminStudentCardInner}>
+                                <Avatar
+                                  size={60}
                                   src={student.avatar && student.avatar !== "string" ? student.avatar : null}
-                                  icon={!student.avatar || student.avatar === "string" ? <UserOutlined /> : null} 
+                                  icon={!student.avatar || student.avatar === "string" ? <UserOutlined /> : null}
                                   className={`student-avatar ${student.gender?.toLowerCase() === "female" ? "female-avatar" : "male-avatar"}`}
                                 />
-                                <div className="admin-student-card-details">
-                                  <Text strong className="admin-student-card-name">{student.childrenName}</Text>
-                                  <div className="admin-student-card-badges">
+                                <div className={styles.adminStudentCardDetails}>
+                                  <Text strong className={styles.adminStudentCardName}>{student.childrenName}</Text>
+                                  <div className={styles.adminStudentCardBadges}>
                                     {student.gender && student.gender !== "string" && (
                                       <Tag color={student.gender.toLowerCase() === "female" ? "pink" : "blue"} className="gender-tag">
                                         {student.gender}
                                       </Tag>
                                     )}
-                                    <Button 
-                                      type="primary" 
-                                      size="small" 
+                                    <Button
+                                      type="primary"
+                                      size="small"
                                       icon={<FileTextOutlined />}
-                                      className="view-details-btn"
+                                      className={styles.viewDetailsBtn}
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         showStudentDetail(student.childrenID);
@@ -1464,15 +1481,15 @@ const ClassManagement = () => {
                         </div>
                       </>
                     ) : (
-                      <Empty 
+                      <Empty
                         description={
-                          <div className="empty-message">
+                          <div className={styles.emptyMessage}>
                             <Title level={5}>No Students Enrolled</Title>
                             <Text type="secondary">This class doesn't have any students enrolled yet.</Text>
                           </div>
                         }
-                        image={Empty.PRESENTED_IMAGE_SIMPLE} 
-                        className="empty-data"
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        className={styles.emptyData}
                       />
                     )}
                   </div>
@@ -1486,8 +1503,8 @@ const ClassManagement = () => {
       {/* Edit Class Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <EditOutlined className="modal-icon" />
+          <div className={styles.modalTitle}>
+            <EditOutlined className={styles.modalIcon} />
             <span>Edit Class</span>
           </div>
         }
@@ -1495,43 +1512,43 @@ const ClassManagement = () => {
         onCancel={handleEditModalClose}
         footer={null}
         width={600}
-        className="edit-class-modal"
+        className={styles.editClassModal}
         maskClosable={true}
-        destroyOnClose={true}
+        destroyOnHidden={true}
       >
-        <div className="edit-class-content">
+        <div className={styles.editClassContent}>
           {editingClass && (
             <>
-              <div className="edit-class-header">
-                <div className="edit-class-id">
+              <div className={styles.editClassHeader}>
+                <div className={styles.editClassId}>
                   <Text type="secondary">ID: {editingClass.id}</Text>
                 </div>
-                <div className="edit-class-status">
+                <div className={styles.editClassStatus}>
                   <Text>Current Status: </Text>
-                  <Tag 
-                    color={getStatusColor(editingClass.status)} 
-                    className="status-tag-modal"
+                  <Tag
+                    color={getStatusColor(editingClass.status)}
+                    className={styles.statusTagModal}
                   >
                     {editingClass.status}
                   </Tag>
                 </div>
               </div>
-              
-              <Divider className="edit-divider" />
-              
+
+              <Divider className={styles.editDivider} />
+
               <Form
                 form={form}
                 layout="vertical"
                 onFinish={handleUpdateClass}
-                className="edit-form"
+                className={styles.editForm}
               >
                 <Form.Item
                   name="name"
                   label="Class Name"
                   rules={[
-                    { 
-                      required: true, 
-                      message: 'Please enter the class name!' 
+                    {
+                      required: true,
+                      message: 'Please enter the class name!'
                     },
                     {
                       max: 100,
@@ -1539,29 +1556,29 @@ const ClassManagement = () => {
                     }
                   ]}
                 >
-                  <Input 
-                    placeholder="Enter class name" 
-                    className="edit-input"
+                  <Input
+                    placeholder="Enter class name"
+                    className={styles.editInput}
                     size="large"
                   />
                 </Form.Item>
-                
-                <div className="form-group">
-                  <label className="edit-form-label">Syllabus</label>
-                  <div className="custom-dropdown-container" ref={syllabusDropdownRef}>
-                    <div 
-                      className="custom-dropdown-display" 
+
+                <div className={styles.formGroup}>
+                  <label className={styles.editFormLabel}>Syllabus</label>
+                  <div className={styles.customDropdownContainer} ref={syllabusDropdownRef}>
+                    <div
+                      className={styles.customDropdownDisplay}
                       onClick={() => setShowSyllabusDropdown(!showSyllabusDropdown)}
                     >
                       {selectedSyllabusName}
-                      <div className="dropdown-arrow">▼</div>
+                      <div className={styles.dropdownArrow}>▼</div>
                     </div>
                     {showSyllabusDropdown && (
-                      <div className="custom-dropdown-list">
+                      <div className={styles.customDropdownList}>
                         {syllabi.map(syllabus => (
-                          <div 
+                          <div
                             key={syllabus.id}
-                            className={`custom-dropdown-item ${syllabus.id === selectedSyllabusId ? 'selected' : ''}`}
+                            className={`${styles.customDropdownItem} ${syllabus.id === selectedSyllabusId ? styles.selected : ''}`}
                             onClick={() => handleSyllabusSelect(syllabus.id, syllabus.name)}
                           >
                             {syllabus.name}
@@ -1571,14 +1588,14 @@ const ClassManagement = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <Form.Item
                   name="maxChildren"
                   label="Maximum Children"
                   rules={[
-                    { 
-                      required: true, 
-                      message: 'Please enter the maximum number of children!' 
+                    {
+                      required: true,
+                      message: 'Please enter the maximum number of children!'
                     },
                     {
                       type: 'number',
@@ -1591,37 +1608,37 @@ const ClassManagement = () => {
                       message: 'Maximum children cannot exceed 100!'
                     }
                   ]}
-                  extra={editingClass.quantity > 0 ? 
+                  extra={editingClass.quantity > 0 ?
                     <Text type="warning">
-                      Note: This class currently has {editingClass.quantity} students enrolled. 
+                      Note: This class currently has {editingClass.quantity} students enrolled.
                       Setting a value below this may affect the class status.
                     </Text> : null
                   }
                 >
-                  <InputNumber 
-                    placeholder="Enter maximum children" 
-                    className="edit-input-number"
+                  <InputNumber
+                    placeholder="Enter maximum children"
+                    className={styles.editInputNumber}
                     min={1}
                     max={100}
                     size="large"
                   />
                 </Form.Item>
-                
-                <Form.Item className="form-actions">
-                  <Button 
-                    type="default" 
+
+                <Form.Item className={styles.formActions}>
+                  <Button
+                    type="default"
                     onClick={handleEditModalClose}
-                    className="cancel-button"
+                    className={styles.cancelButton}
                     size="large"
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    type="primary" 
+                  <Button
+                    type="primary"
                     htmlType="submit"
                     icon={<SaveOutlined />}
                     loading={editLoading}
-                    className="save-button"
+                    className={styles.saveButton}
                     size="large"
                   >
                     Save Changes
@@ -1636,15 +1653,15 @@ const ClassManagement = () => {
       {/* Student Detail Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <UserOutlined className="modal-icon" />
+          <div className={styles.modalTitle}>
+            <UserOutlined className={styles.modalIcon} />
             <span>Student Details</span>
           </div>
         }
         open={studentDetailVisible}
         onCancel={handleStudentDetailModalClose}
         width={700}
-        className="student-detail-modal"
+        className={styles.studentDetailModal}
         footer={[
           <Button key="close" onClick={handleStudentDetailModalClose} size="large">
             Close
@@ -1653,31 +1670,31 @@ const ClassManagement = () => {
       >
         <Spin spinning={studentDetailLoading}>
           {selectedStudent && (
-            <div className="student-detail-content">
+            <div className={styles.studentDetailContent}>
               <Row gutter={[24, 24]}>
                 <Col xs={24} md={8}>
-                  <div className="student-profile-photo">
-                    <Avatar 
-                      size={150} 
+                  <div className={styles.studentProfilePhoto}>
+                    <Avatar
+                      size={150}
                       src={selectedStudent.avatar && selectedStudent.avatar !== "string" ? selectedStudent.avatar : null}
-                      icon={!selectedStudent.avatar || selectedStudent.avatar === "string" ? <UserOutlined /> : null} 
-                      className="big-avatar"
+                      icon={!selectedStudent.avatar || selectedStudent.avatar === "string" ? <UserOutlined /> : null}
+                      className={styles.bigAvatar}
                     />
-                    <div className="student-name-tag">
+                    <div className={styles.studentNameTag}>
                       <Text strong>{selectedStudent.name}</Text>
                     </div>
-                    <div className="student-tags">
-                      <Tag color={selectedStudent.gender?.toLowerCase() === "female" ? "pink" : "blue"} className="gender-tag-large">
+                    <div className={styles.studentTags}>
+                      <Tag color={selectedStudent.gender?.toLowerCase() === "female" ? "pink" : "blue"} className={styles.genderTagLarge}>
                         {selectedStudent.gender || 'Unspecified'}
                       </Tag>
-                      <Tag color={selectedStudent.status === "Active" ? "green" : "orange"} className="status-tag-large">
+                      <Tag color={selectedStudent.status === "Active" ? "green" : "orange"} className={styles.statusTagLarge}>
                         {selectedStudent.status || 'Unknown'}
                       </Tag>
                     </div>
                   </div>
                 </Col>
                 <Col xs={24} md={16}>
-                  <Card className="student-info-card" title="Personal Information">
+                  <Card className={styles.studentInfoCard} title="Personal Information">
                     <Descriptions column={1} bordered size="small" labelStyle={{ fontWeight: 500 }}>
                       <Descriptions.Item label="Full Name">{selectedStudent.name}</Descriptions.Item>
                       <Descriptions.Item label="Date of Birth">
@@ -1690,17 +1707,17 @@ const ClassManagement = () => {
                         {selectedStudent.gradeLevelName || selectedClass.gradeLevelName || "-"}
                       </Descriptions.Item>
                       <Descriptions.Item label="Enrollment Date">
-                        {selectedStudent.enrollDate !== "0001-01-01T00:00:00" ? 
+                        {selectedStudent.enrollDate !== "0001-01-01T00:00:00" ?
                           new Date(selectedStudent.enrollDate).toLocaleDateString() : "-"}
                       </Descriptions.Item>
                     </Descriptions>
                   </Card>
                 </Col>
               </Row>
-              
-              <Row gutter={[24, 24]} className="detail-row">
+
+              <Row gutter={[24, 24]} className={styles.detailRow}>
                 <Col xs={24} md={12}>
-                  <Card className="student-info-card" title="Parent Information">
+                  <Card className={styles.studentInfoCard} title="Parent Information">
                     <Descriptions column={1} bordered size="small" labelStyle={{ fontWeight: 500 }}>
                       <Descriptions.Item label="Parent Name">{selectedStudent.parentName}</Descriptions.Item>
                       <Descriptions.Item label="Contact Number">{selectedStudent.phoneNumber}</Descriptions.Item>
@@ -1708,22 +1725,22 @@ const ClassManagement = () => {
                   </Card>
                 </Col>
                 <Col xs={24} md={12}>
-                  <Card className="student-info-card" title="Documents">
-                    <div className="document-preview">
+                  <Card className={styles.studentInfoCard} title="Documents">
+                    <div className={styles.documentPreview}>
                       {selectedStudent.birthCertificate && selectedStudent.birthCertificate !== "string" ? (
-                        <div className="document-item">
-                          <img 
-                            src={selectedStudent.birthCertificate} 
-                            alt="Birth Certificate" 
-                            className="document-thumbnail" 
+                        <div className={styles.documentItem}>
+                          <img
+                            src={selectedStudent.birthCertificate}
+                            alt="Birth Certificate"
+                            className={styles.documentThumbnail}
                             onClick={() => window.open(selectedStudent.birthCertificate, '_blank')}
                           />
-                          <div className="document-label">Birth Certificate</div>
+                          <div className={styles.documentLabel}>Birth Certificate</div>
                         </div>
                       ) : (
-                        <Empty 
-                          description="No birth certificate provided" 
-                          image={Empty.PRESENTED_IMAGE_SIMPLE} 
+                        <Empty
+                          description="No birth certificate provided"
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
                         />
                       )}
                     </div>
@@ -1738,15 +1755,15 @@ const ClassManagement = () => {
       {/* Teacher Detail Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <TeamOutlined className="modal-icon" />
+          <div className={styles.modalTitle}>
+            <TeamOutlined className={styles.modalIcon} />
             <span>Teacher Details</span>
           </div>
         }
         open={teacherDetailVisible}
         onCancel={handleTeacherDetailModalClose}
         width={700}
-        className="teacher-detail-modal"
+        className={styles.teacherDetailModal}
         footer={[
           <Button key="close" onClick={handleTeacherDetailModalClose} size="large">
             Close
@@ -1755,25 +1772,25 @@ const ClassManagement = () => {
       >
         <Spin spinning={teacherDetailLoading}>
           {selectedTeacher && (
-            <div className="teacher-detail-content">
+            <div className={styles.teacherDetailContent}>
               <Row gutter={[24, 24]}>
                 <Col xs={24} md={8}>
-                  <div className="teacher-profile-photo">
-                    <Avatar 
-                      size={150} 
-                      icon={<UserOutlined />} 
-                      className="big-teacher-avatar" 
+                  <div className={styles.teacherProfilePhoto}>
+                    <Avatar
+                      size={150}
+                      icon={<UserOutlined />}
+                      className={styles.bigTeacherAvatar}
                     />
-                    <div className="teacher-name-tag">
+                    <div className={styles.teacherNameTag}>
                       <Text strong>{selectedTeacher.fullName}</Text>
                     </div>
-                    <div className="teacher-tags">
-                      <Tag color="blue" className="role-tag-large">
+                    <div className={styles.teacherTags}>
+                      <Tag color="blue" className={styles.roleTagLarge}>
                         {selectedTeacher.roleName}
                       </Tag>
-                      <Tag 
-                        color={selectedTeacher.status === "Active" ? "green" : "orange"} 
-                        className="status-tag-large"
+                      <Tag
+                        color={selectedTeacher.status === "Active" ? "green" : "orange"}
+                        className={styles.statusTagLarge}
                       >
                         {selectedTeacher.status}
                       </Tag>
@@ -1781,7 +1798,7 @@ const ClassManagement = () => {
                   </div>
                 </Col>
                 <Col xs={24} md={16}>
-                  <Card className="teacher-info-card" title="Personal Information">
+                  <Card className={styles.teacherInfoCard} title="Personal Information">
                     <Descriptions column={1} bordered size="small" labelStyle={{ fontWeight: 500 }}>
                       <Descriptions.Item label="Full Name">{selectedTeacher.fullName}</Descriptions.Item>
                       <Descriptions.Item label="Email Address">{selectedTeacher.email}</Descriptions.Item>
@@ -1793,17 +1810,17 @@ const ClassManagement = () => {
                   </Card>
                 </Col>
               </Row>
-              
-              <Row gutter={[24, 24]} className="detail-row">
+
+              <Row gutter={[24, 24]} className={styles.detailRow}>
                 <Col xs={24}>
-                  <Card className="class-info-card" title="Currently Teaching">
-                    <div className="current-class-info">
-                      <div className="class-icon-wrapper">
-                        <BookOutlined className="class-icon" />
+                  <Card className={styles.classInfoCard} title="Currently Teaching">
+                    <div className={styles.currentClassInfo}>
+                      <div className={styles.classIconWrapper}>
+                        <BookOutlined className={styles.classIcon} />
                       </div>
-                      <div className="class-details">
+                      <div className={styles.classDetails}>
                         <Text strong>{selectedClass.name}</Text>
-                        <div className="class-meta">
+                        <div className={styles.classMeta}>
                           <Tag color="cyan">{selectedClass.gradeLevelName}</Tag>
                           <Tag color="purple">{selectedClass.syllabusName}</Tag>
                           <Tag color="green">
@@ -1823,8 +1840,8 @@ const ClassManagement = () => {
       {/* Create Class Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <PlusOutlined className="modal-icon" />
+          <div className={styles.modalTitle}>
+            <PlusOutlined className={styles.modalIcon} />
             <span>Create New Class</span>
           </div>
         }
@@ -1832,25 +1849,25 @@ const ClassManagement = () => {
         onCancel={handleCreateModalClose}
         footer={null}
         width={600}
-        className="create-class-modal"
+        className={styles.createClassModal}
         maskClosable={true}
-        destroyOnClose={true}
+        destroyOnHidden={true}
       >
-        <div className="create-class-content">
+        <div className={styles.createClassContent}>
           <Spin spinning={loadingOptions}>
             <Form
               form={createForm}
               layout="vertical"
               onFinish={handleCreateClass}
-              className="create-form"
+              className={styles.createForm}
             >
               <Form.Item
                 name="name"
                 label="Class Name"
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Please enter the class name!' 
+                  {
+                    required: true,
+                    message: 'Please enter the class name!'
                   },
                   {
                     max: 100,
@@ -1858,27 +1875,27 @@ const ClassManagement = () => {
                   }
                 ]}
               >
-                <Input 
-                  placeholder="Enter class name" 
-                  className="create-input"
+                <Input
+                  placeholder="Enter class name"
+                  className={styles.createInput}
                   size="large"
                 />
               </Form.Item>
-              
+
               <Form.Item
                 name="syllabusID"
                 label="Syllabus"
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Please select a syllabus!' 
+                  {
+                    required: true,
+                    message: 'Please select a syllabus!'
                   }
                 ]}
               >
                 <Select
                   placeholder="Select syllabus"
                   size="large"
-                  className="create-select"
+                  className={styles.createSelect}
                   showSearch
                   filterOption={(input, option) =>
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -1889,27 +1906,27 @@ const ClassManagement = () => {
                   ))}
                 </Select>
               </Form.Item>
-              
+
               <Form.Item
                 name="academicYear"
                 label="Academic Year"
                 initialValue={getCurrentAcademicYear()}
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Please enter the academic year!' 
+                  {
+                    required: true,
+                    message: 'Please enter the academic year!'
                   }
                 ]}
               >
                 <Input
                   placeholder="Enter academic year (e.g., 2024-2025)"
-                  className="create-input"
+                  className={styles.createInput}
                   size="large"
                   readOnly
                   style={{ backgroundColor: '#fff', color: 'rgba(0, 0, 0, 0.88)', cursor: 'default' }}
                 />
               </Form.Item>
-              
+
               <Form.Item
                 name="gradeLevelID"
                 label="Grade Level (select this OR Enrichment Program)"
@@ -1917,7 +1934,7 @@ const ClassManagement = () => {
                 <Select
                   placeholder="Select grade level"
                   size="large"
-                  className="create-select"
+                  className={styles.createSelect}
                   showSearch
                   allowClear
                   disabled={classTypeSelection === 'enrichment'}
@@ -1939,14 +1956,14 @@ const ClassManagement = () => {
                   ))}
                 </Select>
               </Form.Item>
-              
+
               <Form.Item
                 name="maxChildren"
                 label="Maximum Children"
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Please enter the maximum number of children!' 
+                  {
+                    required: true,
+                    message: 'Please enter the maximum number of children!'
                   },
                   {
                     type: 'number',
@@ -1960,15 +1977,15 @@ const ClassManagement = () => {
                   }
                 ]}
               >
-                <InputNumber 
-                  placeholder="Enter maximum children" 
-                  className="create-input-number"
+                <InputNumber
+                  placeholder="Enter maximum children"
+                  className={styles.createInputNumber}
                   min={1}
                   max={100}
                   size="large"
                 />
               </Form.Item>
-              
+
               <Form.Item
                 name="enrichmentProgramId"
                 label="Enrichment Program (select this OR Grade Level)"
@@ -1976,7 +1993,7 @@ const ClassManagement = () => {
                 <Select
                   placeholder="Select enrichment program"
                   size="large"
-                  className="create-select"
+                  className={styles.createSelect}
                   allowClear
                   showSearch
                   disabled={classTypeSelection === 'grade'}
@@ -2002,14 +2019,14 @@ const ClassManagement = () => {
                   ))}
                 </Select>
               </Form.Item>
-              
+
               {classTypeSelection === 'enrichment' && (
                 <Form.Item
                   name="timetable"
                   label="Class Days"
                   rules={[
-                    { 
-                      required: true, 
+                    {
+                      required: true,
                       message: 'Please select at least one day for the class!',
                       type: 'array',
                       min: 1
@@ -2019,58 +2036,58 @@ const ClassManagement = () => {
                   <Checkbox.Group style={{ width: '100%' }}>
                     <Row gutter={[16, 16]}>
                       <Col span={8}>
-                        <Checkbox value="2" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">2</span>
-                            <span className="day-name">Monday</span>
+                        <Checkbox value="2" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>2</span>
+                            <span className={styles.dayName}>Monday</span>
                           </div>
                         </Checkbox>
                       </Col>
                       <Col span={8}>
-                        <Checkbox value="3" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">3</span>
-                            <span className="day-name">Tuesday</span>
+                        <Checkbox value="3" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>3</span>
+                            <span className={styles.dayName}>Tuesday</span>
                           </div>
                         </Checkbox>
                       </Col>
                       <Col span={8}>
-                        <Checkbox value="4" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">4</span>
-                            <span className="day-name">Wednesday</span>
+                        <Checkbox value="4" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>4</span>
+                            <span className={styles.dayName}>Wednesday</span>
                           </div>
                         </Checkbox>
                       </Col>
                       <Col span={8}>
-                        <Checkbox value="5" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">5</span>
-                            <span className="day-name">Thursday</span>
+                        <Checkbox value="5" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>5</span>
+                            <span className={styles.dayName}>Thursday</span>
                           </div>
                         </Checkbox>
                       </Col>
                       <Col span={8}>
-                        <Checkbox value="6" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">6</span>
-                            <span className="day-name">Friday</span>
+                        <Checkbox value="6" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>6</span>
+                            <span className={styles.dayName}>Friday</span>
                           </div>
                         </Checkbox>
                       </Col>
                       <Col span={8}>
-                        <Checkbox value="7" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">7</span>
-                            <span className="day-name">Saturday</span>
+                        <Checkbox value="7" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>7</span>
+                            <span className={styles.dayName}>Saturday</span>
                           </div>
                         </Checkbox>
                       </Col>
                       <Col span={8}>
-                        <Checkbox value="8" className="day-checkbox">
-                          <div className="day-label">
-                            <span className="day-number">CN</span>
-                            <span className="day-name">Sunday</span>
+                        <Checkbox value="8" className={styles.dayCheckbox}>
+                          <div className={styles.dayLabel}>
+                            <span className={styles.dayNumber}>CN</span>
+                            <span className={styles.dayName}>Sunday</span>
                           </div>
                         </Checkbox>
                       </Col>
@@ -2078,22 +2095,22 @@ const ClassManagement = () => {
                   </Checkbox.Group>
                 </Form.Item>
               )}
-              
-              <Form.Item className="form-actions">
-                <Button 
-                  type="default" 
+
+              <Form.Item className={styles.formActions}>
+                <Button
+                  type="default"
                   onClick={handleCreateModalClose}
-                  className="cancel-button"
+                  className={styles.cancelButton}
                   size="large"
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   htmlType="submit"
                   icon={<PlusOutlined />}
                   loading={createLoading}
-                  className="save-button"
+                  className={styles.saveButton}
                   size="large"
                 >
                   Create Class
@@ -2107,8 +2124,8 @@ const ClassManagement = () => {
       {/* Delete Confirmation Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <DeleteOutlined className="modal-icon" style={{ color: '#ff4d4f' }} />
+          <div className={styles.modalTitle}>
+            <DeleteOutlined className={styles.modalIcon} style={{ color: '#ff4d4f' }} />
             <span>Confirm Deletion</span>
           </div>
         }
@@ -2118,10 +2135,10 @@ const ClassManagement = () => {
           <Button key="cancel" onClick={handleDeleteCancel} size="large">
             Cancel
           </Button>,
-          <Button 
-            key="delete" 
-            type="primary" 
-            danger 
+          <Button
+            key="delete"
+            type="primary"
+            danger
             loading={deleteLoading}
             onClick={handleDeleteClass}
             size="large"
@@ -2131,10 +2148,10 @@ const ClassManagement = () => {
         ]}
       >
         {deletingClass && (
-          <div className="delete-confirmation-content">
+          <div className={styles.deleteConfirmationContent}>
             <p>Are you sure you want to delete the class <Text strong>{deletingClass.name}</Text>?</p>
             <p>This action cannot be undone.</p>
-            
+
             {deletingClass.quantity > 0 && (
               <Alert
                 message="Warning"
@@ -2151,8 +2168,8 @@ const ClassManagement = () => {
       {/* Restore Confirmation Modal */}
       <Modal
         title={
-          <div className="modal-title">
-            <UndoOutlined className="modal-icon" style={{ color: '#52c41a' }} />
+          <div className={styles.modalTitle}>
+            <UndoOutlined className={styles.modalIcon} style={{ color: '#52c41a' }} />
             <span>Confirm Restoration</span>
           </div>
         }
@@ -2162,9 +2179,9 @@ const ClassManagement = () => {
           <Button key="cancel" onClick={handleRestoreCancel} size="large">
             Cancel
           </Button>,
-          <Button 
-            key="restore" 
-            type="primary" 
+          <Button
+            key="restore"
+            type="primary"
             loading={restoreLoading}
             onClick={handleRestoreClass}
             size="large"
@@ -2175,7 +2192,7 @@ const ClassManagement = () => {
         ]}
       >
         {restoringClass && (
-          <div className="restore-confirmation-content">
+          <div className={styles.restoreConfirmationContent}>
             <p>Are you sure you want to restore the class <Text strong>{restoringClass.name}</Text>?</p>
             <p>The class will be available again after restoration.</p>
           </div>

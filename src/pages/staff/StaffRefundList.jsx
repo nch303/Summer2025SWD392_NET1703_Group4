@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getAwaitingRefundInvoices, processRefund } from '../../services/StaffService';
-import ProcessingSpinner from '../../components/spinner/ProcessingSpinner';
+import ProcessingSpinner from '../../components/ProcessingSpinner';
 import styles from './StaffRefundList.module.css';
 
 const StaffRefundList = () => {

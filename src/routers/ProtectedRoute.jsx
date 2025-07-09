@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useUser } from '../../contexts/UserContext';
-import ProcessingSpinner from '../spinner/ProcessingSpinner';
+import { useUser } from '../contexts/UserContext';
+import ProcessingSpinner from '../components/ProcessingSpinner';
 
 /**
  * A route wrapper that ensures only authenticated users with specific roles can access

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { getUserPaymentHistory, getChildPaymentHistory } from '../../services/PaymentHistoryService';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 import styles from './PaymentHistoryPage.module.css';
 import { useUser } from '../../contexts/UserContext';
 

@@ -5,8 +5,8 @@ import {
   downloadInvoicePdf, 
   getInvoiceInfo 
 } from '../../services/PaymentHistoryService';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
 import { useReactToPrint } from 'react-to-print';
 import styles from './InvoiceDetailPage.module.css';
 
