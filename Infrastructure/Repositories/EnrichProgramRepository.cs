@@ -64,7 +64,7 @@ namespace Infrastructure.Repositories
         public async Task<List<EnrichmentProgram>> GetAllEnrichmentProgramsForParentAsync()
         {
             return await _context.EnrichmentPrograms
-                .Where(ep => ep.EndDate >= DateTime.Now && !ep.IsDelete && ep.StartDate <= DateTime.UtcNow)
+                .Where(ep => ep.EndDate >= DateTime.Now && !ep.IsDelete && ep.EndDate >= DateTime.UtcNow)
                 .Include(ep => ep.TypePrograms)
                 .ToListAsync();
         }
