@@ -321,7 +321,7 @@ namespace WebAPI.Controllers
                                         AccountID = child.ParentID,
                                         Amount = -amountToRefund,
                                         Status = "Awaiting",
-                                        Date = DateTime.UtcNow,
+                                        Date = DateTime.Now,
                                         Name = $"Refund for {child.Name}",
                                         ChildrenID = child.ID
                                     };
@@ -417,7 +417,7 @@ namespace WebAPI.Controllers
                                 AccountID = child.ParentID,
                                 Amount = -amountToRefund,
                                 Status = "Awaiting",
-                                Date = DateTime.UtcNow,
+                                Date = DateTime.Now,
                                 Name = $"Refund for {child.Name}",
                                 ChildrenID = child.ID
                             };

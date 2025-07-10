@@ -13,8 +13,6 @@ builder.Services.AddSwaggerWithJwt();
 builder.Services.AddCorsPolicy();
 
 builder.Services.AddControllers();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.Configure<VnPaySettings>(builder.Configuration.GetSection("VnPaySettings"));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 
