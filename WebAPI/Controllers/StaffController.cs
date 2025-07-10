@@ -418,7 +418,7 @@ namespace WebAPI.Controllers
                                 Amount = -amountToRefund,
                                 Status = "Awaiting",
                                 Date = DateTime.Now,
-                                Name = $"Refund for {child.Name}",
+                                Name = $"Refund for {child.Name}" + " Invoice: " + invoices.ID,
                                 ChildrenID = child.ID
                             };
                             await _invoiceRepository.CreateAsync(refundInvoice);

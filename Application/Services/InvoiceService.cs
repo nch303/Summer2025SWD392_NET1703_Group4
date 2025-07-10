@@ -356,6 +356,7 @@ namespace Application.Services
                 if (invoice.Status != "Success")
                     invoicesTemps.Remove(invoice);
             }
+            var refundInvoice = await _invoiceRepository.GetRefundByInvoiceID(invoicesTemps[0].ID);
             return invoicesTemps;
         }
 

@@ -88,5 +88,18 @@ namespace Infrastructure.Repositories
                 .Where(i => i.Status == "Awaiting" || i.Status == "Refunded")
                 .ToListAsync();
         }
+
+        public async Task<Invoice> GetRefundByInvoiceID(Guid invoiceId)
+        {
+            var invoice = await _context.Invoices
+                .Include(i => i.Childrens)
+                .Include(i => i.Accounts)
+                .FirstOrDefaultAsync(i => i.Name!.Contains(invoiceId.ToString()));
+            if (invoice == null)
+            {
+                throw new KeyNotFoundException("Invoice not found or not refunded.");
+            }
+            return invoice;
+        }
     }
 }
