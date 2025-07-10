@@ -66,25 +66,25 @@ namespace WebAPI.Controllers
 
                         var invoice = await _invoiceService.GetByIdAsync(invoiceDetails[i].InvoiceID);
 
-                        //Get academic year
-                        string academicYear = "";
+                        ////Get academic year
+                        //string academicYear = "";
 
-                        var year = invoice!.Date.Year;
+                        //var year = invoice!.Date.Year;
 
-                        // So sánh với ngày 1/6 của năm hiện tại
-                        var schoolStartDate = new DateTime(year, 6, 1);
+                        //// So sánh với ngày 1/6 của năm hiện tại
+                        //var schoolStartDate = new DateTime(year, 6, 1);
 
-                        if (invoice.Date < schoolStartDate)
-                        {
-                            academicYear = (year - 1).ToString() + "-" + year.ToString();
-                        }
-                        else
-                        {
-                            academicYear = year.ToString() + "-" + (year + 1).ToString();
-                        }
+                        //if (invoice.Date < schoolStartDate)
+                        //{
+                        //    academicYear = (year - 1).ToString() + "-" + year.ToString();
+                        //}
+                        //else
+                        //{
+                        //    academicYear = year.ToString() + "-" + (year + 1).ToString();
+                        //}
 
-                        var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
-                        var currentGrade = chidrenGrade!.Where(cg => cg.AcademicYear!.Equals(academicYear)).FirstOrDefault();
+                        var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+                        var currentGrade = childrenGrade[childrenGrade.Count - 1];
 
                         var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(currentGrade!.GradeLevelID);
                         var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
