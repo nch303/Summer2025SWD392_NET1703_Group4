@@ -212,7 +212,7 @@ namespace Application.Services
                     ID = Guid.NewGuid(),
                     InvoiceID = invoice.ID,
                     TuitionFeeID = tuitionFeeId,
-                    Price = (decimal)gradeLevel!.Fee,
+                    Price = request.Amount, 
                     ChildrenID = request.ChildrenID
                 };
                 await _invoiceDetailService.CreateAsync(invoiceDetail);

@@ -93,7 +93,7 @@ namespace WebAPI.Controllers
                         // Design Description cua hoa don
                         // Tách các phần tử
                         string designedDescription = "";
-                        if (tuition.Description!.Contains("+"))
+                        if (tuition.Description!.Contains('+'))
                         {
                             string[] parts = tuition.Description!.Split(" + ");
 
@@ -120,12 +120,26 @@ namespace WebAPI.Controllers
                             }
                             else
                             {
-                                designedDescription = "- " + gradeFeeName + "\n" + tuition.Description!;
+                                string part = tuition.Description;
+
+
+                                // Tìm tên và số tiền bằng Regex
+                                var match = Regex.Match(part, @"^(.*)\((\d+)\)$");
+                                if (match.Success)
+                                {
+                                    string title = match.Groups[1].Value.Trim();
+                                    long amount = long.Parse(match.Groups[2].Value);
+                                    string formatted = string.Format(new CultureInfo("vi-VN"), "{0} ({1:N0} đồng)", title, amount);
+                                    designedDescription += "- " + formatted + "\n";
+                                }
+
+                                designedDescription = "- " + gradeFeeName + "\n" + designedDescription.TrimEnd('\n');
                             }
 
                         }
 
                         detail.Description = designedDescription;
+                        invoiceDetailResponses[i] = detail;
                     }
                 }
 
