@@ -95,10 +95,6 @@ namespace Infrastructure.Repositories
                 .Include(i => i.Childrens)
                 .Include(i => i.Accounts)
                 .FirstOrDefaultAsync(i => i.Name!.Contains(invoiceId.ToString()));
-            if (invoice == null)
-            {
-                throw new KeyNotFoundException("Invoice not found or not refunded.");
-            }
             return invoice;
         }
     }

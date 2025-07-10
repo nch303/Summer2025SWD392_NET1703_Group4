@@ -357,6 +357,10 @@ namespace Application.Services
                     invoicesTemps.Remove(invoice);
             }
             var refundInvoice = await _invoiceRepository.GetRefundByInvoiceID(invoicesTemps[0].ID);
+            if (refundInvoice != null)
+            {
+                invoicesTemps.Remove(invoicesTemps[0]);
+            }
             return invoicesTemps;
         }
 
