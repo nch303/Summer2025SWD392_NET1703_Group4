@@ -230,6 +230,8 @@ namespace WebAPI.Controllers
                     }
                     childrenResponse[i].GradeLevelID = grade[grade.Count - 1]?.GradeLevels!.ID ?? 0;
                     childrenResponse[i].GradeLevelName = grade[grade.Count - 1]?.GradeLevels!.Name ?? string.Empty;
+                    childrenResponse[i].CurrentGradeLevelName = children[i].ChildrenGrades?.LastOrDefault()?.GradeLevels!.Name ?? null;
+
                 }
                 childrenResponse.OrderByDescending(c => c.EnrollDate);
 
