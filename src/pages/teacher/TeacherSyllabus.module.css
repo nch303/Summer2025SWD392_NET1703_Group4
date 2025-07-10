@@ -50,15 +50,15 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.syllabusTabs .ant-tabs-nav {
+.syllabusTabs :global(.ant-tabs-nav) {
   margin-bottom: 24px;
 }
 
-.syllabusTabs .ant-tabs-tab {
+.syllabusTabs :global(.ant-tabs-tab) {
   padding: 12px 20px;
 }
 
-.syllabusTabs .ant-tabs-tab-active {
+.syllabusTabs :global(.ant-tabs-tab-active) {
   font-weight: 600;
 }
 
@@ -155,7 +155,7 @@
     width: 100%;
   }
 
-  .searchFilter .ant-input-search {
+  .searchFilter :global(.ant-input-search) {
     width: 100%;
   }
 

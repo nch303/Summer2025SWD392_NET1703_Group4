@@ -544,11 +544,11 @@ const EnrollmentTrackingPage = () => {
                         <div className={styles.trackingApplicationDetails}>
                           <p>
                             <FontAwesomeIcon icon="calendar-alt" />
-                            <span>Năm học: {app.academicYear}</span>
+                            <span>Academic year: {app.academicYear}</span>
                           </p>
                           <p>
                             <FontAwesomeIcon icon="graduation-cap" />
-                            <span>Cấp lớp: {app.gradeLevelName}</span>
+                            <span>Grade: {app.gradeLevelName}</span>
                           </p>
                         </div>
                       </div>

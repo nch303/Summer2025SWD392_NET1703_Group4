@@ -130,9 +130,9 @@ export const useCustomToast = () => {
   };
 
   const ToastContainer = ({ position = 'center' }) => {
-    // Tách thông báo thành 2 nhóm: success và các loại khác
+    // Separate success toasts from all other types
     const successToasts = toasts.filter(toast => toast.type === TOAST_TYPES.SUCCESS);
-    const otherToasts = toasts.filter(toast => toast.type !== TOAST_TYPES.SUCCESS);
+    const nonSuccessToasts = toasts.filter(toast => toast.type !== TOAST_TYPES.SUCCESS);
 
     return (
       <>
@@ -141,9 +141,9 @@ export const useCustomToast = () => {
           <div className={styles.toastOverlay}></div>
         )}
 
-        {/* Container cho thông báo success - luôn ở center */}
+        {/* Container for success toasts - always centered */}
         {successToasts.length > 0 && (
-          <div className={`${styles.customToastContainer} ${getPositionClass(position)}`}>
+          <div className={`${styles.customToastContainer} ${getPositionClass('center')}`}>
             {successToasts.map((toast) => (
               <CustomToast
                 key={toast.id}
@@ -154,10 +154,10 @@ export const useCustomToast = () => {
           </div>
         )}
 
-        {/* Container cho các thông báo khác - sử dụng position được truyền vào */}
-        {otherToasts.length > 0 && (
-          <div className={`${styles.customToastContainer} ${getPositionClass(position)}`}>
-            {otherToasts.map((toast) => (
+        {/* Container for all non-success toasts - always top-right */}
+        {nonSuccessToasts.length > 0 && (
+          <div className={`${styles.customToastContainer} ${getPositionClass('top-right')}`}>
+            {nonSuccessToasts.map((toast) => (
               <CustomToast
                 key={toast.id}
                 {...toast}

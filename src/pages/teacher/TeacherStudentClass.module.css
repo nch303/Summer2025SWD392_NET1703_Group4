@@ -138,7 +138,7 @@
     width: 100%;
   }
 
-  .searchFilter .ant-input-search {
+  .searchFilter :global(.ant-input-search) {
     width: 100%;
   }
 }
@@ -175,7 +175,7 @@
   z-index: 1050 !important;
 }
 
-.studentDetailModal .ant-modal-content {
+.studentDetailModal :global(.ant-modal-content) {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -183,7 +183,7 @@
   transform: translateZ(0);
 }
 
-.studentDetailModal .ant-modal-body {
+.studentDetailModal :global(.ant-modal-body) {
   padding: 0;
 }
 
@@ -283,7 +283,7 @@
   overflow: hidden;
 }
 
-.contactCard .ant-card-body {
+.contactCard :global(.ant-card-body) {
   padding: 20px;
 }
 
@@ -411,12 +411,12 @@
   pointer-events: auto;
 }
 
-.tscModalWrapper .ant-modal {
+.tscModalWrapper :global(.ant-modal) {
   top: 50px;
   padding-bottom: 50px;
 }
 
-.tscModalWrapper .ant-modal-content {
+.tscModalWrapper :global(.ant-modal-content) {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -431,23 +431,23 @@
   border: 1px solid #f0f0f0;
 }
 
-.tscTabStatistics .ant-statistic:hover {
+.tscTabStatistics :global(.ant-statistic:hover) {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: #d9d9d9;
 }
 
-.tscTabStatistics .ant-statistic-title {
+.tscTabStatistics :global(.ant-statistic-title) {
   color: #666;
   font-size: 14px;
   font-weight: 500;
 }
 
-.tscTabStatistics .ant-statistic-content {
+.tscTabStatistics :global(.ant-statistic-content) {
   color: #262626;
   font-size: 16px;
 }
 
-.tscTabStatistics .ant-statistic .anticon {
+.tscTabStatistics :global(.ant-statistic .anticon) {
   color: #1890ff;
   font-size: 16px;
   margin-right: 6px;
@@ -466,24 +466,24 @@
   border: 1px solid #f0f0f0;
 }
 
-.tscDocList .ant-list-item:hover {
+.tscDocList :global(.ant-list-item:hover)  {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: #d9d9d9;
 }
 
-.tscDocList .ant-list-item-meta-avatar {
+.tscDocList :global(.ant-list-item-meta-avatar) {
   background: linear-gradient(135deg, #1890ff, #096dd9);
   padding: 12px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.tscDocList .ant-list-item-meta-title {
+.tscDocList :global(.ant-list-item-meta-title) {
   font-weight: 600;
   color: #262626;
 }
 
-.tscDocList .ant-list-item-meta-description {
+.tscDocList :global(.ant-list-item-meta-description) {
   color: #8c8c8c;
 }
 
@@ -564,7 +564,7 @@
   border-radius: 6px;
 }
 
-.ant-modal-wrap {
+:global(.ant-modal-wrap) {
   background-color: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(3px);
 }
@@ -956,4 +956,9 @@
   .tscActionButtonPrimary, .tscActionButtonDefault {
     width: 100%;
   }
+}
+
+.tscEnhancedModal :global(.ant-modal-mask) {
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(5px);
 }

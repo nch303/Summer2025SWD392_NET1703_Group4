@@ -154,22 +154,22 @@ const TeacherCheckAttendance = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status, record) => (
-        <div className="teacher-status-selection">
+        <div className={styles.teacherStatusSelection}>
           <Radio.Group
             value={status}
             onChange={(e) => handleStatusChange(record, e.target.value)}
             buttonStyle="solid"
-            className="teacher-status-radio-group"
+            className={styles.teacherStatusRadioGroup}
           >
             <Radio.Button
               value="Attend"
-              className={`teacher-status-btn ${status === 'Attend' ? 'teacher-status-btn-attend-active' : ''}`}
+              className={`${styles.teacherStatusBtn} ${status === 'Attend' ? styles.teacherStatusBtnAttend : ''}`}
             >
               <CheckCircleOutlined /> Present
             </Radio.Button>
             <Radio.Button
               value="Absent"
-              className={`teacher-status-btn ${status === 'Absent' ? 'teacher-status-btn-absent-active' : ''}`}
+              className={`${styles.teacherStatusBtn} ${status === 'Absent' ? styles.teacherStatusBtnAbsentActive : ''}`}
             >
               <CloseCircleOutlined /> Absent
             </Radio.Button>
@@ -187,7 +187,7 @@ const TeacherCheckAttendance = () => {
           value={notes}
           onChange={(e) => handleNotesChange(record, e.target.value)}
           autoSize={{ minRows: 1, maxRows: 3 }}
-          className="teacher-notes-input"
+          className={styles.teacherNotesInput}
           maxLength={200}
         />
       )

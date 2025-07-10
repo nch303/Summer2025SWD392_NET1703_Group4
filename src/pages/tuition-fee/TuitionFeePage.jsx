@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getTuitionFeesByCurrentAccount, createPaymentUrlForTuitionFee } from '../../services/TuitionFeeService';
 import { useProcessingSpinner } from '../../components/ProcessingSpinner';
@@ -46,57 +46,39 @@ const TuitionFeePage = () => {
     return date.toLocaleDateString('vi-VN');
   };
 
-  // Get current date for comparison
-  const currentDate = useMemo(() => new Date(), []);
-  currentDate.setHours(0, 0, 0, 0);
+  // Simple check if fee is overdue (past due date)
+  const isOverdue = (fee) => {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const feeDate = new Date(fee.date);
+    feeDate.setHours(0, 0, 0, 0);
+    return currentDate > feeDate;
+  };
 
-  // Categorize fees by due date and payment status
-  const categorizedFees = useMemo(() => {
-    const past = [];
-    const upcoming = [];
-    const future = [];
+  // Filter fees based on active tab
+  const filteredFees = tuitionFees.filter(fee => {
+    if (activeBillingTab === 'overdue') {
+      return isOverdue(fee);
+    } else {
+      return !isOverdue(fee);
+    }
+  });
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  // Calculate total selected amount
+  const totalSelectedAmount = selectedFeeId ? 
+    tuitionFees.find(fee => fee.id === selectedFeeId)?.fee || 0 : 0;
 
-    tuitionFees.forEach(fee => {
-      const feeDate = new Date(fee.date);
-      feeDate.setHours(0, 0, 0, 0);
-
-      // Compare exact dates - if today is after the fee's due date, it's past due
-      if (today > feeDate) {
-        past.push({ ...fee, isPastDue: true });
-      } else if (today.getMonth() === feeDate.getMonth() && today.getFullYear() === feeDate.getFullYear()) {
-        // Same month, but due date is today or in future
-        upcoming.push({ ...fee, isCurrentMonth: true });
-      } else {
-        future.push(fee);
-      }
-    });
-
-    return { past, upcoming, future };
-  }, [tuitionFees]);
-
-  // Update total amount calculation based on single selection
-  const totalSelectedAmount = useMemo(() => {
-    const selectedFee = tuitionFees.find(fee => fee.id === selectedFeeId);
-    return selectedFee ? selectedFee.fee : 0;
-  }, [tuitionFees, selectedFeeId]);
-
-  // Check if a fee is selected
-  const hasSelectedFee = selectedFeeId !== null;
-
-  // Update the selection handler
+  // Handle select fee
   const handleSelectFee = (feeId) => {
     setSelectedFeeId(feeId === selectedFeeId ? null : feeId);
   };
 
-  // Update clear selection
+  // Clear selection
   const handleClearSelection = () => {
     setSelectedFeeId(null);
   };
 
-  // Update the payment info retrieval
+  // Get payment info
   const getPaymentInfo = () => {
     const selectedFee = tuitionFees.find(fee => fee.id === selectedFeeId);
     if (!selectedFee) return { selectedFeeIds: [], childID: null };
@@ -105,14 +87,6 @@ const TuitionFeePage = () => {
       selectedFeeIds: [selectedFee.id],
       childID: selectedFee.childID
     };
-  };
-
-  // Remove category selection functions or modify them to select just one item
-  // For example, select the first fee in a category:
-  const handleSelectFirstInCategory = (category) => {
-    if (category.length > 0) {
-      setSelectedFeeId(category[0].id);
-    }
   };
 
   // Handle payment process
@@ -135,29 +109,21 @@ const TuitionFeePage = () => {
       );
 
       if (response && response.url) {
-        // Hide spinner first
         hideSpinner();
-
-        // Create a link element and simulate a click instead of using window.location
         const link = document.createElement('a');
         link.href = response.url;
         link.setAttribute('data-no-prompt', 'true');
-
-        // For most aggressive approach, add these properties
         window.onbeforeunload = null;
         window.removeEventListener('beforeunload', () => { });
 
-        // Prevent any other event listeners from executing
         const clickEvent = new MouseEvent('click', {
           bubbles: false,
           cancelable: false,
           view: window
         });
 
-        // Dispatch click event to navigate without warning
         link.dispatchEvent(clickEvent);
 
-        // As a fallback, also try regular navigation after a short delay
         setTimeout(() => {
           document.body.appendChild(link);
           link.click();
@@ -186,15 +152,14 @@ const TuitionFeePage = () => {
   };
 
   // Render fee card
-  const renderFeeCard = (fee, isPastDue = false) => {
+  const renderFeeCard = (fee) => {
     const isSelected = fee.id === selectedFeeId;
+    const isPastDue = isOverdue(fee);
 
     // Split the description at "+" character to create bullet points
     const descriptionItems = fee.description
       .split('+')
       .map(item => {
-        // Format: Remove parentheses and add currency format
-        // Match anything like "Text (1234567)" and format as "Text: 1.234.567 ₫"
         const trimmedItem = item.trim();
         const match = trimmedItem.match(/^(.*?)\s*\((\d+)\)$/);
 
@@ -214,14 +179,14 @@ const TuitionFeePage = () => {
     return (
       <div
         key={fee.id}
-        className={`${styles.tuitionFeeCard} ${isPastDue ? 'past-due' : ''} ${isSelected ? 'selected' : ''}`}
+        className={`${styles.tuitionFeeCard} ${isPastDue ? styles.pastDue : ''} ${isSelected ? styles.selected : ''}`}
         onClick={() => handleSelectFee(fee.id)}
       >
         <div className={styles.tuitionFeeCheckbox}>
           <input
             type="radio"
             checked={isSelected}
-            onChange={() => { }}
+            onChange={() => {}}
             onClick={(e) => e.stopPropagation()}
           />
           <span className={styles.checkmark}></span>
@@ -229,9 +194,9 @@ const TuitionFeePage = () => {
 
         <div className={styles.tuitionFeeDetails}>
           <div className={styles.tuitionFeeHeader}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#FFF' }}>{fee.childName} - {fee.name}</h3>
-            <span className={`${styles.tuitionFeeBadge} ${isPastDue ? 'past-due' : 'upcoming'}`}>
-              {isPastDue ? 'Owed' : 'Unpaid'}
+            <h3>{fee.childName} - {fee.name}</h3>
+            <span className={`${styles.tuitionFeeBadge} ${isPastDue ? styles.pastDue : styles.upcoming}`}>
+              {isPastDue ? 'Overdue' : 'Unpaid'}
             </span>
           </div>
 
@@ -261,6 +226,10 @@ const TuitionFeePage = () => {
       </div>
     );
   };
+
+  // Count overdue and upcoming fees
+  const overdueCount = tuitionFees.filter(fee => isOverdue(fee)).length;
+  const upcomingCount = tuitionFees.length - overdueCount;
 
   return (
     <div className={styles.tuitionFeeContainer}>
@@ -301,7 +270,7 @@ const TuitionFeePage = () => {
                   {formatCurrency(totalSelectedAmount)}
                 </div>
                 <div className={styles.tuitionFeeSelectionInfo}>
-                  {hasSelectedFee ? (
+                  {selectedFeeId ? (
                     <span>1 fee selected</span>
                   ) : (
                     <span>No fee selected</span>
@@ -312,15 +281,15 @@ const TuitionFeePage = () => {
                 <button
                   className={styles.tuitionFeeClearBtn}
                   onClick={handleClearSelection}
-                  disabled={!hasSelectedFee || processingPayment}
+                  disabled={!selectedFeeId || processingPayment}
                 >
                   <FontAwesomeIcon icon="times" />
                   <span>Unselect</span>
                 </button>
                 <button
-                  className={`${styles.tuitionFeePaymentBtn} ${processingPayment ? 'processing' : ''}`}
+                  className={`${styles.tuitionFeePaymentBtn} ${processingPayment ? styles.processing : ''}`}
                   onClick={handlePayment}
-                  disabled={!hasSelectedFee || processingPayment}
+                  disabled={!selectedFeeId || processingPayment}
                 >
                   <FontAwesomeIcon icon={processingPayment ? "spinner" : "credit-card"} spin={processingPayment} />
                   {processingPayment ? 'Processing...' : 'Process payment'}
@@ -336,60 +305,38 @@ const TuitionFeePage = () => {
               onClick={() => setActiveBillingTab('upcoming')}
             >
               <FontAwesomeIcon icon="calendar-day" />
-              <span>Upcoming ({categorizedFees.upcoming.length})</span>
+              <span>Upcoming ({upcomingCount})</span>
             </button>
             <button
               className={`${styles.tuitionFeeTab} ${activeBillingTab === 'overdue' ? styles.active : ''}`}
               onClick={() => setActiveBillingTab('overdue')}
             >
               <FontAwesomeIcon icon="exclamation-circle" />
-              <span>Overdue ({categorizedFees.past.length})</span>
+              <span>Overdue ({overdueCount})</span>
             </button>
           </div>
 
           {/* Billing content based on active tab */}
           <div className={styles.tuitionFeeTabContent}>
-            {activeBillingTab === 'upcoming' && (
-              <>
-                {categorizedFees.upcoming.length > 0 ? (
-                  <div className={styles.tuitionFeeSection}>
-                    <div className={styles.tuitionFeeSectionHeader}>
-                      <h2>Tuition fee in this month</h2>
-                    </div>
-                    <div className={styles.tuitionFeeList}>
-                      {categorizedFees.upcoming.map(fee => renderFeeCard(fee))}
-                      {categorizedFees.future.map(fee => renderFeeCard(fee))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.tuitionFeeEmptyState}>
-                    <FontAwesomeIcon icon="calendar-check" />
-                    <h3>No fee in this month</h3>
-                    <p>You don't have any tuition fee to pay in this month.</p>
-                  </div>
-                )}
-              </>
-            )}
-
-            {activeBillingTab === 'overdue' && (
-              <>
-                {categorizedFees.past.length > 0 ? (
-                  <div className={styles.tuitionFeeSection}>
-                    <div className={styles.tuitionFeeSectionHeader}>
-                      <h2>Overdue tuition fee</h2>
-                    </div>
-                    <div className={styles.tuitionFeeList}>
-                      {categorizedFees.past.map(fee => renderFeeCard(fee, true))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.tuitionFeeEmptyState}>
-                    <FontAwesomeIcon icon="check-circle" />
-                    <h3>No overdue tuition fee</h3>
-                    <p>You don't have any overdue tuition fee to pay. Good job!</p>
-                  </div>
-                )}
-              </>
+            {filteredFees.length > 0 ? (
+              <div className={styles.tuitionFeeSection}>
+                <div className={styles.tuitionFeeSectionHeader}>
+                  <h2>{activeBillingTab === 'overdue' ? 'Overdue tuition fee' : 'Upcoming tuition fee'}</h2>
+                </div>
+                <div className={styles.tuitionFeeList}>
+                  {filteredFees.map(fee => renderFeeCard(fee))}
+                </div>
+              </div>
+            ) : (
+              <div className={styles.tuitionFeeEmptyState}>
+                <FontAwesomeIcon icon={activeBillingTab === 'overdue' ? "check-circle" : "calendar-check"} />
+                <h3>{activeBillingTab === 'overdue' ? 'No overdue tuition fee' : 'No upcoming tuition fee'}</h3>
+                <p>
+                  {activeBillingTab === 'overdue' 
+                    ? 'You don\'t have any overdue tuition fee to pay. Good job!' 
+                    : 'You don\'t have any tuition fee to pay at this moment.'}
+                </p>
+              </div>
             )}
           </div>
         </div>

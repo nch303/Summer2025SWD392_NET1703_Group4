@@ -233,7 +233,7 @@ const TeacherStudentClass = () => {
       width={850}
       className={styles.tscEnhancedModal}
       centered
-      mask={false}
+      mask={true}
       closeIcon={<CloseOutlined className={styles.tscModalCloseIcon} />}
     >
       {detailLoading ? (

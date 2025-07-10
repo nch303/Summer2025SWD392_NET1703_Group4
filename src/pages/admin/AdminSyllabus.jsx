@@ -609,18 +609,6 @@ const AdminSyllabus = () => {
         ))}
       </div>
 
-      <Breadcrumb
-        className={styles.adminSyllabusBreadcrumb}
-        items={[
-          {
-            title: 'Admin',
-          },
-          {
-            title: 'Syllabus',
-          }
-        ]}
-      />
-
       <Card className={styles.adminSyllabusCard}>
         <div className={styles.adminSyllabusHeader}>
           <Title level={3}>

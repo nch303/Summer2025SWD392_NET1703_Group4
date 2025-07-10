@@ -414,10 +414,10 @@ const ChildProfileManagement = () => {
                   {child.status === 'Active' ? (
                     <span
                       className={styles.enrolledBadge}
-                      title="Enrolled"
+                      title={`Enrolled in ${child.currentGradeLevelName}`}
                     >
                       <FontAwesomeIcon icon="check-circle" />
-                      <span>Enrolled</span>
+                      <span>{child.currentGradeLevelName}</span>
                     </span>
                   ) : (
                     <button

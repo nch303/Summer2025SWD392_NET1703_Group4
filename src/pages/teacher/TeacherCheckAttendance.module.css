@@ -79,7 +79,7 @@
   color: #f5222d;
 }
 
-.teacherAttendanceTable .ant-table-thead>tr>th {
+.teacherAttendanceTable :global(.ant-table-thead>tr>th) {
   background-color: #f0f7ff;
   font-weight: 600;
   padding: 16px 12px;
@@ -230,7 +230,7 @@
 }
 
 /* Add these styles for the success modal */
-.teacherSuccessModal .ant-modal-content {
+.teacherSuccessModal :global(.ant-modal-content) {
   border-radius: 12px;
 }
 
@@ -245,22 +245,22 @@
   font-size: 20px;
 }
 
-.teacherSuccessModal .ant-modal-body {
+.teacherSuccessModal :global(.ant-modal-body) {
   padding: 24px;
   font-size: 16px;
 }
 
-.teacherSuccessModal .ant-modal-footer {
+.teacherSuccessModal :global(.ant-modal-footer) {
   border-top: none;
   padding: 0 24px 24px;
 }
 
 /* Ensure the modal has higher z-index than other elements */
-.ant-modal-root {
+:global(.ant-modal-root) {
   z-index: 1100 !important;
 }
 
-.ant-modal-mask {
+:global(.ant-modal-mask) {
   z-index: 1050 !important;
 }
 
@@ -284,4 +284,78 @@
   background: #fff2f0 !important;
   border-left: 4px solid #ff4d4f !important;
   color: #333333 !important;
+}
+
+/* Status selection */
+.teacherStatusSelection {
+  display: flex;
+  align-items: center;
+}
+
+.teacherStatusRadioGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.teacherStatusBtn {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Present/Attend button - always slightly green tinted */
+.teacherStatusBtn:first-child {
+  border-color: #d9f7be;
+  color: #389e0d;
+}
+
+/* Present/Attend button - stronger green when active */
+.teacherStatusBtnAttend {
+  background-color: #f6ffed;
+  border-color: #52c41a;
+  color: #52c41a;
+  font-weight: 600;
+}
+
+/* Absent button - always slightly red tinted */
+.teacherStatusBtn:last-child {
+  border-color: #ffccc7;
+  color: #cf1322;
+}
+
+/* Absent button - stronger red when active */
+.teacherStatusBtnAbsentActive {
+  background-color: #fff1f0;
+  border-color: #f5222d;
+  color: #f5222d;
+  font-weight: 600;
+}
+
+/* Table styling */
+.teacherTableHeader {
+  font-size: 16px;
+  color: #262626;
+}
+
+.teacherRowAttend {
+  background-color: rgba(82, 196, 26, 0.05);
+}
+
+.teacherRowAbsent {
+  background-color: rgba(245, 34, 45, 0.05);
+}
+
+/* Fix border issue between buttons */
+.teacherStatusRadioGroup :global(.ant-radio-button-wrapper:not(:first-child)::before) {
+  display: none;
+}
+
+/* Or if that doesn't work, try this alternative approach */
+.teacherStatusRadioGroup :global(.ant-radio-button-wrapper) {
+  margin-right: 8px;
+  border-radius: 6px !important;
 }

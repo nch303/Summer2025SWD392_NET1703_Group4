@@ -368,7 +368,7 @@
 .tuitionFeeHeader h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: var(--text-color-dark);
+  color: var(--card-bg-color);
   font-weight: 600;
 }
 
@@ -382,6 +382,11 @@
 .tuitionFeeBadge.upcoming {
   background-color: var(--info-color-light);
   color: var(--info-color);
+}
+
+.tuitionFeeBadge.pastDue {
+  background-color: var(--danger-color-light);
+  color: var(--danger-color);
 }
 
 .tuitionFeeBadge.past-due {

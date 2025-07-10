@@ -205,7 +205,7 @@ const ProfilePage = () => {
 
       <div className={styles.profileContainer}>
         {message.text && (
-          <div className={`${styles.profileMessage} ${message.type}`} ref={messageRef}>
+          <div className={`${styles.profileMessage} ${styles[message.type]}`} ref={messageRef}>
             <div className={styles.messageIcon}>
               {message.type === 'success' ? (
                 <FontAwesomeIcon icon="check-circle" size="lg" />
