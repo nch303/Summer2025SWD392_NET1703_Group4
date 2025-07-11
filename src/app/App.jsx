@@ -10,13 +10,13 @@ import AdminLayout from '../layouts/AdminLayout';
 import TeacherLayout from '../layouts/TeacherLayout';
 
 // Pages
-import HomePage from '../pages/home/HomePage';
+import HomePage from '../pages/main/HomePage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import ChildProfileManagement from '../pages/profile/ChildProfileManagement';
 import NewsPage from '../pages/news/NewsPage';
 import NotFoundPage from '../components/NotFoundPage.jsx';
-import AboutUsPage from '../pages/about-us/AboutUsPage';
-import ContactPage from '../pages/contact/ContactPage';
+import AboutUsPage from '../pages/main/AboutUsPage';
+import ContactPage from '../pages/main/ContactPage';
 
 import PaymentHistoryPage from '../pages/payment/PaymentHistoryPage';
 import InvoiceDetailPage from '../pages/payment/InvoiceDetailPage';
@@ -53,7 +53,7 @@ import TeachersManagement from '../pages/admin/TeachersManagement';
 import ClassManagement from '../pages/admin/ClassManagement';
 import SendAnnouncementPage from '../pages/admin/SendAnnouncementPage';
 import AdminNews from '../pages/admin/AdminNews';
-import AdminEnrichment from '../pages/admin/AdminEnrichment'; 
+import AdminEnrichment from '../pages/admin/AdminEnrichment';
 import AdminPage from '../pages/admin/AdminPage';
 
 // Teacher Pages
@@ -69,8 +69,6 @@ import ProtectedRoute from '../routers/ProtectedRoute';
 import AuthRoute from '../routers/AuthRoute';
 import { UserProvider } from '../contexts/UserContext';
 
-
-import ReportsPage from '../pages/reports/ReportsPage';
 import EnrichmentParticipants from '../pages/enrichment-participants/EnrichmentParticipants';
 
 function App() {
@@ -208,7 +206,6 @@ function App() {
             <Route path="classes/list" element={<ClassManagement />} />
             <Route path="news" element={<AdminNews />} />
             <Route path="send-announcement" element={<SendAnnouncementPage />} />
-            <Route path="reports" element={<ReportsPage />} />
             <Route path="tuition-fees" element={<TuitionFeeManagement />} />
             <Route path="users/list" element={<AccountListPage />} />
             <Route path="enrichment" element={<AdminEnrichment />} />

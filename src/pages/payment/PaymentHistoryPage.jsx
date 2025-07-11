@@ -26,11 +26,23 @@ const PaymentHistoryPage = () => {
   const [showStats, setShowStats] = useState(true);
 
   // Format currency to VND
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
+  const formatCurrency = (amount, status) => {
+    const formattedAmount = new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND'
     }).format(amount);
+    
+    const statusLower = status?.toLowerCase();
+    
+    if (statusLower === 'completed' || 
+        statusLower === 'success' || 
+        statusLower === 'hoàn thành') {
+      return `-${formattedAmount}`;
+    } else if (statusLower === 'refunded' || statusLower === 'awaiting') {
+      return `+${formattedAmount}`;
+    }
+    
+    return formattedAmount;
   };
 
   // Format date
@@ -45,7 +57,7 @@ const PaymentHistoryPage = () => {
 
   // Get status label
   const getStatusLabel = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'success':
       case 'completed':
       case 'hoàn thành':
@@ -53,6 +65,8 @@ const PaymentHistoryPage = () => {
       case 'pending':
       case 'chờ xử lý':
         return <span className={`${styles.paymentStatus} ${styles.paymentStatusPending}`}>Pending</span>;
+      case 'awaiting':
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusAwaiting}`}>Awaiting</span>;
       case 'cancelled':
       case 'hủy':
         return <span className={`${styles.paymentStatus} ${styles.paymentStatusCancelled}`}>Cancelled</span>;
@@ -434,7 +448,7 @@ const PaymentHistoryPage = () => {
               </thead>
               <tbody>
                 {currentPayments.map(payment => (
-                  <tr key={payment.id} className={`${styles.paymentRow} ${getPaymentRowStatusClass(payment.status)}`}>
+                  <tr key={payment.id} className={`${styles.paymentRow}`}>
                     <td className={styles.paymentId}>
                       <span title={payment.id}>{shortenTransactionId(payment.id)}</span>
                     </td>
@@ -451,7 +465,7 @@ const PaymentHistoryPage = () => {
                       </div>
                     </td>
                     <td className={styles.paymentDescription}>{payment.description || payment.name}</td>
-                    <td className={styles.paymentAmount}>{formatCurrency(payment.amount)}</td>
+                    <td className={styles.paymentAmount}>{formatCurrency(payment.amount, payment.status)}</td>
                     <td>
                       <div className={styles.paymentMethod}>
                         <i className={`fas ${payment.paymentMethod?.toLowerCase().includes('card') ? 'fa-credit-card' :

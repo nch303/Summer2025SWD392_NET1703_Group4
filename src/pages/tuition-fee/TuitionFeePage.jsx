@@ -8,7 +8,8 @@ import styles from './TuitionFee.module.css';
 const TuitionFeePage = () => {
   const [tuitionFees, setTuitionFees] = useState([]);
   const [error, setError] = useState('');
-  const [selectedFeeId, setSelectedFeeId] = useState(null);
+  // Change the state to track composite IDs
+  const [selectedCompositeId, setSelectedCompositeId] = useState(null);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [activeBillingTab, setActiveBillingTab] = useState('upcoming');
 
@@ -65,22 +66,25 @@ const TuitionFeePage = () => {
   });
 
   // Calculate total selected amount
-  const totalSelectedAmount = selectedFeeId ? 
-    tuitionFees.find(fee => fee.id === selectedFeeId)?.fee || 0 : 0;
+  const totalSelectedAmount = selectedCompositeId ? 
+    tuitionFees.find(fee => `${fee.id}-${fee.childID}-${fee.name}` === selectedCompositeId)?.fee || 0 : 0;
 
   // Handle select fee
-  const handleSelectFee = (feeId) => {
-    setSelectedFeeId(feeId === selectedFeeId ? null : feeId);
+  const handleSelectFee = (fee) => {
+    const compositeId = `${fee.id}-${fee.childID}-${fee.name}`;
+    setSelectedCompositeId(compositeId === selectedCompositeId ? null : compositeId);
   };
 
   // Clear selection
   const handleClearSelection = () => {
-    setSelectedFeeId(null);
+    setSelectedCompositeId(null);
   };
 
   // Get payment info
   const getPaymentInfo = () => {
-    const selectedFee = tuitionFees.find(fee => fee.id === selectedFeeId);
+    const selectedFee = tuitionFees.find(fee => 
+      `${fee.id}-${fee.childID}-${fee.name}` === selectedCompositeId
+    );
     if (!selectedFee) return { selectedFeeIds: [], childID: null };
 
     return {
@@ -153,7 +157,7 @@ const TuitionFeePage = () => {
 
   // Render fee card
   const renderFeeCard = (fee) => {
-    const isSelected = fee.id === selectedFeeId;
+    const isSelected = `${fee.id}-${fee.childID}-${fee.name}` === selectedCompositeId;
     const isPastDue = isOverdue(fee);
 
     // Split the description at "+" character to create bullet points
@@ -178,9 +182,9 @@ const TuitionFeePage = () => {
 
     return (
       <div
-        key={fee.id}
+        key={`${fee.id}-${fee.childID}-${fee.name}`}
         className={`${styles.tuitionFeeCard} ${isPastDue ? styles.pastDue : ''} ${isSelected ? styles.selected : ''}`}
-        onClick={() => handleSelectFee(fee.id)}
+        onClick={() => handleSelectFee(fee)}
       >
         <div className={styles.tuitionFeeCheckbox}>
           <input
@@ -270,7 +274,7 @@ const TuitionFeePage = () => {
                   {formatCurrency(totalSelectedAmount)}
                 </div>
                 <div className={styles.tuitionFeeSelectionInfo}>
-                  {selectedFeeId ? (
+                  {selectedCompositeId ? (
                     <span>1 fee selected</span>
                   ) : (
                     <span>No fee selected</span>
@@ -281,7 +285,7 @@ const TuitionFeePage = () => {
                 <button
                   className={styles.tuitionFeeClearBtn}
                   onClick={handleClearSelection}
-                  disabled={!selectedFeeId || processingPayment}
+                  disabled={!selectedCompositeId || processingPayment}
                 >
                   <FontAwesomeIcon icon="times" />
                   <span>Unselect</span>
@@ -289,7 +293,7 @@ const TuitionFeePage = () => {
                 <button
                   className={`${styles.tuitionFeePaymentBtn} ${processingPayment ? styles.processing : ''}`}
                   onClick={handlePayment}
-                  disabled={!selectedFeeId || processingPayment}
+                  disabled={!selectedCompositeId || processingPayment}
                 >
                   <FontAwesomeIcon icon={processingPayment ? "spinner" : "credit-card"} spin={processingPayment} />
                   {processingPayment ? 'Processing...' : 'Process payment'}

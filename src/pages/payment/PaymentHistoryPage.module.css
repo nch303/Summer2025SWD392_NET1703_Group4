@@ -416,15 +416,16 @@ input[type="text"].paymentSearchInput {
 }
 
 .paymentStatusCompleted {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
   border: none;
   text-align: center;
 }
 
-.paymentStatusPending {
-  background-color: #fff8e1;
-  color: #f57f17;
+.paymentStatusPending, 
+.paymentStatusAwaiting {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196F3;
   border: none;
 }
 
@@ -435,14 +436,14 @@ input[type="text"].paymentSearchInput {
 }
 
 .paymentStatusFailed {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
   border: none;
 }
 
 .paymentStatusRefunded {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: rgba(255, 183, 77, 0.1);
+  color: #FFB74D;
   border: none;
   font-weight: 1000;
 }
