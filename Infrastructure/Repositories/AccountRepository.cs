@@ -81,7 +81,10 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Account>> GetAllAsync()
         {
-            var accounts = await _context.Accounts.ToListAsync();
+            var accounts = await _context.Accounts
+                .Include(a => a.Childrens!)
+                .ThenInclude(c => c.ChildrenGrades)
+                .ToListAsync();
             return accounts;
         }
 

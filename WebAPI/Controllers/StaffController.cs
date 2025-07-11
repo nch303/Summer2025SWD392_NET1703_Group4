@@ -7,6 +7,8 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace WebAPI.Controllers
 {
@@ -319,9 +321,9 @@ namespace WebAPI.Controllers
                                     {
                                         ID = Guid.NewGuid(),
                                         AccountID = child.ParentID,
-                                        Amount = -amountToRefund,
+                                        Amount = amountToRefund,
                                         Status = "Awaiting",
-                                        Date = DateTime.UtcNow,
+                                        Date = DateTime.Now,
                                         Name = $"Refund for {child.Name}",
                                         ChildrenID = child.ID
                                     };
@@ -330,15 +332,19 @@ namespace WebAPI.Controllers
                             }
 
                             // Send notification to parent about the refund
-                            var notificationMessage = "Your child has been removed from the class, and a refund has been processed for the tuition fee paid.";
                             var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
+                            var refundAmount = amountToRefund.ToString("c", new CultureInfo("vi-VN"));
                             if (parent != null)
                             {
                                 var notification = new NotificationRequest
                                 {
                                     AccountIDs = new List<Guid> { parent.Id },
                                     Title = "Class Removal and Refund",
-                                    Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund:C} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration"
+                                    Content = $"Dear {parent.FullName},\n\n" +
+          $"We regret to inform you that your child, {child.Name}, has been removed from the class due to insufficient enrollment.\n\n" +
+          $"A refund of {refundAmount} has been processed for the tuition fee paid.\n\n" +
+          $"Thank you for your understanding.\n\n" +
+          $"- The School Administration"
                                 };
                                 await _notificationService.CreateNotificationAsync(notification);
                             }
@@ -346,7 +352,6 @@ namespace WebAPI.Controllers
                         else
                         {
                             // If the parent has not paid the tuition fee, just send a notification
-                            var notificationMessage = "Your child has been removed from the class due to insufficient enrollment.";
                             var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
                             if (parent != null)
                             {
@@ -415,10 +420,10 @@ namespace WebAPI.Controllers
                             {
                                 ID = Guid.NewGuid(),
                                 AccountID = child.ParentID,
-                                Amount = -amountToRefund,
+                                Amount = amountToRefund,
                                 Status = "Awaiting",
-                                Date = DateTime.UtcNow,
-                                Name = $"Refund for {child.Name}",
+                                Date = DateTime.Now,
+                                Name = $"Refund for {child.Name}" + " Invoice: " + invoices.ID,
                                 ChildrenID = child.ID
                             };
                             await _invoiceRepository.CreateAsync(refundInvoice);
@@ -426,15 +431,15 @@ namespace WebAPI.Controllers
 
 
                         // Send notification to parent about the refund
-                        var notificationMessage = "Your child has been removed from the class, and a refund has been processed for the tuition fee paid.";
                         var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
+                        var culture = new CultureInfo("vi-VN");
                         if (parent != null)
                         {
                             var notification = new NotificationRequest
                             {
                                 AccountIDs = new List<Guid> { parent.Id },
-                                Title = "Class Removal and Refund",
-                                Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund:C} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration"
+                                Title = "Enrichment Class Removal and Refund",
+                                Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund.ToString("c", culture)} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration"
                             };
                             await _notificationService.CreateNotificationAsync(notification);
                         }
@@ -442,14 +447,13 @@ namespace WebAPI.Controllers
                     else
                     {
                         // If the parent has not paid the tuition fee, just send a notification
-                        var notificationMessage = "Your child has been removed from the class due to insufficient enrollment.";
                         var parent = await _accountService.GetAccountByIdAsync(child.ParentID);
                         if (parent != null)
                         {
                             var notification = new NotificationRequest
                             {
                                 AccountIDs = new List<Guid> { parent.Id },
-                                Title = "Class Removal",
+                                Title = "Enrichment Class Removal",
                                 Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class due to insufficient enrollment. \n\nThank you for your understanding.\n\n- The School Administration"
                             };
                             await _notificationService.CreateNotificationAsync(notification);

@@ -212,7 +212,7 @@ namespace Infrastructure.Repositories
         public async Task<List<Class>> GetByEnrichmentIdAsync(int enrichmentId)
         {
             var classes = await _context.Classes
-                .Where(c => c.EnrichmentProgramId == enrichmentId)
+                .Where(c => c.EnrichmentProgramId == enrichmentId && c.Status != "Finished")
                 .Include(c => c.ClassChildrens!)
                     .ThenInclude(cc => cc.Childrens)
                 .ToListAsync();

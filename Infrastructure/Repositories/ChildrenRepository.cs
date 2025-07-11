@@ -61,6 +61,8 @@ namespace Infrastructure.Repositories
         {
             return await _context.Childrens
                 .Include(c => c.Parents)
+                .Include(c => c.ChildrenGrades!)
+                    .ThenInclude(cg => cg.GradeLevels)
                 .Where(c => c.ParentID == id)
                 .ToListAsync();
         }

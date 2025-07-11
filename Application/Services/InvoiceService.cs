@@ -106,25 +106,25 @@ namespace Application.Services
                     var tuition = await _tuitionFeeRepositiry.GetTuitionFeeByIdAsync(invoiceDetails[i].TuitionFeeID);
                     detail.tuitionFeeName = tuition!.Name;
 
-                    //Get academic year
-                    string academicYear = "";
+                    ////Get academic year
+                    //string academicYear = "";
 
-                    var year = invoice.Date.Year;
+                    //var year = invoice.Date.Year;
 
-                    // So sánh với ngày 1/6 của năm hiện tại
-                    var schoolStartDate = new DateTime(year, 6, 1);
+                    //// So sánh với ngày 1/6 của năm hiện tại
+                    //var schoolStartDate = new DateTime(year, 6, 1);
 
-                    if (invoice.Date < schoolStartDate)
-                    {
-                        academicYear = (year - 1).ToString() + "-" + (year).ToString();
-                    }
-                    else
-                    {
-                        academicYear = (year).ToString() + "-" + (year + 1).ToString();
-                    }
+                    //if (invoice.Date < schoolStartDate)
+                    //{
+                    //    academicYear = (year - 1).ToString() + "-" + (year).ToString();
+                    //}
+                    //else
+                    //{
+                    //    academicYear = (year).ToString() + "-" + (year + 1).ToString();
+                    //}
 
-                    var chidrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
-                    var currentChildrenGrade = chidrenGrade.FirstOrDefault(cg => cg.AcademicYear == academicYear);
+                    var childrenGrade = await _childrenGradeService.GetChildrenGradesByChildrenIdAsync(invoiceDetails[i].ChildrenID);
+                    var currentChildrenGrade = childrenGrade[childrenGrade.Count - 1];
 
                     var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(currentChildrenGrade!.GradeLevelID);
                     var gradeLevelFeeFormated = string.Format(new CultureInfo("vi-VN"), "{0:N0}", gradeLevel!.Fee);
@@ -355,6 +355,11 @@ namespace Application.Services
             {
                 if (invoice.Status != "Success")
                     invoicesTemps.Remove(invoice);
+            }
+            var refundInvoice = await _invoiceRepository.GetRefundByInvoiceID(invoicesTemps[0].ID);
+            if (refundInvoice != null)
+            {
+                invoicesTemps.Remove(invoicesTemps[0]);
             }
             return invoicesTemps;
         }

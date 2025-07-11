@@ -56,19 +56,22 @@ namespace Application.Services
             {
                 foreach (var tuition in tuitions)
                 {
-                    totalTuitions.Add(tuition);
-                    var tuitionWithChild = _mapper.Map<TuitionWithChildResponse>(tuition);
-                    tuitionWithChild.ID = tuition.ID;
-                    tuitionWithChild.ChildID = child.ChildrenID;
-                    tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
-                    tuitionWithChild.GradeLevelID = child.GradeLevelID;
+                    if(tuition.GradeLevelID == child.GradeLevelID) 
+                    {
+                        totalTuitions.Add(tuition);
+                        var tuitionWithChild = _mapper.Map<TuitionWithChildResponse>(tuition);
+                        tuitionWithChild.ID = tuition.ID;
+                        tuitionWithChild.ChildID = child.ChildrenID;
+                        tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
+                        tuitionWithChild.GradeLevelID = child.GradeLevelID;
 
-                    var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
-                    tuitionWithChild.Fee = (decimal)tuition.Fee + (decimal)gradeLevel!.Fee;
-                    tuitionWithChild.GradeLevelName = gradeLevel!.Name;
-                    tuitionWithChild.Description = "Học phí tháng " + tuition.Name + " (" + gradeLevel.Fee + ")" +
-                        (string.IsNullOrWhiteSpace(tuition.Description) ? "" : " + " + tuition.Description);
-                    tuitionWithChildResponses.Add(tuitionWithChild);
+                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
+                        tuitionWithChild.Fee = (decimal)tuition.Fee + (decimal)gradeLevel!.Fee;
+                        tuitionWithChild.GradeLevelName = gradeLevel!.Name;
+                        tuitionWithChild.Description = "Học phí tháng " + tuition.Name + " (" + gradeLevel.Fee + ")" +
+                            (string.IsNullOrWhiteSpace(tuition.Description) ? "" : " + " + tuition.Description);
+                        tuitionWithChildResponses.Add(tuitionWithChild);
+                    }      
                 }
             }
 
@@ -159,7 +162,17 @@ namespace Application.Services
             var createdTuitionFee = await _tuitionFeeRepository.CreateAsync(tuitionFee);
 
             // Tao thong bao cho tung parent
-            var parents = _accountService.GetAllAsync().Result.Where(a => a.RoleId == 2).ToList();
+            var accounts = await _accountService.GetAllAsync();
+
+            var parents = accounts
+                .Where(a => a.RoleId == 2 &&
+                            a.Childrens != null &&
+                            a.Childrens.Any(c =>
+                                c.ChildrenGrades != null &&
+                                c.ChildrenGrades
+                                    .LastOrDefault()?.GradeLevelID == tuitionFee.GradeLevelID))
+                .ToList();
+
             foreach (var parent in parents)
             {
                 var notification = new Notification
