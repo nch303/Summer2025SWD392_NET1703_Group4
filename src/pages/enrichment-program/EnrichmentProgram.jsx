@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getAllEnrichmentProgramsForParent, registerForProgram, getChildrenByParentId, getEnrichmentClassRegistrations, createPaymentUrl } from './EnrichmentProgramService';
+import { getAllEnrichmentProgramsForParent, registerForProgram, 
+  getChildrenByParentId, getEnrichmentClassRegistrations, 
+  createPaymentUrl } from '../../services/EnrichmentProgramService';
 import { useUser } from '../../contexts/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 import { formatDate } from '../../utils/formatDate';
-import './EnrichmentProgram.css';
+import styles from './EnrichmentProgram.module.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
 const EnrichmentProgram = () => {
   const [programs, setPrograms] = useState([]);
@@ -452,7 +455,7 @@ const EnrichmentProgram = () => {
   // Tối ưu render với memo và thêm hiệu ứng ripple
   const ChildItem = React.memo(({ child, isSelected, onSelect }) => (
     <div 
-      className={`enrichment-child-card ${isSelected ? 'selected' : ''}`}
+      className={`${styles.enrichmentChildCard} ${isSelected ? styles.selected : ''}`}
       onClick={() => onSelect(child.id)}
     >
       <input
@@ -462,22 +465,22 @@ const EnrichmentProgram = () => {
           e.stopPropagation();
           onSelect(child.id);
         }}
-        className="enrichment-child-checkbox"
+        className={styles.enrichmentChildCheckbox}
         aria-label={`Chọn ${child.name}`}
       />
-      <div className="enrichment-child-avatar-container">
+      <div className={styles.enrichmentChildAvatarContainer}>
         <img 
           src={child.avatar || "https://via.placeholder.com/150"}
           alt={child.name}
-          className="enrichment-child-avatar"
+          className={styles.enrichmentChildAvatar}
           loading="lazy"
           onError={(e) => {
             e.target.src = "https://via.placeholder.com/150?text=Avatar";
           }}
         />
       </div>
-      <div className="enrichment-child-name">{child.name}</div>
-      <div className="enrichment-child-age">{child.age} age</div>
+      <div className={styles.enrichmentChildName}>{child.name}</div>
+      <div className={styles.enrichmentChildAge}>{child.age} age</div>
     </div>
   ));
 
@@ -491,19 +494,19 @@ const EnrichmentProgram = () => {
     switch (status) {
       case 'Active':
         return (
-          <span className="enrichment-registration-status active">
+          <span className={styles.enrichmentRegistrationStatusActive}>
             <FontAwesomeIcon icon="check-circle" /> Studying
           </span>
         );
       case 'Pending':
         return (
-          <span className="enrichment-registration-status pending">
+          <span className={`${styles.enrichmentRegistrationStatus} ${styles.pending}`}>
             <FontAwesomeIcon icon="clock" /> Pending
           </span>
         );
       default:
         return (
-          <span className="enrichment-registration-status">
+          <span className={styles.enrichmentRegistrationStatus}>
             <FontAwesomeIcon icon="info-circle" /> {status}
           </span>
         );
@@ -512,21 +515,21 @@ const EnrichmentProgram = () => {
 
   // Tab navigation
   const renderTabNavigation = () => (
-    <div className="enrichment-tabs-navigation">
-      <button 
-        className="enrichment-tab-button active"
-        onClick={() => {}} // Already on this page
+    <div className={styles.enrichmentTabsNavigation}>
+      <Link 
+        to="/enrichment-program" 
+        className={`${styles.enrichmentTabButton} ${styles.active}`}
       >
         <FontAwesomeIcon icon="th-large" />
         Enrichment Program
-      </button>
-      <a 
-        href="/enrichment-history" 
-        className="enrichment-tab-button"
+      </Link>
+      <Link 
+        to="/enrichment-history" 
+        className={styles.enrichmentTabButton}
       >
         <FontAwesomeIcon icon="history" />
         Registration History
-      </a>
+      </Link>
     </div>
   );
 
@@ -534,8 +537,8 @@ const EnrichmentProgram = () => {
   const renderHistoryContent = () => {
     if (loadingHistory) {
       return (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
           <p>Loading data...</p>
         </div>
       );
@@ -543,10 +546,10 @@ const EnrichmentProgram = () => {
     
     if (historyError) {
       return (
-        <div className="error-container">
-          <FontAwesomeIcon icon="exclamation-circle" className="error-icon" />
-          <p className="error-message">{historyError}</p>
-          <button className="retry-btn" onClick={fetchRegistrationHistory}>
+        <div className={styles.errorContainer}>
+          <FontAwesomeIcon icon="exclamation-circle" className={styles.errorIcon} />
+          <p className={styles.errorMessage}>{historyError}</p>
+          <button className={styles.retryBtn} onClick={fetchRegistrationHistory}>
             <FontAwesomeIcon icon="sync" />
             Try again
           </button>
@@ -556,13 +559,13 @@ const EnrichmentProgram = () => {
     
     if (registrations.length === 0) {
       return (
-        <div className="empty-container">
-          <div className="empty-icon">
+        <div className={styles.emptyContainer}>
+          <div className={styles.emptyIcon}>
             <FontAwesomeIcon icon="book" size="3x" />
           </div>
           <h3 className="empty-message">No registration history</h3>
           <button
-            className="retry-btn"
+            className={styles.retryBtn}
             onClick={() => setActiveTab('programs')}
           >
             <FontAwesomeIcon icon="plus-circle" />
@@ -573,66 +576,66 @@ const EnrichmentProgram = () => {
     }
     
     return (
-      <div className="enrichment-history-list">
+      <div className={styles.enrichmentHistoryList}>
         {registrations.map((registration) => (
-          <div key={registration.id} className="enrichment-history-card">
-            <div className="enrichment-history-card-header">
-              <div className="enrichment-child-info">
-                <div className="enrichment-child-avatar-container">
+          <div key={registration.id} className={styles.enrichmentHistoryCard}>
+            <div className={styles.enrichmentHistoryCardHeader}>
+              <div className={styles.enrichmentChildInfo}>
+                <div className={styles.enrichmentChildAvatarContainer}>
                   <img 
                     src={registration.childrenResponse.avatar || "https://via.placeholder.com/80?text=Avatar"} 
                     alt={registration.childrenResponse.name}
-                    className="enrichment-child-avatar"
+                    className={styles.enrichmentChildAvatar}
                     onError={(e) => {
                       e.target.src = "https://via.placeholder.com/80?text=Avatar";
                     }}
                   />
                 </div>
-                <div className="enrichment-child-details">
-                  <h3 className="enrichment-child-name">{registration.childrenResponse.name}</h3>
-                  <p className="enrichment-child-age">{calculateAge(registration.childrenResponse.birthday)} years old</p>
-                  <p className="enrichment-child-class">Class {registration.childrenResponse.gradeLevelName}</p>
+                <div className={styles.enrichmentChildDetails}>
+                  <h3 className={styles.enrichmentChildName}>{registration.childrenResponse.name}</h3>
+                  <p className={styles.enrichmentChildAge}>{calculateAge(registration.childrenResponse.birthday)} years old</p>
+                  <p className={styles.enrichmentChildClass}>Class {registration.childrenResponse.gradeLevelName}</p>
                 </div>
               </div>
-              <div className="enrichment-registration-status-container">
+              <div className={styles.enrichmentRegistrationStatusContainer}>
                 {renderRegistrationStatus(registration.status)}
               </div>
             </div>
             
-            <div className="enrichment-history-card-body">
-              <div className="enrichment-program-details">
-                <h4 className="enrichment-program-name">
-                  <FontAwesomeIcon icon="star" className="enrichment-program-icon" />
+            <div className={styles.enrichmentHistoryCardBody}>
+              <div className={styles.enrichmentProgramDetails}>
+                <h4 className={styles.enrichmentProgramName}>
+                  <FontAwesomeIcon icon="star" className={styles.enrichmentProgramIcon} />
                   {registration.classResponse.epName}
                 </h4>
-                <div className="enrichment-program-info-grid">
-                  <div className="enrichment-info-item">
-                    <span className="enrichment-info-label">
+                <div className={styles.enrichmentProgramInfoGrid}>
+                  <div className={styles.enrichmentInfoItem}>
+                    <span className={styles.enrichmentInfoLabel}>
                       <FontAwesomeIcon icon="users" /> Class:
                     </span>
-                    <span className="enrichment-info-value">{registration.classResponse.name}</span>
+                    <span className={styles.enrichmentInfoValue}>{registration.classResponse.name}</span>
                   </div>
-                  <div className="enrichment-info-item">
-                    <span className="enrichment-info-label">
+                  <div className={styles.enrichmentInfoItem}>
+                    <span className={styles.enrichmentInfoLabel}>
                       <FontAwesomeIcon icon="calendar-alt" /> Academic year:
                     </span>
-                    <span className="enrichment-info-value">{registration.classResponse.academicYear}</span>
+                    <span className={styles.enrichmentInfoValue}>{registration.classResponse.academicYear}</span>
                   </div>
-                  <div className="enrichment-info-item">
-                    <span className="enrichment-info-label">
+                  <div className={styles.enrichmentInfoItem}>
+                    <span className={styles.enrichmentInfoLabel}>
                       <FontAwesomeIcon icon="clock" /> Schedule:
                     </span>
-                    <span className="enrichment-info-value">
+                    <span className={styles.enrichmentInfoValue}>
                       {registration.classResponse.timetable ? 
                         `Week ${registration.classResponse.timetable}` : 
                         'No schedule'}
                     </span>
                   </div>
-                  <div className="enrichment-info-item">
-                    <span className="enrichment-info-label">
+                  <div className={styles.enrichmentInfoItem}>
+                    <span className={styles.enrichmentInfoLabel}>
                       <FontAwesomeIcon icon="check-circle" /> Class status:
                     </span>
-                    <span className={`enrichment-info-value status-${registration.classResponse.status?.toLowerCase()}`}>
+                    <span className={`${styles.enrichmentInfoValue} ${styles[`status${registration.classResponse.status}`]}`}>
                       {registration.classResponse.status === "Available" ? "Ready" : 
                        registration.classResponse.status === "Unavailable" ? "Not ready" : 
                        registration.classResponse.status}
@@ -642,10 +645,10 @@ const EnrichmentProgram = () => {
               </div>
             </div>
             
-            <div className="enrichment-history-card-footer">
+            <div className={styles.enrichmentHistoryCardFooter}>
               {registration.classResponse.status === "Available" ? (
                 <button 
-                  className="enrichment-payment-button"
+                  className={styles.enrichmentPaymentButton}
                   onClick={() => handlePayment(registration)}
                   disabled={processingPayment}
                 >
@@ -662,7 +665,7 @@ const EnrichmentProgram = () => {
                   )}
                 </button>
               ) : (
-                <div className="enrichment-payment-notice">
+                <div className={styles.enrichmentPaymentNotice}>
                   <FontAwesomeIcon icon="info-circle" />
                   Wait for class to be opened to process payment
                 </div>
@@ -674,8 +677,19 @@ const EnrichmentProgram = () => {
     );
   };
 
+  const getStatusClass = (status) => {
+    if (!status) return '';
+    const statusLower = status.toLowerCase();
+    
+    switch (statusLower) {
+      case 'available': return styles.statusAvailable;
+      case 'unavailable': return styles.statusUnavailable;
+      default: return '';
+    }
+  };
+
   return (
-    <div className="enrichment-program-container" ref={containerRef}>
+    <div className={styles.enrichmentProgramContainer} ref={containerRef}>
       <ToastContainer 
         position="top-right"
         autoClose={5000}
@@ -689,14 +703,14 @@ const EnrichmentProgram = () => {
       />
       
       {/* Decorative elements */}
-      <div className="decoration-star star1"></div>
-      <div className="decoration-star star2"></div>
-      <div className="decoration-cloud cloud1"></div>
-      <div className="decoration-cloud cloud2"></div>
+      <div className={`${styles.decorationStar} ${styles.star1}`}></div>
+      <div className={`${styles.decorationStar} ${styles.star2}`}></div>
+      <div className={`${styles.decorationCloud} ${styles.cloud1}`}></div>
+      <div className={`${styles.decorationCloud} ${styles.cloud2}`}></div>
 
-      <div className="enrichment-program-header">
-        <h1 className="enrichment-program-title">Enrichment Program</h1>
-        <p className="enrichment-program-subtitle">
+      <div className={styles.enrichmentProgramHeader}>
+        <h1 className={styles.enrichmentProgramTitle}>Enrichment Program</h1>
+        <p className={styles.enrichmentProgramSubtitle}>
           Discover courses that enhance skills and develop talents for children
         </p>
       </div>
@@ -705,31 +719,31 @@ const EnrichmentProgram = () => {
       {renderTabNavigation()}
 
       {/* Tab Content */}
-      <div className="enrichment-content-layout">
+      <div className={styles.enrichmentContentLayout}>
         {/* Sidebar */}
-        <div className="enrichment-sidebar">
+        <div className={styles.enrichmentSidebar}>
           {/* Search section */}
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Search</h3>
-            <div className="enrichment-program-search-container">
+          <div className={styles.sidebarSection}>
+            <h3 className={styles.sidebarTitle}>Search</h3>
+            <div className={styles.enrichmentProgramSearchContainer}>
               <input
                 type="text"
-                className="enrichment-program-search-input"
+                className={styles.enrichmentProgramSearchInput}
                 placeholder="Search programs..."
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
-              <FontAwesomeIcon icon="search" className="enrichment-program-search-icon" />
+              <FontAwesomeIcon icon="search" className={styles.enrichmentProgramSearchIcon} />
             </div>
           </div>
 
           {/* Filter section */}
           {!loading && !error && programs.length > 0 && (
-            <div className="sidebar-section">
-              <h3 className="sidebar-title">Classification</h3>
-              <div className="enrichment-program-filters">
+            <div className={styles.sidebarSection}>
+              <h3 className={styles.sidebarTitle}>Classification</h3>
+              <div className={styles.enrichmentProgramFilters}>
                 <button
-                  className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+                  className={`${styles.filterBtn} ${filter === 'all' ? styles.active : ''}`}
                   onClick={() => setFilter('all')}
                 >
                   <FontAwesomeIcon icon="th-large" />
@@ -739,7 +753,7 @@ const EnrichmentProgram = () => {
                 {programTypes.map(type => (
                   <button
                     key={type}
-                    className={`filter-btn ${filter === type ? 'active' : ''}`}
+                    className={`${styles.filterBtn} ${filter === type ? styles.active : ''}`}
                     onClick={() => setFilter(type)}
                   >
                     <FontAwesomeIcon icon={getProgramTypeIcon(type)} />
@@ -752,11 +766,11 @@ const EnrichmentProgram = () => {
 
           {/* Sort section */}
           {!loading && !error && programs.length > 0 && (
-            <div className="sidebar-section">
-              <h3 className="sidebar-title">Sort</h3>
-              <div className="enrichment-program-sort-container">
+            <div className={styles.sidebarSection}>
+              <h3 className={styles.sidebarTitle}>Sort</h3>
+              <div className={styles.enrichmentProgramSortContainer}>
                 <select
-                  className="enrichment-program-sort-select"
+                  className={styles.enrichmentProgramSortSelect}
                   value={sortBy}
                   onChange={handleSortChange}
                 >
@@ -766,25 +780,25 @@ const EnrichmentProgram = () => {
                   <option value="dateAsc">Date ascending</option>
                   <option value="dateDesc">Date descending</option>
                 </select>
-                <FontAwesomeIcon icon="sort" className="enrichment-program-sort-icon" />
+                <FontAwesomeIcon icon="sort" className={styles.enrichmentProgramSortIcon} />
               </div>
             </div>
           )}
         </div>
 
         {/* Main content */}
-        <div className="enrichment-main-content">
+        <div className={styles.enrichmentMainContent}>
           {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
+            <div className={styles.loadingContainer}>
+              <div className={styles.loadingSpinner}></div>
               <p>Loading data...</p>
             </div>
           ) : error ? (
-            <div className="error-container">
-              <FontAwesomeIcon icon="exclamation-circle" className="error-icon" />
-              <p className="error-message">{error}</p>
+            <div className={styles.errorContainer}>
+              <FontAwesomeIcon icon="exclamation-circle" className={styles.errorIcon} />
+              <p className={styles.errorMessage}>{error}</p>
               <button
-                className="retry-btn"
+                className={styles.retryBtn}
                 onClick={() => window.location.reload()}
               >
                 <FontAwesomeIcon icon="sync" />
@@ -792,15 +806,15 @@ const EnrichmentProgram = () => {
               </button>
             </div>
           ) : programs.length === 0 ? (
-            <div className="empty-search-state">
-              <div className="empty-icon">
+            <div className={styles.emptySearchState}>
+              <div className={styles.emptyIcon}>
                 <FontAwesomeIcon icon="search" size="3x" />
               </div>
               <h3>No enrichment programs found</h3>
             </div>
           ) : processedPrograms.length === 0 ? (
-            <div className="empty-search-state">
-              <div className="empty-icon">
+            <div className={styles.emptySearchState}>
+              <div className={styles.emptyIcon}>
                 <FontAwesomeIcon icon="search" size="3x" />
               </div>
               <h3>No matching results found</h3>
@@ -808,56 +822,56 @@ const EnrichmentProgram = () => {
             </div>
           ) : (
             <>
-              <div className="results-count">
+              <div className={styles.resultsCount}>
                 Displaying <strong>{processedPrograms.length}</strong> out of <strong>{programs.length}</strong> programs
               </div>
-              <div className="program-grid">
+              <div className={styles.programGrid}>
                 {processedPrograms.map((program) => (
-                  <div key={program.id} className="program-card">
-                    <div className="program-banner">
+                  <div key={program.id} className={styles.programCard}>
+                    <div className={styles.programBanner}>
                       <FontAwesomeIcon
                         icon={getProgramTypeIcon(program.type)}
-                        className="program-icon"
+                        className={styles.programIcon}
                       />
-                      <span className={`program-type-badge ${program.type?.toLowerCase()}`}>
+                      <span className={`${styles.programTypeBadge} ${program.type?.toLowerCase()}`}>
                         {program.type}
                       </span>
                     </div>
 
-                    <div className="program-content">
-                      <h3 className="program-name">{program.name}</h3>
-                      <p className="program-description">{program.description || "No detailed description."}</p>
+                    <div className={styles.programContent}>
+                      <h3 className={styles.programName}>{program.name}</h3>
+                      <p className={styles.programDescription}>{program.description || "No detailed description."}</p>
 
-                      <div className="program-details">
-                        <div className="enrichment-program-detail-item">
-                          <FontAwesomeIcon icon="calendar-alt" className="enrichment-program-detail-icon" />
-                          <div className="enrichment-program-detail-content">
-                            <span className="enrichment-program-detail-label">Time</span>
-                            <span className="enrichment-program-detail-value">
+                      <div className={styles.programDetails}>
+                        <div className={styles.enrichmentProgramDetailItem}>
+                          <FontAwesomeIcon icon="calendar-alt" className={styles.enrichmentProgramDetailIcon} />
+                          <div className={styles.enrichmentProgramDetailContent}>
+                            <span className={styles.enrichmentProgramDetailLabel}>Time</span>
+                            <span className={styles.enrichmentProgramDetailValue}>
                               {formatDisplayDate(program.startDate)} - {formatDisplayDate(program.endDate)}
                             </span>
                           </div>
                         </div>
 
-                        <div className="enrichment-program-detail-item">
-                          <FontAwesomeIcon icon="users" className="enrichment-program-detail-icon" />
-                          <div className="enrichment-program-detail-content">
-                            <span className="enrichment-program-detail-label">Maximum number of students</span>
-                            <span className="enrichment-program-detail-value">{program.maxChildren} students</span>
+                        <div className={styles.enrichmentProgramDetailItem}>
+                          <FontAwesomeIcon icon="users" className={styles.enrichmentProgramDetailIcon} />
+                          <div className={styles.enrichmentProgramDetailContent}>
+                            <span className={styles.enrichmentProgramDetailLabel}>Maximum number of students</span>
+                            <span className={styles.enrichmentProgramDetailValue}>{program.maxChildren} students</span>
                           </div>
                         </div>
 
-                        <div className="enrichment-program-detail-item">
-                          <FontAwesomeIcon icon="money-bill-wave" className="enrichment-program-detail-icon" />
-                          <div className="enrichment-program-detail-content">
-                            <span className="enrichment-program-detail-label">Tuition fee</span>
-                            <span className="enrichment-program-detail-value fee">{formatCurrency(program.fee)}</span>
+                        <div className={styles.enrichmentProgramDetailItem}>
+                          <FontAwesomeIcon icon="money-bill-wave" className={styles.enrichmentProgramDetailIcon} />
+                          <div className={styles.enrichmentProgramDetailContent}>
+                            <span className={styles.enrichmentProgramDetailLabel}>Tuition fee</span>
+                            <span className={`${styles.enrichmentProgramDetailValue} ${styles.fee}`}>{formatCurrency(program.fee)}</span>
                           </div>
                         </div>
                       </div>
 
                       <button
-                        className="register-button"
+                        className={styles.registerButton}
                         onClick={() => handleRegister(program)}
                       >
                         <FontAwesomeIcon icon="plus-circle" />
@@ -874,15 +888,15 @@ const EnrichmentProgram = () => {
 
       {/* Registration Modal */}
       {showRegisterModal && selectedProgram && (
-        <div className="enrichment-program-modal-overlay">
-          <div className="enrichment-program-modal" ref={modalRef}>
-            <div className="enrichment-program-modal-header">
+        <div className={styles.enrichmentProgramModalOverlay}>
+          <div className={styles.enrichmentProgramModal} ref={modalRef}>
+            <div className={styles.enrichmentProgramModalHeader}>
               <h3>
                 <FontAwesomeIcon icon="clipboard-list" />
                 Register Enrichment Program
               </h3>
               <button 
-                className="enrichment-program-modal-close-btn"
+                className={styles.enrichmentProgramModalCloseBtn}
                 onClick={() => setShowRegisterModal(false)}
                 aria-label="Close"
               >
@@ -890,68 +904,68 @@ const EnrichmentProgram = () => {
               </button>
             </div>
             
-            <div className="enrichment-program-modal-body">
+            <div className={styles.enrichmentProgramModalBody}>
               {/* Program Info Section - Enhanced */}
-              <div className="enrichment-program-info-section">
-                <div className="enrichment-program-info-header">
-                  <div className="enrichment-program-icon-wrapper">
+              <div className={styles.enrichmentProgramInfoSection}>
+                <div className={styles.enrichmentProgramInfoHeader}>
+                  <div className={styles.enrichmentProgramIconWrapper}>
                     <FontAwesomeIcon icon={getProgramTypeIcon(selectedProgram.type)} />
                   </div>
                   <div>
-                    <h4 className="program-title">{selectedProgram.name}</h4>
-                    <span className="program-type">{selectedProgram.type}</span>
+                    <h4 className={styles.programTitle}>{selectedProgram.name}</h4>
+                    <span className={styles.programType}>{selectedProgram.type}</span>
                   </div>
                 </div>
                 
-                <div className="enrichment-program-details-container">
-                  <div className="enrichment-program-detail-item">
+                <div className={styles.enrichmentProgramDetailsContainer}>
+                  <div className={styles.enrichmentProgramDetailItem}>
                     <FontAwesomeIcon icon="users" />
-                    <div className="enrichment-detail-content">
-                      <span className="detail-label">Maximum number of students</span>
-                      <span className="detail-value">{selectedProgram.maxChildren} students</span>
+                    <div className={styles.enrichmentDetailContent}>
+                      <span className={styles.detailLabel}>Maximum number of students</span>
+                      <span className={styles.detailValue}>{selectedProgram.maxChildren} students</span>
                     </div>
                   </div>
                   
-                  <div className="enrichment-program-detail-item">
+                  <div className={styles.enrichmentProgramDetailItem}>
                     <FontAwesomeIcon icon="child" />
-                    <div className="enrichment-detail-content">
-                      <span className="detail-label">Age range</span>
-                      <span className="detail-value">3 - 6 years old</span>
+                    <div className={styles.enrichmentDetailContent}>
+                      <span className={styles.detailLabel}>Age range</span>
+                      <span className={styles.detailValue}>3 - 6 years old</span>
                     </div>
                   </div>
                   
-                  <div className="enrichment-program-detail-item">
+                  <div className={styles.enrichmentProgramDetailItem}>
                     <FontAwesomeIcon icon="calendar-alt" />
-                    <div className="enrichment-detail-content">
-                      <span className="detail-label">Time</span>
-                      <span className="detail-value">
+                    <div className={styles.enrichmentDetailContent}>
+                      <span className={styles.detailLabel}>Time</span>
+                      <span className={styles.detailValue}>
                         {formatDisplayDate(selectedProgram.startDate)} - {formatDisplayDate(selectedProgram.endDate)}
                       </span>
                     </div>
                   </div>
                   
-                  <div className="enrichment-program-detail-item">
+                  <div className={styles.enrichmentProgramDetailItem}>
                     <FontAwesomeIcon icon="money-bill-wave" />
-                    <div className="enrichment-detail-content">
-                      <span className="detail-label">Tuition fee</span>
-                      <span className="detail-value fee">{formatCurrency(selectedProgram.fee)}</span>
+                    <div className={styles.enrichmentDetailContent}>
+                      <span className={styles.detailLabel}>Tuition fee</span>
+                      <span className={`${styles.detailValue} ${styles.fee}`}>{formatCurrency(selectedProgram.fee)}</span>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <hr className="enrichment-section-divider" />
+              <hr className={styles.enrichmentSectionDivider} />
               
               {/* Children Selection Section với Header có nút refresh */}
-              <div className="enrichment-children-selection-section">
-                <div className="enrichment-section-header">
-                  <h4 className="enrichment-section-title">
+              <div className={styles.enrichmentChildrenSelectionSection}>
+                <div className={styles.enrichmentSectionHeader}>
+                  <h4 className={styles.enrichmentSectionTitle}>
                     <FontAwesomeIcon icon="child" />
                     Select child to register
                   </h4>
                   
                   <button 
-                    className="enrichment-refresh-btn"
+                    className={styles.enrichmentRefreshBtn}
                     onClick={handleRefreshChildren}
                     disabled={childrenLoading}
                     title="Update list"
@@ -961,15 +975,15 @@ const EnrichmentProgram = () => {
                 </div>
                 
                 {childrenLoading ? (
-                  <div className="enrichment-children-loading">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="sr-only">Loading...</span>
+                  <div className={styles.enrichmentChildrenLoading}>
+                    <div className={styles.spinnerBorder} role="status">
+                      <span className={styles.srOnly}>Loading...</span>
                     </div>
                   </div>
                 ) : children.length > 0 ? (
                   <>
-                    <div className="enrichment-select-all-wrapper">
-                      <label className="enrichment-select-all-option">
+                    <div className={styles.enrichmentSelectAllWrapper}>
+                      <label className={styles.enrichmentSelectAllOption}>
                         <input 
                           type="checkbox"
                           checked={selectedChildIds.length === children.length && children.length > 0}
@@ -979,7 +993,7 @@ const EnrichmentProgram = () => {
                       </label>
                     </div>
                     
-                    <div className="enrichment-children-grid">
+                    <div className={styles.enrichmentChildrenGrid}>
                       {paginatedChildren.map(child => (
                         <ChildItem
                           key={child.id}
@@ -995,9 +1009,9 @@ const EnrichmentProgram = () => {
                     
                     {/* Pagination */}
                     {totalPages > 1 && (
-                      <div className="enrichment-pagination">
+                      <div className={styles.enrichmentPagination}>
                         <button 
-                          className="enrichment-pagination-btn" 
+                          className={styles.enrichmentPaginationBtn} 
                           disabled={currentPage === 1}
                           onClick={() => handlePageChange(currentPage - 1)}
                           aria-label="Previous page"
@@ -1005,12 +1019,12 @@ const EnrichmentProgram = () => {
                           <FontAwesomeIcon icon="chevron-left" />
                         </button>
                         
-                        <span className="enrichment-pagination-info">
+                        <span className={styles.enrichmentPaginationInfo}>
                           {currentPage}/{totalPages}
                         </span>
                         
                         <button 
-                          className="enrichment-pagination-btn"
+                          className={styles.enrichmentPaginationBtn}
                           disabled={currentPage === totalPages}
                           onClick={() => handlePageChange(currentPage + 1)}
                           aria-label="Next page"
@@ -1021,7 +1035,7 @@ const EnrichmentProgram = () => {
                     )}
                   </>
                 ) : (
-                  <div className="enrichment-no-children-message">
+                  <div className={styles.enrichmentNoChildrenMessage}>
                     <p>Your child has not registered for enrichment classes or already has an enrichment class.</p>
                   </div>
                 )}
@@ -1029,9 +1043,9 @@ const EnrichmentProgram = () => {
 
               {/* Fee Summary if children selected */}
               {selectedChildIds.length > 0 && (
-                <div className="enrichment-fee-summary">
-                  <span className="enrichment-fee-label">Total tuition fee:</span>
-                  <span className="enrichment-fee-total">
+                <div className={styles.enrichmentFeeSummary}>
+                  <span className={styles.enrichmentFeeLabel}>Total tuition fee:</span>
+                  <span className={styles.enrichmentFeeTotal}>
                     <FontAwesomeIcon icon="receipt" />
                     {selectedChildIds.length > 1 
                       ? formatCurrency(selectedProgram.fee * selectedChildIds.length)
@@ -1042,21 +1056,21 @@ const EnrichmentProgram = () => {
               )}
             </div>
             
-            <div className="enrichment-program-modal-footer">
+            <div className={styles.enrichmentProgramModalFooter}>
               <button 
-                className="enrichment-program-cancel-btn"
+                className={styles.enrichmentProgramCancelBtn}
                 onClick={() => setShowRegisterModal(false)}
               >
                 Cancel
               </button>
               <button 
-                className="enrichment-program-confirm-btn"
+                className={styles.enrichmentProgramConfirmBtn}
                 onClick={handleConfirmRegistration}
                 disabled={registerLoading || selectedChildIds.length === 0}
               >
                 {registerLoading ? (
                   <>
-                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span className={`${styles.spinnerBorder} ${styles.spinnerBorderSm}`} role="status" aria-hidden="true"></span>
                     <span>Processing...</span>
                   </>
                 ) : (
@@ -1073,35 +1087,35 @@ const EnrichmentProgram = () => {
 
       {/* Program benefits section - only show on programs tab */}
       {activeTab === 'programs' && (
-        <div className="program-benefits">
-          <h2 className="benefits-title">Benefits of enrichment programs</h2>
-          <div className="benefits-grid">
-            <div className="benefit-item">
-              <div className="benefit-icon">
+        <div className={styles.programBenefits}>
+          <h2 className={styles.benefitsTitle}>Benefits of enrichment programs</h2>
+          <div className={styles.benefitsGrid}>
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}>
                 <FontAwesomeIcon icon="brain" />
               </div>
               <h3>Developing thinking</h3>
               <p>Stimulate brain development and logical thinking in children.</p>
             </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}>
                 <FontAwesomeIcon icon="hands-helping" />
               </div>
               <h3>Social skills</h3>
               <p>Enhance communication and teamwork skills.</p>
             </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}>
                 <FontAwesomeIcon icon="lightbulb" />
               </div>
               <h3>Creativity</h3>
               <p>Foster creativity and innovative thinking in children.</p>
             </div>
 
-            <div className="benefit-item">
-              <div className="benefit-icon">
+            <div className={styles.benefitItem}>
+              <div className={styles.benefitIcon}>
                 <FontAwesomeIcon icon="award" />
               </div>
               <h3>Developing talents</h3>

@@ -1,0 +1,336 @@
+.adminTuitionManagement {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+}
+
+.adminTuitionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
+}
+
+.adminTuitionHeader h2 {
+  margin-bottom: 0;
+}
+
+.adminTuitionFilterContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
+  padding-right: 0;
+}
+
+.adminTuitionFilterGroups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
+  align-items: flex-start;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.adminTuitionFilterSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adminTuitionFilterSection.gradeSection {
+  flex-grow: 1;
+}
+
+.filterLabel {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.gradeTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gradeTag {
+  cursor: pointer;
+  user-select: none;
+  padding: 5px 12px;
+  font-size: 14px;
+}
+
+.gradeTag:hover {
+  opacity: 0.8;
+}
+
+.adminTuitionFormButtons {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.adminTuitionManagement :global(.ant-table-wrapper) {
+  margin-top: 20px;
+}
+
+.yearNavigator {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.yearDisplay {
+  padding: 6px 24px;
+  font-weight: bold;
+  min-width: 120px;
+  text-align: center;
+  background-color: #f5f5f5;
+  border-left: 1px solid #e8e8e8;
+  border-right: 1px solid #e8e8e8;
+}
+
+.yearNavigator :global(.ant-btn) {
+  border: none;
+  border-radius: 0;
+  height: 34px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .adminTuitionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .adminTuitionFilterContainer {
+    margin-top: 15px;
+  }
+
+  .addTuitionButton {
+    position: static;
+    margin-top: 16px;
+    width: 100%;
+  }
+}
+
+/* Add creative styling for grade level selector */
+.gradeLevelSelector {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gradeLevelItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px 8px;
+  border-radius: 12px;
+  transition: all 0.3s;
+  width: 72px;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  background-color: #fafafa;
+}
+
+.gradeLevelItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+}
+
+.gradeLevelItem.active {
+  border-color: #1890ff;
+  background-color: #e6f7ff;
+  transform: translateY(-2px);
+}
+
+.gradeLevelIcon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 1;
+}
+
+.gradeLevelItem:nth-child(1) .gradeLevelIcon {
+  background-color: #ffe7ba;
+}
+
+.gradeLevelItem:nth-child(2) .gradeLevelIcon {
+  background-color: #d9f7be;
+}
+
+.gradeLevelItem:nth-child(3) .gradeLevelIcon {
+  background-color: #bae7ff;
+}
+
+.gradeLevelItem.active:nth-child(1) .gradeLevelIcon {
+  background-color: #fa8c16;
+}
+
+.gradeLevelItem.active:nth-child(2) .gradeLevelIcon {
+  background-color: #52c41a;
+}
+
+.gradeLevelItem.active:nth-child(3) .gradeLevelIcon {
+  background-color: #1890ff;
+}
+
+.gradeLevelItem.all .gradeLevelIcon {
+  background-color: #f5f5f5;
+}
+
+.gradeLevelItem.all.active .gradeLevelIcon {
+  background-color: #722ed1;
+}
+
+.gradeLevelName {
+  font-weight: 500;
+  margin-top: 5px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.gradeLevelItem.active .gradeLevelName {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.gradeLevelItem:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(circle, transparent 30%, transparent 70%);
+  opacity: 0;
+  transition: all 0.5s;
+  transform: scale(5);
+}
+
+.gradeLevelItem:active:after {
+  opacity: 1;
+  background: radial-gradient(circle, rgba(24, 144, 255, 0.1) 30%, transparent 70%);
+  transform: scale(0);
+  transition: 0s;
+}
+
+/* Style the button at the end */
+.adminTuitionFilterContainer> :global(.ant-btn) {
+  margin-left: auto;
+}
+
+/* Move button out of filter container */
+.addTuitionButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+/* Clean date picker styling */
+:global(.ant-picker-dropdown) {
+  z-index: 1100 !important;
+  position: absolute !important;
+}
+
+:global(.ant-picker-dropdown .ant-picker-panel-container) {
+  width: 280px !important;
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+:global(.ant-picker-dropdown .ant-picker-panel) {
+  width: 100% !important;
+}
+
+:global(.ant-picker-dropdown .ant-picker-content) {
+  width: 100% !important;
+  table-layout: fixed;
+}
+
+:global(.ant-picker-dropdown .ant-picker-content th),
+:global(.ant-picker-dropdown .ant-picker-content td) {
+  height: 28px !important;
+  width: 28px !important;
+  padding: 0 !important;
+  text-align: center;
+}
+
+:global(.ant-picker-dropdown .ant-picker-cell-inner) {
+  width: 24px !important;
+  height: 24px !important;
+  line-height: 24px !important;
+  border-radius: 2px !important;
+  font-size: 14px !important;
+}
+
+/* Make sure the modal is clean */
+:global(.ant-modal-body) {
+  position: relative;
+}
+
+.feeItemsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feeItemRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gradeLevelRadioGroup {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.gradeRadioContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gradeRadioIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+}
+
+/* Colored background for each grade level icon */
+.gradeRadioContent:has(+ :global(.ant-radio-inner:checked)) .gradeRadioIcon {
+  background-color: rgba(24, 144, 255, 0.1);
+}

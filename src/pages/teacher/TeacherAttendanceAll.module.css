@@ -1,0 +1,140 @@
+.teacherAttendanceAllContainer {
+  padding: 24px 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.teacherAttendanceAllCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+
+.teacherAttendanceAllHeader {
+  margin-bottom: 32px;
+}
+
+.teacherAttendanceAllTitleSection {
+  position: relative;
+}
+
+.teacherAttendanceAllTitleSection h2 {
+  margin: 16px 0 8px;
+  font-weight: 700;
+  font-size: 28px;
+  background: linear-gradient(120deg, #1677ff, #39c0ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.teacherAttendanceAllClassInfo {
+  color: #595959;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.teacherAttendanceAllLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 300px;
+  padding: 40px 0;
+}
+
+.teacherAttendanceStatsSummary {
+  margin-bottom: 24px;
+}
+
+.teacherAttendanceStatCard {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+}
+
+.teacherAttendanceStatProgress {
+  margin-top: 16px;
+}
+
+.teacherAttendanceTableCard {
+  border-radius: 12px;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.teacherAttendanceTableHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.teacherAttendanceAllTable :global(.ant-table-thead>tr>th) {
+  background-color: #f0f7ff;
+  font-weight: 600;
+  text-align: center;
+}
+
+.teacherAttendanceDateColumn {
+  font-weight: 500;
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+}
+
+.teacherAttendancePresent {
+  background-color: rgba(82, 196, 26, 0.15);
+  color: #52c41a;
+  font-weight: bold;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.teacherAttendanceAbsent {
+  background-color: rgba(255, 77, 79, 0.15);
+  color: #ff4d4f;
+  font-weight: bold;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.teacherAttendanceIndexColumn {
+  background-color: #fafafa !important;
+}
+
+.teacherAttendanceStudentColumn {
+  background-color: #fafafa !important;
+}
+
+.teacherAttendanceRateColumn {
+  background-color: #fafafa !important;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .teacherAttendanceAllTitleSection {
+    padding-top: 40px;
+  }
+
+  .teacherAttendanceAllTitleSection h2 {
+    font-size: 24px;
+  }
+}
+
+/* Add footer styles */
+.teacherAttendanceAllFooter {
+  display: flex;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}

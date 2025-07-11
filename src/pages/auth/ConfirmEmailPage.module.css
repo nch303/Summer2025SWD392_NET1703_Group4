@@ -1,0 +1,535 @@
+.confirmEmailPage {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(to right, #2c3e50, #3498db, #9dd5f5);
+  /* Night to day gradient */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Day-night separator */
+.dayNightSeparator {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right,
+      rgba(44, 62, 80, 0.8) 0%,
+      rgba(52, 152, 219, 0.6) 50%,
+      rgba(157, 213, 245, 0.4) 100%);
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+/* Add this new class to rotate the entire ray container */
+.sunRayContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  animation: rotate-rays 20s linear infinite;
+}
+
+.sunRay {
+  position: absolute;
+  background-color: rgba(255, 235, 59, 0.4);
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+}
+
+.ray1 {
+  width: 100px;
+  height: 2px;
+  transform: rotate(0deg);
+}
+
+.ray2 {
+  width: 90px;
+  height: 2px;
+  transform: rotate(45deg);
+}
+
+.ray3 {
+  width: 80px;
+  height: 2px;
+  transform: rotate(90deg);
+}
+
+.ray4 {
+  width: 90px;
+  height: 2px;
+  transform: rotate(135deg);
+}
+
+.ray5 {
+  width: 100px;
+  height: 2px;
+  transform: rotate(180deg);
+}
+
+.ray6 {
+  width: 90px;
+  height: 2px;
+  transform: rotate(225deg);
+}
+
+.ray7 {
+  width: 80px;
+  height: 2px;
+  transform: rotate(270deg);
+}
+
+.ray8 {
+  width: 90px;
+  height: 2px;
+  transform: rotate(315deg);
+}
+
+/* Define the rotation animation */
+@keyframes rotate-rays {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.confirmRainbow {
+  position: absolute;
+  height: 10px;
+  width: 100%;
+  left: 0;
+  background: linear-gradient(to right,
+      #f44336, #ff9800, #ffeb3b,
+      #4caf50, #2196f3, #3f51b5, #9c27b0);
+  z-index: 2;
+}
+
+.topRainbow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.bottomRainbow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.confirmContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 2rem;
+  z-index: 1;
+}
+
+.confirmCard {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 500px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.confirmHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.confirmLogo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.isSuccess {
+  background-color: #4CAF50;
+}
+
+.isError {
+  background-color: #F44336;
+}
+
+.confirmLogo svg {
+  width: 36px;
+  height: 36px;
+  color: white;
+}
+
+.confirmTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-family: 'Nunito', sans-serif;
+}
+
+.confirmSubtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-family: 'Nunito', sans-serif;
+}
+
+.colorDots {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  animation: bounce 2s infinite alternate;
+}
+
+.dotRed {
+  background-color: #f44336;
+  animation-delay: 0s;
+}
+
+.dotYellow {
+  background-color: #ffeb3b;
+  animation-delay: 0.2s;
+}
+
+.dotGreen {
+  background-color: #4caf50;
+  animation-delay: 0.4s;
+}
+
+.dotBlue {
+  background-color: #2196f3;
+  animation-delay: 0.6s;
+}
+
+.dotPurple {
+  background-color: #9c27b0;
+  animation-delay: 0.8s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-8px);
+  }
+}
+
+.confirmError {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+  margin: 0.5rem 0;
+}
+
+.confirmError svg {
+  width: 24px;
+  height: 24px;
+}
+
+.confirmActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.loginButton {
+  padding: 12px;
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.loginButton:hover {
+  background-color: #3a9e3d;
+}
+
+.redirectMessage {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Enhanced sun with shimmering edge effect */
+.sunElement {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #ffeb3b, #ff9800);
+  top: 15%;
+  right: 15%;
+  z-index: 1;
+  animation: sun-glow 8s infinite alternate;
+}
+
+/* Add a shimmer effect around the sun */
+.sunElement::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  right: -15px;
+  bottom: -15px;
+  background: radial-gradient(circle at center, rgba(255, 255, 0, 0.7) 30%, rgba(255, 215, 0, 0.5) 50%, rgba(255, 165, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: -1;
+  animation: sun-shimmer 5s infinite alternate;
+}
+
+/* Add a second sparkling layer */
+.sunElement::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.7;
+  animation: sun-sparkle 3s infinite;
+}
+
+/* Shimmer animation for the outer glow */
+@keyframes sun-shimmer {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+/* Sparkle animation for the edges */
+@keyframes sun-sparkle {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Moon element */
+.moonElement {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f5f5f5, #e0e0e0);
+  top: 20%;
+  left: 15%;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+  z-index: 1;
+  animation: moon-glow 8s infinite alternate;
+}
+
+.moonCraters {
+  position: absolute;
+  background-color: rgba(200, 200, 200, 0.5);
+  border-radius: 50%;
+}
+
+.crater1 {
+  width: 25px;
+  height: 25px;
+  top: 30px;
+  left: 25px;
+}
+
+.crater2 {
+  width: 15px;
+  height: 15px;
+  top: 60px;
+  left: 65px;
+}
+
+.crater3 {
+  width: 20px;
+  height: 20px;
+  top: 75px;
+  left: 40px;
+}
+
+@keyframes moon-glow {
+  0% {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    transform: scale(1);
+  }
+
+  100% {
+    box-shadow: 0 0 60px rgba(255, 255, 255, 0.7);
+    transform: scale(1.03);
+  }
+}
+
+/* Stars */
+.starsContainer {
+  position: absolute;
+  width: 40%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  animation: twinkle 4s infinite alternate;
+}
+
+.star1 {
+  width: 3px;
+  height: 3px;
+  top: 15%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.star2 {
+  width: 2px;
+  height: 2px;
+  top: 25%;
+  left: 10%;
+  animation-delay: 0.5s;
+}
+
+.star3 {
+  width: 4px;
+  height: 4px;
+  top: 35%;
+  left: 25%;
+  animation-delay: 1s;
+}
+
+.star4 {
+  width: 2px;
+  height: 2px;
+  top: 45%;
+  left: 15%;
+  animation-delay: 1.5s;
+}
+
+.star5 {
+  width: 3px;
+  height: 3px;
+  top: 55%;
+  left: 5%;
+  animation-delay: 2s;
+}
+
+.star6 {
+  width: 4px;
+  height: 4px;
+  top: 65%;
+  left: 30%;
+  animation-delay: 2.5s;
+}
+
+.star7 {
+  width: 2px;
+  height: 2px;
+  top: 75%;
+  left: 12%;
+  animation-delay: 3s;
+}
+
+.star8 {
+  width: 3px;
+  height: 3px;
+  top: 85%;
+  left: 22%;
+  animation-delay: 3.5s;
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+/* Spinner for loading state */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sun-glow {
+  0% {
+    box-shadow: 0 0 50px rgba(255, 152, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.4);
+    transform: scale(1);
+  }
+
+  100% {
+    box-shadow: 0 0 70px rgba(255, 152, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6);
+    transform: scale(1.05);
+  }
+}

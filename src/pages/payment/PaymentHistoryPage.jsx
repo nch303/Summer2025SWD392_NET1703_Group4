@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { getUserPaymentHistory, getChildPaymentHistory } from './PaymentHistoryService';
-import { ProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
-import './PaymentHistoryPage.css';
+import { getUserPaymentHistory, getChildPaymentHistory } from '../../services/PaymentHistoryService';
+import { ProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
+import styles from './PaymentHistoryPage.module.css';
 import { useUser } from '../../contexts/UserContext';
 
 const PaymentHistoryPage = () => {
@@ -26,11 +26,23 @@ const PaymentHistoryPage = () => {
   const [showStats, setShowStats] = useState(true);
 
   // Format currency to VND
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
+  const formatCurrency = (amount, status) => {
+    const formattedAmount = new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND'
     }).format(amount);
+    
+    const statusLower = status?.toLowerCase();
+    
+    if (statusLower === 'completed' || 
+        statusLower === 'success' || 
+        statusLower === 'hoàn thành') {
+      return `-${formattedAmount}`;
+    } else if (statusLower === 'refunded' || statusLower === 'awaiting') {
+      return `+${formattedAmount}`;
+    }
+    
+    return formattedAmount;
   };
 
   // Format date
@@ -45,24 +57,26 @@ const PaymentHistoryPage = () => {
 
   // Get status label
   const getStatusLabel = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'success':
       case 'completed':
       case 'hoàn thành':
-        return <span className="payment-status payment-status-completed">Completed</span>;
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusCompleted}`}>Completed</span>;
       case 'pending':
       case 'chờ xử lý':
-        return <span className="payment-status payment-status-pending">Pending</span>;
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusPending}`}>Pending</span>;
+      case 'awaiting':
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusAwaiting}`}>Awaiting</span>;
       case 'cancelled':
       case 'hủy':
-        return <span className="payment-status payment-status-cancelled">Cancelled</span>;
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusCancelled}`}>Cancelled</span>;
       case 'failed':
       case 'thất bại':
-        return <span className="payment-status payment-status-failed">Failed</span>;
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusFailed}`}>Failed</span>;
       case 'refunded':
-        return <span className="payment-status payment-status-refunded">Refunded</span>;
+        return <span className={`${styles.paymentStatus} ${styles.paymentStatusRefunded}`}>Refunded</span>;
       default:
-        return <span className="payment-status">{status}</span>;
+        return <span className={`${styles.paymentStatus}`}>{status}</span>;
     }
   };
 
@@ -243,45 +257,71 @@ const PaymentHistoryPage = () => {
     return id;
   };
 
+  // Add this function before the return statement
+  const getPaymentRowStatusClass = (status) => {
+    if (!status) return '';
+    
+    const statusLower = status.toLowerCase();
+    switch (statusLower) {
+      case 'success':
+      case 'completed':
+      case 'hoàn thành':
+        return styles.paymentStatusCompleted;
+      case 'pending':
+      case 'chờ xử lý':
+        return styles.paymentStatusPending;
+      case 'cancelled':
+      case 'hủy':
+        return styles.paymentStatusCancelled;
+      case 'failed':
+      case 'thất bại':
+        return styles.paymentStatusFailed;
+      case 'refunded':
+        return styles.paymentStatusRefunded;
+      default:
+        return '';
+    }
+  };
+
   return (
-    <div className="payment-history-page">
+    <div className={styles.paymentHistoryPage}>
       <ProcessingSpinner isVisible={loading} message="Loading payment history..." />
 
-      <div className="payment-history-container">
-        <div className="payment-header">
-          <h1 className="payment-history-title">Payment history</h1>
+      <div className={styles.paymentHistoryContainer}>
+        <div className={styles.paymentHeader}>
+          <h1 className={styles.paymentHistoryTitle}>Payment history</h1>
         </div>
 
         {showStats && payments.length > 0 && (
-          <div className="payment-stats-container">
-            <div className="payment-stats-cards">
-              <div className="payment-stat-card payment-total-card">
-                <div className="payment-stat-card-icon">
+          <div className={styles.paymentStatsContainer}>
+            <div className={styles.paymentStatsCards}>
+              <div className={`${styles.paymentStatCard} ${styles.paymentTotalCard}`}>
+                <div className={styles.paymentStatCardIcon}>
                   <i className="fas fa-money-bill-wave"></i>
                 </div>
-                <div className="payment-stat-card-content">
+                <div className={styles.paymentStatCardContent}>
                   <h3>Total paid</h3>
-                  <p className="payment-stat-value">{formatCurrency(getTotalPaid())}</p>
+                  <p className={styles.paymentStatValue}>{formatCurrency(getTotalPaid())}</p>
                 </div>
               </div>
 
-              <div className="payment-stat-card payment-count-card">
-                <div className="payment-stat-card-icon">
+              <div className={`${styles.paymentStatCard} ${styles.paymentCountCard}`}>
+                <div className={styles.paymentStatCardIcon}>
                   <i className="fas fa-receipt"></i>
                 </div>
-                <div className="payment-stat-card-content">
+                <div className={styles.paymentStatCardContent}>
                   <h3>Total transactions</h3>
-                  <p className="payment-stat-value">{payments.length}</p>
+                  <p className={styles.paymentStatValue}>{payments.length}</p>
                 </div>
               </div>
 
-              <div className="payment-stat-card payment-complete-card">
-                <div className="payment-stat-card-icon">
+              <div className={`${styles.paymentStatCard} ${styles.paymentCompleteCard}`}>
+                <div className={styles.paymentStatCardIcon}>
                   <i className="fas fa-check-circle"></i>
                 </div>
-                <div className="payment-stat-card-content">
+                <div className={styles.paymentStatCardContent}>
                   <h3>Completed</h3>
-                  <p className="payment-stat-value">
+                  <p className={styles.paymentStatValue}>
                     {payments.filter(p =>
                       p.status?.toLowerCase() === 'completed' ||
                       p.status?.toLowerCase() === 'success' ||
@@ -291,13 +331,13 @@ const PaymentHistoryPage = () => {
                 </div>
               </div>
 
-              <div className="payment-stat-card payment-pending-card">
-                <div className="payment-stat-card-icon">
+              <div className={`${styles.paymentStatCard} ${styles.paymentPendingCard}`}>
+                <div className={styles.paymentStatCardIcon}>
                   <i className="fas fa-clock"></i>
                 </div>
-                <div className="payment-stat-card-content">
+                <div className={styles.paymentStatCardContent}>
                   <h3>Pending</h3>
-                  <p className="payment-stat-value">
+                  <p className={styles.paymentStatValue}>
                     {payments.filter(p =>
                       p.status?.toLowerCase() === 'pending' ||
                       p.status?.toLowerCase() === 'chờ xử lý'
@@ -310,15 +350,15 @@ const PaymentHistoryPage = () => {
         )}
 
         {/* Filters */}
-        <div className="payment-filters">
-          <div className="payment-filter-row">
-            <div className="payment-filter-group">
+        <div className={styles.paymentFilters}>
+          <div className={styles.paymentFilterRow}>
+            <div className={styles.paymentFilterGroup}>
               <label htmlFor="childFilter">
                 <i className="fas fa-child"></i> Child:
               </label>
               <select
                 id="childFilter"
-                className="payment-filter-select"
+                className={styles.paymentFilterSelect}
                 value={selectedChild}
                 onChange={handleChildChange}
               >
@@ -331,12 +371,12 @@ const PaymentHistoryPage = () => {
               </select>
             </div>
 
-            <div className="payment-filter-group payment-search-group">
-              <div className="payment-search-wrapper">
+            <div className={`${styles.paymentFilterGroup} ${styles.paymentSearchGroup}`}>
+              <div className={styles.paymentSearchWrapper}>
                 <input
                   type="text"
                   placeholder="Search by child name, transaction ID..."
-                  className="payment-search-input"
+                  className={styles.paymentSearchInput}
                   value={searchTerm}
                   onChange={handleSearchChange}
                   onKeyPress={(e) => {
@@ -347,42 +387,42 @@ const PaymentHistoryPage = () => {
                     }
                   }}
                 />
-                <button className="payment-search-button" onClick={() => setSearchTerm(searchTerm)}>
+                <button className={styles.paymentSearchButton} onClick={() => setSearchTerm(searchTerm)}>
                   <i className="fas fa-search"></i>
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="payment-filter-row">
-            <div className="payment-filter-group payment-date-group">
+          <div className={styles.paymentFilterRow}>
+            <div className={`${styles.paymentFilterGroup} ${styles.paymentDateGroup}`}>
               <label htmlFor="startDate">
                 <i className="fas fa-calendar-alt"></i> From:
               </label>
               <input
                 type="date"
                 id="startDate"
-                className="payment-date-input"
+                className={styles.paymentDateInput}
                 value={startDate}
                 onChange={handleStartDateChange}
               />
             </div>
 
-            <div className="payment-filter-group payment-date-group">
+            <div className={`${styles.paymentFilterGroup} ${styles.paymentDateGroup}`}>
               <label htmlFor="endDate">
                 <i className="fas fa-calendar-alt"></i> To:
               </label>
               <input
                 type="date"
                 id="endDate"
-                className="payment-date-input"
+                className={styles.paymentDateInput}
                 value={endDate}
                 onChange={handleEndDateChange}
               />
             </div>
 
             <button
-              className="payment-filter-clear-button"
+              className={styles.paymentFilterClearButton}
               onClick={clearFilters}
             >
               <i className="fas fa-times"></i> Clear
@@ -391,9 +431,9 @@ const PaymentHistoryPage = () => {
         </div>
 
         {/* Payment Table */}
-        <div className="payment-table-container">
+        <div className={styles.paymentTableContainer}>
           {filteredPayments.length > 0 ? (
-            <table className="payment-table">
+            <table className={styles.paymentTable}>
               <thead>
                 <tr>
                   <th>Transaction ID</th>
@@ -408,30 +448,30 @@ const PaymentHistoryPage = () => {
               </thead>
               <tbody>
                 {currentPayments.map(payment => (
-                  <tr key={payment.id} className={`payment-row payment-status-${payment.status?.toLowerCase()}`}>
-                    <td className="payment-id">
+                  <tr key={payment.id} className={`${styles.paymentRow}`}>
+                    <td className={styles.paymentId}>
                       <span title={payment.id}>{shortenTransactionId(payment.id)}</span>
                     </td>
                     <td>
-                      <div className="payment-date">
+                      <div className={styles.paymentDate}>
                         <i className="fas fa-calendar"></i>
                         <span>{formatDate(payment.date || payment.paymentDate)}</span>
                       </div>
                     </td>
                     <td>
-                      <div className="payment-child">
-                        <span className="payment-child-avatar">{payment.childrenName?.charAt(0) || payment.childName?.charAt(0) || '?'}</span>
+                      <div className={styles.paymentChild}>
+                        <span className={styles.paymentChildAvatar}>{payment.childrenName?.charAt(0) || payment.childName?.charAt(0) || '?'}</span>
                         <span>{payment.childrenName || payment.childName}</span>
                       </div>
                     </td>
-                    <td className="payment-description">{payment.description || payment.name}</td>
-                    <td className="payment-amount">{formatCurrency(payment.amount)}</td>
+                    <td className={styles.paymentDescription}>{payment.description || payment.name}</td>
+                    <td className={styles.paymentAmount}>{formatCurrency(payment.amount, payment.status)}</td>
                     <td>
-                      <div className="payment-method">
+                      <div className={styles.paymentMethod}>
                         <i className={`fas ${payment.paymentMethod?.toLowerCase().includes('card') ? 'fa-credit-card' :
-                            payment.paymentMethod?.toLowerCase().includes('cash') ? 'fa-money-bill-wave' :
-                              payment.paymentMethod?.toLowerCase().includes('transfer') ? 'fa-university' :
-                                'fa-money-check'
+                          payment.paymentMethod?.toLowerCase().includes('cash') ? 'fa-money-bill-wave' :
+                            payment.paymentMethod?.toLowerCase().includes('transfer') ? 'fa-university' :
+                              'fa-money-check'
                           }`}></i>
                         <span>{payment.paymentMethod || 'VNPay'}</span>
                       </div>
@@ -440,7 +480,7 @@ const PaymentHistoryPage = () => {
                     <td>
                       <Link
                         to={`/invoice-detail/${payment.id}`}
-                        className="payment-detail-link"
+                        className={styles.paymentDetailLink}
                       >
                         <i className="fas fa-file-invoice"></i> Details
                       </Link>
@@ -450,7 +490,7 @@ const PaymentHistoryPage = () => {
               </tbody>
             </table>
           ) : (
-            <div className="payment-no-payments">
+            <div className={styles.paymentNoPayments}>
               <i className="fas fa-search"></i>
               <p>{loading ? 'Loading...' : 'No payment data.'}</p>
             </div>
@@ -459,11 +499,11 @@ const PaymentHistoryPage = () => {
 
         {/* Pagination */}
         {filteredPayments.length > 0 && (
-          <div className="payment-pagination">
+          <div className={styles.paymentPagination}>
             <button
               onClick={() => paginate(1)}
               disabled={currentPage === 1}
-              className="payment-pagination-button payment-first-page"
+              className={`${styles.paymentPaginationButton} ${styles.paymentFirstPage}`}
               title="First page"
             >
               <i className="fas fa-angle-double-left"></i>
@@ -471,21 +511,21 @@ const PaymentHistoryPage = () => {
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="payment-pagination-button"
+              className={styles.paymentPaginationButton}
               title="Previous page"
             >
               <i className="fas fa-angle-left"></i>
             </button>
 
-            <div className="payment-pagination-info">
-              <span className="payment-current-page">{currentPage}</span>
-              <span className="payment-total-pages">/ {totalPages}</span>
+            <div className={styles.paymentPaginationInfo}>
+              <span className={styles.paymentCurrentPage}>{currentPage}</span>
+              <span className={styles.paymentTotalPages}>/ {totalPages}</span>
             </div>
 
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="payment-pagination-button"
+              className={styles.paymentPaginationButton}
               title="Next page"
             >
               <i className="fas fa-angle-right"></i>
@@ -493,7 +533,7 @@ const PaymentHistoryPage = () => {
             <button
               onClick={() => paginate(totalPages)}
               disabled={currentPage === totalPages}
-              className="payment-pagination-button payment-last-page"
+              className={`${styles.paymentPaginationButton} ${styles.paymentLastPage}`}
               title="Last page"
             >
               <i className="fas fa-angle-double-right"></i>

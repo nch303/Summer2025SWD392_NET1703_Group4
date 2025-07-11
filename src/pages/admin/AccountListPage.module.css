@@ -1,0 +1,74 @@
+.accountListContainer {
+  padding: 24px;
+  background: #fff;
+  min-height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.accountListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.accountListHeader h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #1890ff;
+}
+
+.accountListActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.createAccountBtn {
+  background-color: #52c41a;
+  border-color: #52c41a;
+  margin-right: 8px;
+}
+
+.createAccountBtn:hover,
+.createAccountBtn:focus {
+  background-color: #73d13d;
+  border-color: #73d13d;
+}
+
+@media (max-width: 768px) {
+  .accountListHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .accountListActions {
+    margin-top: 16px;
+    width: 100%;
+  }
+}
+
+.accountDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detailRow {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.detailLabel {
+  width: 150px;
+  font-weight: 600;
+  color: #555;
+}
+
+.detailValue {
+  flex: 1;
+}

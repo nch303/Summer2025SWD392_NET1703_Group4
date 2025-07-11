@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Row, Col, Typography, Button, Table, Spin,
-  Empty, Radio, Input, message, Space, Badge, Tag, Tooltip, Progress
-} from 'antd';
-import {
+  Card, Button, Table, Spin,
+  Empty, Radio, message, Badge, Tooltip, Progress,
+  Title, Text, Paragraph,
   CalendarOutlined, SaveOutlined, UndoOutlined,
-  CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined,
-  ArrowLeftOutlined, InfoCircleOutlined
-} from '@ant-design/icons';
+  CheckCircleOutlined, CloseCircleOutlined,
+  ArrowLeftOutlined, InfoCircleOutlined, TextArea
+} from '../../utils/AntComponents';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getTodayAttendance, updateAttendanceRecords } from './TeacherCheckAttendanceService';
-import './TeacherCheckAttendance.css';
+import { getTodayAttendance, updateAttendanceRecords } from '../../services/TeacherService';
+import styles from './TeacherCheckAttendance.module.css';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const { Title, Text, Paragraph } = Typography;
-const { TextArea } = Input;
 
 const TeacherCheckAttendance = () => {
   const { classId } = useParams();
@@ -158,22 +154,22 @@ const TeacherCheckAttendance = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status, record) => (
-        <div className="teacher-status-selection">
+        <div className={styles.teacherStatusSelection}>
           <Radio.Group
             value={status}
             onChange={(e) => handleStatusChange(record, e.target.value)}
             buttonStyle="solid"
-            className="teacher-status-radio-group"
+            className={styles.teacherStatusRadioGroup}
           >
             <Radio.Button
               value="Attend"
-              className={`teacher-status-btn ${status === 'Attend' ? 'teacher-status-btn-attend-active' : ''}`}
+              className={`${styles.teacherStatusBtn} ${status === 'Attend' ? styles.teacherStatusBtnAttend : ''}`}
             >
               <CheckCircleOutlined /> Present
             </Radio.Button>
             <Radio.Button
               value="Absent"
-              className={`teacher-status-btn ${status === 'Absent' ? 'teacher-status-btn-absent-active' : ''}`}
+              className={`${styles.teacherStatusBtn} ${status === 'Absent' ? styles.teacherStatusBtnAbsentActive : ''}`}
             >
               <CloseCircleOutlined /> Absent
             </Radio.Button>
@@ -191,7 +187,7 @@ const TeacherCheckAttendance = () => {
           value={notes}
           onChange={(e) => handleNotesChange(record, e.target.value)}
           autoSize={{ minRows: 1, maxRows: 3 }}
-          className="teacher-notes-input"
+          className={styles.teacherNotesInput}
           maxLength={200}
         />
       )
@@ -203,35 +199,35 @@ const TeacherCheckAttendance = () => {
     : 0;
 
   return (
-    <div className="teacher-attendance-container">
-      <Card className="teacher-attendance-page-card">
-        <div className="teacher-attendance-header">
-          <div className="teacher-attendance-title-section">
+    <div className={styles.teacherAttendanceContainer}>
+      <Card className={styles.teacherAttendancePageCard}>
+        <div className={styles.teacherAttendanceHeader}>
+          <div className={styles.teacherAttendanceTitleSection}>
             <Title level={2}>Attendance</Title>
-            <Paragraph className="teacher-attendance-description">
+            <Paragraph className={styles.teacherAttendanceDescription}>
               Attendance of students and notes for today
             </Paragraph>
           </div>
 
-          <div className="teacher-attendance-date">
-            <CalendarOutlined className="teacher-date-icon" />
+          <div className={styles.teacherAttendanceDate}>
+            <CalendarOutlined className={styles.teacherDateIcon} />
             <Text strong>{todayDate}</Text>
           </div>
         </div>
 
         {loading ? (
-          <div className="teacher-loading-state">
+          <div className={styles.teacherLoadingState}>
             <Spin size="large" />
             <Text>Loading attendance data...</Text>
           </div>
         ) : attendanceData.length > 0 ? (
           <>
-            <div className="teacher-attendance-summary">
-              <Card className="teacher-summary-card teacher-summary-card-percentage">
-                <div className="teacher-summary-header">
+            <div className={styles.teacherAttendanceSummary}>
+              <Card className={`${styles.teacherSummaryCard} ${styles.teacherSummaryCardPercentage}`}>
+                <div className={styles.teacherSummaryHeader}>
                   <Text type="secondary" style={{ marginRight: '3px' }}>Attendance rate</Text>
                   <Tooltip title="Attendance rate of students">
-                    <InfoCircleOutlined className="teacher-info-icon" />
+                    <InfoCircleOutlined className={styles.teacherInfoIcon} />
                   </Tooltip>
                 </div>
                 <Progress
@@ -243,32 +239,32 @@ const TeacherCheckAttendance = () => {
                     '0%': '#108ee9',
                     '100%': '#87d068',
                   }}
-                  className="teacher-attendance-progress"
+                  className={styles.teacherAttendanceProgress}
                 />
               </Card>
 
-              <Card className="teacher-summary-card present">
-                <div className="teacher-summary-header">
+              <Card className={`${styles.teacherSummaryCard} ${styles.present}`}>
+                <div className={styles.teacherSummaryHeader}>
                   <Text type="secondary">Present</Text>
                   <Badge status="success" />
                 </div>
-                <div className="teacher-summary-value">
+                <div className={styles.teacherSummaryValue}>
                   {getPresentCount()}/{attendanceData.length}
                 </div>
-                <div className="teacher-summary-subtitle">
+                <div className={styles.teacherSummarySubtitle}>
                   students
                 </div>
               </Card>
 
-              <Card className="teacher-summary-card absent">
-                <div className="teacher-summary-header">
+              <Card className={`${styles.teacherSummaryCard} ${styles.absent}`}>
+                <div className={styles.teacherSummaryHeader}>
                   <Text type="secondary">Absent</Text>
                   <Badge status="error" />
                 </div>
-                <div className="teacher-summary-value">
+                <div className={styles.teacherSummaryValue}>
                   {getAbsentCount()}/{attendanceData.length}
                 </div>
-                <div className="teacher-summary-subtitle">
+                <div className={styles.teacherSummarySubtitle}>
                   students
                 </div>
               </Card>
@@ -276,35 +272,35 @@ const TeacherCheckAttendance = () => {
 
             <Card
               title={
-                <div className="teacher-table-header">
+                <div className={styles.teacherTableHeader}>
                   <Text strong>Attendance list</Text>
                 </div>
               }
-              className="teacher-attendance-card"
+              className={styles.teacherAttendanceCard}
             >
               <Table
                 dataSource={attendanceData}
                 columns={columns}
                 pagination={false}
-                className="teacher-attendance-table"
+                className={styles.teacherAttendanceTable}
                 rowClassName={(record) =>
-                  record.status === 'Attend' ? 'teacher-row-attend' : 'teacher-row-absent'
+                  record.status === 'Attend' ? styles.teacherRowAttend : styles.teacherRowAbsent
                 }
                 bordered
                 size="middle"
               />
             </Card>
 
-            <div className="teacher-attendance-actions">
+            <div className={styles.teacherAttendanceActions}>
               <Button
                 onClick={handleBack}
                 icon={<ArrowLeftOutlined />}
-                className="teacher-back-button"
+                className={styles.teacherBackButton}
                 size="large"
               >
                 Back
               </Button>
-              <div className="teacher-action-spacer"></div>
+              <div className={styles.teacherActionSpacer}></div>
               <Button
                 onClick={resetChanges}
                 icon={<UndoOutlined />}
@@ -344,7 +340,7 @@ const TeacherCheckAttendance = () => {
         draggable
         pauseOnHover
         style={{ top: '70px' }}
-        className="teacher-toast-container"
+        className={styles.teacherToastContainer}
       />
     </div>
   );

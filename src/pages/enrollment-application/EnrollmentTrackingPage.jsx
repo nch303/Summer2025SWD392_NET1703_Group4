@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail, createPaymentUrlForEnrollment, getInvoiceDetails, getApplicationDescription } from './EnrollmentTrackingService';
-import { useProcessingSpinner } from '../../components/spinner/ProcessingSpinner';
-import { useCustomToast } from '../../components/toast/CustomToast';
-import './EnrollmentTrackingPage.css';
+import {
+  getEnrollmentApplicationsProgress, getEnrollmentApplicationDetail,
+  createPaymentUrlForEnrollment, getInvoiceDetails,
+  getApplicationDescription
+} from '../../services/EnrollmentApplicationService';
+import { useProcessingSpinner } from '../../components/ProcessingSpinner';
+import { useCustomToast } from '../../components/CustomToast';
+import styles from './EnrollmentTrackingPage.module.css';
 
 const EnrollmentTrackingPage = () => {
   const [applications, setApplications] = useState([]);
@@ -172,12 +176,12 @@ const EnrollmentTrackingPage = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Pending': return 'tracking-pending';
-      case 'Approved': return 'tracking-approved';
-      case 'Paid': return 'tracking-paid';
-      case 'Enrolled': return 'tracking-enrolled';
-      case 'Rejected': return 'tracking-rejected';
-      default: return 'tracking-pending';
+      case 'Pending': return 'trackingPending';
+      case 'Approved': return 'trackingApproved';
+      case 'Paid': return 'trackingPaid';
+      case 'Enrolled': return 'trackingEnrolled';
+      case 'Rejected': return 'trackingRejected';
+      default: return 'trackingPending';
     }
   };
 
@@ -365,7 +369,7 @@ const EnrollmentTrackingPage = () => {
       if (app.classResponse && app.classResponse.status === 'Unavailable') {
         return (
           <button
-            className="tracking-action-btn tracking-payment-btn"
+            className={`${styles.trackingActionBtn} ${styles.trackingPaymentBtn}`}
             disabled={true}
           >
             <FontAwesomeIcon icon="clock" />
@@ -375,7 +379,7 @@ const EnrollmentTrackingPage = () => {
       } else {
         return (
           <button
-            className={`tracking-action-btn tracking-payment-btn ${isProcessing ? 'tracking-processing' : 'tracking-pulse'}`}
+            className={`${styles.trackingActionBtn} ${styles.trackingPaymentBtn} ${isProcessing ? styles.trackingProcessing : styles.trackingPulse}`}
             onClick={(e) => {
               e.stopPropagation();
               if (!isProcessing) handlePayment(app);
@@ -393,107 +397,107 @@ const EnrollmentTrackingPage = () => {
   }
 
   return (
-    <div className="tracking-container">
+    <div className={styles.trackingContainer}>
       <toast.ToastContainer position="top-right" />
 
-      <div className="tracking-layout">
-        <div className="tracking-sidebar">
-          <div className="tracking-sidebar-header">
-            <FontAwesomeIcon icon="filter" className="tracking-sidebar-icon" />
+      <div className={styles.trackingLayout}>
+        <div className={styles.trackingSidebar}>
+          <div className={styles.trackingSidebarHeader}>
+            <FontAwesomeIcon icon="filter" className={styles.trackingSidebarIcon} />
             <h3>Status</h3>
           </div>
 
-          <div className="tracking-status-tabs">
+          <div className={styles.trackingStatusTabs}>
             <button
-              className={`tracking-tab-btn ${filterStatus === 'all' ? 'active' : ''}`}
+              className={`${styles.trackingTabBtn} ${filterStatus === 'all' ? styles.active : ''}`}
               onClick={() => setFilterStatus('all')}
             >
-              <span className="tracking-tab-icon">
+              <span className={styles.trackingTabIcon}>
                 <FontAwesomeIcon icon="list" />
               </span>
-              <span className="tracking-tab-text">All</span>
+              <span className={styles.trackingTabText}>All</span>
             </button>
             <button
-              className={`tracking-tab-btn ${filterStatus === 'Pending' ? 'active' : ''}`}
+              className={`${styles.trackingTabBtn} ${filterStatus === 'Pending' ? styles.active : ''}`}
               onClick={() => setFilterStatus('Pending')}
             >
-              <span className="tracking-tab-icon tracking-pending">
+              <span className={`${styles.trackingTabIcon} ${styles.trackingPending}`}>
                 <FontAwesomeIcon icon="clock" />
               </span>
-              <span className="tracking-tab-text">Pending</span>
+              <span className={styles.trackingTabText}>Pending</span>
             </button>
             <button
-              className={`tracking-tab-btn ${filterStatus === 'Approved' ? 'active' : ''}`}
+              className={`${styles.trackingTabBtn} ${filterStatus === 'Approved' ? styles.active : ''}`}
               onClick={() => setFilterStatus('Approved')}
             >
-              <span className="tracking-tab-icon tracking-approved">
+              <span className={`${styles.trackingTabIcon} ${styles.trackingApproved}`}>
                 <FontAwesomeIcon icon="check-circle" />
               </span>
-              <span className="tracking-tab-text">Approved</span>
+              <span className={styles.trackingTabText}>Approved</span>
             </button>
             <button
-              className={`tracking-tab-btn ${filterStatus === 'Paid' ? 'active' : ''}`}
+              className={`${styles.trackingTabBtn} ${filterStatus === 'Paid' ? styles.active : ''}`}
               onClick={() => setFilterStatus('Paid')}
             >
-              <span className="tracking-tab-icon tracking-paid">
+              <span className={`${styles.trackingTabIcon} ${styles.trackingPaid}`}>
                 <FontAwesomeIcon icon="money-check-alt" />
               </span>
-              <span className="tracking-tab-text">Paid</span>
+              <span className={styles.trackingTabText}>Paid</span>
             </button>
             <button
-              className={`tracking-tab-btn ${filterStatus === 'Enrolled' ? 'active' : ''}`}
+              className={`${styles.trackingTabBtn} ${filterStatus === 'Enrolled' ? styles.active : ''}`}
               onClick={() => setFilterStatus('Enrolled')}
             >
-              <span className="tracking-tab-icon tracking-enrolled">
+              <span className={`${styles.trackingTabIcon} ${styles.trackingEnrolled}`}>
                 <FontAwesomeIcon icon="user-check" />
               </span>
-              <span className="tracking-tab-text">Enrolled</span>
+              <span className={styles.trackingTabText}>Enrolled</span>
             </button>
             <button
-              className={`tracking-tab-btn ${filterStatus === 'Rejected' ? 'active' : ''}`}
+              className={`${styles.trackingTabBtn} ${filterStatus === 'Rejected' ? styles.active : ''}`}
               onClick={() => setFilterStatus('Rejected')}
             >
-              <span className="tracking-tab-icon tracking-rejected">
+              <span className={`${styles.trackingTabIcon} ${styles.trackingRejected}`}>
                 <FontAwesomeIcon icon="times-circle" />
               </span>
-              <span className="tracking-tab-text">Rejected</span>
+              <span className={styles.trackingTabText}>Rejected</span>
             </button>
           </div>
         </div>
 
-        <div className="tracking-content-area">
-          <div className="tracking-paper">
-            <div className="tracking-header">
-              <div className="tracking-header-content">
-                <FontAwesomeIcon icon="tasks" className="tracking-header-icon" />
+        <div className={styles.trackingContentArea}>
+          <div className={styles.trackingPaper}>
+            <div className={styles.trackingHeader}>
+              <div className={styles.trackingHeaderContent}>
+                <FontAwesomeIcon icon="tasks" className={styles.trackingHeaderIcon} />
                 <h1>Tracking enrollment progress</h1>
               </div>
             </div>
 
             {error && (
-              <div className="tracking-message tracking-error-message">
-                <div className="tracking-message-icon">
+              <div className={`${styles.trackingMessage} ${styles.trackingErrorMessage}`}>
+                <div className={styles.trackingMessageIcon}>
                   <FontAwesomeIcon icon="times-circle" />
                 </div>
                 <span>{error}</span>
               </div>
             )}
 
-            <div className="tracking-content">
+            <div className={styles.trackingContent}>
               {/* Search and filter bar */}
-              <div className="tracking-search-and-filter">
-                <div className="tracking-search-bar">
-                  <FontAwesomeIcon icon="search" className="tracking-search-icon" />
+              <div className={styles.trackingSearchAndFilter}>
+                <div className={styles.trackingSearchBar}>
+                  <FontAwesomeIcon icon="search" className={styles.trackingSearchIcon} />
                   <input
                     type="text"
                     placeholder="Search by child name..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="tracking-search-input"
+                    className={styles.trackingSearchInput}
                   />
                   {searchQuery && (
                     <button
-                      className="tracking-clear-search"
+                      className={styles.trackingClearSearch}
                       onClick={() => setSearchQuery('')}
                     >
                       <FontAwesomeIcon icon="times" />
@@ -501,7 +505,7 @@ const EnrollmentTrackingPage = () => {
                   )}
                 </div>
 
-                <div className="tracking-sort-dropdown">
+                <div className={styles.trackingSortDropdown}>
                   <label htmlFor="sortOrder">
                     <FontAwesomeIcon icon="sort" /> Sort by:
                   </label>
@@ -509,7 +513,7 @@ const EnrollmentTrackingPage = () => {
                     id="sortOrder"
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
-                    className="tracking-sort-select"
+                    className={styles.trackingSortSelect}
                   >
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
@@ -521,111 +525,111 @@ const EnrollmentTrackingPage = () => {
 
               {/* Applications list */}
               {filteredAndSortedApplications.length > 0 ? (
-                <div className="tracking-applications-list">
+                <div className={styles.trackingApplicationsList}>
                   {filteredAndSortedApplications.map((app) => (
                     <div
                       key={app.eaid}
-                      className="tracking-application-card"
+                      className={styles.trackingApplicationCard}
                       data-status={app.status}
                     >
-                      <div className={`tracking-application-status ${getStatusColor(app.status)}`}>
-                        <div className="tracking-status-icon">
+                      <div className={`${styles.trackingApplicationStatus} ${styles[getStatusColor(app.status)]}`}>
+                        <div className={styles.trackingStatusIcon}>
                           <FontAwesomeIcon icon={getStatusIcon(app.status)} />
                         </div>
-                        <span className="tracking-status-text">{getStatusText(app.status)}</span>
+                        <span className={styles.trackingStatusText}>{getStatusText(app.status)}</span>
                       </div>
 
-                      <div className="tracking-application-info">
-                        <h3 className="tracking-child-name">{app.childrenName}</h3>
-                        <div className="tracking-application-details">
+                      <div className={styles.trackingApplicationInfo}>
+                        <h3 className={styles.trackingChildName}>{app.childrenName}</h3>
+                        <div className={styles.trackingApplicationDetails}>
                           <p>
                             <FontAwesomeIcon icon="calendar-alt" />
-                            <span>Năm học: {app.academicYear}</span>
+                            <span>Academic year: {app.academicYear}</span>
                           </p>
                           <p>
                             <FontAwesomeIcon icon="graduation-cap" />
-                            <span>Cấp lớp: {app.gradeLevelName}</span>
+                            <span>Grade: {app.gradeLevelName}</span>
                           </p>
                         </div>
                       </div>
 
-                      <div className="tracking-application-timeline">
+                      <div className={styles.trackingApplicationTimeline}>
                         <div
-                          className={`tracking-timeline-step ${app.status !== 'Rejected' ? 'active' : ''}`}
+                          className={`${styles.trackingTimelineStep} ${app.status !== 'Rejected' ? styles.active : ''}`}
                           data-status="Pending"
                         >
-                          <div className="tracking-step-number">1</div>
-                          <div className="tracking-step-icon">
+                          <div className={styles.trackingStepNumber}>1</div>
+                          <div className={styles.trackingStepIcon}>
                             <FontAwesomeIcon icon={app.status !== 'Rejected' ? "check" : "clipboard-list"} />
                           </div>
-                          <div className="tracking-step-label">Register</div>
+                          <div className={styles.trackingStepLabel}>Register</div>
                         </div>
 
                         <div
-                          className={`tracking-timeline-connector ${(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled')
-                              ? 'active'
-                              : app.status === 'Pending' ? 'half-active' : ''
+                          className={`${styles.trackingTimelineConnector} ${(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled')
+                            ? styles.active
+                            : app.status === 'Pending' ? styles.halfActive : ''
                             }`}
                           data-from="Register"
                           data-to="Approved"
                         ></div>
 
                         <div
-                          className={`tracking-timeline-step ${(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled') ? 'active' : ''}`}
+                          className={`${styles.trackingTimelineStep} ${(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled') ? styles.active : ''}`}
                           data-status="Approved"
                         >
-                          <div className="tracking-step-number">2</div>
-                          <div className="tracking-step-icon">
+                          <div className={styles.trackingStepNumber}>2</div>
+                          <div className={styles.trackingStepIcon}>
                             <FontAwesomeIcon icon={(app.status === 'Approved' || app.status === 'Paid' || app.status === 'Enrolled') ? "check" : "check-circle"} />
                           </div>
-                          <div className="tracking-step-label">Approved</div>
+                          <div className={styles.trackingStepLabel}>Approved</div>
                         </div>
 
                         <div
-                          className={`tracking-timeline-connector ${(app.status === 'Paid' || app.status === 'Enrolled')
-                              ? 'active'
-                              : app.status === 'Approved' ? 'half-active' : ''
+                          className={`${styles.trackingTimelineConnector} ${(app.status === 'Paid' || app.status === 'Enrolled')
+                            ? styles.active
+                            : app.status === 'Approved' ? styles.halfActive : ''
                             }`}
                           data-from="Approved"
                           data-to="Paid"
                         ></div>
 
                         <div
-                          className={`tracking-timeline-step ${(app.status === 'Enrolled' || app.status === 'Paid') ? 'active' : ''}`}
+                          className={`${styles.trackingTimelineStep} ${(app.status === 'Enrolled' || app.status === 'Paid') ? styles.active : ''}`}
                           data-status="Enrolled"
                         >
-                          <div className="tracking-step-number">3</div>
-                          <div className="tracking-step-icon">
+                          <div className={styles.trackingStepNumber}>3</div>
+                          <div className={styles.trackingStepIcon}>
                             <FontAwesomeIcon icon={(app.status === 'Enrolled' || app.status === 'Paid') ? "check" : "user-check"} />
                           </div>
-                          <div className="tracking-step-label">Enrolled</div>
+                          <div className={styles.trackingStepLabel}>Enrolled</div>
                         </div>
 
                         <div
-                          className={`tracking-timeline-connector ${app.status === 'Paid'
-                              ? 'active'
-                              : app.status === 'Enrolled' ? 'half-active' : ''
+                          className={`${styles.trackingTimelineConnector} ${app.status === 'Paid'
+                            ? styles.active
+                            : app.status === 'Enrolled' ? styles.halfActive : ''
                             }`}
                           data-from="Enrolled"
                           data-to="Paid"
                         ></div>
 
                         <div
-                          className={`tracking-timeline-step ${app.status === 'Paid' ? 'active' : ''}`}
+                          className={`${styles.trackingTimelineStep} ${app.status === 'Paid' ? styles.active : ''}`}
                           data-status="Paid"
                         >
-                          <div className="tracking-step-number">4</div>
-                          <div className="tracking-step-icon">
+                          <div className={styles.trackingStepNumber}>4</div>
+                          <div className={styles.trackingStepIcon}>
                             <FontAwesomeIcon icon={app.status === 'Paid' ? "check" : "money-check-alt"} />
                           </div>
-                          <div className="tracking-step-label">Payment</div>
+                          <div className={styles.trackingStepLabel}>Payment</div>
                         </div>
                       </div>
 
-                      <div className="tracking-application-actions">
+                      <div className={styles.trackingApplicationActions}>
                         {renderPaymentButton(app)}
                         <button
-                          className="tracking-action-btn tracking-detail-btn"
+                          className={`${styles.trackingActionBtn} ${styles.trackingDetailBtn}`}
                           onClick={() => handleDetailClick(app)}
                         >
                           <FontAwesomeIcon icon="info-circle" />
@@ -636,16 +640,16 @@ const EnrollmentTrackingPage = () => {
                   ))}
                 </div>
               ) : (
-                <div className="tracking-no-applications">
+                <div className={styles.trackingNoApplications}>
                   {searchQuery || filterStatus !== 'all' ? (
                     <>
-                      <div className="tracking-no-data-icon">
+                      <div className={styles.trackingNoDataIcon}>
                         <FontAwesomeIcon icon="filter" />
                       </div>
                       <h3>No results found</h3>
                       <p>No applications match your search criteria.</p>
                       <button
-                        className="tracking-btn-secondary"
+                        className={styles.trackingBtnSecondary}
                         onClick={() => {
                           setFilterStatus('all');
                           setSearchQuery('');
@@ -657,12 +661,12 @@ const EnrollmentTrackingPage = () => {
                     </>
                   ) : (
                     <>
-                      <div className="tracking-no-data-icon">
+                      <div className={styles.trackingNoDataIcon}>
                         <FontAwesomeIcon icon="clipboard" />
                       </div>
                       <h3>No applications found</h3>
                       <p>You don't have any enrollment applications. Register your child now.</p>
-                      <Link to="/profile/children" className="tracking-btn-primary">
+                      <Link to="/profile/children" className={styles.trackingBtnPrimary}>
                         <FontAwesomeIcon icon="plus" />
                         Enroll now
                       </Link>
@@ -677,130 +681,130 @@ const EnrollmentTrackingPage = () => {
 
       {showDetailModal && (
         <div
-          className={`tracking-modal-overlay ${modalVisible ? 'visible' : ''}`}
+          className={`${styles.trackingModalOverlay} ${modalVisible ? styles.visible : ''}`}
           onClick={closeDetailModal}
           ref={modalOverlayRef}
         >
           <div
-            className="tracking-modal-content"
+            className={styles.trackingModalContent}
             onClick={e => e.stopPropagation()}
           >
-            <div className="tracking-modal-header">
+            <div className={styles.trackingModalHeader}>
               <h2>Enrollment application details</h2>
-              <button className="tracking-modal-close-btn" onClick={closeDetailModal}>
+              <button className={styles.trackingModalCloseBtn} onClick={closeDetailModal}>
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
 
-            <div className="tracking-modal-body">
+            <div className={styles.trackingModalBody}>
               {loadingDetail ? (
-                <div className="tracking-modal-loading">
-                  <div className="tracking-loading-spinner"></div>
+                <div className={styles.trackingModalLoading}>
+                  <div className={styles.trackingLoadingSpinner}></div>
                   <p>Loading detailed information...</p>
                 </div>
               ) : applicationDetail ? (
-                <div className="tracking-detail-content">
-                  <div className="tracking-detail-header">
-                    <div className="tracking-detail-avatar">
+                <div className={styles.trackingDetailContent}>
+                  <div className={styles.trackingDetailHeader}>
+                    <div className={styles.trackingDetailAvatar}>
                       {applicationDetail.avatar ? (
                         <img src={applicationDetail.avatar} alt={applicationDetail.childrenName} />
                       ) : (
-                        <div className="tracking-detail-avatar-placeholder">
+                        <div className={styles.trackingDetailAvatarPlaceholder}>
                           <FontAwesomeIcon icon="child" />
                         </div>
                       )}
                     </div>
 
-                    <div className="tracking-detail-main-info">
+                    <div className={styles.trackingDetailMainInfo}>
                       <h3>{applicationDetail.childrenName}</h3>
-                      <div className={`tracking-detail-status ${getStatusColor(applicationDetail.status)}`}>
+                      <div className={`${styles.trackingDetailStatus} ${styles[getStatusColor(applicationDetail.status)]}`}>
                         <FontAwesomeIcon icon={getStatusIcon(applicationDetail.status)} />
                         <span>{getStatusText(applicationDetail.status)}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="tracking-detail-sections">
-                    <div className="tracking-detail-section">
+                  <div className={styles.trackingDetailSections}>
+                    <div className={styles.trackingDetailSection}>
                       <h4>
                         <FontAwesomeIcon icon="info-circle" />
                         Basic information
                       </h4>
-                      <div className="tracking-detail-grid">
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Birthday:</span>
-                          <span className="tracking-detail-value">{formatDate(applicationDetail.birthday)}</span>
+                      <div className={styles.trackingDetailGrid}>
+                        <div className={styles.trackingDetailItem}>
+                          <span className={styles.trackingDetailLabel}>Birthday:</span>
+                          <span className={styles.trackingDetailValue}>{formatDate(applicationDetail.birthday)}</span>
                         </div>
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Gender:</span>
-                          <span className="tracking-detail-value">
+                        <div className={styles.trackingDetailItem}>
+                          <span className={styles.trackingDetailLabel}>Gender:</span>
+                          <span className={styles.trackingDetailValue}>
                             {applicationDetail.gender === 'Male' ? 'Male' : 'Female'}
                           </span>
                         </div>
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Birthplace:</span>
-                          <span className="tracking-detail-value">{applicationDetail.city}</span>
+                        <div className={styles.trackingDetailItem}>
+                          <span className={styles.trackingDetailLabel}>Birthplace:</span>
+                          <span className={styles.trackingDetailValue}>{applicationDetail.city}</span>
                         </div>
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Class:</span>
-                          <span className="tracking-detail-value">{applicationDetail.gradeLevelName}</span>
+                        <div className={styles.trackingDetailItem}>
+                          <span className={styles.trackingDetailLabel}>Class:</span>
+                          <span className={styles.trackingDetailValue}>{applicationDetail.gradeLevelName}</span>
                         </div>
                         {applicationDetail.status === 'Enrolled' && (
-                          <div className="tracking-detail-item">
-                            <span className="tracking-detail-label">Enrollment date:</span>
-                            <span className="tracking-detail-value">{formatDate(applicationDetail.enrollDate)}</span>
+                          <div className={styles.trackingDetailItem}>
+                            <span className={styles.trackingDetailLabel}>Enrollment date:</span>
+                            <span className={styles.trackingDetailValue}>{formatDate(applicationDetail.enrollDate)}</span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="tracking-detail-section">
+                    <div className={styles.trackingDetailSection}>
                       <h4>
                         <FontAwesomeIcon icon="user" />
                         Parent information
                       </h4>
-                      <div className="tracking-detail-grid">
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Name:</span>
-                          <span className="tracking-detail-value">{applicationDetail.parentName}</span>
+                      <div className={styles.trackingDetailGrid}>
+                        <div className={styles.trackingDetailItem}>
+                          <span className={styles.trackingDetailLabel}>Name:</span>
+                          <span className={styles.trackingDetailValue}>{applicationDetail.parentName}</span>
                         </div>
-                        <div className="tracking-detail-item">
-                          <span className="tracking-detail-label">Phone:</span>
-                          <span className="tracking-detail-value">{applicationDetail.parentPhone}</span>
+                        <div className={styles.trackingDetailItem}>
+                          <span className={styles.trackingDetailLabel}>Phone:</span>
+                          <span className={styles.trackingDetailValue}>{applicationDetail.parentPhone}</span>
                         </div>
-                        <div className="tracking-detail-item" style={{ gridColumn: "1 / -1" }}>
-                          <span className="tracking-detail-label">Address:</span>
-                          <span className="tracking-detail-value">{applicationDetail.address}</span>
+                        <div className={styles.trackingDetailItem} style={{ gridColumn: "1 / -1" }}>
+                          <span className={styles.trackingDetailLabel}>Address:</span>
+                          <span className={styles.trackingDetailValue}>{applicationDetail.address}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="tracking-detail-section">
+                    <div className={styles.trackingDetailSection}>
                       <h4>
                         <FontAwesomeIcon icon="file-alt" />
                         Documents
                       </h4>
-                      <div className="tracking-detail-documents">
-                        <div className="tracking-detail-document">
+                      <div className={styles.trackingDetailDocuments}>
+                        <div className={styles.trackingDetailDocument}>
                           <p>Birth certificate</p>
                           {applicationDetail.birthCertificate ? (
-                            <div className="tracking-detail-document-preview">
+                            <div className={styles.trackingDetailDocumentPreview}>
                               <img
                                 src={applicationDetail.birthCertificate}
                                 alt="Birth certificate"
                                 onClick={() => window.open(applicationDetail.birthCertificate, '_blank')}
-                                className="document-image"
+                                className={styles.documentImage}
                                 onError={(e) => {
                                   e.target.onerror = null;
                                   e.target.style.display = 'none';
                                 }}
                               />
-                              <div className="tracking-detail-document-overlay">
+                              <div className={styles.trackingDetailDocumentOverlay}>
                                 <FontAwesomeIcon icon="search-plus" />
                               </div>
                             </div>
                           ) : (
-                            <div className="tracking-detail-document-missing">
+                            <div className={styles.trackingDetailDocumentMissing}>
                               <FontAwesomeIcon icon="file-excel" />
                               <span>Not provided</span>
                             </div>
@@ -812,12 +816,12 @@ const EnrollmentTrackingPage = () => {
 
                   {/* Only show fee information if application status is not Pending */}
                   {feeDescription && applicationDetail && applicationDetail.status !== 'Pending' && (
-                    <div className="tracking-detail-section">
+                    <div className={styles.trackingDetailSection}>
                       <h4>
                         <FontAwesomeIcon icon="money-bill-wave" />
                         Tuition fee information
                       </h4>
-                      <div className="tracking-detail-fee-info">
+                      <div className={styles.trackingDetailFeeInfo}>
                         {feeDescription.split('\n').map((line, index) => {
                           // Format the fee line - replace parentheses with colon
                           let formattedLine = line;
@@ -829,7 +833,7 @@ const EnrollmentTrackingPage = () => {
                           return (
                             <div
                               key={index}
-                              className={`tracking-detail-fee-line ${line.includes('Tổng cộng:') ? 'tracking-detail-fee-total' : ''}`}
+                              className={`${styles.trackingDetailFeeLine} ${line.includes('Tổng cộng:') ? styles.trackingDetailFeeTotal : ''}`}
                             >
                               {formattedLine}
                             </div>
@@ -840,22 +844,22 @@ const EnrollmentTrackingPage = () => {
                   )}
                 </div>
               ) : (
-                <div className="tracking-detail-error">
+                <div className={styles.trackingDetailError}>
                   <FontAwesomeIcon icon="exclamation-circle" />
                   <p>Cannot load detailed information. Please try again later.</p>
                 </div>
               )}
             </div>
 
-            <div className="tracking-modal-footer">
-              <button className="tracking-btn-secondary" onClick={closeDetailModal}>
+            <div className={styles.trackingModalFooter}>
+              <button className={styles.trackingBtnSecondary} onClick={closeDetailModal}>
                 <FontAwesomeIcon icon="times" />
                 Close
               </button>
               {applicationDetail && (applicationDetail.status === 'Enrolled') && (
                 selectedApplication && selectedApplication.classResponse && selectedApplication.classResponse.status === 'Unavailable' ? (
                   <button
-                    className="tracking-action-btn tracking-payment-btn"
+                    className={`${styles.trackingActionBtn} ${styles.trackingPaymentBtn}`}
                     disabled={true}
                   >
                     <FontAwesomeIcon icon="clock" />
@@ -863,7 +867,7 @@ const EnrollmentTrackingPage = () => {
                   </button>
                 ) : (
                   <button
-                    className={`tracking-btn-primary ${processingPayment[selectedApplication.eaid] ? 'tracking-processing' : ''}`}
+                    className={`${styles.trackingBtnPrimary} ${processingPayment[selectedApplication.eaid] ? styles.trackingProcessing : ''}`}
                     onClick={() => {
                       if (!processingPayment[selectedApplication.eaid]) {
                         handlePayment(selectedApplication);

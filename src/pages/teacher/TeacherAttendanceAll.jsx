@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Table, Typography, Spin, Empty, Button,
-  Tooltip, Statistic, Row, Col, Progress
-} from 'antd';
-import {
+  Card, Table, Spin, Empty, Button,
+  Tooltip, Statistic, Row, Col, Progress,
   ArrowLeftOutlined, CalendarOutlined,
-  CheckCircleOutlined, CloseCircleOutlined
-} from '@ant-design/icons';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getAllClassAttendance } from './TeacherCheckAttendanceService';
-import { getClassesByTeacherId } from './TeacherClassService';
+  CheckCircleOutlined, CloseCircleOutlined,
+  Title, Text, Paragraph
+} from '../../utils/AntComponents';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  getAllClassAttendance,
+  getClassesByTeacherId
+} from '../../services/TeacherService';
 import { useUser } from '../../contexts/UserContext';
-import './TeacherAttendanceAll.css';
-
-const { Title, Text, Paragraph } = Typography;
+import styles from './TeacherAttendanceAll.module.css';
 
 const TeacherAttendanceAll = () => {
   const { classId } = useParams();
@@ -120,7 +119,7 @@ const TeacherAttendanceAll = () => {
       width: 60,
       align: 'center',
       fixed: 'left',
-      className: 'teacher-attendance-index-column'
+      className: styles.teacherAttendanceIndexColumn
     },
     {
       title: 'Student',
@@ -128,7 +127,7 @@ const TeacherAttendanceAll = () => {
       key: 'childrenName',
       width: 180,
       fixed: 'left',
-      className: 'teacher-attendance-student-column',
+      className: styles.teacherAttendanceStudentColumn,
       render: (text) => <Text strong>{text}</Text>
     },
     ...attendanceDates.map(date => ({
@@ -153,15 +152,15 @@ const TeacherAttendanceAll = () => {
       key: date,
       width: 70,
       align: 'center',
-      className: 'teacher-attendance-date-column',
+      className: styles.teacherAttendanceDateColumn,
       render: (attendances) => {
         const status = attendances[date];
         return status === 'Attend' ? (
-          <div className="teacher-attendance-present">
+          <div className={styles.teacherAttendancePresent}>
             <Text>P</Text>
           </div>
         ) : (
-          <div className="teacher-attendance-absent">
+          <div className={styles.teacherAttendanceAbsent}>
             <Text>A</Text>
           </div>
         );
@@ -174,7 +173,7 @@ const TeacherAttendanceAll = () => {
       width: 150,
       align: 'center',
       fixed: 'right',
-      className: 'teacher-attendance-rate-column',
+      className: styles.teacherAttendanceRateColumn,
       render: (rate, record) => (
         <Tooltip title={`${record.totalPresent}/${record.totalDates} buổi (${rate}%)`}>
           <Progress
@@ -205,13 +204,13 @@ const TeacherAttendanceAll = () => {
   const stats = calculateStats();
 
   return (
-    <div className="teacher-attendance-all-container">
-      <Card className="teacher-attendance-all-card">
-        <div className="teacher-attendance-all-header">
-          <div className="teacher-attendance-all-title-section">
+    <div className={styles.teacherAttendanceAllContainer}>
+      <Card className={styles.teacherAttendanceAllCard}>
+        <div className={styles.teacherAttendanceAllHeader}>
+          <div className={styles.teacherAttendanceAllTitleSection}>
             <Title level={2}>Attendance report</Title>
             {classInfo && (
-              <Paragraph className="teacher-attendance-all-class-info">
+              <Paragraph className={styles.teacherAttendanceAllClassInfo}>
                 Class: <Text strong>{classInfo.name}</Text> | Number of students: <Text strong>{processedData.length}</Text>
               </Paragraph>
             )}
@@ -219,16 +218,16 @@ const TeacherAttendanceAll = () => {
         </div>
 
         {loading ? (
-          <div className="teacher-attendance-all-loading">
+          <div className={styles.teacherAttendanceAllLoading}>
             <Spin size="large" />
             <Text>Loading attendance data...</Text>
           </div>
         ) : processedData.length > 0 ? (
           <>
-            <div className="teacher-attendance-stats-summary">
+            <div className={styles.teacherAttendanceStatsSummary}>
               <Row gutter={24}>
                 <Col xs={24} md={8}>
-                  <Card className="teacher-attendance-stat-card overall-rate">
+                  <Card className={`${styles.teacherAttendanceStatCard} ${styles.overallRate}`}>
                     <Statistic
                       title="Attendance rate"
                       value={stats.presentRate}
@@ -242,12 +241,12 @@ const TeacherAttendanceAll = () => {
                       percent={stats.presentRate}
                       status={stats.presentRate < 80 ? "exception" : "success"}
                       showInfo={false}
-                      className="teacher-attendance-stat-progress"
+                      className={styles.teacherAttendanceStatProgress}
                     />
                   </Card>
                 </Col>
                 <Col xs={24} md={8}>
-                  <Card className="teacher-attendance-stat-card present-stat">
+                  <Card className={`${styles.teacherAttendanceStatCard} ${styles.presentStat}`}>
                     <Statistic
                       title="Full attendance"
                       value={processedData.filter(student => student.attendanceRate === 100).length}
@@ -258,7 +257,7 @@ const TeacherAttendanceAll = () => {
                   </Card>
                 </Col>
                 <Col xs={24} md={8}>
-                  <Card className="teacher-attendance-stat-card absent-stat">
+                  <Card className={`${styles.teacherAttendanceStatCard} ${styles.absentStat}`}>
                     <Statistic
                       title="Need attention"
                       value={processedData.filter(student => student.attendanceRate < 80).length}
@@ -273,21 +272,21 @@ const TeacherAttendanceAll = () => {
 
             <Card
               title={
-                <div className="teacher-attendance-table-header">
+                <div className={styles.teacherAttendanceTableHeader}>
                   <Text strong>Attendance table by day</Text>
                   <Text type="secondary">
                     <CalendarOutlined /> {attendanceDates.length} days
                   </Text>
                 </div>
               }
-              className="teacher-attendance-table-card"
+              className={styles.teacherAttendanceTableCard}
             >
               <Table
                 dataSource={processedData}
                 columns={columns}
                 pagination={{ pageSize: 10 }}
                 scroll={{ x: 'max-content' }}
-                className="teacher-attendance-all-table"
+                className={styles.teacherAttendanceAllTable}
                 bordered
                 size="middle"
               />
@@ -297,11 +296,11 @@ const TeacherAttendanceAll = () => {
           <Empty description="No attendance data" />
         )}
 
-        <div className="teacher-attendance-all-footer">
+        <div className={styles.teacherAttendanceAllFooter}>
           <Button
             icon={<ArrowLeftOutlined />}
             onClick={handleBack}
-            className="teacher-attendance-all-back-button"
+            className={styles.teacherAttendanceAllBackButton}
             size="large"
           >
             Back

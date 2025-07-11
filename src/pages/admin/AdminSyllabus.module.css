@@ -1,0 +1,872 @@
+.adminSyllabusContainer {
+  padding: 24px;
+  min-height: 100vh;
+}
+
+.adminSyllabusBreadcrumb {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.adminSyllabusBreadcrumb a {
+  color: #5c6b77;
+}
+
+.adminSyllabusCard {
+  border-radius: 12px;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.08),
+    0 9px 28px 0 rgba(0, 0, 0, 0.05),
+    0 12px 48px 16px rgba(0, 0, 0, 0.03);
+  border: none;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.adminSyllabusCard:hover {
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.12),
+    0 12px 32px 0 rgba(0, 0, 0, 0.08),
+    0 16px 64px 20px rgba(0, 0, 0, 0.05);
+}
+
+.adminSyllabusHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.adminSyllabusHeader h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adminSyllabusHeader h3::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 22px;
+  background: linear-gradient(to bottom, #1890ff, #36cfc9);
+  border-radius: 2px;
+}
+
+.adminSyllabusActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.adminSyllabusSearchInput {
+  width: 280px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+}
+
+.adminSyllabusSearchInput:hover,
+.adminSyllabusSearchInput:focus {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.adminSyllabusSearchInput input {
+  font-size: 14px;
+  padding: 8px 11px;
+}
+
+.adminSyllabusLoadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  gap: 20px;
+}
+
+/* New styles for syllabus detail form */
+.adminSyllabusDetailForm {
+  margin-top: 16px;
+}
+
+.adminSyllabusDetailItemRow {
+  background-color: #fafafa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  transition: all 0.3s;
+  border: 1px solid #f0f0f0;
+}
+
+.adminSyllabusDetailItemRow:hover {
+  background-color: #f5f7fa;
+  border-color: #e6f0fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.adminSyllabusDetailRemoveButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4d4f;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.adminSyllabusDetailRemoveButton:hover {
+  color: #ff7875;
+}
+
+.adminSyllabusAddDetailButton {
+  margin-top: 8px;
+}
+
+.adminSyllabusStepProgressContainer {
+  margin-bottom: 24px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.adminSyllabusActionButton {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+  border-radius: 6px;
+  padding: 0 20px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+}
+
+  .adminSyllabusActionButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+}
+
+.adminSyllabusActionButton:disabled {
+  background: #f5f5f5;
+  color: rgba(0, 0, 0, 0.25);
+  border-color: #d9d9d9;
+  box-shadow: none;
+}
+
+.adminSyllabusPrimaryButton {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  height: 40px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+}
+
+.adminSyllabusPrimaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+}
+
+.adminSyllabusPrimaryButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.35);
+}
+
+.adminSyllabusModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #f9f9f9;
+  border-top: 1px solid #f0f0f0;
+  border-radius: 0 0 10px 10px;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+/* Add these new styles for better step visualization */
+.adminSyllabusStepsContainer {
+  margin: 20px 0 30px;
+  padding: 20px;
+  background-color: #f9fafc;
+  border-radius: 10px;
+  border: 1px solid #e6f0fa;
+}
+
+.adminSyllabusContainer :global(.ant-steps-item-title) {
+  font-weight: 500;
+}
+
+.adminSyllabusContainer :global(.ant-steps-item-description) {
+  font-size: 13px;
+  color: #8c8c8c;
+}
+
+.adminSyllabusStepContent {
+  margin-top: 0;
+  padding: 24px 30px;
+  background-color: #fff;
+  border: none;
+  box-shadow: none;
+  overflow-y: auto;
+  flex: 1;
+  max-height: none;
+}
+
+/* Styling for webkit browsers scrollbar */
+.adminSyllabusStepContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.adminSyllabusStepContent::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.adminSyllabusStepContent::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.adminSyllabusStepContent::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.adminSyllabusStepTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #1e293b;
+  padding-left: 16px;
+  position: relative;
+}
+
+.adminSyllabusStepTitle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  background: linear-gradient(to bottom, #1890ff, #36cfc9);
+  border-radius: 2px;
+}
+
+.adminSyllabusStepDescription {
+  color: #64748b;
+  margin-bottom: 30px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+    .adminSyllabusContainer :global(.ant-form-item-label>label) {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.adminSyllabusContainer :global(.ant-input),
+.adminSyllabusContainer :global(.ant-input-number) {
+  border-radius: 8px;
+  padding: 10px 12px;
+  border-color: #e2e8f0;
+  transition: all 0.3s;
+}
+
+.adminSyllabusContainer :global(.ant-input:hover),
+.adminSyllabusContainer :global(.ant-input-number:hover) {
+  border-color: #b3d8ff;
+}
+
+.adminSyllabusContainer :global(.ant-input:focus),
+.adminSyllabusContainer :global(.ant-input-number-focused) {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* Enhanced Action Buttons in Forms */
+.adminSyllabusStepNavButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.adminSyllabusProgressStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: #666;
+}
+
+.adminSyllabusProgressIcon {
+  font-size: 16px;
+}
+
+.adminSyllabusDetailCountBadge {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  color: #1890ff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.adminSyllabusDetailsComplete {
+  color: #52c41a;
+}
+
+.adminSyllabusDetailsIncomplete {
+  color: #faad14;
+}
+
+.adminSyllabusModalHeaderWithSteps {
+  padding-bottom: 0;
+}
+
+@media (max-width: 768px) {
+      .adminSyllabusContainer {
+    padding: 16px;
+  }
+
+  .adminSyllabusHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .adminSyllabusActions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .adminSyllabusSearchInput {
+    width: 100%;
+  }
+
+  .adminSyllabusDetailStats :global(.ant-card) {
+    margin-bottom: 16px;
+  }
+
+  .adminSyllabusExcelActions {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .adminSyllabusContainer {
+    padding: 20px;
+  }
+
+  .adminSyllabusActions {
+    flex-wrap: wrap;
+  }
+}
+
+/* Improve Excel import styling */
+.adminSyllabusExcelImport {
+  margin-bottom: 30px;
+  padding: 24px;
+  background-color: #f7fdf9;
+  border-radius: 10px;
+  border: 1px dashed #b7eb8f;
+  transition: all 0.3s;
+}
+
+.adminSyllabusExcelImport:hover {
+  background-color: #f0fdf4;
+  border-color: #95de64;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.1);
+}
+
+.adminSyllabusExcelActions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.adminSyllabusExcelButton {
+  min-width: 200px;
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+
+.adminSyllabusExcelDragger {
+  margin-bottom: 16px;
+}
+
+.adminSyllabusExcelIcon {
+  font-size: 24px;
+  color: #52c41a;
+}
+
+/* Animation for imported rows */
+@keyframes highlight-row {
+  0% {
+    background-color: #f6ffed;
+  }
+
+  50% {
+    background-color: #d9f7be;
+  }
+
+  100% {
+    background-color: #f9f9f9;
+  }
+}
+
+.adminSyllabusImportedRow {
+  animation: highlight-row 2s ease;
+}
+
+/* Make the Excel import section more prominent */
+.adminSyllabusExcelSuccess {
+  border: 1px solid #52c41a;
+  box-shadow: 0 0 10px rgba(82, 196, 26, 0.3);
+}
+
+/* Enhanced styling for the details modal */
+.adminSyllabusDetailModalHeader {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 18px;
+  color: #1e293b;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.adminSyllabusDetailStats {
+  margin-bottom: 30px;
+}
+
+.adminSyllabusDetailStats :global(.ant-card) {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  border: none;
+}
+
+.adminSyllabusDetailStats :global(.ant-card:hover) {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.adminSyllabusDetailStats :global(.ant-card-body) {
+  padding: 20px;
+}
+
+.adminSyllabusDetailStats :global(.ant-statistic-title) {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.adminSyllabusDetailStats :global(.ant-statistic-content) {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.adminSyllabusDetailStats :global(.ant-statistic-content-suffix) {
+  font-size: 14px;
+  color: #64748b;
+  margin-left: 4px;
+}
+
+/* Enhanced Table Styling for Details */
+.adminSyllabusDetailsTable {
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+    .adminSyllabusDetailsTable :global(.ant-table-thead>tr>th) {
+  background: linear-gradient(to right, #f0f7ff, #f9fbff);
+  color: #1e293b;
+  font-weight: 600;
+  padding: 16px 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.adminSyllabusDetailsTable :global(.ant-table-tbody>tr:hover>td) {
+  background-color: #f0f7ff;
+}
+
+.adminSyllabusDetailsTable :global(.ant-table-tbody>tr:nth-child(even)>td) {
+  background-color: #f9fafc;
+}
+
+/* Enhanced Content and Duration cells */
+.adminSyllabusContentCell {
+  color: #1e293b;
+  padding: 8px 0;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.adminSyllabusDurationCell {
+  font-weight: 500;
+  color: #1890ff;
+  background-color: #e6f7ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Add a custom badge for slot numbers */
+.adminSyllabusSlotBadge {
+  display: inline-block;
+  background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+  color: #096dd9;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 30px;
+  min-width: 36px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.15);
+  border: none;
+}
+
+/* Loading cover styling */
+.adminSyllabusLoadingCover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.adminSyllabusLoadingCover :global(.ant-spin) {
+  background-color: white;
+  padding: 36px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.adminSyllabusLoadingCover :global(.ant-spin-text) {
+  margin-top: 12px;
+  font-size: 16px;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+/* Toast Container */
+.adminSyllabusToastContainer {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 380px;
+}
+
+.adminSyllabusToast {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  border: none;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+      .adminSyllabusToastSuccess {
+  border-left: 5px solid #52c41a;
+}
+
+.adminSyllabusToastError {
+  border-left: 5px solid #ff4d4f;
+}
+
+.adminSyllabusToastWarning {
+  border-left: 5px solid #faad14;
+}
+
+.adminSyllabusToastInfo {
+  border-left: 5px solid #1890ff;
+}
+
+.adminSyllabusToastHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 6px 20px;
+}
+
+.adminSyllabusToastTitle {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.adminSyllabusToastClose {
+  color: #8c8c8c;
+}
+
+.adminSyllabusToastMessage {
+  padding: 6px 20px 16px 20px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.adminSyllabusToastProgress {
+  height: 4px;
+  background: #e6f7ff;
+  position: relative;
+}
+
+.adminSyllabusToastProgress::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: #1890ff;
+  animation: shrink 4s linear forwards;
+}
+
+.adminSyllabusToastSuccess .adminSyllabusToastProgress::after {
+  background: #52c41a;
+}
+
+  .adminSyllabusToastError .adminSyllabusToastProgress::after {
+  background: #ff4d4f;
+}
+
+.adminSyllabusToastWarning .adminSyllabusToastProgress::after {
+  background: #faad14;
+}
+
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
+/* Update modal structure for fixed footer */
+.adminSyllabusModalContent {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(81vh - 100px);
+}
+
+/* Adjust max-width for Ant Design modal */
+.adminSyllabusContainer :global(.ant-modal) {
+  width: 90% !important;
+  max-width: 720px;
+}
+
+/* When modal is in step 1 */
+.adminSyllabusContainer :global(.ant-modal.step1) {
+  max-width: 540px;
+}
+
+/* Consistent button styling */
+.adminSyllabusContainer :global(button.ant-btn),
+.adminSyllabusModalFooter :global(button.ant-btn),
+.adminSyllabusStepNavButtons :global(button.ant-btn) {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  transition: all 0.3s;
+}
+
+/* Primary buttons (blue) */
+.adminSyllabusContainer :global(button.ant-btn-primary),
+.adminSyllabusModalFooter :global(button.ant-btn-primary),
+.adminSyllabusStepNavButtons :global(button.ant-btn-primary) {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+}
+
+.adminSyllabusContainer :global(button.ant-btn-primary:hover),
+.adminSyllabusModalFooter :global(button.ant-btn-primary:hover),
+.adminSyllabusStepNavButtons :global(button.ant-btn-primary:hover) {
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.35);
+}
+
+/* Default buttons (gray/white) */
+.adminSyllabusContainer :global(button.ant-btn-default),
+.adminSyllabusModalFooter :global(button.ant-btn-default),
+.adminSyllabusStepNavButtons :global(button.ant-btn-default) {
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.adminSyllabusContainer :global(button.ant-btn-default:hover),
+.adminSyllabusModalFooter :global(button.ant-btn-default:hover),
+.adminSyllabusStepNavButtons :global(button.ant-btn-default:hover) {
+  color: #1890ff;
+  border-color: #1890ff;
+  background: #fff;
+}
+
+/* Override existing button styling */
+.adminSyllabusActionButton,
+.adminSyllabusPrimaryButton {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: none;
+  border-radius: 6px;
+  padding: 0 20px;
+  height: 40px;
+  font-weight: 500;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  box-shadow: 0 2px 6px rgba(24, 144, 255, 0.25);
+}
+
+/* Reset table action buttons to smaller size */
+.adminSyllabusContainer :global(.ant-table-wrapper button.ant-btn),
+.adminSyllabusContainer :global(table button.ant-btn) {
+  min-width: unset;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure table icons are properly centered */
+.adminSyllabusContainer :global(table button.ant-btn .anticon) {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Maintain spacing between table action buttons */
+.adminSyllabusContainer :global(.ant-table-wrapper .ant-space) {
+  gap: 8px !important;
+}
+
+/* Color styling for action buttons in table */
+
+/* Info button - Blue */
+.adminSyllabusContainer :global(table button.ant-btn-primary:has(.anticon-info-circle)) {
+  background: #1890ff;
+  color: white;
+}
+
+.adminSyllabusContainer :global(table button.ant-btn-primary:has(.anticon-info-circle):hover) {
+  background: #40a9ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.5);
+}
+
+/* Edit button - Green */
+.adminSyllabusContainer :global(table button.ant-btn-primary:has(.anticon-edit)) {
+  background: #52c41a;
+  color: white;
+}
+
+.adminSyllabusContainer :global(table button.ant-btn-primary:has(.anticon-edit):hover) {
+  background: #73d13d;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.5);
+}
+
+/* Delete button - Red */
+.adminSyllabusContainer :global(table button.ant-btn-primary.ant-btn-dangerous),
+.adminSyllabusContainer :global(table button.ant-btn-primary:has(.anticon-delete)) {
+  background: #ff4d4f;
+  color: white;
+}
+
+.adminSyllabusContainer :global(table button.ant-btn-primary.ant-btn-dangerous:hover),
+.adminSyllabusContainer :global(table button.ant-btn-primary:has(.anticon-delete):hover) {
+  background: #ff7875;
+  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.5);
+}
+
+/* Reset gradient background for table buttons */
+.adminSyllabusContainer :global(table button.ant-btn-primary) {
+  background: #1890ff;
+  /* Solid color instead of gradient */
+}
+
+/* Add subtle transition effect */
+.adminSyllabusContainer :global(table button.ant-btn) {
+  transition: all 0.2s ease;
+}
+
+.adminSyllabusContainer :global(table button.ant-btn:hover) {
+  transform: translateY(-2px);
+}

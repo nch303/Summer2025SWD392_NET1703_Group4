@@ -1,0 +1,11 @@
+.pageLoadingContent.hidden {
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.pageLoadingContent {
+  transition: opacity 0.3s ease-out;
+  opacity: 1;
+}

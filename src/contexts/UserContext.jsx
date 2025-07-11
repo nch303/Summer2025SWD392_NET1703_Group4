@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getCurrentUser } from '../components/navbar/NavbarService';
+import { getCurrentUser } from '../services/NavbarService';
 
 const UserContext = createContext(null);
 

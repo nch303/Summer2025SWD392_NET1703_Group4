@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Badge, Button } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
+  Layout, Menu, Avatar, Dropdown, Badge, Button,
   DashboardOutlined,
   TeamOutlined,
   BookOutlined,
@@ -15,13 +15,12 @@ import {
   FileTextOutlined,
   NotificationOutlined,
   BarChartOutlined,
-  ReadOutlined,
-  FileProtectOutlined,
   DollarOutlined,
-} from '@ant-design/icons';
+} from '../utils/AntComponents';
 import { useUser } from '../contexts/UserContext';
-import Navbar from '../components/navbar/Navbar';
-import './AdminLayout.css';
+import Navbar from '../components/Navbar';
+import styles from './AdminLayout.module.css';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 const { Header, Sider, Content } = Layout;
 
@@ -121,17 +120,17 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="admin-navbar-wrapper">
+    <div className={styles.adminNavbarWrapper}>
       <Navbar />
-      <Layout className="admin-layout">
-        <Sider 
-          width={250} 
-          className="admin-sider"
+      <Layout className={styles.adminLayout}>
+        <Sider
+          width={250}
+          className={styles.adminSider}
           collapsed={collapsed}
           collapsible
           trigger={null}
         >
-          <div className="admin-logo">
+          <div className={styles.adminLogo}>
             <h2>{collapsed ? 'LS' : 'Little Stars'}</h2>
           </div>
           <Menu
@@ -143,22 +142,22 @@ const AdminLayout = () => {
           />
         </Sider>
         <Layout>
-          <Header className="admin-header">
-            <div className="header-left">
+          <Header className={styles.adminHeader}>
+            <div className={styles.headerLeft}>
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={() => setCollapsed(!collapsed)}
-                className="trigger-button"
+                className={styles.triggerButton}
               />
               <h1>Little Stars Preschool</h1>
             </div>
-            <div className="header-right">
-              <Badge count={5} className="notification-badge">
-                <Button 
-                  type="text" 
-                  icon={<BellOutlined />} 
-                  className="notification-button"
+            <div className={styles.headerRight}>
+              <Badge count={5} className={styles.notificationBadge}>
+                <Button
+                  type="text"
+                  icon={<BellOutlined />}
+                  className={styles.notificationButton}
                 />
               </Badge>
               <Dropdown
@@ -166,9 +165,9 @@ const AdminLayout = () => {
                 placement="bottomRight"
                 arrow
               >
-                <div className="user-profile">
+                <div className={styles.userProfile}>
                   <Avatar icon={<UserOutlined />} />
-                  <span className="username">Admin</span>
+                  <span className={styles.username}>Admin</span>
                 </div>
               </Dropdown>
             </div>
@@ -176,6 +175,7 @@ const AdminLayout = () => {
           <Content className="admin-content">
             <Outlet />
           </Content>
+          <ScrollToTopButton />
         </Layout>
       </Layout>
     </div>

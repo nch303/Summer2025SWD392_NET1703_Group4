@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { logoutUser } from '../components/navbar/NavbarService';
+import { logoutUser } from '../services/NavbarService';
 import { API_CONFIG } from './appConfig';
 
 // Create axios instance

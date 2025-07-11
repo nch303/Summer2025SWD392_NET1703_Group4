@@ -1,0 +1,244 @@
+.staffSidebar {
+  width: 280px;
+  min-width: 280px;
+  background: linear-gradient(to bottom, #ffffff, #f8f9ff);
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
+  border-radius: 16px;
+  margin-left: 20px;
+  margin-right: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+  flex-shrink: 0;
+  border: 1px solid rgba(231, 235, 247, 0.8);
+}
+
+.staffSidebarHeader {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(231, 235, 247, 0.8);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.staffSidebarTitle {
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease;
+  letter-spacing: -0.2px;
+}
+
+.staffSidebarToggle {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  min-width: 34px;
+  min-height: 34px;
+}
+
+.staffSidebarToggle:hover {
+  background-color: #f0f0ff;
+  color: #4a6cf7;
+  transform: scale(1.05);
+}
+
+.staffSidebarToggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.staffSidebarNav {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.staffSidebarLink {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  color: #555;
+  text-decoration: none;
+  transition: all 0.2s;
+  border-radius: 12px;
+  margin: 2px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.staffSidebarLink::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.3s;
+  border-radius: 0 4px 4px 0;
+}
+
+.staffSidebarIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  transition: all 0.3s ease;
+}
+
+.staffSidebarIcon svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.staffSidebarText {
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.3s ease;
+}
+
+.staffSidebarLink:hover {
+  background-color: rgba(74, 108, 247, 0.05);
+  color: #4a6cf7;
+  transform: translateX(2px);
+}
+
+.staffSidebarLink:hover .staffSidebarIcon svg {
+  transform: scale(1.1);
+}
+
+.staffSidebarLink.active {
+  color: #4a6cf7;
+  background-color: rgba(74, 108, 247, 0.08);
+  font-weight: 600;
+}
+
+.staffSidebarLink.active::before {
+  height: 70%;
+  opacity: 1;
+  top: 15%;
+}
+
+.staffSidebarLink.active .staffSidebarIcon {
+  transform: scale(1.05);
+}
+
+.sidebarCollapsed .staffSidebar {
+  width: 80px;
+  min-width: 80px;
+}
+
+.sidebarCollapsed .staffSidebarTitle {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+}
+
+.sidebarCollapsed .staffSidebarIcon {
+  margin-right: 0;
+}
+
+.sidebarCollapsed .staffSidebarText {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+}
+
+.sidebarCollapsed .staffSidebarLink {
+  justify-content: center;
+  padding: 16px 12px;
+}
+
+.sidebarCollapsed .staffSidebarLink:hover {
+  transform: scale(1.05);
+  background-color: rgba(74, 108, 247, 0.08);
+}
+
+.sidebarCollapsed .staffSidebarLink {
+  position: relative;
+}
+
+.sidebarCollapsed .staffSidebarLink:hover::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(45deg, #4a6cf7, #7586f0);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 100;
+  margin-left: 12px;
+  box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .staffSidebar {
+    position: fixed;
+    left: 0;
+    top: 70px;
+    height: calc(100vh - 70px);
+    margin-left: 0;
+    transform: translateX(-100%);
+    z-index: 1000;
+    border-radius: 0;
+  }
+
+  .staffLayout .staffSidebar {
+    transform: translateX(0);
+  }
+
+  .sidebarCollapsed .staffSidebar {
+    transform: translateX(-100%);
+    width: 260px;
+    min-width: 260px;
+  }
+}

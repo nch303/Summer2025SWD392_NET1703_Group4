@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   Table, Button, Modal, Form, Input, DatePicker, Select, Radio,
-  message, Popconfirm, Typography, Space, InputNumber, Tag, notification
-} from 'antd';
-import {
+  message, Popconfirm, Typography, Space, InputNumber, Tag, notification,
   PlusOutlined, EditOutlined, DeleteOutlined, FilterOutlined, LeftOutlined, RightOutlined
-} from '@ant-design/icons';
+} from '../../utils/AntComponents';
 import moment from 'moment';
 import {
   getAllTuitionFees,
@@ -13,9 +11,9 @@ import {
   updateTuitionFee,
   deleteTuitionFee,
   getGradeLevels
-} from './TuitionFeeManagementService';
-import './TuitionFeeManagement.css';
-import { useCustomToast } from '../../components/toast/CustomToast';
+} from '../../services/AdminService';
+import styles from './TuitionFeeManagement.module.css';
+import { useCustomToast } from '../../components/CustomToast';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -49,29 +47,29 @@ const TuitionFeeManagement = () => {
     if (tuitionFees.length > 0) {
       // Extract school years (e.g. "2025-2026") instead of calendar years
       const schoolYears = [];
-      
+
       tuitionFees.forEach(fee => {
         const date = new Date(fee.date);
         const month = date.getMonth() + 1; // JavaScript months are 0-based
         const year = date.getFullYear();
-        
+
         let schoolYear;
         if (month >= 9) { // September or later
           schoolYear = `${year}-${year + 1}`;
         } else { // Before September (Jan-Aug)
           schoolYear = `${year - 1}-${year}`;
         }
-        
+
         if (!schoolYears.includes(schoolYear)) {
           schoolYears.push(schoolYear);
         }
       });
-      
+
       // Sort school years in descending order
       schoolYears.sort().reverse();
-      
+
       setAvailableYears(schoolYears);
-      
+
       // Set default selected year to the most recent
       if (!selectedYear && schoolYears.length > 0) {
         setSelectedYear(schoolYears[0]);
@@ -130,21 +128,21 @@ const TuitionFeeManagement = () => {
           duration: 3000
         });
       }
-      
+
       // Reset and close form
       setModalVisible(false);
       form.resetFields();
       setEditingId(null);
-      
+
       // Refresh data
       fetchTuitionFees();
-      
+
     } catch (error) {
       // Extract the error message from different possible locations
-      const errorMessage = error.response?.data?.message || 
-                           error.message || 
-                           'An error occurred while saving tuition fee information';
-      
+      const errorMessage = error.response?.data?.message ||
+        error.message ||
+        'An error occurred while saving tuition fee information';
+
       // Use custom toast to show the specific error
       toast.error(errorMessage, {
         title: 'Error',
@@ -191,21 +189,21 @@ const TuitionFeeManagement = () => {
   // Get filtered tuition fees based on selected grade level and year
   const getFilteredTuitionFees = () => {
     let filtered = [...tuitionFees];
-    
+
     // Filter by grade level if selected
     if (selectedGradeLevel) {
       filtered = filtered.filter(fee => fee.gradeLevelID === selectedGradeLevel);
     }
-    
+
     // Filter by school year if selected
     if (selectedYear) {
       const [startYear, endYear] = selectedYear.split('-').map(Number);
-      
+
       filtered = filtered.filter(fee => {
         const date = new Date(fee.date);
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
-        
+
         if (month >= 9 && month <= 12) {
           // Fall term (Sep-Dec)
           return year === startYear;
@@ -215,17 +213,17 @@ const TuitionFeeManagement = () => {
         }
       });
     }
-    
+
     return filtered;
   };
 
   // Update the helper function to format the description text with colons
   const formatDescription = (description) => {
     if (!description) return 'No';
-    
+
     // Split by '+' to get individual fee items
     const items = description.split('+').map(item => item.trim());
-    
+
     // Format each item with bullet point and add colon before amount
     return items.map(item => {
       // Replace parentheses around amounts and add colon
@@ -237,18 +235,18 @@ const TuitionFeeManagement = () => {
   // Add this function to extract and sum fees from the description
   const calculateTotalFee = (description) => {
     if (!description) return 0;
-    
+
     // Extract all numbers in parentheses
     const regex = /\(([0-9.,]+)(?:đ)?\)/g;
     let match;
     let total = 0;
-    
+
     while ((match = regex.exec(description)) !== null) {
       // Get the number part and remove dots
       const amount = match[1].replace(/\./g, '');
       total += parseInt(amount, 10) || 0;
     }
-    
+
     return total;
   };
 
@@ -275,13 +273,13 @@ const TuitionFeeManagement = () => {
     const newItems = [...feeItems];
     newItems.splice(index, 1);
     setFeeItems(newItems);
-    
+
     // Update form values
     const descriptionString = convertFeeItemsToDescription(newItems);
     const total = calculateTotalFromItems(newItems);
-    form.setFieldsValue({ 
+    form.setFieldsValue({
       description: descriptionString,
-      fee: total 
+      fee: total
     });
   };
 
@@ -290,13 +288,13 @@ const TuitionFeeManagement = () => {
     const newItems = [...feeItems];
     newItems[index][field] = value;
     setFeeItems(newItems);
-    
+
     // Update form values
     const descriptionString = convertFeeItemsToDescription(newItems);
     const total = calculateTotalFromItems(newItems);
-    form.setFieldsValue({ 
+    form.setFieldsValue({
       description: descriptionString,
-      fee: total 
+      fee: total
     });
   };
 
@@ -309,7 +307,7 @@ const TuitionFeeManagement = () => {
         const items = description.split('+').map(item => {
           const trimmed = item.trim();
           const nameMatch = trimmed.match(/(.*)\s*\(([^)]+)\)/);
-          
+
           if (nameMatch) {
             return {
               name: nameMatch[1].trim(),
@@ -318,7 +316,7 @@ const TuitionFeeManagement = () => {
           }
           return { name: trimmed, amount: 0 };
         });
-        
+
         setFeeItems(items.length > 0 ? items : [{ name: '', amount: 0 }]);
       }
     } else if (!modalVisible) {
@@ -378,11 +376,11 @@ const TuitionFeeManagement = () => {
       sorter: (a, b) => {
         const [monthA, yearA] = a.name.split('/').map(Number);
         const [monthB, yearB] = b.name.split('/').map(Number);
-        
+
         if (yearA !== yearB) {
           return yearA - yearB;
         }
-        
+
         return monthA - monthB;
       },
       render: (name) => {
@@ -428,8 +426,8 @@ const TuitionFeeManagement = () => {
       key: 'actions',
       render: (_, record) => (
         <Space>
-          <Button 
-            icon={<EditOutlined />} 
+          <Button
+            icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           />
           <Popconfirm
@@ -447,16 +445,16 @@ const TuitionFeeManagement = () => {
 
   return (
     <>
-      <div className="admin-tuition-management">
-        <div className="admin-tuition-header">
+      <div className={styles.adminTuitionManagement}>
+        <div className={styles.adminTuitionHeader}>
           <Title level={2}>Tuition Fee Management</Title>
-          <div className="admin-tuition-filter-container">
-            <div className="admin-tuition-filter-groups">
-              <div className="admin-tuition-filter-section">
-                <span className="filter-label">Academic Year:</span>
-                <div className="year-navigator">
-                  <Button 
-                    icon={<LeftOutlined />} 
+          <div className={styles.adminTuitionFilterContainer}>
+            <div className={styles.adminTuitionFilterGroups}>
+              <div className={styles.adminTuitionFilterSection}>
+                <span className={styles.filterLabel}>Academic Year:</span>
+                <div className={styles.yearNavigator}>
+                  <Button
+                    icon={<LeftOutlined />}
                     onClick={() => {
                       const currentIndex = availableYears.indexOf(selectedYear);
                       if (currentIndex < availableYears.length - 1) {
@@ -465,11 +463,11 @@ const TuitionFeeManagement = () => {
                     }}
                     disabled={selectedYear === null || availableYears.indexOf(selectedYear) === availableYears.length - 1}
                   />
-                  <div className="year-display">
+                  <div className={styles.yearDisplay}>
                     {selectedYear || 'All'}
                   </div>
-                  <Button 
-                    icon={<RightOutlined />} 
+                  <Button
+                    icon={<RightOutlined />}
                     onClick={() => {
                       const currentIndex = availableYears.indexOf(selectedYear);
                       if (currentIndex > 0) {
@@ -480,49 +478,49 @@ const TuitionFeeManagement = () => {
                   />
                 </div>
               </div>
-              
-              <div className="admin-tuition-filter-section grade-section">
-                <span className="filter-label">Grade Level:</span>
-                <div className="grade-level-selector">
+
+              <div className={styles.adminTuitionFilterSection}>
+                <span className={styles.filterLabel}>Grade Level:</span>
+                <div className={styles.gradeLevelSelector}>
                   {gradeLevels.map(level => (
-                    <div 
+                    <div
                       key={level.id}
-                      className={`grade-level-item ${selectedGradeLevel === level.id ? 'active' : ''}`}
+                      className={`${styles.gradeLevelItem} ${selectedGradeLevel === level.id ? styles.active : ''}`}
                       onClick={() => handleGradeLevelFilter(selectedGradeLevel === level.id ? null : level.id)}
                     >
-                      <div className="grade-level-icon">
+                      <div className={styles.gradeLevelIcon}>
                         {level.name === "Mầm" && "🌱"}
                         {level.name === "Chồi" && "🌿"}
                         {level.name === "Lá" && "🍃"}
                         {!["Mầm", "Chồi", "Lá"].includes(level.name) && "✓"}
                       </div>
-                      <div className="grade-level-name">{level.name}</div>
+                      <div className={styles.gradeLevelName}>{level.name}</div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-          
-          <Button 
-            type="primary" 
+
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             size="large"
-            className="add-tuition-button"
+            className={styles.addTuitionButton}
             onClick={handleAddNew}
           >
             Add New Tuition Fee
           </Button>
         </div>
-        
-        <Table 
-          columns={columns} 
-          dataSource={getFilteredTuitionFees()} 
-          rowKey="id" 
-          loading={loading} 
+
+        <Table
+          columns={columns}
+          dataSource={getFilteredTuitionFees()}
+          rowKey="id"
+          loading={loading}
           pagination={{ pageSize: 10 }}
         />
-        
+
         <Modal
           title={editingId ? 'Update Fee' : 'Add New Fee'}
           open={modalVisible}
@@ -555,8 +553,8 @@ const TuitionFeeManagement = () => {
                     style={{ width: '50%' }}
                     // Prevent non-numeric input
                     onKeyDown={(e) => {
-                      if (!/[0-9]|\./g.test(e.key) && 
-                          !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+                      if (!/[0-9]|\./g.test(e.key) &&
+                        !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
                         e.preventDefault();
                       }
                     }}
@@ -577,15 +575,15 @@ const TuitionFeeManagement = () => {
                     style={{ width: '50%' }}
                     // Prevent non-numeric input
                     onKeyDown={(e) => {
-                      if (!/[0-9]|\./g.test(e.key) && 
-                          !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+                      if (!/[0-9]|\./g.test(e.key) &&
+                        !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
                         e.preventDefault();
                       }
                     }}
                   />
                 </Form.Item>
               </Space.Compact>
-              
+
               {/* Hidden field to store the combined value */}
               <Form.Item
                 name="name"
@@ -595,14 +593,14 @@ const TuitionFeeManagement = () => {
                 <Input />
               </Form.Item>
             </Form.Item>
-            
+
             <Form.Item
               label="Fee Items"
               required
             >
-              <div className="fee-items-container">
+              <div className={styles.feeItemsContainer}>
                 {feeItems.map((item, index) => (
-                  <div key={index} className="fee-item-row">
+                  <div key={index} className={styles.feeItemRow}>
                     <Input
                       placeholder="Fee Name"
                       value={item.name}
@@ -618,25 +616,25 @@ const TuitionFeeManagement = () => {
                       style={{ width: '30%' }}
                       // Prevent non-numeric input
                       onKeyDown={(e) => {
-                        if (!/[0-9]|\./g.test(e.key) && 
-                            !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+                        if (!/[0-9]|\./g.test(e.key) &&
+                          !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
                           e.preventDefault();
                         }
                       }}
                     />
-                    <Button 
-                      type="text" 
+                    <Button
+                      type="text"
                       danger
-                      icon={<DeleteOutlined />} 
+                      icon={<DeleteOutlined />}
                       onClick={() => removeFeeItem(index)}
                       disabled={feeItems.length <= 1}
                     />
                   </div>
                 ))}
-                
-                <Button 
-                  type="dashed" 
-                  icon={<PlusOutlined />} 
+
+                <Button
+                  type="dashed"
+                  icon={<PlusOutlined />}
                   onClick={addFeeItem}
                   style={{ width: '100%', marginTop: '8px' }}
                 >
@@ -652,14 +650,14 @@ const TuitionFeeManagement = () => {
                 <Input />
               </Form.Item>
             </Form.Item>
-            
+
             <Form.Item
               name="date"
               label="Due Date"
               rules={[{ required: true, message: 'Please select due date' }]}
             >
-              <DatePicker 
-                style={{ width: '100%' }} 
+              <DatePicker
+                style={{ width: '100%' }}
                 format="DD/MM/YYYY"
                 styles={{
                   popup: {
@@ -674,30 +672,30 @@ const TuitionFeeManagement = () => {
                 placement="bottomLeft"
               />
             </Form.Item>
-            
+
             <Form.Item
               name="fee"
               label="Total (VND)"
               initialValue={0}
             >
-              <InputNumber 
-                style={{ width: '100%' }} 
+              <InputNumber
+                style={{ width: '100%' }}
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 disabled
               />
             </Form.Item>
-            
+
             <Form.Item
               name="gradeLevelID"
               label="Grade Level"
               rules={[{ required: true, message: 'Please select grade level' }]}
             >
               <Radio.Group>
-                <div className="grade-level-radio-group">
+                <div className={styles.gradeLevelRadioGroup}>
                   {gradeLevels.map(level => (
                     <Radio key={level.id} value={level.id}>
-                      <div className="grade-radio-content">
-                        <span className="grade-radio-icon">
+                      <div className={styles.gradeRadioContent}>
+                        <span className={styles.gradeRadioIcon}>
                           {level.name === "Mầm" && "🌱"}
                           {level.name === "Chồi" && "🌿"}
                           {level.name === "Lá" && "🍃"}
@@ -710,9 +708,9 @@ const TuitionFeeManagement = () => {
                 </div>
               </Radio.Group>
             </Form.Item>
-            
+
             <Form.Item>
-              <Space className="admin-tuition-form-buttons">
+              <Space className={styles.adminTuitionFormButtons}>
                 <Button onClick={() => setModalVisible(false)}>Cancel</Button>
                 <Button type="primary" htmlType="submit">
                   {editingId ? 'Update' : 'Create'}
@@ -722,7 +720,7 @@ const TuitionFeeManagement = () => {
           </Form>
         </Modal>
       </div>
-      
+
       {/* Add the toast container at the end of the component */}
       <toast.ToastContainer position="top-right" />
     </>

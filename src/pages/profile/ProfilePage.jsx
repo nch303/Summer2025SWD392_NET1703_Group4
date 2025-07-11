@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './ProfilePage.css';
+import styles from './ProfilePage.module.css';
 import { useUser } from '../../contexts/UserContext';
 import ChildProfileManagement from './ChildProfileManagement';
 import ChangePasswordForm from './ChangePasswordForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCurrentUserProfile, changePassword, updateUserProfile } from './ProfileService';
+import { updateUserProfile } from '../../services/ProfileService';
 
 const Toast = ({ message, type, onClose }) => {
   const [isExiting, setIsExiting] = useState(false);
@@ -28,21 +28,21 @@ const Toast = ({ message, type, onClose }) => {
   };
 
   return (
-    <div className={`toast-message ${type} ${isExiting ? 'exiting' : ''}`}>
-      <div className={`toast-icon ${type}`}>
+    <div className={`${styles.toastMessage} ${type} ${isExiting ? 'exiting' : ''}`}>
+      <div className={`${styles.toastIcon} ${type}`}>
         {type === 'success' ? (
           <FontAwesomeIcon icon="check-circle" size="lg" />
         ) : (
           <FontAwesomeIcon icon="exclamation-circle" size="lg" />
         )}
       </div>
-      <div className="toast-content">
-        <h4 className="toast-title">
+      <div className={styles.toastContent}>
+        <h4 className={styles.toastTitle}>
           {type === 'success' ? 'Success!' : 'Error!'}
         </h4>
         <p>{message}</p>
       </div>
-      <button className="toast-close" onClick={handleClose}>
+      <button className={styles.toastClose} onClick={handleClose}>
         <FontAwesomeIcon icon="times" />
       </button>
     </div>
@@ -67,6 +67,8 @@ const ProfilePage = () => {
   const [updatedFields, setUpdatedFields] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const messageRef = useRef(null);
+  const [communicationBookOpen, setCommunicationBookOpen] = useState(false);
+  const [selectedChildId, setSelectedChildId] = useState(null);
 
   useEffect(() => {
     // Xác định activeTab từ thông tin URL
@@ -136,11 +138,11 @@ const ProfilePage = () => {
       }));
 
       // Set message and highlight updated fields
-      setMessage({ text: 'Hồ sơ đã được cập nhật thành công!', type: 'success' });
+      setMessage({ text: 'Profile updated successfully!', type: 'success' });
       // Show toast notification
       setToast({
         show: true,
-        message: 'Thông tin hồ sơ đã được cập nhật thành công!',
+        message: 'Profile updated successfully!',
         type: 'success'
       });
       setUpdatedFields(changedFields);
@@ -159,11 +161,11 @@ const ProfilePage = () => {
       }, 2000);
 
     } catch (error) {
-      setMessage({ text: error.message || 'Có lỗi xảy ra khi cập nhật hồ sơ!', type: 'error' });
+      setMessage({ text: error.message || 'An error occurred while updating the profile!', type: 'error' });
       // Show toast notification for error
       setToast({
         show: true,
-        message: error.message || 'Có lỗi xảy ra khi cập nhật hồ sơ!',
+        message: error.message || 'An error occurred while updating the profile!',
         type: 'error'
       });
     } finally {
@@ -174,10 +176,15 @@ const ProfilePage = () => {
   // Check if user is a parent
   const isParent = currentUser?.roleName?.toLowerCase() === 'parent';
 
+  const openCommunicationBook = (childId) => {
+    setSelectedChildId(childId);
+    setCommunicationBookOpen(true);
+  };
+
   if (contextLoading || (isLoading && !currentUser)) {
     return (
-      <div className="profile-loading-container">
-        <div className="profile-loading-spinner"></div>
+      <div className={styles.profileLoadingContainer}>
+        <div className={styles.profileLoadingSpinner}></div>
         <p>Loading information...</p>
       </div>
     );
@@ -187,7 +194,7 @@ const ProfilePage = () => {
     <>
       {/* Toast Notification */}
       {toast.show && (
-        <div className="toast-container">
+        <div className={styles.toastContainer}>
           <Toast
             message={toast.message}
             type={toast.type}
@@ -196,10 +203,10 @@ const ProfilePage = () => {
         </div>
       )}
 
-      <div className="profile-container">
+      <div className={styles.profileContainer}>
         {message.text && (
-          <div className={`profile-message ${message.type}`} ref={messageRef}>
-            <div className="message-icon">
+          <div className={`${styles.profileMessage} ${styles[message.type]}`} ref={messageRef}>
+            <div className={styles.messageIcon}>
               {message.type === 'success' ? (
                 <FontAwesomeIcon icon="check-circle" size="lg" />
               ) : (
@@ -207,64 +214,64 @@ const ProfilePage = () => {
               )}
             </div>
             <span>{message.text}</span>
-            <button className="message-close" onClick={() => setMessage({ text: '', type: '' })}>
+            <button className={styles.messageClose} onClick={() => setMessage({ text: '', type: '' })}>
               <FontAwesomeIcon icon="times" />
             </button>
           </div>
         )}
 
-        <div className="profile-header-banner">
-          <div className="profile-header-content">
+        <div className={styles.profileHeaderBanner}>
+          <div className={styles.profileHeaderContent}>
             <h1>Personal information</h1>
             <p>Manage your personal information</p>
           </div>
         </div>
 
-        <div className="profile-layout">
-          <div className="profile-sidebar">
-            <div className="profile-avatar-section">
-              <div className="profile-avatar-container">
-                <div className="profile-avatar">
+        <div className={styles.profileLayout}>
+          <div className={styles.profileSidebar}>
+            <div className={styles.profileAvatarSection}>
+              <div className={styles.profileAvatarContainer}>
+                <div className={styles.profileAvatar}>
                   {formData.fullName?.charAt(0) || 'U'}
                 </div>
-                <div className="profile-avatar-overlay">
+                <div className={styles.profileAvatarOverlay}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="profile-name">{currentUser?.fullName}</h3>
-              <div className="profile-role-badge">
+              <h3 className={styles.profileName}>{currentUser?.fullName}</h3>
+              <div className={styles.profileRoleBadge}>
                 {currentUser?.roleName === 'Admin' ? 'Admin' : currentUser?.roleName === 'Staff' ? 'Staff' : currentUser?.roleName === 'Teacher' ? 'Teacher' : currentUser?.roleName === 'Parent' ? 'Parent' : 'User'}
               </div>
-              <div className="profile-stats">
-                <div className="profile-stat">
-                  <div className="stat-label">
+              <div className={styles.profileStats}>
+                <div className={styles.profileStat}>
+                  <div className={styles.statLabel}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                     </svg>
                     Status
                   </div>
-                  <div className="stat-value">
-                    <span className="status-indicator active"></span>
+                  <div className={styles.statValue}>
+                    <span className={`${styles.statusIndicator} ${styles.active}`}></span>
                     Active
                   </div>
                 </div>
-                <div className="profile-stat">
-                  <div className="stat-label">
+                <div className={styles.profileStat}>
+                  <div className={styles.statLabel}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                     </svg>
                     Join date
                   </div>
-                  <div className="stat-value">01/01/2023</div>
+                  <div className={styles.statValue}>01/01/2023</div>
                 </div>
               </div>
             </div>
 
-            <div className="sidebar-menu">
+            <div className={styles.sidebarMenu}>
               <div
-                className={`sidebar-menu-item ${activeTab === 'profile' ? 'active' : ''}`}
+                className={`${styles.sidebarMenuItem} ${activeTab === 'profile' ? styles.active : ''}`}
                 onClick={() => handleTabChange('profile')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -276,7 +283,7 @@ const ProfilePage = () => {
               {/* Show child profiles option only for parents */}
               {isParent && (
                 <div
-                  className={`sidebar-menu-item ${activeTab === 'children' ? 'active' : ''}`}
+                  className={`${styles.sidebarMenuItem} ${activeTab === 'children' ? styles.active : ''}`}
                   onClick={() => handleTabChange('children')}
                 >
                   <FontAwesomeIcon icon="children" />
@@ -285,7 +292,7 @@ const ProfilePage = () => {
               )}
 
               <div
-                className={`sidebar-menu-item ${activeTab === 'security' ? 'active' : ''}`}
+                className={`${styles.sidebarMenuItem} ${activeTab === 'security' ? styles.active : ''}`}
                 onClick={() => handleTabChange('security')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -296,23 +303,23 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          <div className="profile-content">
+          <div className={styles.profileContent}>
             {activeTab === 'profile' && (
               <>
-                <div className="content-header">
+                <div className={styles.contentHeader}>
                   <h2>Personal profile details</h2>
                   {!isEditing ? (
-                    <button className="edit-profile-btn" onClick={() => setIsEditing(true)}>
+                    <button className={styles.editProfileBtn} onClick={() => setIsEditing(true)}>
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                       </svg>
                       Edit profile
                     </button>
                   ) : (
-                    <div className="edit-actions">
+                    <div className={styles.editActions}>
                       <button
                         type="button"
-                        className="cancel-edit-btn"
+                        className={styles.cancelEditBtn}
                         onClick={() => setIsEditing(false)}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -322,13 +329,13 @@ const ProfilePage = () => {
                       </button>
                       <button
                         type="button"
-                        className="save-profile-btn"
+                        className={styles.saveProfileBtn}
                         onClick={handleSubmit}
                         disabled={isLoading}
                       >
                         {isLoading ? (
                           <>
-                            <span className="btn-spinner"></span>
+                            <span className={styles.btnSpinner}></span>
                             Saving...
                           </>
                         ) : (
@@ -344,20 +351,20 @@ const ProfilePage = () => {
                   )}
                 </div>
 
-                <form className="profile-form" onSubmit={(e) => { e.preventDefault(); handleSubmit(e); }}>
-                  <div className="form-section">
-                    <h3 className="profile-section-title">
+                <form className={styles.profileForm} onSubmit={(e) => { e.preventDefault(); handleSubmit(e); }}>
+                  <div className={styles.formSection}>
+                    <h3 className={styles.profileSectionTitle}>
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                       </svg>
                       Basic information
                     </h3>
 
-                    <div className="form-grid">
-                      <div className="form-group">
+                    <div className={styles.formGrid}>
+                      <div className={styles.formGroup}>
                         <label htmlFor="fullName">Full name</label>
                         {isEditing ? (
-                          <div className="input-with-icon">
+                          <div className={styles.inputWithIcon}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
@@ -371,17 +378,17 @@ const ProfilePage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="profile-data">
-                            <span className={updatedFields.includes('fullName') ? 'field-updated' : ''}>
+                          <div className={styles.profileData}>
+                            <span className={updatedFields.includes('fullName') ? styles.fieldUpdated : ''}>
                               {currentUser?.fullName || "—"}
                             </span>
                           </div>
                         )}
                       </div>
 
-                      <div className="form-group">
+                      <div className={styles.formGroup}>
                         <label htmlFor="email">Email</label>
-                        <div className="input-with-icon">
+                        <div className={styles.inputWithIcon}>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                           </svg>
@@ -392,7 +399,7 @@ const ProfilePage = () => {
                             value={formData.email}
                             onChange={handleChange}
                             disabled
-                            className="readonly-field"
+                            className={styles.readonlyField}
                             title="Email cannot be changed"
                           />
                         </div>
@@ -400,19 +407,19 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
-                  <div className="form-section">
-                    <h3 className="profile-section-title">
+                  <div className={styles.formSection}>
+                    <h3 className={styles.profileSectionTitle}>
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                       </svg>
                       Contact information
                     </h3>
 
-                    <div className="form-grid">
-                      <div className="form-group">
+                    <div className={styles.formGrid}>
+                      <div className={styles.formGroup}>
                         <label htmlFor="phoneNumber">Phone number</label>
                         {isEditing ? (
-                          <div className="input-with-icon">
+                          <div className={styles.inputWithIcon}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM19 12h2c0-4.97-4.03-9-9-9v2c3.87 0 7 3.13 7 7zm-4 0h2c0-2.76-2.24-5-5-5v2c1.66 0 3 1.34 3 3z" />
                             </svg>
@@ -425,18 +432,18 @@ const ProfilePage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="profile-data">
-                            <span className={updatedFields.includes('phoneNumber') ? 'field-updated' : ''}>
+                          <div className={styles.profileData}>
+                            <span className={updatedFields.includes('phoneNumber') ? styles.fieldUpdated : ''}>
                               {currentUser?.phoneNumber || "—"}
                             </span>
                           </div>
                         )}
                       </div>
 
-                      <div className="form-group">
+                      <div className={styles.formGroup}>
                         <label htmlFor="address">Address</label>
                         {isEditing ? (
-                          <div className="input-with-icon">
+                          <div className={styles.inputWithIcon}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                             </svg>
@@ -449,8 +456,8 @@ const ProfilePage = () => {
                             />
                           </div>
                         ) : (
-                          <div className="profile-data">
-                            <span className={updatedFields.includes('address') ? 'field-updated' : ''}>
+                          <div className={styles.profileData}>
+                            <span className={updatedFields.includes('address') ? styles.fieldUpdated : ''}>
                               {currentUser?.address || "—"}
                             </span>
                           </div>
@@ -463,15 +470,15 @@ const ProfilePage = () => {
             )}
 
             {/* Child Profile Management */}
-            {activeTab === 'children' && isParent && <ChildProfileManagement />}
+            {activeTab === 'children' && isParent && <ChildProfileManagement openCommunicationBook={openCommunicationBook} />}
 
             {/* Security Tab - Now includes change password functionality */}
             {activeTab === 'security' && (
-              <div className="security-section">
-                <div className="content-header">
+              <div className={styles.securitySection}>
+                <div className={styles.contentHeader}>
                   <h2>Account security</h2>
                 </div>
-                <div className="security-settings">
+                <div className={styles.securitySettings}>
                   <ChangePasswordForm />
                 </div>
               </div>
@@ -479,6 +486,15 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Communication Book Modal */}
+      {communicationBookOpen && (
+        <ChildCommunicationBook
+          isOpen={communicationBookOpen}
+          onClose={() => setCommunicationBookOpen(false)}
+          childId={selectedChildId}
+        />
+      )}
     </>
   );
 };

@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Table, Typography, Input, Button, Space, Tag,
-  Tooltip, Empty, Spin, Tabs, Row, Col, Avatar, Dropdown,
-  Modal, Drawer, Descriptions, Divider
-} from 'antd';
+  Card, Table, Button, Space, Tag,
+  Tooltip, Empty, Spin, Tabs, Avatar, Dropdown,
+  Drawer, Descriptions, Divider,
+  Title, Text, Search,
+  BookOutlined, EyeOutlined, FilterOutlined,
+  SortAscendingOutlined,
+  BookFilled, CheckCircleOutlined,
+  SearchOutlined
+} from '../../utils/AntComponents';
 import {
-  SearchOutlined, FileTextOutlined, BookOutlined,
-  DownloadOutlined, EyeOutlined, FilterOutlined,
-  SortAscendingOutlined, PlusOutlined, FilePdfOutlined,
-  BookFilled, ReadOutlined, CheckCircleOutlined, ClockCircleOutlined
-} from '@ant-design/icons';
-import { getAllSyllabi, getSyllabusById, getSyllabusDetailById } from './TeacherSyllabusService';
-import './TeacherSyllabus.css';
-
-const { Title, Text, Paragraph } = Typography;
-const { TabPane } = Tabs;
-const { Search } = Input;
+  getAllSyllabi,
+  getSyllabusDetailById
+} from '../../services/TeacherService';
+import styles from './TeacherSyllabus.module.css';
 
 const TeacherSyllabus = () => {
   const [syllabi, setSyllabi] = useState([]);
@@ -182,8 +180,8 @@ const TeacherSyllabus = () => {
       dataIndex: 'progress',
       key: 'progress',
       render: (progress) => (
-        <div className="progress-cell">
-          <div className="progress-bar">
+        <div className={styles.progressCell}>
+          <div className={styles.progressBar}>
             <div
               style={{
                 width: `${progress}%`,
@@ -226,16 +224,16 @@ const TeacherSyllabus = () => {
     }
 
     return (
-      <div className="syllabus-detail">
-        <div className="syllabus-header">
+      <div className={styles.syllabusDetail}>
+        <div className={styles.syllabusHeader}>
           <Avatar
-            className="syllabus-avatar"
+            className={styles.syllabusAvatar}
             icon={<BookOutlined />}
             size={80}
           />
-          <div className="syllabus-title">
+          <div className={styles.syllabusTitle}>
             <Title level={3}>{selectedSyllabus.name}</Title>
-            <div className="syllabus-tags">
+            <div className={styles.syllabusTags}>
               <Tag color="blue">{selectedSyllabus.slotAmount || syllabusSlots.length || 0} lessons</Tag>
             </div>
           </div>
@@ -247,7 +245,7 @@ const TeacherSyllabus = () => {
           title="Syllabus information"
           bordered
           column={1}
-          className="syllabus-descriptions"
+          className={styles.syllabusDescriptions}
         >
           <Descriptions.Item label="ID of syllabus">{selectedSyllabus.id}</Descriptions.Item>
           <Descriptions.Item label="Syllabus name">{selectedSyllabus.name}</Descriptions.Item>
@@ -255,18 +253,18 @@ const TeacherSyllabus = () => {
         </Descriptions>
 
         {detailLoading ? (
-          <div className="loading-container">
+          <div className={styles.loadingContainer}>
             <Spin size="large" />
             <Text>Loading syllabus detail...</Text>
           </div>
         ) : syllabusSlots.length > 0 ? (
           <>
             <Divider orientation="left">Lesson details</Divider>
-            <div className="syllabus-slots">
+            <div className={styles.syllabusSlots}>
               {groupedSlots.map((group, groupIndex) => (
                 <Card
                   key={groupIndex}
-                  className="unit-card"
+                  className={styles.unitCard}
                   title={
                     <Text strong>Lesson group {groupIndex + 1} (Lesson {group[0].slot} - {group[group.length - 1].slot})</Text>
                   }
@@ -292,18 +290,71 @@ const TeacherSyllabus = () => {
     );
   };
 
+  const tabItems = [
+    {
+      key: 'all',
+      label: (
+        <span>
+          <BookOutlined />
+          All syllabi
+        </span>
+      ),
+      children: (
+        <>
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <Spin size="large" />
+              <Text>Loading syllabus list...</Text>
+            </div>
+          ) : filteredSyllabi.length === 0 ? (
+            <Empty
+              description="No syllabus found"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          ) : (
+            <Table
+              columns={columns}
+              dataSource={filteredSyllabi}
+              rowKey="id"
+              pagination={{ pageSize: 10 }}
+              className={styles.syllabiTable}
+            />
+          )}
+        </>
+      )
+    },
+    {
+      key: 'assigned',
+      label: (
+        <span>
+          <CheckCircleOutlined />
+          Assigned syllabi
+        </span>
+      ),
+      children: (
+        <Table
+          columns={assignedColumns}
+          dataSource={assignedSyllabi}
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+          className={styles.syllabiTable}
+        />
+      )
+    }
+  ];
+
   return (
-    <div className="teacher-syllabus-container">
-      <div className="syllabus-header-section">
-        <div className="header-top">
-          <div className="header-left">
+    <div className={styles.teacherSyllabusContainer}>
+      <div className={styles.syllabusHeaderSection}>
+        <div className={styles.headerTop}>
+          <div className={styles.headerLeft}>
             <Title level={2}>Syllabus</Title>
             <Text>Manage and track the teaching syllabus</Text>
           </div>
         </div>
 
-        <div className="header-actions">
-          <div className="search-filter">
+        <div className={styles.headerActions}>
+          <div className={styles.searchFilter}>
             <Search
               placeholder="Search syllabus..."
               allowClear
@@ -358,55 +409,9 @@ const TeacherSyllabus = () => {
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
-        className="syllabus-tabs"
-      >
-        <TabPane
-          tab={
-            <span>
-              <BookOutlined />
-              All syllabi
-            </span>
-          }
-          key="all"
-        >
-          {loading ? (
-            <div className="loading-container">
-              <Spin size="large" />
-              <Text>Loading syllabus list...</Text>
-            </div>
-          ) : filteredSyllabi.length === 0 ? (
-            <Empty
-              description="No syllabus found"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          ) : (
-            <Table
-              columns={columns}
-              dataSource={filteredSyllabi}
-              rowKey="id"
-              pagination={{ pageSize: 10 }}
-              className="syllabi-table"
-            />
-          )}
-        </TabPane>
-        <TabPane
-          tab={
-            <span>
-              <CheckCircleOutlined />
-              Assigned syllabi
-            </span>
-          }
-          key="assigned"
-        >
-          <Table
-            columns={assignedColumns}
-            dataSource={assignedSyllabi}
-            rowKey="id"
-            pagination={{ pageSize: 10 }}
-            className="syllabi-table"
-          />
-        </TabPane>
-      </Tabs>
+        className={styles.syllabusTabs}
+        items={tabItems}
+      />
 
       <Drawer
         title="Syllabus detail"
@@ -414,7 +419,7 @@ const TeacherSyllabus = () => {
         onClose={closeDrawer}
         open={drawerVisible}
         width={600}
-        className="syllabus-drawer"
+        className={styles.syllabusDrawer}
         destroyOnClose
       >
         {renderSyllabusDetail()}
