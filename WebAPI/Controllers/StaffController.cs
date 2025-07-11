@@ -321,7 +321,7 @@ namespace WebAPI.Controllers
                                     {
                                         ID = Guid.NewGuid(),
                                         AccountID = child.ParentID,
-                                        Amount = -amountToRefund,
+                                        Amount = amountToRefund,
                                         Status = "Awaiting",
                                         Date = DateTime.Now,
                                         Name = $"Refund for {child.Name}",
@@ -420,7 +420,7 @@ namespace WebAPI.Controllers
                             {
                                 ID = Guid.NewGuid(),
                                 AccountID = child.ParentID,
-                                Amount = -amountToRefund,
+                                Amount = amountToRefund,
                                 Status = "Awaiting",
                                 Date = DateTime.Now,
                                 Name = $"Refund for {child.Name}" + " Invoice: " + invoices.ID,

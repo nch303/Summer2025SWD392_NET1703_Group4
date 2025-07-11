@@ -85,6 +85,10 @@ namespace Application.Services
         public async Task<List<ClassChildren>> AssignChildIntoEnrichmentClass(int enrichmentId, List<Guid> childrenIds)
         {
             var classes = GetByEnrichmentIdAsync(enrichmentId).Result;
+            if (classes.Count == 0)
+            {
+                throw new Exception("No classes found for the specified enrichment program.");
+            }
             var classchildren = new List<ClassChildren>();
             foreach (var classItem in classes)
             {
