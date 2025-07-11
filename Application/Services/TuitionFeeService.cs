@@ -159,7 +159,17 @@ namespace Application.Services
             var createdTuitionFee = await _tuitionFeeRepository.CreateAsync(tuitionFee);
 
             // Tao thong bao cho tung parent
-            var parents = _accountService.GetAllAsync().Result.Where(a => a.RoleId == 2).ToList();
+            var accounts = await _accountService.GetAllAsync();
+
+            var parents = accounts
+                .Where(a => a.RoleId == 2 &&
+                            a.Childrens != null &&
+                            a.Childrens.Any(c =>
+                                c.ChildrenGrades != null &&
+                                c.ChildrenGrades
+                                    .LastOrDefault()?.GradeLevelID == tuitionFee.GradeLevelID))
+                .ToList();
+
             foreach (var parent in parents)
             {
                 var notification = new Notification
