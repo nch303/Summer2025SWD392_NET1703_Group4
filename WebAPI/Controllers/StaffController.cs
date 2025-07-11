@@ -439,7 +439,7 @@ namespace WebAPI.Controllers
                             {
                                 AccountIDs = new List<Guid> { parent.Id },
                                 Title = "Enrichment Class Removal and Refund",
-                                Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund.ToString("c", culture)} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration";
+                                Content = $"Dear {parent.FullName},\n\nWe regret to inform you that your child, {child.Name}, has been removed from the class. The reason is we do not have enough students to open a new class. A refund of {amountToRefund.ToString("c", culture)} has been processed for the tuition fee paid.\n\nThank you for your understanding.\n\n- The School Administration"
                             };
                             await _notificationService.CreateNotificationAsync(notification);
                         }

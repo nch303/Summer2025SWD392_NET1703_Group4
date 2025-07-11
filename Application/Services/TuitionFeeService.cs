@@ -56,19 +56,22 @@ namespace Application.Services
             {
                 foreach (var tuition in tuitions)
                 {
-                    totalTuitions.Add(tuition);
-                    var tuitionWithChild = _mapper.Map<TuitionWithChildResponse>(tuition);
-                    tuitionWithChild.ID = tuition.ID;
-                    tuitionWithChild.ChildID = child.ChildrenID;
-                    tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
-                    tuitionWithChild.GradeLevelID = child.GradeLevelID;
+                    if(tuition.GradeLevelID == child.GradeLevelID) 
+                    {
+                        totalTuitions.Add(tuition);
+                        var tuitionWithChild = _mapper.Map<TuitionWithChildResponse>(tuition);
+                        tuitionWithChild.ID = tuition.ID;
+                        tuitionWithChild.ChildID = child.ChildrenID;
+                        tuitionWithChild.ChildName = _childService.GetChildByIdAsync(child.ChildrenID).Result!.Name;
+                        tuitionWithChild.GradeLevelID = child.GradeLevelID;
 
-                    var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
-                    tuitionWithChild.Fee = (decimal)tuition.Fee + (decimal)gradeLevel!.Fee;
-                    tuitionWithChild.GradeLevelName = gradeLevel!.Name;
-                    tuitionWithChild.Description = "Học phí tháng " + tuition.Name + " (" + gradeLevel.Fee + ")" +
-                        (string.IsNullOrWhiteSpace(tuition.Description) ? "" : " + " + tuition.Description);
-                    tuitionWithChildResponses.Add(tuitionWithChild);
+                        var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(child.GradeLevelID);
+                        tuitionWithChild.Fee = (decimal)tuition.Fee + (decimal)gradeLevel!.Fee;
+                        tuitionWithChild.GradeLevelName = gradeLevel!.Name;
+                        tuitionWithChild.Description = "Học phí tháng " + tuition.Name + " (" + gradeLevel.Fee + ")" +
+                            (string.IsNullOrWhiteSpace(tuition.Description) ? "" : " + " + tuition.Description);
+                        tuitionWithChildResponses.Add(tuitionWithChild);
+                    }      
                 }
             }
 
