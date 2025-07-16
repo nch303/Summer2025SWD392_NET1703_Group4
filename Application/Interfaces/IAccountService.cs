@@ -1,0 +1,32 @@
+﻿using Application.DTOs.Request;
+using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Interfaces
+{
+    public interface IAccountService
+    {
+        Task<Account> GetAccountByPhoneNumberAsync(string phoneNumber);
+        Task<Account> GetAccountByEmailAsync(string email);
+        Task<Account> GetCurrentAccount();
+        Task<Account> GetAccountByIdAsync(Guid id);
+        Task<Account> UpdateAccountTokenAsync(string email, string token);
+        Task UpdateAccountAsync(Account account);
+        Task<Account> UpdateAccountByUserAsync(Account account);
+        Task<Account> CreateAccountAsync(Account account);
+        Task<List<Account>> GetAllAsync();
+        Task<Account> UpdateAccountByAdminAsync(Account account);
+        Task<Account> BanAccountAsync(Guid id);
+        Task<Account> GetByIdAsync(Guid id);
+        Task<List<Account>> GetListOfTeachers();
+        Task<Account> RestoreAccountAsync(Guid id);
+        Task<(List<Account> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize);
+        Task<(List<Account> Items, int TotalCount)> SearchAccountsAsync(string keyword, int pageNumber, int pageSize);
+        Task<List<Account>> GetTeacherByClassIdAsync(int classId);
+        Task<List<Account>> GetTeachersNoClassAsync();
+    }
+}

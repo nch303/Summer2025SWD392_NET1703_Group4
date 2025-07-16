@@ -1,0 +1,251 @@
+.not-found-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 125px 20px 20px 20px;
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+.not-found-content {
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.error-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.number {
+  font-size: 8rem;
+  font-weight: bold;
+  color: #FF6B6B;
+  text-shadow: 3px 3px 0 #fff,
+               -3px 3px 0 #fff,
+               -3px -3px 0 #fff,
+               3px -3px 0 #fff;
+}
+
+.zero {
+  width: 120px;
+  height: 120px;
+  background: #FFD93D;
+  border-radius: 50%;
+  position: relative;
+  border: 8px solid #fff;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.sad-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.eyes {
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  width: 80%;
+  top: 35%;
+  left: 10%;
+}
+
+.eye {
+  width: 12px;
+  height: 12px;
+  background: #333;
+  border-radius: 50%;
+  animation: blink 3s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
+}
+
+.mouth {
+  position: absolute;
+  width: 40%;
+  height: 20px;
+  border-top: 8px solid #333;
+  border-radius: 50%;
+  bottom: 20%;
+  left: 30%;
+}
+
+.error-title {
+  font-size: 2.5rem;
+  color: #FF6B6B;
+  margin-bottom: 1rem;
+  animation: bounce 1s ease infinite;
+}
+
+.error-message {
+  font-size: 1.5rem;
+  color: #4A4A4A;
+  margin-bottom: 2rem;
+}
+
+.home-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: #4CAF50;
+  color: white;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.home-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button-icon {
+  font-size: 1.5rem;
+}
+
+/* Balloons */
+.balloons {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.balloon {
+  position: absolute;
+  width: 40px;
+  height: 50px;
+  border-radius: 50%;
+  animation: float 15s infinite;
+}
+
+.balloon::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 30px;
+  background: rgba(0,0,0,0.2);
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.balloon-1 {
+  background: #FF6B6B;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.balloon-2 {
+  background: #4CAF50;
+  left: 50%;
+  animation-delay: -5s;
+}
+
+.balloon-3 {
+  background: #FFD93D;
+  right: 10%;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-50px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-100px) rotate(-5deg);
+  }
+  75% {
+    transform: translateY(-50px) rotate(5deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .number {
+    font-size: 6rem;
+  }
+  
+  .zero {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .error-title {
+    font-size: 2rem;
+  }
+  
+  .error-message {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .number {
+    font-size: 4rem;
+  }
+  
+  .zero {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-message {
+    font-size: 1rem;
+  }
+  
+  .home-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
