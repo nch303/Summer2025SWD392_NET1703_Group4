@@ -24,6 +24,17 @@ a {
   padding: 0 15px;
 }
 
+/* Layout structure */
+.main-layout {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-content {
+  min-height: 70vh; /* Ensures minimum height even before content loads */
+  width: 100%; /* Ensures full width */
+}
+
 /* Utility classes */
 .text-center { text-align: center; }
 .mt-2 { margin-top: 0.5rem; }

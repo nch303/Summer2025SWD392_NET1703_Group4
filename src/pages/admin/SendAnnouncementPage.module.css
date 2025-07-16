@@ -1,0 +1,486 @@
+/* Main container and card styling */
+.sendAnnouncementPage {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.announcementCard {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.announcementHeader {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.announcementTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ff7e29;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.announcementIcon {
+  color: #ff7e29;
+  font-size: 1.75rem;
+}
+
+.announcementSubtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+/* Section divider styling */
+.sectionDivider {
+  margin: 2rem 0;
+  color: #6b7280;
+}
+
+.dividerText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 0 1rem;
+  background: #fff;
+}
+
+/* Form styling */
+.announcementForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.labelIcon {
+  color: #ff7e29;
+  font-size: 0.9rem;
+}
+
+.announcementInput,
+.announcementTextarea {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.announcementInput:focus,
+.announcementTextarea:focus {
+  border-color: #ff914d;
+  box-shadow: 0 0 0 2px rgba(255, 145, 77, 0.2);
+}
+
+.inputIcon {
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.announcementTextarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Account selection styling */
+.accountSelectionContainer {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.accountSelectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.selectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.usersIcon {
+  font-size: 1.25rem;
+  color: #4b5563;
+}
+
+.searchContainer {
+  width: 50%;
+}
+
+.searchInput {
+  border-radius: 20px;
+  padding-left: 35px !important;
+}
+
+.searchInput :global(.ant-input) {
+  padding-left: 26px !important;
+}
+
+.searchInput :global(.ant-input-prefix) {
+  margin-right: 0;
+}
+
+.searchIcon {
+  color: #9ca3af;
+  margin-right: 8px;
+}
+
+.selectAllContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #edf2f7;
+  margin-bottom: 1rem;
+}
+
+.selectAllText {
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+.accountCount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.countText {
+  margin-left: 0.25rem;
+}
+
+.accountsList {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #edf2f7;
+  padding: 0.5rem;
+}
+
+.accountCheckboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.accountCheckboxItem {
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.accountCheckboxItem.selected {
+  background-color: rgba(255, 145, 77, 0.08);
+  border-color: rgba(255, 145, 77, 0.3);
+}
+
+.accountCheckboxItem:hover {
+  background-color: #f3f4f6;
+}
+
+.accountInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.accountName {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.accountIcon,
+.emailIcon {
+  margin-right: 0.5rem;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.accountEmail {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.loadingAccounts,
+.noAccounts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  color: #6b7280;
+  gap: 1rem;
+}
+
+.loadingAccounts span,
+.noAccounts span {
+  margin-top: 0.5rem;
+}
+
+.emptyIcon {
+  font-size: 2rem;
+  color: #d1d5db;
+}
+
+/* Form actions */
+.formActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.announcementBtn {
+  background: linear-gradient(90deg, #ff7e29 0%, #ff914d 100%);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.announcementBtn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #ff6a0a 0%, #ff7e29 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 126, 41, 0.3);
+}
+
+.announcementBtn:disabled {
+  background: #ffd6b3;
+  cursor: not-allowed;
+}
+
+.btnIcon {
+  font-size: 1rem;
+}
+
+.btnSpinner {
+  margin-right: 0.5rem;
+}
+
+.selectedInfo {
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-align: center;
+  padding: 0.5rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  width: 100%;
+}
+
+/* Scrollbar styling */
+.accountsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.accountsList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.accountsList::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.accountsList::-webkit-scrollbar-thumb:hover {
+  background: #ff914d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .accountCheckboxes {
+    grid-template-columns: 1fr;
+  }
+
+  .accountSelectionHeader {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .searchContainer {
+    width: 100%;
+  }
+
+  .selectAllContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .accountCount {
+    align-self: flex-end;
+  }
+}
+
+/* Role filter styling */
+.filtersContainer {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.roleFilter {
+  width: 200px;
+}
+
+.roleSelect {
+  width: 100%;
+}
+
+.roleSelect :global(.ant-select-selector) {
+  height: 40px !important;
+  padding: 4px 11px !important;
+  display: flex;
+  align-items: center;
+}
+
+.roleFilter :global(.ant-select-selector) {
+  border-radius: 20px !important;
+  display: flex;
+  align-items: center;
+}
+
+.roleFilter :global(.ant-select-selection-item) {
+  display: flex;
+  align-items: center;
+}
+
+/* Role-based selection */
+.roleSelectionContainer {
+  margin-bottom: 1rem;
+  background: white;
+  border: 1px solid #edf2f7;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.roleSelectionItem {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.roleSelectionItem:hover {
+  background-color: #f9fafb;
+}
+
+.roleInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.roleCount {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Account role display */
+.accountRole {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.roleIcon {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filtersContainer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .roleFilter {
+    width: 100%;
+  }
+}
+
+.roleFilter :global(.ant-select-arrow) {
+  top: 50% !important;
+  transform: translateY(50%) !important;
+}
+
+.successMessage {
+  background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+  border: 1px solid #ffa726;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  color: #52c41a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+  max-width: 500px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.successMessage p {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Optional: Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

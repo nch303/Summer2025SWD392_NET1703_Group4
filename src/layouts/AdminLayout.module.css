@@ -1,0 +1,140 @@
+.adminNavbarWrapper {
+  background: #fff;
+  min-height: 100vh;
+}
+
+.adminLayout {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.adminSider {
+  background: linear-gradient(180deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+  border-right: 1.5px solid #e8f0fe;
+}
+
+.adminLogo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adminLogo h2 {
+  color: white;
+  margin: 0;
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+/* Ẩn header trắng cũ */
+.adminHeader {
+  display: none;
+}
+
+.adminContent {
+  margin: 32px 24px 24px 24px;
+  padding: 24px;
+  background: #fff;
+  min-height: 280px;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(107, 138, 253, 0.08);
+  margin-top: 88px;
+}
+
+/* Đảm bảo không bị trùng lặp border zigzag của navbar */
+.navbarDecoration {
+  z-index: 2;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerLeft h1 {
+  margin: 0;
+  color: #001529;
+  font-size: 20px;
+}
+
+.triggerButton {
+  font-size: 18px;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.triggerButton:hover {
+  color: #6b8afd;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notificationBadge {
+  cursor: pointer;
+}
+
+.notificationButton {
+  font-size: 18px;
+  padding: 0 12px;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.userProfile:hover {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.username {
+  font-size: 14px;
+  color: #001529;
+}
+
+/* Style cho menu bên trái (sidebar) */
+.adminSider :global(.ant-menu) {
+  background: transparent !important;
+}
+
+.adminSider :global(.ant-menu-item) {
+  border-radius: 8px;
+  margin: 6px 8px;
+  font-weight: 500;
+  color: #fff !important;
+  transition: background 0.2s, color 0.2s;
+}
+
+.adminSider :global(.ant-menu-item-selected) {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+}
+
+.adminSider :global(.ant-menu-item:hover) {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+.adminSider :global(.ant-menu-item .anticon) {
+  color: #fff !important;
+}
+
+.adminSider :global(.ant-menu-item-selected .anticon),
+.adminSider :global(.ant-menu-item:hover .anticon) {
+  color: #fff !important;
+}

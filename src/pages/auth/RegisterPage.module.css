@@ -1,0 +1,799 @@
+/* RegisterPage.css - Day and Night Theme */
+.registerPage {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to right, #2c3e50, #3498db, #9dd5f5); /* Night to day gradient */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Day-night separator */
+  .dayNightSeparator {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, 
+      rgba(44, 62, 80, 0.8) 0%, 
+      rgba(52, 152, 219, 0.6) 50%, 
+      rgba(157, 213, 245, 0.4) 100%);
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+  
+  /* Sun element */
+  .sunElement {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #ffeb3b, #ff9800);
+    top: 15%;
+    right: 15%;
+    box-shadow: 0 0 70px rgba(255, 152, 0, 0.8);
+    z-index: 1;
+    animation: sun-glow 8s infinite alternate;
+  }
+
+  .sunElement::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: radial-gradient(circle at center, rgba(255, 255, 0, 0.7) 30%, rgba(255, 215, 0, 0.5) 50%, rgba(255, 165, 0, 0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: sun-shimmer 5s infinite alternate;
+  }
+
+  .sunElement::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.7;
+    animation: sun-sparkle 3s infinite;
+  }
+
+  @keyframes sun-shimmer {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+  
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  
+    100% {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+  }
+  
+  /* Sparkle animation for the edges */
+  @keyframes sun-sparkle {
+  
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+  
+    50% {
+      opacity: 0.8;
+    }
+  }
+  
+  /* Add a container for the rays so they can rotate together */
+  .sunRaysContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    animation: rotate-rays 20s linear infinite;
+    transform-origin: center center;
+  }
+  
+  .sunRay {
+    position: absolute;
+    background-color: rgba(255, 235, 59, 0.4);
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 0;
+  }
+  
+  .ray1 { width: 100px; height: 2px; transform: rotate(0deg); }
+  .ray2 { width: 90px; height: 2px; transform: rotate(45deg); }
+  .ray3 { width: 80px; height: 2px; transform: rotate(90deg); }
+  .ray4 { width: 90px; height: 2px; transform: rotate(135deg); }
+  .ray5 { width: 100px; height: 2px; transform: rotate(180deg); }
+  .ray6 { width: 90px; height: 2px; transform: rotate(225deg); }
+  .ray7 { width: 80px; height: 2px; transform: rotate(270deg); }
+  .ray8 { width: 90px; height: 2px; transform: rotate(315deg); }
+  
+  @keyframes sun-glow {
+    0% {
+      box-shadow: 0 0 70px rgba(255, 152, 0, 0.6);
+      transform: scale(1);
+    }
+    100% {
+      box-shadow: 0 0 100px rgba(255, 152, 0, 0.8);
+      transform: scale(1.05);
+    }
+  }
+  
+  @keyframes rotate-rays {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Moon element */
+  .moonElement {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f5f5f5, #e0e0e0);
+    top: 20%;
+    left: 15%;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+    z-index: 1;
+    animation: moon-glow 8s infinite alternate;
+  }
+  
+  .moonCraters {
+    position: absolute;
+    background-color: rgba(200, 200, 200, 0.5);
+    border-radius: 50%;
+  }
+  
+  .crater1 {
+    width: 25px;
+    height: 25px;
+    top: 30px;
+    left: 25px;
+  }
+  
+  .crater2 {
+    width: 15px;
+    height: 15px;
+    top: 60px;
+    left: 65px;
+  }
+  
+  .crater3 {
+    width: 20px;
+    height: 20px;
+    top: 75px;
+    left: 40px;
+  }
+  
+  @keyframes moon-glow {
+    0% {
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+      transform: scale(1);
+    }
+    100% {
+      box-shadow: 0 0 60px rgba(255, 255, 255, 0.7);
+      transform: scale(1.03);
+    }
+  }
+  
+  /* Stars */
+  .starsContainer {
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  .star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: twinkle 4s infinite alternate;
+  }
+  
+  .star1 { width: 3px; height: 3px; top: 15%; left: 20%; animation-delay: 0s; }
+  .star2 { width: 2px; height: 2px; top: 25%; left: 10%; animation-delay: 0.5s; }
+  .star3 { width: 4px; height: 4px; top: 35%; left: 25%; animation-delay: 1s; }
+  .star4 { width: 2px; height: 2px; top: 45%; left: 15%; animation-delay: 1.5s; }
+  .star5 { width: 3px; height: 3px; top: 55%; left: 5%; animation-delay: 2s; }
+  .star6 { width: 4px; height: 4px; top: 65%; left: 30%; animation-delay: 2.5s; }
+  .star7 { width: 2px; height: 2px; top: 75%; left: 12%; animation-delay: 3s; }
+  .star8 { width: 3px; height: 3px; top: 85%; left: 22%; animation-delay: 3.5s; }
+  
+  @keyframes twinkle {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.3); }
+  }
+  
+  /* Rainbow decorations */
+  .registerRainbow {
+    position: absolute;
+    height: 10px;
+    width: 100%;
+    left: 0;
+    background: linear-gradient(to right, 
+      #f44336, #ff9800, #ffeb3b, 
+      #4caf50, #2196f3, #3f51b5, #9c27b0);
+    z-index: 2;
+  }
+  
+    .topRainbow {
+    top: 0;
+  }
+  
+  .bottomRainbow {
+    bottom: 0;
+  }
+  
+  /* Floating clouds */
+  .registerCloud {
+    position: absolute;
+    background-color: white;
+    border-radius: 50px;
+    opacity: 0.85;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+  }
+  
+  .registerCloud::before,
+  .registerCloud::after {
+    content: '';
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+  }
+  
+  .cloud1 {
+    width: 180px;
+    height: 60px;
+    top: 45%;
+    right: 25%;
+    animation: float-cloud 15s ease-in-out infinite;
+  }
+  
+  .cloud1::before {
+    width: 80px;
+    height: 80px;
+    top: -40px;
+    left: 25px;
+  }
+  
+  .cloud1::after {
+    width: 60px;
+    height: 60px;
+    top: -30px;
+    right: 25px;
+  }
+  
+  .cloud2 {
+    width: 120px;
+    height: 40px;
+    bottom: 25%;
+    right: 15%;
+    animation: float-cloud 18s ease-in-out infinite reverse;
+  }
+  
+  .cloud2::before {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    left: 20px;
+  }
+  
+  .cloud2::after {
+    width: 40px;
+    height: 40px;
+    top: -20px;
+    right: 15px;
+  }
+  
+    .cloud3 {
+    width: 150px;
+    height: 50px;
+    bottom: 30%;
+    left: 35%;
+    animation: float-cloud 20s ease-in-out infinite;
+    animation-delay: 5s;
+  }
+  
+  .cloud3::before {
+    width: 65px;
+    height: 65px;
+    top: -30px;
+    left: 25px;
+  }
+  
+  .cloud3::after {
+    width: 55px;
+    height: 55px;
+    top: -25px;
+    right: 20px;
+  }
+  
+  @keyframes float-cloud {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(30px);
+    }
+  }
+  
+  /* Main container - clear z-index to stay above decorations */
+  .registerContainer {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    position: relative;
+    z-index: 5;
+  }
+  
+  .registerCard {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Card gradient border */
+  .registerCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(to right, #ff9800, #8bc34a);
+    border-radius: 20px 20px 0 0;
+  }
+  
+  /* Header */
+  .registerHeader {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .registerLogo {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 6px 12px rgba(255, 87, 34, 0.2);
+  }
+  
+  .registerLogo svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+  }
+  
+  .registerTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #43a047;
+    margin-bottom: 0.5rem;
+  }
+  
+  .registerSubtitle {
+    font-size: 1rem;
+    color: #7cb342;
+    margin-bottom: 1rem;
+  }
+  
+  /* Colorful dots */
+    .colorDots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+  }
+  
+  .dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    animation: bounce 2s infinite alternate;
+  }
+  
+  .dotRed {
+    background-color: #f44336;
+    animation-delay: 0s;
+  }
+  
+  .dotYellow {
+    background-color: #ffeb3b;
+    animation-delay: 0.2s;
+  }
+  
+  .dotGreen {
+    background-color: #4caf50;
+    animation-delay: 0.4s;
+  }
+  
+  .dotBlue {
+    background-color: #2196f3;
+    animation-delay: 0.6s;
+  }
+  
+  .dotPurple {
+    background-color: #9c27b0;
+    animation-delay: 0.8s;
+  }
+  
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-8px);
+    }
+  }
+  
+  /* Error message */
+  .registerError {
+    background-color: #ffebee;
+    color: #d32f2f;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    border-left: 4px solid #d32f2f;
+  }
+  
+  .registerError svg {
+    width: 24px;
+    height: 24px;
+    color: #d32f2f;
+    margin-right: 0.75rem;
+  }
+  
+  /* Form */
+  .registerForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .formInputGroup {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formLabel {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #455a64;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  
+      .formLabel svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    color: #43a047;
+  }
+  
+  .formInput {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background-color: #fff;
+  }
+  
+  .formInput:focus {
+    border-color: #43a047;
+    box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.2);
+    outline: none;
+  }
+  
+  .formInput::placeholder {
+    color: #bdbdbd;
+  }
+  
+  /* Submit button */
+  .registerButton {
+    background: linear-gradient(45deg, #ff9800, #f57c00);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .registerButton span {
+    margin-right: 0.5rem;
+  }
+  
+  .registerButton svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s;
+  }
+  
+  .registerButton:hover {
+    background: linear-gradient(45deg, #fb8c00, #ef6c00);
+    box-shadow: 0 6px 12px rgba(245, 124, 0, 0.4);
+    transform: translateY(-2px);
+  }
+  
+  .registerButton:hover svg {
+    transform: translateX(3px);
+  }
+  
+  /* Footer */
+  .registerFooter {
+    margin-top: 2rem;
+    text-align: center;
+    color: #455a64;
+    font-size: 0.9rem;
+  }
+  
+  .loginLink {
+    display: inline-flex;
+    align-items: center;
+    color: #ff9800;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 0.5rem;
+    transition: all 0.3s;
+  }
+  
+    .loginLink svg {
+    width: 18px;
+    height: 18px;
+    margin-left: 0.25rem;
+    transition: transform 0.3s;
+  }
+  
+  .loginLink:hover {
+    color: #f57c00;
+  }
+  
+  .loginLink:hover svg {
+    transform: translateX(3px);
+  }
+  
+  /* Animated decorative elements at the bottom */
+  .animatedElements {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .required-star {
+    color: red;
+    margin-left: 2px;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .registerCard {
+      padding: 2rem 1.5rem;
+    }
+    
+    .registerTitle {
+      font-size: 1.75rem;
+    }
+    
+    .sunElement, .moonElement {
+      transform: scale(0.7);
+    }
+    
+    .cloud1, .cloud2 {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .registerCard {
+      padding: 1.5rem 1rem;
+    }
+    
+    .registerTitle {
+      font-size: 1.5rem;
+    }
+    
+    .formLabel {
+      font-size: 0.9rem;
+    }
+    
+      .formInput {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    .sunElement, .moonElement {
+      transform: scale(0.5);
+    }
+  }
+
+  /* Password strength meter */
+  .passwordStrengthContainer {
+    margin-top: 8px;
+  }
+
+  .registerPasswordStrengthMeter {
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 5px;
+  }
+
+  .registerPasswordStrengthBar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .strengthNone {
+    width: 0;
+  }
+
+  .strengthWeak {
+    background-color: #f44336;
+  }
+
+  .strengthFair {
+    background-color: #ff9800;
+  }
+
+  .strengthGood {
+    background-color: #ffc107;
+  }
+
+  .strengthStrong {
+    background-color: #4caf50;
+  }
+
+  .passwordStrengthText {
+    font-size: 0.8rem;
+    color: #757575;
+  }
+
+  /* Password requirements */
+  .passwordRequirements {
+    margin-top: 10px;
+    background-color: #f5f5f5;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+
+  .requirementsTitle {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #455a64;
+  }
+
+  .requirementsList {
+    list-style-type: none;
+    padding-left: 5px;
+    margin: 0;
+  }
+
+  .requirementsList li {
+    margin-bottom: 5px;
+    color: #78909c;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .requirementsList li:before {
+    content: '•';
+    position: absolute;
+    left: 5px;
+    color: #bdbdbd;
+  }
+
+      .requirementsList li.met {
+    color: #4caf50;
+  }
+
+  .requirementsList li.met:before {
+    content: '✓';
+    color: #4caf50;
+  }
+
+  .disabledButton {
+    background: linear-gradient(45deg, #ccc, #999) !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    opacity: 0.7;
+  }
+
+  .disabledButton:hover {
+    background: linear-gradient(45deg, #ccc, #999) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* Password input with eye icon */
+  .passwordInputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .passwordToggleBtn {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #757575;
+    transition: color 0.2s;
+  }
+
+  .passwordToggleBtn:hover {
+    color: #455a64;
+  }
+
+  .passwordToggleBtn svg {
+    width: 22px;
+    height: 22px;
+    color: #757575;
+  }
+
+  .passwordToggleBtn:hover svg {
+    color: #455a64;
+  }
+
+  /* Adjust input padding to prevent text from going under the icon */
+  .passwordInputContainer .formInput {
+    padding-right: 40px;
+    width: 100%;
+  }

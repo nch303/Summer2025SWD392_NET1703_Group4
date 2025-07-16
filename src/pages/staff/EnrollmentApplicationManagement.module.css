@@ -1,0 +1,1203 @@
+.enrollmentManagement {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 28px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+/* Header and Dashboard Stats */
+.enrollmentManagementHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.enrollmentManagementTitle {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  position: relative;
+}
+
+.enrollmentManagementTitle:after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #4a6cf7, #6e8fff);
+  bottom: -10px;
+  left: 0;
+}
+
+.enrollmentManagementSearch {
+  width: 350px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.enrollmentManagementSearch input {
+  width: 100%;
+  padding: 12px 16px 12px 45px;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.enrollmentManagementSearch input:focus {
+  border-color: #4a6cf7;
+  box-shadow: 0 3px 12px rgba(74, 108, 247, 0.15);
+  outline: none;
+}
+
+.enrollmentManagementSearchIcon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7c8db5;
+  font-size: 16px;
+}
+
+/* Container chứa cả header và stats */
+.dashboardStatsContainer {
+  margin-bottom: 25px;
+  background: #f9fafc;
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+/* Header chứa tiêu đề và nút toggle */
+.dashboardStatsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dashboardStatsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboardStatsTitle::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(to bottom, #4a6cf7, #6e8fff);
+  border-radius: 3px;
+}
+
+.dashboardStatsToggle {
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c8db5;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dashboardStatsToggle:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #4a6cf7;
+}
+
+/* Dashboard stats */
+.dashboardStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  max-height: 500px;
+  /* đủ cao cho trường hợp có nhiều hàng */
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.3s ease;
+  transform-origin: top;
+}
+
+.dashboardStats.collapsed {
+  max-height: 0;
+  opacity: 0;
+  transform: scaleY(0.8);
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Điều chỉnh container khi thu gọn */
+.dashboardStatsContainer .dashboardStats.collapsed+.dashboardStatsHeader {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.statCard {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.statCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.statCard.total {
+  border-left-color: #4a6cf7;
+}
+
+.statCard.pending {
+  border-left-color: #ffa000;
+}
+
+.statCard.approved {
+  border-left-color: #4caf50;
+}
+
+.statCard.rejected {
+  border-left-color: #f44336;
+}
+
+.statCard.paid {
+  border-left-color: #9c27b0;
+}
+
+.statCard.enrolled {
+  border-left-color: #009688;
+}
+
+.statCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.statCardTitle {
+  font-size: 0.8rem;
+  color: #7c8db5;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.statCardIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.statCard.total .statCardIcon {
+  background-color: rgba(74, 108, 247, 0.15);
+  color: #4a6cf7;
+}
+
+.statCard.pending .statCardIcon {
+  background-color: rgba(255, 160, 0, 0.15);
+  color: #ffa000;
+}
+
+.statCard.approved .statCardIcon {
+  background-color: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.statCard.rejected .statCardIcon {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+.statCard.paid .statCardIcon {
+  background-color: rgba(156, 39, 176, 0.15);
+  color: #9c27b0;
+}
+
+.statCard.enrolled .statCardIcon {
+  background-color: rgba(0, 150, 136, 0.15);
+  color: #009688;
+}
+
+.statCardValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.statCardDescription {
+  font-size: 0.75rem;
+  color: #7c8db5;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Filters section */
+.filterSection {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filterLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #5e6e82;
+}
+
+.filterSelect {
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  background-color: white;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #4a6cf7;
+}
+
+/* Enhanced table styles */
+.tableResponsive {
+  overflow-x: auto;
+  margin-top: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.dataTable th {
+  background-color: #f9fafc;
+  font-weight: 600;
+  color: #4a5568;
+  text-align: center;
+  padding: 18px;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #edf2f9;
+}
+
+.dataTable th:first-child {
+  border-top-left-radius: 12px;
+  padding-left: 25px;
+}
+
+.dataTable th:last-child {
+  border-top-right-radius: 12px;
+  padding-right: 25px;
+}
+
+.dataTable td {
+  padding: 16px 18px;
+  font-size: 0.9rem;
+  color: #2d3748;
+  border-bottom: 1px solid #edf2f9;
+  vertical-align: middle;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.dataTable td:first-child {
+  padding-left: 25px;
+}
+
+.dataTable td:last-child {
+  padding-right: 25px;
+}
+
+.dataTable tr {
+  transition: all 0.2s ease;
+}
+
+.dataTable tr:hover {
+  background-color: #f8f9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dataTable tr:last-child td {
+  border-bottom: none;
+}
+
+.dataTable tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.dataTable tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+/* Application row styling */
+.applicationRow {
+  cursor: pointer;
+}
+
+/* Child info cell styling */
+.childCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.childAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.childInfoContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.listChildName {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.childBirthdate {
+  font-size: 0.75rem;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+/* Parent info cell styling */
+.parentCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.parentName {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.parentPhone {
+  font-size: 0.75rem;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+/* Date styling */
+.dateCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.datePrimary {
+  font-weight: 500;
+}
+
+.dateSecondary {
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+/* Status badge enhancements */
+.statusBadge {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.statusBadge.pending {
+  background-color: rgba(255, 160, 0, 0.12);
+  color: #ffa000;
+  border: 1px solid rgba(255, 160, 0, 0.3);
+}
+
+.statusBadge.approved {
+  background-color: rgba(76, 175, 80, 0.12);
+  color: #388e3c;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.statusBadge.rejected {
+  background-color: rgba(244, 67, 54, 0.12);
+  color: #d32f2f;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.statusBadge.paid {
+  background-color: rgba(156, 39, 176, 0.12);
+  color: #7b1fa2;
+  border: 1px solid rgba(156, 39, 176, 0.3);
+}
+
+.statusBadge.enrolled {
+  background-color: rgba(0, 150, 136, 0.12);
+  color: #00796b;
+  border: 1px solid rgba(0, 150, 136, 0.3);
+}
+
+/* Actions cell */
+.actionsCell {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Action buttons */
+.enrollmentActionButton {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 80px;
+}
+
+.enrollmentActionButton svg {
+  font-size: 0.85rem;
+}
+
+.enrollmentActionButton.view {
+  background-color: #f0f4ff;
+  color: #4a6cf7;
+  border: 1px solid #e0e7ff;
+}
+
+.enrollmentActionButton.view:hover {
+  background-color: #e0e7ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 108, 247, 0.2);
+}
+
+.enrollmentActionButton.approve {
+  background-color: #2e7d32;
+  color: white;
+  border: 1px solid #1b5e20;
+}
+
+.enrollmentActionButton.approve:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+}
+
+.enrollmentActionButton.reject {
+  background-color: #d32f2f;
+  color: white;
+  border: 1px solid #b71c1c;
+}
+
+.enrollmentActionButton.reject:hover {
+  background-color: #e53935;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+}
+
+.enrollmentActionButton:disabled {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.enrollmentActionButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Optimized Modal Styles */
+.enrollmentDetailModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(2px);
+  overscroll-behavior: contain;
+  contain: layout size style;
+}
+
+.enrollmentDetailContent {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 800px;
+  height: auto;
+  max-height: 90vh;
+  padding: 0;
+  animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  contain: content;
+  overflow: hidden;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.enrollmentDetailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #eaeaea;
+  background: linear-gradient(to right, #f8faff, #ffffff);
+  border-radius: 16px 16px 0 0;
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
+}
+
+.enrollmentDetailTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.enrollmentDetailTitle svg {
+  color: #4a6cf7;
+}
+
+.enrollmentDetailClose {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #7c8db5;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background-color: #f6f8fd;
+}
+
+.enrollmentDetailClose:hover {
+  background-color: #ffebee;
+  color: #f44336;
+  transform: rotate(90deg);
+}
+
+.enrollmentDetailBody {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(90vh - 140px);
+  padding: 25px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f8fafc;
+  -webkit-overflow-scrolling: touch;
+  contain: content;
+  transform: translateZ(0);
+}
+
+.enrollmentDetailBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.enrollmentDetailBody::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.enrollmentDetailBody::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
+
+.enrollmentDetailSection {
+  margin-bottom: 30px;
+  background-color: #f9fafc;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.enrollmentDetailSection:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.enrollmentDetailSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #edf2f9;
+}
+
+.enrollmentDetailSectionIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.childInfoIcon {
+  background-color: rgba(74, 108, 247, 0.1);
+  color: #4a6cf7;
+}
+
+.parentInfoIcon {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+}
+
+.registrationInfoIcon {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+.enrollmentDetailSectionTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.enrollmentDetailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.enrollmentChildProfile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.enrollmentChildProfile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  z-index: 0;
+}
+
+.enrollmentChildImage {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 5px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.enrollmentChildName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.enrollmentChildBio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f5f7fa;
+  padding: 8px 16px;
+  border-radius: 30px;
+  margin-bottom: 15px;
+}
+
+.enrollmentChildBioItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: #5e6e82;
+}
+
+.enrollmentDetailItem {
+  margin-bottom: 18px;
+}
+
+.enrollmentDetailLabel {
+  font-size: 0.85rem;
+  color: #7c8db5;
+  margin-bottom: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.enrollmentDetailValue {
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+  word-break: break-word;
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.enrollmentDocumentLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a6cf7;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: rgba(74, 108, 247, 0.08);
+}
+
+.enrollmentDocumentLink:hover {
+  background-color: rgba(74, 108, 247, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(74, 108, 247, 0.15);
+}
+
+.enrollmentModalActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 25px;
+  background-color: #f9fafc;
+  border-top: 1px solid #edf2f9;
+  border-radius: 0 0 16px 16px;
+  flex-shrink: 0;
+  /* Prevent footer from shrinking */
+}
+
+.enrollmentModalActions .enrollmentActionButton {
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  min-width: 140px;
+}
+
+/* Loading and empty states */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: #7c8db5;
+}
+
+.loadingSpinner {
+  border: 3px solid rgba(74, 108, 247, 0.2);
+  border-top: 3px solid #4a6cf7;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: #7c8db5;
+  text-align: center;
+}
+
+.emptyState svg {
+  color: #d1d8e6;
+  margin-bottom: 20px;
+}
+
+.emptyState p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments cải tiến */
+@media (max-width: 1440px) {
+  .dashboardStats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboardStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .statCard {
+    padding: 12px;
+  }
+
+  .statCardValue {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .statCardIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .statCardValue {
+    font-size: 1.25rem;
+  }
+
+  .statCardDescription {
+    font-size: 0.7rem;
+  }
+
+  .enrollmentManagement {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardStats {
+    grid-template-columns: 1fr;
+  }
+
+  .statCard {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 15px;
+  }
+
+  .statCardHeader {
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+
+  .statCardValue {
+    margin-right: 8px;
+  }
+
+  .statCardDescription {
+    white-space: normal;
+  }
+}
+
+/* Notification Modal */
+.enrollmentNotificationModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  /* Higher than detail modal */
+  animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(3px);
+}
+
+.enrollmentNotificationContent {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  animation: slideUp 0.4s ease;
+}
+
+.enrollmentNotificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #eaeaea;
+  background: linear-gradient(to right, #f8faff, #ffffff);
+  border-radius: 16px 16px 0 0;
+}
+
+.enrollmentNotificationTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.enrollmentNotificationTitle svg {
+  color: #4a6cf7;
+}
+
+.enrollmentNotificationClose {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #7c8db5;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background-color: #f6f8fd;
+}
+
+.enrollmentNotificationClose:hover {
+  background-color: #ffebee;
+  color: #f44336;
+  transform: rotate(90deg);
+}
+
+.enrollmentNotificationBody {
+  padding: 25px;
+}
+
+.enrollmentNotificationInfo {
+  background-color: #f9fafc;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-left: 4px solid #4a6cf7;
+}
+
+.enrollmentNotificationInfo p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.enrollmentNotificationField {
+  margin-bottom: 20px;
+}
+
+.enrollmentNotificationField label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.enrollmentNotificationField input,
+.enrollmentNotificationField textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #e0e7ff;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background-color: #f8faff;
+}
+
+.enrollmentNotificationField input:focus,
+.enrollmentNotificationField textarea:focus {
+  outline: none;
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+}
+
+.enrollmentNotificationField textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.enrollmentNotificationActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 25px 25px;
+  gap: 12px;
+}
+
+/* Pagination styles */
+.enrollmentPagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.enrollmentPaginationButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  color: #666;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.enrollmentPaginationButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+.enrollmentPaginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.enrollmentPaginationInfo {
+  display: flex;
+  align-items: baseline;
+  margin: 0 12px;
+  font-size: 15px;
+}
+
+.enrollmentCurrentPage {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-right: 4px;
+}
+
+.enrollmentTotalPages {
+  color: #888;
+}

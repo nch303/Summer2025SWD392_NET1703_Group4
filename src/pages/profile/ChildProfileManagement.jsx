@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { getChildrenByParentId, addChild, updateChild, deleteChild } from './ChildProfileService';
+import { getChildrenByParentId, addChild, updateChild, deleteChild } from '../../services/ProfileService';
+import ChildCommunicationBook from './ChildCommunicationBook';
 import { useUser } from '../../contexts/UserContext';
-import './ProfilePage.css';
+import styles from './ProfilePage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
 
 const ChildProfileManagement = () => {
   const [children, setChildren] = useState([]);
@@ -13,25 +15,34 @@ const ChildProfileManagement = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [formSubmitting, setFormSubmitting] = useState(false);
   const { currentUser } = useUser();
-  
+  const navigate = useNavigate();
+
   const [childFormData, setChildFormData] = useState({
     name: '',
     birthday: '',
     gender: 'Male',
     avatar: '',
     city: '',
-    birthCertificate: '',
-    parentName: '',
-    phoneNumber: ''
+    birthCertificate: ''
   });
 
   const [avatarFile, setAvatarFile] = useState(null);
   const [birthCertificateFile, setBirthCertificateFile] = useState(null);
 
+  // Thêm state để quản lý lỗi
+  const [formErrors, setFormErrors] = useState({});
+
+  // Add this new state at the top of the component with other state declarations
+  const [enrollmentError, setEnrollmentError] = useState({ show: false, childName: '' });
+
+  // Thêm state cho sổ liên lạc
+  const [communicationBookOpen, setCommunicationBookOpen] = useState(false);
+  const [selectedChildId, setSelectedChildId] = useState(null);
+
   useEffect(() => {
     fetchChildren();
   }, [currentUser?.id]);
-  
+
   // Control body scroll when modal is open/closed
   useEffect(() => {
     if (isModalOpen) {
@@ -41,7 +52,7 @@ const ChildProfileManagement = () => {
       // Re-enable body scroll when modal is closed
       document.body.style.overflow = 'auto';
     }
-    
+
     // Cleanup function to ensure scroll is re-enabled when component unmounts
     return () => {
       document.body.style.overflow = 'auto';
@@ -51,17 +62,17 @@ const ChildProfileManagement = () => {
   const fetchChildren = async () => {
     if (!currentUser?.id) {
       setIsLoading(false);
-      setError('Không thể xác định thông tin phụ huynh.');
+      setError('Cannot determine parent information.');
       return;
     }
-    
+
     try {
       setIsLoading(true);
       const data = await getChildrenByParentId(currentUser.id);
       setChildren(data || []);
       setError('');
     } catch (error) {
-      setError('Không thể tải thông tin của các bé. Vui lòng thử lại sau.');
+      setError('Cannot load child information. Please try again later.');
       console.error('Error fetching children:', error);
     } finally {
       setIsLoading(false);
@@ -74,6 +85,14 @@ const ChildProfileManagement = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Xóa lỗi cho trường đang được nhập
+    if (formErrors[name]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
   };
 
   const resetForm = () => {
@@ -83,83 +102,147 @@ const ChildProfileManagement = () => {
       gender: 'Male',
       avatar: '',
       city: '',
-      birthCertificate: '',
-      parentName: '',
-      phoneNumber: ''
+      birthCertificate: ''
     });
   };
 
   const openAddModal = () => {
     resetForm();
     setIsEditingChild(null);
+    setAvatarFile(null);
+    setBirthCertificateFile(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (child) => {
     setIsEditingChild(child.id);
-    
+
+    // Reset file state
+    setAvatarFile(null);
+    setBirthCertificateFile(null);
+
+    // Format ngày sinh
     let birthdayFormatted = '';
     if (child.birthday) {
-      // Xử lý đúng ngày sinh bằng cách sử dụng chuỗi trực tiếp
       const rawDate = new Date(child.birthday);
       const year = rawDate.getFullYear();
-      // Tháng bắt đầu từ 0 nên cộng thêm 1
       let month = rawDate.getMonth() + 1;
-      // Đảm bảo định dạng 2 chữ số
       month = month < 10 ? `0${month}` : month;
       let day = rawDate.getDate();
       day = day < 10 ? `0${day}` : day;
       birthdayFormatted = `${year}-${month}-${day}`;
     }
-    
+
     setChildFormData({
       name: child.name || '',
       birthday: birthdayFormatted,
       gender: child.gender || 'Male',
       avatar: child.avatar || '',
       city: child.city || '',
-      birthCertificate: child.birthCertificate || '',
-      parentName: child.parentName || '',
-      phoneNumber: child.phoneNumber || ''
+      birthCertificate: child.birthCertificate || ''
     });
-    
+
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setFormErrors({});
     setTimeout(() => {
       resetForm();
       setIsEditingChild(null);
     }, 300); // Wait for animation to complete
   };
 
+  // Thêm hàm validateForm trước khi submit
+  const validateForm = () => {
+    const errors = {};
+
+    // Kiểm tra tên trẻ
+    if (!childFormData.name || childFormData.name.trim() === '') {
+      errors.name = 'Please enter the child\'s name';
+    }
+
+    // Kiểm tra ngày sinh
+    if (!childFormData.birthday) {
+      errors.birthday = 'Please select the child\'s birthday';
+    } else {
+      const birthDate = new Date(childFormData.birthday);
+      const today = new Date();
+
+      // Kiểm tra ngày sinh không được trong tương lai
+      if (birthDate > today) {
+        errors.birthday = 'The birthday cannot be in the future';
+      }
+
+      // Tính tuổi theo năm (chỉ lấy số năm tròn)
+      const yearDiff = today.getFullYear() - birthDate.getFullYear();
+
+      // Kiểm tra tuổi phù hợp (từ 3-5 tuổi)
+      if (yearDiff < 3) {
+        errors.birthday = 'The child must be at least 3 years old';
+      } else if (yearDiff > 5) {
+        errors.birthday = 'The child must be under 5 years old';
+      }
+    }
+
+    // Kiểm tra giới tính
+    if (!childFormData.gender) {
+      errors.gender = 'Please select the child\'s gender';
+    }
+
+    // Kiểm tra giấy khai sinh
+    if (!childFormData.birthCertificate && !birthCertificateFile) {
+      errors.birthCertificate = 'Please upload the child\'s birth certificate';
+    }
+
+    return errors;
+  };
+
+  // Cập nhật hàm handleSubmitForm để kiểm tra form trước khi submit
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+
+    // Kiểm tra form trước khi submit
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return; // Ngăn form submit nếu có lỗi
+    }
+
     setFormSubmitting(true);
-    
+
     try {
+      // Thêm file vào childFormData để truyền vào API
+      const formDataWithFiles = {
+        ...childFormData,
+        avatarFile: avatarFile,
+        birthCertificateFile: birthCertificateFile
+      };
+
       if (isEditingChild) {
-        await updateChild(isEditingChild, childFormData);
+        // Cập nhật thông tin trẻ
+        await updateChild(isEditingChild, formDataWithFiles);
         setMessage({
-          text: 'Đã cập nhật thông tin của bé thành công!',
+          text: 'The child\'s information has been updated successfully!',
           type: 'success'
         });
       } else {
-        await addChild(childFormData);
+        // Thêm thông tin trẻ mới
+        await addChild(formDataWithFiles);
         setMessage({
-          text: 'Đã thêm thông tin của bé thành công!',
+          text: 'The child\'s information has been added successfully!',
           type: 'success'
         });
       }
-      
+
       await fetchChildren();
       closeModal();
     } catch (error) {
       setMessage({
-        text: isEditingChild 
-          ? 'Có lỗi xảy ra khi cập nhật thông tin của bé.' 
-          : 'Có lỗi xảy ra khi thêm thông tin của bé.',
+        text: isEditingChild
+          ? 'An error occurred while updating the child\'s information.'
+          : 'An error occurred while adding the child\'s information.',
         type: 'error'
       });
     } finally {
@@ -168,7 +251,7 @@ const ChildProfileManagement = () => {
   };
 
   const handleDeleteConfirm = (childId, childName) => {
-    return window.confirm(`Bạn có chắc chắn muốn xóa thông tin của bé ${childName} không?`);
+    return window.confirm(`Are you sure you want to delete the information of the child ${childName}?`);
   };
 
   const handleDeleteChild = async (childId, childName) => {
@@ -178,12 +261,12 @@ const ChildProfileManagement = () => {
         await deleteChild(childId);
         await fetchChildren();
         setMessage({
-          text: `Đã xóa thông tin của bé ${childName} thành công!`,
+          text: `The child's information has been deleted successfully!`,
           type: 'success'
         });
       } catch (error) {
         setMessage({
-          text: 'Có lỗi xảy ra khi xóa thông tin của bé.',
+          text: 'An error occurred while deleting the child\'s information.',
           type: 'error'
         });
       } finally {
@@ -195,35 +278,53 @@ const ChildProfileManagement = () => {
   const handleFileChange = (e, fileType) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
+    // Lưu file để gửi đến API
+    if (fileType === 'avatar') {
+      setAvatarFile(file);
+    } else if (fileType === 'birthCertificate') {
+      setBirthCertificateFile(file);
+    }
+
+    // Tạo URL để hiển thị preview
     const reader = new FileReader();
     reader.onloadend = () => {
       if (fileType === 'avatar') {
-        setChildFormData(prev => ({...prev, avatar: reader.result}));
-        setAvatarFile(file);
+        setChildFormData(prev => ({ ...prev, avatar: reader.result }));
       } else if (fileType === 'birthCertificate') {
-        setChildFormData(prev => ({...prev, birthCertificate: reader.result}));
-        setBirthCertificateFile(file);
+        setChildFormData(prev => ({ ...prev, birthCertificate: reader.result }));
       }
     };
     reader.readAsDataURL(file);
   };
 
+  // Hàm mở sổ liên lạc
+  const openCommunicationBook = (childId) => {
+    setSelectedChildId(childId);
+    setCommunicationBookOpen(true);
+  };
+
+  // Hàm đóng sổ liên lạc
+  const closeCommunicationBook = () => {
+    setCommunicationBookOpen(false);
+    setSelectedChildId(null);
+  };
+
   if (isLoading && !children.length) {
     return (
-      <div className="profile-loading-container">
-        <div className="profile-loading-spinner"></div>
-        <p>Đang tải thông tin...</p>
+      <div className={styles.profileLoadingContainer}>
+        <div className={styles.profileLoadingSpinner}></div>
+        <p>Loading information...</p>
       </div>
     );
   }
 
   return (
-    <div className="child-profile-management">
+    <div className={styles.childProfileManagement}>
       {/* Status message */}
       {message.text && (
-        <div className={`profile-message ${message.type}`}>
-          <div className="message-icon">
+        <div className={`${styles.profileMessage} ${styles[message.type]}`}>
+          <div className={styles.messageIcon}>
             {message.type === 'success' ? (
               <FontAwesomeIcon icon="check" />
             ) : (
@@ -231,36 +332,36 @@ const ChildProfileManagement = () => {
             )}
           </div>
           <span>{message.text}</span>
-          <button className="message-close" onClick={() => setMessage({ text: '', type: '' })}>
+          <button className={styles.messageClose} onClick={() => setMessage({ text: '', type: '' })}>
             <FontAwesomeIcon icon="times" />
           </button>
         </div>
       )}
 
       {/* Header with add button */}
-      <div className="content-header">
-        <h2>Hồ sơ của bé</h2>
+      <div className={styles.contentHeader}>
+        <h2>Child Profile</h2>
         {!formSubmitting && (
-          <button 
-            className="child-add-btn"
+          <button
+            className={styles.childAddBtn}
             onClick={openAddModal}
           >
             <FontAwesomeIcon icon="plus" />
-            Thêm hồ sơ bé
+            Add child profile
           </button>
         )}
       </div>
 
       {/* List of children */}
       {children.length > 0 && (
-        <div className="children-list">
-          <div className="children-grid">
+        <div className={styles.childrenList}>
+          <div className={styles.childrenGrid}>
             {children.map((child) => (
-              <div key={child.id} className="child-card child-card-row">
-                <div className="child-avatar">
+              <div key={child.id} className={`${styles.childCard} ${styles.childCardRow}`}>
+                <div className={styles.childAvatar}>
                   {child.avatar ? (
-                    <img 
-                      src={child.avatar} 
+                    <img
+                      src={child.avatar}
                       alt={`Ảnh của ${child.name}`}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
                     />
@@ -268,9 +369,9 @@ const ChildProfileManagement = () => {
                     <FontAwesomeIcon icon="children" size="2x" />
                   )}
                 </div>
-                <div className="child-info">
-                  <h3 className="child-name">{child.name}</h3>
-                  <p className="child-dob">
+                <div className={styles.childInfo}>
+                  <h3 className={styles.childName}>{child.name}</h3>
+                  <p className={styles.childDob}>
                     {new Date(child.birthday).toLocaleDateString('vi-VN', {
                       day: '2-digit',
                       month: '2-digit',
@@ -278,33 +379,62 @@ const ChildProfileManagement = () => {
                     })}
                   </p>
                 </div>
-                <div className="child-details-row">
-                  <p className="child-gender">
+                <div className={styles.childDetailsRow}>
+                  <p className={styles.childGender}>
                     <FontAwesomeIcon icon={child.gender === 'Male' ? 'mars' : 'venus'} />
-                    <span>{child.gender === 'Male' ? 'Nam' : 'Nữ'}</span>
+                    <span>{child.gender === 'Male' ? 'Male' : 'Female'}</span>
                   </p>
-                  <p className="child-city">
+                  <p className={styles.childCity}>
                     <FontAwesomeIcon icon="map-marker-alt" />
-                    <span>{child.city || 'Chưa cập nhật'}</span>
+                    <span>{child.city || 'Not updated'}</span>
                   </p>
                 </div>
-                <div className="child-actions">
+                <div className={styles.childActions}>
                   <button
-                    className="edit-child-btn"
+                    className={styles.editChildBtn}
                     onClick={() => openEditModal(child)}
-                    title="Sửa thông tin"
-                    aria-label="Sửa thông tin"
+                    title="Edit information"
+                    aria-label="Edit information"
                   >
                     <FontAwesomeIcon icon="edit" />
                   </button>
-                  <button
-                    className="delete-child-btn"
-                    onClick={() => handleDeleteChild(child.id, child.name)}
-                    title="Xóa thông tin"
-                    aria-label="Xóa thông tin"
-                  >
-                    <FontAwesomeIcon icon="trash" />
-                  </button>
+
+                  {/* Chỉ hiển thị nút sổ liên lạc khi học sinh đang học (Active) */}
+                  {child.status === 'Active' && (
+                    <button
+                      className={styles.communicationBookBtn}
+                      onClick={() => openCommunicationBook(child.id)}
+                      title="Communication book"
+                      aria-label="Communication book"
+                    >
+                      <FontAwesomeIcon icon="book" />
+                    </button>
+                  )}
+
+                  {child.status === 'Active' ? (
+                    <span
+                      className={styles.enrolledBadge}
+                      title={`Enrolled in ${child.currentGradeLevelName}`}
+                    >
+                      <FontAwesomeIcon icon="check-circle" />
+                      <span>{child.currentGradeLevelName}</span>
+                    </span>
+                  ) : (
+                    <button
+                      className={styles.enrollChildBtn}
+                      onClick={() => {
+                        if (child.applicationID && child.applicationID !== "00000000-0000-0000-0000-000000000000") {
+                          setEnrollmentError({ show: true, childName: child.name });
+                        } else {
+                          navigate(`/enrollment-application/${child.id}`);
+                        }
+                      }}
+                      title="Enroll"
+                      aria-label="Enroll"
+                    >
+                      <FontAwesomeIcon icon="graduation-cap" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -314,78 +444,74 @@ const ChildProfileManagement = () => {
 
       {/* Empty state */}
       {children.length === 0 && (
-        <div className="empty-children-state">
-          <div className="empty-icon">
+        <div className={styles.emptyChildrenState}>
+          <div className={styles.emptyIcon}>
             <FontAwesomeIcon icon="children" size="3x" />
           </div>
-          <h3>Chưa có thông tin của bé nào</h3>
-          <p>Thêm thông tin của các bé để quản lý hồ sơ của các bé tại trường mầm non.</p>
-          <button 
-            className="add-first-child-btn"
+          <h3>No child information</h3>
+          <p>Add child information to manage the child's profile at the nursery school.</p>
+          <button
+            className={styles.addFirstChildBtn}
             onClick={openAddModal}
           >
             <FontAwesomeIcon icon="plus" />
-            Thêm thông tin bé
+            Add child information
           </button>
         </div>
       )}
 
       {/* Modal Form */}
       {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content child-detail-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{isEditingChild ? 'Cập nhật thông tin của bé' : 'Thêm hồ sơ mới của bé'}</h3>
-              <button className="modal-close-btn" onClick={closeModal} aria-label="Đóng">
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={`${styles.modalContent} ${styles.childDetailModal}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+
+              <h3><FontAwesomeIcon icon="child" /> {isEditingChild ? 'Update child information' : 'Add new child profile'}</h3>
+              <button className={styles.modalCloseBtn} onClick={closeModal} aria-label="Close">
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
-            
-            <div className="modal-body">
-              
-              <form className="profile-form" onSubmit={handleSubmitForm}>
-                <h4 className="form-section-title">
-                  <FontAwesomeIcon icon="child" />
-                  {isEditingChild ? 'Cập nhật thông tin trẻ' : 'Thông tin cơ bản của trẻ'}
-                </h4>
-                
-                <div className="form-group">
+
+            <div className={styles.modalBody}>
+
+              <form className={styles.profileForm} onSubmit={handleSubmitForm}>
+                <div className={styles.formGroup}>
                   <label htmlFor="avatar">
-                    <FontAwesomeIcon icon="user-circle" className="input-label-icon" /> Ảnh đại diện
+                    <FontAwesomeIcon icon="user-circle" className={styles.inputLabelIcon} /> Avatar
                   </label>
-                  <div className="file-upload-container">
+                  <div className={styles.fileUploadContainer}>
                     <input
                       type="file"
                       id="avatar"
                       name="avatar"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, 'avatar')}
-                      className="file-input"
+                      className={styles.fileInput}
                     />
-                    <label htmlFor="avatar" className="file-upload-btn">
-                      <FontAwesomeIcon icon="cloud-upload-alt" /> Chọn ảnh đại diện
+                    <label htmlFor="avatar" className={styles.fileUploadBtn}>
+                      <FontAwesomeIcon icon="cloud-upload-alt" /> Select avatar
                     </label>
-                    <span className="file-name">
-                      {avatarFile ? avatarFile.name : 'Chưa chọn file'}
+                    <span className={styles.fileName}>
+                      {avatarFile ? avatarFile.name : 'No file selected'}
                     </span>
                   </div>
-                  
+
                   {childFormData.avatar && (
-                    <div className="avatar-preview">
-                      <img 
-                        src={childFormData.avatar} 
-                        alt="Xem trước ảnh đại diện" 
+                    <div className={styles.avatarPreview}>
+                      <img
+                        src={childFormData.avatar}
+                        alt="Preview avatar"
                       />
                     </div>
                   )}
                 </div>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">
-                       Họ và tên của bé *
+
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="name" className={styles.requiredField}>
+                      Child's name *
                     </label>
-                    <div className="input-with-icon">
+                    <div className={styles.inputWithIcon}>
                       <FontAwesomeIcon icon="user" />
                       <input
                         type="text"
@@ -393,17 +519,18 @@ const ChildProfileManagement = () => {
                         name="name"
                         value={childFormData.name}
                         onChange={handleInputChange}
-                        required
-                        placeholder="Nhập họ và tên của bé"
+                        placeholder="Enter child's name"
+                        className={formErrors.name ? styles.inputError : ""}
                       />
                     </div>
+                    {formErrors.name && <div className={styles.formErrorMessage}>{formErrors.name}</div>}
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="birthday">
-                      Ngày sinh *
+                  <div className={styles.formGroup}>
+                    <label htmlFor="birthday" className={styles.requiredField}>
+                      Birthday *
                     </label>
-                    <div className="input-with-icon">
+                    <div className={styles.inputWithIcon}>
                       <FontAwesomeIcon icon="birthday-cake" />
                       <input
                         type="date"
@@ -411,19 +538,20 @@ const ChildProfileManagement = () => {
                         name="birthday"
                         value={childFormData.birthday}
                         onChange={handleInputChange}
-                        required
+                        className={formErrors.birthday ? styles.inputError : ""}
                       />
                     </div>
+                    {formErrors.birthday && <div className={styles.formErrorMessage}>{formErrors.birthday}</div>}
                   </div>
                 </div>
 
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="gender">
-                      <FontAwesomeIcon icon="venus-mars" className="input-label-icon" /> Giới tính
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="gender" className={styles.requiredField}>
+                      <FontAwesomeIcon icon="venus-mars" className={styles.inputLabelIcon} /> Gender
                     </label>
-                    <div className="radio-group">
-                      <label className={`radio-label ${childFormData.gender === 'Male' ? 'active' : ''}`}>
+                    <div className={styles.radioGroup}>
+                      <label className={`${styles.radioLabel} ${childFormData.gender === 'Male' ? styles.active : ''}`}>
                         <input
                           type="radio"
                           name="gender"
@@ -431,9 +559,9 @@ const ChildProfileManagement = () => {
                           checked={childFormData.gender === 'Male'}
                           onChange={handleInputChange}
                         />
-                        <FontAwesomeIcon icon="mars" /> <span>Nam</span>
+                        <FontAwesomeIcon icon="mars" /> <span>Male</span>
                       </label>
-                      <label className={`radio-label ${childFormData.gender === 'Female' ? 'active' : ''}`}>
+                      <label className={`${styles.radioLabel} ${childFormData.gender === 'Female' ? styles.active : ''}`}>
                         <input
                           type="radio"
                           name="gender"
@@ -441,16 +569,17 @@ const ChildProfileManagement = () => {
                           checked={childFormData.gender === 'Female'}
                           onChange={handleInputChange}
                         />
-                        <FontAwesomeIcon icon="venus" /> <span>Nữ</span>
+                        <FontAwesomeIcon icon="venus" /> <span>Female</span>
                       </label>
                     </div>
+                    {formErrors.gender && <div className={styles.formErrorMessage}>{formErrors.gender}</div>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={styles.formGroup}>
                     <label htmlFor="city">
-                      Thành phố
+                      City
                     </label>
-                    <div className="input-with-icon">
+                    <div className={styles.inputWithIcon}>
                       <FontAwesomeIcon icon="map-marker-alt" />
                       <input
                         type="text"
@@ -458,115 +587,72 @@ const ChildProfileManagement = () => {
                         name="city"
                         value={childFormData.city}
                         onChange={handleInputChange}
-                        placeholder="Nhập thành phố"
+                        placeholder="Enter city"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="birthCertificate">
-                    <FontAwesomeIcon icon="file-certificate" className="input-label-icon" /> Giấy khai sinh
+                <div className={styles.formGroup}>
+                  <label htmlFor="birthCertificate" className={styles.requiredField}>
+                    <FontAwesomeIcon icon="certificate" className={styles.inputLabelIcon} /> Birth certificate *
                   </label>
-                  <div className="file-upload-container">
+                  <div className={styles.fileUploadContainer}>
                     <input
                       type="file"
                       id="birthCertificate"
                       name="birthCertificate"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, 'birthCertificate')}
-                      className="file-input"
+                      className={`${styles.fileInput} ${formErrors.birthCertificate ? styles.inputError : ""}`}
                     />
-                    <label htmlFor="birthCertificate" className="file-upload-btn">
-                      <FontAwesomeIcon icon="file-upload" /> Chọn ảnh giấy khai sinh
+                    <label htmlFor="birthCertificate" className={`${styles.fileUploadBtn} ${formErrors.birthCertificate ? styles.inputErrorBorder : ""}`}>
+                      <FontAwesomeIcon icon="file-upload" /> Select birth certificate
                     </label>
-                    <span className="file-name">
-                      {birthCertificateFile ? birthCertificateFile.name : 'Chưa chọn file'}
+                    <span className={styles.fileName}>
+                      {birthCertificateFile ? birthCertificateFile.name : 'No file selected'}
                     </span>
                   </div>
-                  
+
                   {childFormData.birthCertificate && (
-                    <div className="certificate-preview-small">
-                      <img 
-                        src={childFormData.birthCertificate} 
-                        alt="Xem trước giấy khai sinh" 
+                    <div className={styles.certificatePreviewSmall}>
+                      <img
+                        src={childFormData.birthCertificate}
+                        alt="Preview birth certificate"
                       />
-                      <div className="certificate-overlay-small">
-                        <FontAwesomeIcon icon="search-plus" /> Nhấn để xem chi tiết
+                      <div className={styles.certificateOverlaySmall}>
+                        <FontAwesomeIcon icon="search-plus" /> Click to view details
                       </div>
                     </div>
                   )}
+
+                  {formErrors.birthCertificate && <div className={styles.formErrorMessage}>{formErrors.birthCertificate}</div>}
                 </div>
 
-                <div className="section-divider"></div>
-
-                <h4 className="form-section-title">
-                  <FontAwesomeIcon icon="user-friends" />
-                  Thông tin phụ huynh
-                </h4>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="parentName">
-                       Họ tên phụ huynh *
-                    </label>
-                    <div className="input-with-icon">
-                      <FontAwesomeIcon icon="user-tie" />
-                      <input
-                        type="text"
-                        id="parentName"
-                        name="parentName"
-                        value={childFormData.parentName}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Nhập họ tên phụ huynh"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="phoneNumber">
-                      <FontAwesomeIcon icon="phone-alt" className="input-label-icon" /> Số điện thoại *
-                    </label>
-                    <div className="input-with-icon">
-                      <FontAwesomeIcon icon="phone" />
-                      <input
-                        type="text"
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        value={childFormData.phoneNumber}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Nhập số điện thoại liên hệ"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="modal-footer">
+                <div className={styles.modalFooter}>
                   <button
                     type="button"
-                    className="cancel-edit-btn"
+                    className={styles.cancelEditBtn}
                     onClick={closeModal}
                     disabled={formSubmitting}
                   >
                     <FontAwesomeIcon icon="times" />
-                    Hủy bỏ
+                    Cancel
                   </button>
                   <button
                     type="submit"
-                    className="save-profile-btn"
+                    className={styles.saveProfileBtn}
                     disabled={formSubmitting}
                   >
                     {formSubmitting ? (
                       <>
-                        <span className="btn-spinner"></span>
-                        Đang lưu...
+                        <span className={styles.btnSpinner}></span>
+                        Saving...
                       </>
                     ) : (
                       <>
                         <FontAwesomeIcon icon="save" />
-                        {isEditingChild ? 'Cập nhật thông tin' : 'Lưu thông tin'}
+                        {isEditingChild ? 'Update information' : 'Save information'}
                       </>
                     )}
                   </button>
@@ -576,6 +662,42 @@ const ChildProfileManagement = () => {
           </div>
         </div>
       )}
+
+      {/* Enrollment Error Popup */}
+      {enrollmentError.show && (
+        <div className={styles.modalOverlay} onClick={() => setEnrollmentError({ show: false, childName: '' })}>
+          <div className={`${styles.modalContent} ${styles.errorPopup}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3><FontAwesomeIcon icon="exclamation-triangle" /> Notification</h3>
+              <button
+                className={styles.modalCloseBtn}
+                onClick={() => setEnrollmentError({ show: false, childName: '' })}
+                aria-label="Close"
+              >
+                <FontAwesomeIcon icon="times" />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <p>Currently, the child {enrollmentError.childName} has an application in the registration process.</p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                className={styles.confirmBtn}
+                onClick={() => setEnrollmentError({ show: false, childName: '' })}
+              >
+                <FontAwesomeIcon icon="check" /> I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Communication Book Component */}
+      <ChildCommunicationBook
+        isOpen={communicationBookOpen}
+        onClose={closeCommunicationBook}
+        childId={selectedChildId}
+      />
     </div>
   );
 };

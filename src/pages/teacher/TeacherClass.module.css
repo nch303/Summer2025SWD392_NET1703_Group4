@@ -1,0 +1,414 @@
+.teacherClassContainer {
+  padding: 24px 0;
+}
+
+.classHeader {
+  margin-bottom: 32px;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.headerLeft h2 {
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 28px;
+  background: linear-gradient(120deg, #1677ff, #39c0ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.headerActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.searchFilter {
+  display: flex;
+  gap: 12px;
+}
+
+.loadingContainer,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  padding: 40px;
+  background-color: #fafafa;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.skeletonContainer {
+  margin-top: 24px;
+}
+
+.classDashboard {
+  margin-bottom: 32px;
+}
+
+.dashboardCard {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardCardContent {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.dashboardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+.totalClasses .dashboardIcon {
+  background-color: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+}
+
+.totalStudents .dashboardIcon {
+  background-color: rgba(82, 196, 26, 0.1);
+  color: #52c41a;
+}
+
+.activeClasses .dashboardIcon {
+  background-color: rgba(250, 173, 20, 0.1);
+  color: #faad14;
+}
+
+.dashboardInfo {
+  flex: 1;
+}
+
+.dashboardValue {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.dashboardLabel {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.classCard {
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.classCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #1890ff;
+}
+
+.teacherClassStatusBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.classCardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.classAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1677ff, #39c0ed);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.classTitleContainer {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.className {
+  margin-bottom: 8px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.classTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.classDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.classInfoRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.studentProgress {
+  width: 100%;
+}
+
+.classMainInfo {
+  width: 100%;
+  text-align: center;
+}
+
+.classNameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.gradeTag {
+  font-size: 12px;
+}
+
+.classCurriculum {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.curriculumName {
+  font-weight: 500;
+}
+
+.studentCount {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.statusTag {
+  font-weight: 500;
+}
+
+.classCard .antCardActions {
+  background-color: #fafafa;
+}
+
+.classCard .antCardActions>li {
+  margin: 8px 0;
+}
+
+.cardLinkOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.classTitleSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.classTitleSection h4 {
+  margin-bottom: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.classInfo {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.studentCountLabel {
+  color: #8c8c8c;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.classListView {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.classListCard {
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.classListCard:hover {
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1890ff;
+}
+
+.listCardContent {
+  display: flex;
+  align-items: center;
+}
+
+.listCardLeft {
+  margin-right: 16px;
+}
+
+.listAvatar {
+  background: linear-gradient(135deg, #1677ff, #39c0ed);
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.listCardMiddle {
+  flex: 1;
+}
+
+.listCardTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.listCardTitle h4 {
+  margin: 0;
+}
+
+.listCardDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.listCardRight {
+  margin-left: 16px;
+}
+
+.classTabs {
+  margin-top: 24px;
+}
+
+.classTabs .antTabsNav {
+  margin-bottom: 24px;
+}
+
+.classTabs .antTabsTab {
+  padding: 12px 20px;
+}
+
+.classTabs .antTabsTabActive {
+  font-weight: 600;
+}
+
+.contentLink {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+.contentLink:hover {
+  color: inherit;
+}
+
+@media (max-width: 992px) {
+  .headerTop {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .headerRight {
+    align-self: flex-start;
+  }
+
+  .headerActions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .searchFilter {
+    width: 100%;
+  }
+
+  .searchFilter .antInputSearch {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .classInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .classTitleSection {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .listCardContent {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .listCardLeft,
+  .listCardRight {
+    margin: 0 0 16px;
+  }
+
+  .listCardTitle,
+  .listCardDetails {
+    justify-content: center;
+  }
+}

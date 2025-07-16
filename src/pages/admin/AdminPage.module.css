@@ -1,0 +1,437 @@
+.adminDashboard {
+  padding: 20px;
+}
+
+.adminDashboard h1 {
+  margin-bottom: 24px;
+  color: #6b8afd;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.statsRow {
+  margin-bottom: 24px;
+}
+
+.statsRow :global(.ant-card) {
+  height: 100%;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+  background: #f8fafc;
+  transition: all 0.3s;
+}
+
+.statsRow :global(.ant-card:hover) {
+  box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
+  transform: translateY(-2px) scale(1.02);
+  border-color: #6b8afd;
+}
+
+.statsRow :global(.ant-statistic-title) {
+  font-size: 16px;
+  color: #6b8afd;
+  font-weight: 600;
+}
+
+.statsRow :global(.ant-statistic-content) {
+  font-size: 28px;
+  color: #a5b4fc;
+  font-weight: 700;
+}
+
+.statsRow :global(.anticon) {
+  color: #6b8afd;
+  font-size: 28px;
+}
+
+/* Tabs styling */
+.adminDashboard :global(.ant-tabs) {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+}
+
+.adminDashboard :global(.ant-tabs-nav) {
+  margin-bottom: 24px;
+}
+
+.adminDashboard :global(.ant-tabs-tab) {
+  padding: 12px 24px;
+  transition: all 0.3s;
+}
+
+.adminDashboard :global(.ant-tabs-tab:hover) {
+  color: #6b8afd;
+}
+
+.adminDashboard :global(.ant-tabs-tab-active) {
+  background: #f0f4ff;
+  border-radius: 8px;
+}
+
+.adminDashboard :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  color: #6b8afd !important;
+  font-weight: 600;
+}
+
+/* Card styling */
+.adminDashboard :global(.ant-card) {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+  background: #f8fafc;
+  transition: all 0.3s;
+}
+
+.adminDashboard :global(.ant-card:hover) {
+  box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
+  border-color: #6b8afd;
+}
+
+.adminDashboard :global(.ant-card-head) {
+  border-bottom: 1.5px solid #e8f0fe;
+}
+
+.adminDashboard :global(.ant-card-head-title) {
+  color: #6b8afd;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/* Table styling */
+.adminDashboard :global(.ant-table) {
+  background: transparent;
+}
+
+.adminDashboard :global(.ant-table-thead > tr > th) {
+  background: #f0f4ff;
+  color: #6b8afd;
+  font-weight: 600;
+  border-bottom: 1.5px solid #e8f0fe;
+}
+
+.adminDashboard :global(.ant-table-tbody > tr > td) {
+  border-bottom: 1px solid #e8f0fe;
+}
+
+.adminDashboard :global(.ant-table-tbody > tr:hover > td) {
+  background: #f8fafc;
+}
+
+/* Button styling */
+.adminDashboard :global(.ant-btn-primary) {
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
+  border: none;
+}
+
+.adminDashboard :global(.ant-btn-primary:hover) {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+  border: none;
+}
+
+.adminDashboard :global(.ant-btn-default) {
+  color: #6b8afd;
+  border-color: #6b8afd;
+  background: #f8fafc;
+}
+
+.adminDashboard :global(.ant-btn-default:hover) {
+  color: #a5b4fc;
+  border-color: #a5b4fc;
+  background: #f8fafc;
+}
+
+/* Form styling */
+.adminDashboard :global(.ant-form-item-label > label) {
+  color: #6b8afd;
+  font-weight: 500;
+}
+
+.adminDashboard :global(.ant-input),
+.adminDashboard :global(.ant-select-selector) {
+  border-color: #e8f0fe !important;
+  border-radius: 8px !important;
+}
+
+.adminDashboard :global(.ant-input:hover),
+.adminDashboard :global(.ant-select-selector:hover) {
+  border-color: #6b8afd !important;
+}
+
+.adminDashboard :global(.ant-input:focus),
+.adminDashboard :global(.ant-select-selector:focus) {
+  border-color: #6b8afd !important;
+  box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2) !important;
+}
+
+/* Calendar styling */
+.adminDashboard :global(.ant-picker-calendar) {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.adminDashboard :global(.ant-picker-calendar-header) {
+  padding: 12px;
+}
+
+.adminDashboard :global(.ant-picker-calendar-date) {
+  border: 1px solid #e8f0fe;
+  border-radius: 8px;
+  margin: 2px;
+}
+
+.adminDashboard :global(.ant-picker-calendar-date:hover) {
+  background: #f8fafc;
+}
+
+.adminDashboard :global(.ant-picker-calendar-date-today) {
+  border-color: #6b8afd;
+}
+
+/* Modal styling */
+.adminDashboard :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.adminDashboard :global(.ant-modal-header) {
+  background: #f8fafc;
+  border-bottom: 1.5px solid #e8f0fe;
+}
+
+.adminDashboard :global(.ant-modal-title) {
+  color: #6b8afd;
+  font-weight: 600;
+}
+
+.adminDashboard :global(.ant-modal-footer) {
+  border-top: 1.5px solid #e8f0fe;
+  padding: 16px 24px;
+}
+
+/* Events list styling */
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.events li {
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .adminDashboard {
+    padding: 12px;
+  }
+
+  .adminDashboard :global(.ant-tabs) {
+    padding: 12px;
+  }
+
+  .statsRow :global(.ant-statistic-content) {
+    font-size: 22px;
+  }
+
+  .adminDashboard :global(.ant-card) {
+    margin-bottom: 16px;
+  }
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dashboardHeader h2 {
+  margin: 0;
+  color: #333;
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.yearFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.statCard {
+  height: 100%;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+  background: #f8fafc;
+  transition: all 0.3s;
+}
+
+.statCard:hover {
+  box-shadow: 0 6px 18px rgba(107, 138, 253, 0.18);
+  transform: translateY(-2px) scale(1.02);
+  border-color: #6b8afd;
+}
+
+.chartCard {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(107, 138, 253, 0.10);
+  border: 1.5px solid #e8f0fe;
+  background: #f8fafc;
+  transition: all 0.3s;
+  margin-bottom: 24px;
+}
+
+.chartCard:hover {
+  box-shadow: 0 6px 18px rgba(107, 138, 253, 0.16);
+  border-color: #e0e7ff;
+}
+
+.chartCard :global(.ant-card-head) {
+  border-bottom: 1px solid #e8f0fe;
+}
+
+.chartCard :global(.ant-card-head-title) {
+  padding: 12px 0;
+}
+
+.chartCard :global(.ant-card-head-title h4) {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #5c7cfa;
+}
+
+.pieContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+}
+
+.pieStats {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pieStatItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.pieStatTotal {
+  margin-top: 8px;
+  font-weight: 600;
+  border-top: 1px dashed #e8f0fe;
+  padding-top: 8px;
+}
+
+.mt16 {
+  margin-top: 16px;
+}
+
+/* Styling for tabs */
+.chartCard :global(.ant-tabs-nav) {
+  margin-bottom: 20px;
+}
+
+.chartCard :global(.ant-tabs-tab) {
+  padding: 8px 16px;
+}
+
+.chartCard :global(.ant-tabs-tab:hover) {
+  color: #6b8afd;
+}
+
+.chartCard :global(.ant-tabs-tab-active) {
+  background: #f0f4ff;
+  border-radius: 8px;
+}
+
+.chartCard :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  color: #6b8afd !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .pieContainer {
+    flex-direction: column;
+  }
+
+  .pieStats {
+    margin-top: 20px;
+    margin-left: 0;
+  }
+}
+
+/* Add these styles to AdminPage.css */
+.dashboardActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.exportBtn {
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
+  border: none;
+  border-radius: 8px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.exportBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 138, 253, 0.2);
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+}
+
+/* Update responsive styling */
+@media (max-width: 768px) {
+  .dashboardActions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .yearFilter {
+    width: 100%;
+  }
+
+  .exportBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

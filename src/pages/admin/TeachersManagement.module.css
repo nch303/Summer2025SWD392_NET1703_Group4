@@ -1,0 +1,63 @@
+.teachersManagementContainer {
+  padding: 24px;
+  background: #fff;
+  min-height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.teachersManagementHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.teachersManagementHeader h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #1890ff;
+}
+
+.teachersManagementActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .teachersManagementHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .teachersManagementActions {
+    margin-top: 16px;
+    width: 100%;
+  }
+}
+
+/* Teacher details styles */
+.teacherDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detailRow {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.detailLabel {
+  width: 150px;
+  font-weight: 600;
+  color: #555;
+}
+
+.detailValue {
+  flex: 1;
+}

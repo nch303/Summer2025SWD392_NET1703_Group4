@@ -1,0 +1,363 @@
+/* src/pages/staff-children-management/ChildrenManagement.css */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+.staffChildrenPage {
+  padding: 20px;
+  max-width: 100%;
+}
+
+.staffChildrenHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.staffChildrenHeader h1 {
+  font-size: 28px;
+  margin: 0;
+  color: #333;
+  font-weight: 700;
+}
+
+.staffChildrenAddBtn {
+  padding: 10px 16px;
+  background: linear-gradient(45deg, #006eff, #2acdff);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.staffChildrenAddBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Filters */
+.staffChildrenFilters {
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.staffChildrenFilterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+
+.staffChildrenFilterGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.staffChildrenFilterGroup label {
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+.staffChildrenSearchGroup {
+  flex-grow: 1;
+  position: relative;
+}
+
+input[type="text"].staffChildrenSearchInput {
+  width: 100%;
+  height: 42px;
+  padding: 8px 12px 8px 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.staffChildrenSearchGroup::before {
+  content: '\f002';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9e9e9e;
+}
+
+.staffChildrenFilterSelect {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  height: 42px;
+  min-width: 120px;
+}
+
+.staffChildrenFilterResetButton {
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.staffChildrenFilterResetButton:hover {
+  background-color: #e0e0e0;
+}
+
+/* Stats */
+.staffChildrenStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.staffChildrenStatCard {
+  background: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.staffChildrenStatTitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.staffChildrenStatValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #006eff;
+}
+
+/* Table */
+.staffChildrenTableContainer {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+.staffChildrenTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.staffChildrenTable th,
+.staffChildrenTable td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.staffChildrenTable th {
+  position: sticky;
+  top: 0;
+  background-color: #f9f9f9;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.staffChildrenTable th:hover {
+  background-color: #f0f0f0;
+}
+
+.staffChildrenTable th i {
+  margin-left: 6px;
+  font-size: 12px;
+  color: #006eff;
+}
+
+.staffChildrenChildName {
+  font-weight: 600;
+  color: #333;
+}
+
+.staffChildrenChildAvatar {
+  width: 60px;
+}
+
+.staffChildrenChildAvatar img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.staffChildrenAvatarPlaceholder {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a90e2, #50e3c2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.staffChildrenBirthInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.staffChildrenAge {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.staffChildrenActionsCell {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.staffChildrenActionBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 3px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+}
+
+.staffChildrenViewBtn {
+  background-color: #4a90e2;
+}
+
+.staffChildrenEditBtn {
+  background-color: #f5a623;
+}
+
+.staffChildrenDeleteBtn {
+  background-color: #e53935;
+}
+
+.staffChildrenActionBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* No data */
+.staffChildrenNoData {
+  padding: 60px 0;
+  text-align: center;
+  color: #888;
+}
+
+.staffChildrenNoData i {
+  font-size: 40px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+/* Pagination */
+.staffChildrenPagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.staffChildrenPaginationButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background-color: white;
+  border-radius: 50%;
+  margin: 0 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.staffChildrenPaginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.staffChildrenPaginationButton:not(:disabled):hover {
+  background-color: #f0f0f0;
+}
+
+.staffChildrenPaginationInfo {
+  margin: 0 12px;
+  display: flex;
+  align-items: baseline;
+}
+
+.staffChildrenCurrentPage {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-right: 4px;
+}
+
+.staffChildrenTotalPages {
+  color: #888;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .staffChildrenHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .staffChildrenFilterRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .staffChildrenFilterGroup {
+    width: 100%;
+  }
+
+  .staffChildrenStats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+
+  .staffChildrenTable th,
+  .staffChildrenTable td {
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+}

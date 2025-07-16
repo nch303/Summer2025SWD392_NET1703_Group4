@@ -1,0 +1,147 @@
+.adminEnrichment {
+  padding: 20px;
+}
+
+.enrichmentCard {
+  box-shadow: 0 4px 12px rgba(107, 138, 253, 0.12);
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.enrichmentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.enrichmentHeader h2 {
+  margin: 0;
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.adminEnrichment :global(.ant-table-thead > tr > th) {
+  background: #f0f4ff;
+  color: #6b8afd;
+  font-weight: 600;
+}
+
+.adminEnrichment :global(.ant-table-tbody > tr:hover > td) {
+  background: #f8fafc;
+}
+
+.adminEnrichment :global(.ant-tag) {
+  border-radius: 12px;
+  padding: 0 10px;
+  font-weight: 500;
+}
+
+.adminEnrichment :global(.ant-btn) {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.adminEnrichment :global(.ant-btn-primary) {
+  background: linear-gradient(90deg, #6b8afd 0%, #a5b4fc 100%);
+  border: none;
+  transition: all 0.3s;
+}
+
+.adminEnrichment :global(.ant-btn-primary:hover) {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(107, 138, 253, 0.2);
+}
+
+    .adminEnrichment :global(.ant-btn-primary.ant-btn-dangerous) {
+  background: linear-gradient(90deg, #ff4d4f 0%, #ff7875 100%);
+}
+
+.adminEnrichment :global(.ant-btn-primary.ant-btn-dangerous:hover) {
+  background: linear-gradient(90deg, #f5222d 0%, #ff4d4f 100%);
+}
+
+.adminEnrichment :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.adminEnrichment :global(.ant-modal-header) {
+  background: #f8fafc;
+  border-bottom: 1.5px solid #e8f0fe;
+}
+
+.adminEnrichment :global(.ant-modal-title) {
+  color: #6b8afd;
+  font-weight: 600;
+}
+
+.adminEnrichment :global(.ant-form-item-label > label) {
+  color: #6b8afd;
+  font-weight: 500;
+}
+
+.adminEnrichment :global(.ant-input),
+.adminEnrichment :global(.ant-select-selector),
+.adminEnrichment :global(.ant-picker) {
+  border-color: #e8f0fe;
+  border-radius: 8px;
+}
+
+.adminEnrichment :global(.ant-input:hover),
+.adminEnrichment :global(.ant-select-selector:hover),
+.adminEnrichment :global(.ant-picker:hover) {
+  border-color: #6b8afd;
+}
+
+.adminEnrichment :global(.ant-input:focus),
+.adminEnrichment :global(.ant-select-selector:focus),
+.adminEnrichment :global(.ant-picker-focused) {
+  border-color: #6b8afd;
+  box-shadow: 0 0 0 2px rgba(107, 138, 253, 0.2);
+}
+
+/* Styling for deleted rows */
+.adminEnrichment .deletedRow {
+  background-color: #fff1f0;
+  opacity: 0.85;
+}
+
+.adminEnrichment .deletedRow:hover > td {
+  background-color: #ffebe9 !important;
+}
+
+/* Styling for restore button */
+.adminEnrichment .restoreButton {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+}
+
+.adminEnrichment .restoreButton:hover {
+  background: linear-gradient(90deg, #5a7afd 0%, #95a4fc 100%);
+}
+
+@media (max-width: 768px) {
+  .enrichmentHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.adminEnrichment :global(.ant-picker-header-view) {
+  flex: auto;
+  text-align: center;
+}
+
+.adminEnrichment :global(.ant-picker-header-super-next-btn),
+.adminEnrichment :global(.ant-picker-header-next-btn) {
+  display: inline-block !important;
+  position: relative !important;
+  visibility: visible !important;
+}

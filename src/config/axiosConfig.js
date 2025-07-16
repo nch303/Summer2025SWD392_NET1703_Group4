@@ -1,15 +1,17 @@
 import axios from 'axios';
-import { logoutUser } from '../components/navbar/NavbarService';
+import { logoutUser } from '../services/NavbarService';
+import { API_CONFIG } from './appConfig';
 
-// Tạo instance của axios
+// Create axios instance
 const api = axios.create({
-  baseURL: 'https://localhost:7216',
+  baseURL: API_CONFIG.BASE_URL,
+  timeout: parseInt(API_CONFIG.TIMEOUT),
   headers: {
     'Content-Type': 'application/json',
   }
 });
 
-// Request interceptor - thêm token nếu có
+// Request interceptor - add token if available
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -24,7 +26,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - xử lý lỗi
+// Response interceptor - handle errors
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -43,5 +45,8 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Export configuration values for use in other files
+export const apiConfig = API_CONFIG;
 
 export default api;

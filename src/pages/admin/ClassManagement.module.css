@@ -1,0 +1,1233 @@
+.classManagementContainer {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: 100%;
+}
+
+/* Improved page header with underline */
+.pageHeader {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.pageTitle {
+  color: #1a1a1a;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.headerUnderline {
+  height: 3px;
+  width: 80px;
+  background: linear-gradient(90deg, #1890ff 0%, #52c41a 100%);
+  border-radius: 3px;
+  margin-bottom: 16px;
+}
+
+/* Section title styling */
+.sectionTitle {
+  position: relative;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sectionTitle:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sectionTitleContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sectionUnderline {
+  height: 2px;
+  width: 40px;
+  background-color: #1890ff;
+  margin-top: 4px;
+}
+
+/* Stats cards */
+.statsRow {
+  margin-bottom: 24px;
+}
+
+.statCard {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  padding: 8px;
+}
+
+    .statCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.statTitle {
+  font-weight: 500;
+  font-size: 16px;
+  color: #595959;
+}
+
+/* Main card */
+.classListCard {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px 0;
+}
+
+.cardHeader h4 {
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.addButton {
+  border-radius: 4px;
+  height: 40px;
+  font-weight: 500;
+}
+
+.headerDivider {
+  margin: 16px 0;
+  height: 1px;
+  background-color: #f0f0f0;
+}
+
+/* Filter sections styling */
+.filterSection {
+  background-color: #fafafa;
+  border-radius: 4px;
+  margin: 0 24px 16px;
+  padding: 16px;
+}
+
+.regularClassSection .filterSection {
+  background-color: rgba(230, 247, 255, 0.5);
+  border: 1px solid #d6e4ff;
+}
+
+.enrichmentClassSection .filterSection {
+  background-color: rgba(246, 255, 237, 0.5);
+  border: 1px solid #d9f7be;
+}
+
+.resetAllFilters {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  margin-bottom: 24px;
+}
+
+      .resetButton {
+  min-width: 200px;
+}
+
+/* Table styling */
+.tableContainer {
+  padding: 0 24px 24px;
+}
+
+.classesTable {
+  min-width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Enhanced table header styling */
+.classesTable :global(.ant-table-thead > tr > th) {
+  background-color: #e6f1ff !important;
+  color: #262626;
+  font-weight: 600;
+  padding: 18px 16px;
+  border-bottom: 2px solid #1890ff;
+}
+
+.columnTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: #262626;
+}
+
+.tableRow {
+  transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+  background-color: #f0f7ff !important;
+  border-left: 3px solid #1890ff;
+}
+
+.tableRow td {
+  padding: 16px !important;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Better alternate row colors */
+.classesTable :global(.ant-table-tbody > tr:nth-child(odd)) {
+  background-color: #fff;
+}
+
+.classesTable :global(.ant-table-tbody > tr:nth-child(even)) {
+  background-color: #f7f9fc;
+}
+
+/* Improve cell text clarity */
+.tableRow td {
+  font-size: 14px;
+  color: #333;
+}
+
+.statusTagTable {
+  font-size: 14px;
+  padding: 4px 8px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.capacityColumn {
+  width: 90%;
+  max-width: 180px;
+}
+
+    .capacityText {
+  margin-top: 4px;
+  display: block;
+  font-size: 12px;
+}
+
+.actionButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.expandedRow {
+  padding: 16px;
+  background-color: #f6f8fa;
+  border-radius: 4px;
+  margin: 8px;
+  border-left: 3px solid #1890ff;
+}
+
+/* Class Detail Modal Styles */
+.classDetailModal :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.classDetailModal :global(.ant-modal-header) {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eaecef;
+  padding: 16px 24px;
+}
+
+.modalTitle {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.modalIcon {
+  margin-right: 12px;
+  font-size: 22px;
+  color: #1890ff;
+}
+
+.classDetailContent {
+  padding: 0;
+}
+
+.classHeader {
+  padding: 16px 0 8px 0;
+  margin-bottom: 16px;
+}
+
+.className {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.className h3 {
+  margin: 0;
+}
+
+.statusTag {
+  font-size: 14px;
+  padding: 4px 12px;
+  height: auto;
+}
+
+.classDetailTabs {
+  margin-top: 16px;
+}
+
+    .classDetailTabs :global(.ant-tabs-nav) {
+  margin-bottom: 20px;
+}
+
+.overviewSection {
+  padding: 0 4px;
+}
+
+.infoCard {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.infoCard :global(.ant-card-head) {
+  background-color: #f6f8fa;
+}
+
+.infoItem {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.capacityWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 0;
+}
+
+.capacityText {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+}
+
+.capacityText :global(.ant-typography) {
+  line-height: 1.8;
+}
+
+.listSection {
+  padding: 0 4px;
+}
+
+.teacherListItem,
+.studentListItem {
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.teacherListItem:hover,
+.studentListItem:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+  .teacherAvatar,
+.studentAvatar {
+  background-color: #e6f7ff;
+}
+
+.teacherDetails,
+.studentDetails {
+  margin-top: 4px;
+}
+
+.emptyData {
+  margin: 40px 0;
+}
+
+@media (max-width: 768px) {
+  .classManagementHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .capacityWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .capacityText {
+    margin-left: 0;
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  .actionButtons {
+    justify-content: center;
+  }
+}
+
+/* Edit Modal Styles */
+.editClassModal :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.editClassModal :global(.ant-modal-header) {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eaecef;
+  padding: 16px 24px;
+}
+
+.editClassContent {
+  padding: 16px 8px;
+}
+
+.editClassHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+
+    .editClassId {
+  font-size: 15px;
+}
+
+.editClassStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusTagModal {
+  margin: 0;
+  font-size: 14px;
+  padding: 2px 8px;
+}
+
+.editDivider {
+  margin: 16px 0;
+}
+
+.editForm {
+  margin-top: 24px;
+}
+
+.editForm :global(.ant-form-item-label) {
+  font-weight: 500;
+}
+
+.editInput {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.editInputNumber {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+  gap: 12px;
+}
+
+.cancelButton,
+.saveButton {
+  min-width: 120px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.saveButton {
+  font-weight: 500;
+}
+
+:global(.ant-form-item-has-error) {
+  margin-bottom: 24px;
+}
+
+/* Improved focus styles */
+.editInput:focus,
+.editInputNumber:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* Animation for modal */
+.editClassModal :global(.ant-modal) {
+  animation-duration: 0.3s;
+}
+
+/* Teacher and Student Cards */
+.adminTeacherCard, .adminStudentCard {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  transition: all 0.3s;
+  height: 100%;
+}
+
+.adminTeacherCard:hover, .adminStudentCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.adminTeacherCardContent, .adminStudentCardContent {
+  display: flex;
+  align-items: center;
+}
+
+.teacherAvatar {
+  background-color: #e6f7ff;
+  margin-right: 16px;
+}
+
+.studentAvatar {
+  background-color: #f6ffed;
+  margin-right: 12px;
+}
+
+.teacherInfo, .studentInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: calc(100% - 80px);
+}
+
+.studentInfo {
+  width: calc(100% - 60px);
+}
+
+.teacherId {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.idText {
+  font-size: 12px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.studentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 16px;
+}
+
+.emptyMessage h5 {
+  margin-bottom: 8px;
+}
+
+/* Updated student cards with gender styling */
+.femaleAvatar {
+  background-color: #fff0f6 !important;
+}
+
+.maleAvatar {
+  background-color: #e6f7ff !important;
+}
+
+.studentDetails {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.studentCard {
+  padding: 8px;
+}
+
+.studentCardContent {
+  display: flex;
+  align-items: center;
+}
+
+.studentAvatar {
+  border: 2px solid #f0f0f0;
+}
+
+/* Student table styling */
+.studentsTable {
+  margin-top: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+  .studentsTable :global(.ant-table-thead > tr > th) {
+  background-color: #f0f7ff !important;
+  font-weight: 600;
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.studentTableRow {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.studentTableRow:hover {
+  background-color: #f5f8ff;
+}
+
+.studentIndex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  background-color: #f0f7ff;
+  border-radius: 50%;
+  font-weight: 500;
+  color: #1890ff;
+  margin: 0 auto;
+}
+
+.studentName {
+  font-size: 15px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.genderTag {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+/* Enhanced student profile section */
+.studentProfilePhoto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(to bottom, #f6f8fa, #fff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 100%;
+}
+
+.studentNameTag {
+  background-color: white;
+  padding: 6px 16px;
+  border-radius: 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 16px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.studentTags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.bigAvatar {
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.documentThumbnail {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+  .documentThumbnail:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Teacher Grid */
+.teachersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.adminTeacherCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.viewTeacherBtn {
+  margin-top: 12px;
+  border-radius: 15px;
+}
+
+/* Teacher Detail Modal with consistent styling */
+.teacherDetailModal :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.teacherProfilePhoto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(to bottom, #f6f8fa, #fff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 100%;
+}
+
+.teacherNameTag {
+  background-color: white;
+  padding: 6px 16px;
+  border-radius: 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 16px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teacherTags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.bigTeacherAvatar {
+  background-color: #e6f7ff;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.roleTagLarge {
+  font-size: 14px;
+  padding: 2px 12px;
+  margin: 4px;
+}
+
+.classInfoCard {
+  height: 100%;
+}
+
+    .classInfoCard :global(.ant-card-head) {
+  background-color: #f6f8fa;
+}
+
+.currentClassInfo {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.classIconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e6f7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.classIcon {
+  font-size: 24px;
+  color: #1890ff;
+}
+
+.classDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.classMeta {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Student Grid */
+.studentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.adminStudentCard {
+  position: relative;
+  border-radius: 10px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.adminStudentCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+.studentNumber {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #f0f7ff;
+  color: #1890ff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.adminStudentCardInner {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  padding-left: 24px;
+}
+
+    .adminStudentAvatar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 3px solid white;
+  margin-right: 16px;
+}
+
+.adminStudentCardDetails {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.adminStudentCardName {
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1.4;
+}
+
+.adminStudentCardBadges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.viewDetailsBtn {
+  margin-left: auto;
+  border-radius: 15px;
+  font-size: 12px;
+  height: 24px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.femaleAvatar {
+  background-color: #fff0f6 !important;
+}
+
+.maleAvatar {
+  background-color: #e6f7ff !important;
+}
+
+/* Create Class Modal - reuses most styles from edit modal */
+.createClassModal :global(.ant-modal-content) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.createClassModal :global(.ant-modal-header) {
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eaecef;
+  padding: 16px 24px;
+}
+
+.createClassContent {
+  padding: 24px 8px 16px;
+}
+
+.createForm :global(.ant-form-item-label) {
+  font-weight: 500;
+}
+
+  .createInput {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.createInputNumber {
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* Animation for modal */
+.createClassModal :global(.ant-modal) {
+  animation-duration: 0.3s;
+}
+
+.createSelect {
+  width: 100%;
+}
+
+.createSelect :global(.ant-select-selection-item) {
+  font-weight: 500;
+}
+
+/* Day selector styling */
+.dayCheckbox {
+  display: flex;
+  align-items: center;
+}
+
+.dayLabel {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.dayNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: #1890ff;
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.dayName {
+  font-weight: 500;
+}
+
+/* Make checkboxes larger */
+:global(.ant-checkbox-wrapper .ant-checkbox) {
+  transform: scale(1.2);
+}
+
+/* Add this to match the create form styling */
+.editSelect {
+  width: 100%;
+}
+
+    .editSelect :global(.ant-select-selection-item) {
+  font-weight: 500;
+}
+
+.customSelectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.currentValueDisplay {
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  background-color: #f6f8fa;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+}
+
+.currentValueDisplay strong {
+  color: #1890ff;
+}
+
+/* Custom dropdown styling */
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.editFormLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.customDropdownContainer {
+  position: relative;
+  width: 100%;
+}
+
+.customDropdownDisplay {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.customDropdownDisplay:hover {
+  border-color: #40a9ff;
+}
+
+.dropdownArrow {
+  color: #999;
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.customDropdownList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1050;
+  margin-top: 4px;
+}
+
+    .customDropdownItem {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.customDropdownItem:hover {
+  background-color: #f5f5f5;
+}
+
+.customDropdownItem.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+/* Class List Section */
+.classListSection {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 0;
+}
+
+.classListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  margin-bottom: 16px;
+}
+
+.classListSection {
+  margin-bottom: 24px;
+}
+
+.classListSection .sectionTitle {
+  padding: 0 24px;
+  margin-bottom: 16px;
+}
+
+.classListSection .sectionTitle h5 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.classListSection .sectionUnderline {
+  height: 2px;
+  width: 40px;
+  background-color: #1890ff;
+  margin-top: 4px;
+}
+
+/* Regular Classes Section */
+.regularClassSection {
+  margin-bottom: 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  border-top: 3px solid #1890ff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.regularClassSection .sectionTitle {
+  background-color: #e6f7ff;
+  padding: 12px 24px;
+  border-bottom: 1px solid #91d5ff;
+}
+
+    .regularClassSection .sectionTitle h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0050b3;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.regularClassSection .sectionTitle h5 :global(.anticon) {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Enrichment Classes Section */
+.enrichmentClassSection {
+  margin-bottom: 28px;
+  border-radius: 10px;
+  overflow: hidden;
+  border-top: 3px solid #52c41a;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.enrichmentClassSection .sectionTitle {
+  background-color: #f6ffed;
+  padding: 12px 24px;
+  border-bottom: 1px solid #b7eb8f;
+}
+
+.enrichmentClassSection .sectionTitle h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #389e0d;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.enrichmentClassSection .sectionTitle h5 :global(.anticon) {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Table styling improvements */
+.regularTable :global(.ant-table-thead > tr > th) {
+  background-color: #e6f7ff !important;
+  border-bottom: 2px solid #1890ff;
+}
+
+.enrichmentTable :global(.ant-table-thead > tr > th) {
+  background-color: #f6ffed !important;
+  border-bottom: 2px solid #52c41a;
+}
+
+/* Table row hover effects */
+.regularTable .tableRow:hover {
+  background-color: #e6f7ff !important;
+  border-left: 3px solid #1890ff;
+}
+
+.enrichmentTable .tableRow:hover {
+  background-color: #f6ffed !important;
+  border-left: 3px solid #52c41a;
+}
+
+/* Empty table placeholder */
+:global(.ant-empty-description) {
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.resetButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.collapseIcon {
+  font-size: 16px;
+  transition: transform 0.3s;
+}
+
+/* Update filter section to ensure rows use full width */
+.filterSection :global(.ant-row) {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Make each column flex item grow to fill available space */
+.filterSection :global(.ant-row .ant-col) {
+  flex: 1;
+  margin-right: 8px;
+}
+
+/* Remove margin from the last column */
+.filterSection :global(.ant-row .ant-col:last-child) {
+  margin-right: 0;
+}
+/* Styling cho modal mask */
+:global(.ant-modal-mask) {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65) !important; /* Tăng độ mờ */
+  backdrop-filter: blur(2px); /* Thêm hiệu ứng blur */
+}
+
+/* Hiệu ứng mở modal mượt mà hơn */
+:global(.ant-modal-wrap) {
+  transition: all 0.3s;
+}
+
+:global(.ant-modal) {
+  transform-origin: center;
+  transition: all 0.3s;
+}
+
+/* Tăng độ nổi bật cho modal */
+:global(.ant-modal-content) {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}

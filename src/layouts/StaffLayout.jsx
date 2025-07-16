@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/navbar/Navbar';
-import Footer from '../components/footer/Footer';
-import ScrollToTopButton from '../components/scroll-button/ScrollToTopButton';
-import Sidebar from '../components/sidebar/Sidebar';
-import './staff-layout.css';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ScrollToTopButton from '../components/ScrollToTopButton';
+import Sidebar from '../components/Sidebar';
+import PageLoadingScreen from '../components/PageLoadingScreen';
+import styles from './StaffLayout.module.css';
 
 const StaffLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className={`staff-layout ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+    <div className={`${styles.staffLayout} ${isSidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
       <Navbar />
-      <div className="staff-container">
-        <Sidebar 
+      <div className={styles.staffContainer}>
+        <Sidebar
           isSidebarCollapsed={isSidebarCollapsed}
           setIsSidebarCollapsed={setIsSidebarCollapsed}
         />
-        <main className="staff-content">
-          <Outlet />
+        <main className={styles.staffContent}>
+          <Suspense fallback={<PageLoadingScreen message="Loading page..." />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
       <Footer />

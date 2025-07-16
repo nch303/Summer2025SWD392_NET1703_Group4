@@ -1,0 +1,361 @@
+.teacherAttendanceContainer {
+  padding: 24px 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.teacherAttendancePageCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+
+.teacherAttendanceHeader {
+  margin-bottom: 32px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 16px;
+}
+
+.teacherAttendanceTitleSection {
+  margin-bottom: 16px;
+}
+
+.teacherAttendanceHeader h2 {
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 28px;
+  background: linear-gradient(120deg, #1677ff, #39c0ed);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.teacherAttendanceDescription {
+  color: #595959;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.teacherAttendanceCard {
+  border-radius: 12px;
+  margin-bottom: 24px;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.teacherAttendanceCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.teacherAttendanceActions {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0 8px;
+  gap: 16px;
+}
+
+.teacherActionSpacer {
+  flex: 1;
+}
+
+.teacherStudentStatusAttend {
+  color: #52c41a;
+}
+
+.teacherStudentStatusAbsent {
+  color: #f5222d;
+}
+
+.teacherStatusBadgeAttend {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #52c41a;
+}
+
+.teacherStatusBadgeAbsent {
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+  color: #f5222d;
+}
+
+.teacherAttendanceTable :global(.ant-table-thead>tr>th) {
+  background-color: #f0f7ff;
+  font-weight: 600;
+  padding: 16px 12px;
+}
+
+.teacherAttendanceDate {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.teacherDateIcon {
+  color: #1890ff;
+}
+
+.teacherAttendanceSummary {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.teacherSummaryCard {
+  flex: 1;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.teacherSummaryCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.teacherSummaryCard.present {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.teacherSummaryCard.absent {
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+.teacherSummaryCardPercentage {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.teacherSummaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.teacherInfoIcon {
+  color: #1890ff;
+  cursor: pointer;
+}
+
+.teacherSummaryValue {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.teacherSummarySubtitle {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.teacherAttendanceProgress {
+  margin-top: 8px;
+}
+
+.teacherNotesInput {
+  margin-top: 4px;
+  border-radius: 6px;
+  resize: none;
+}
+
+@media (max-width: 992px) {
+  .teacherAttendanceSummary {
+    flex-wrap: wrap;
+  }
+
+  .teacherSummaryCard {
+    min-width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .teacherAttendanceSummary {
+    flex-direction: column;
+  }
+
+  .teacherStatusRadioGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .teacherStatusBtn {
+    width: 100%;
+  }
+
+  .teacherAttendanceActions {
+    flex-direction: column-reverse;
+  }
+
+  .teacherBackButton,
+  .teacherAttendanceActions button {
+    width: 100%;
+  }
+}
+
+.teacherHeaderWithBack {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.teacherBackButton {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.teacherLoadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 300px;
+  padding: 40px 0;
+}
+
+/* Add these styles for the success modal */
+.teacherSuccessModal :global(.ant-modal-content) {
+  border-radius: 12px;
+}
+
+.teacherSuccessModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.teacherSuccessIcon {
+  color: #52c41a;
+  font-size: 20px;
+}
+
+.teacherSuccessModal :global(.ant-modal-body) {
+  padding: 24px;
+  font-size: 16px;
+}
+
+.teacherSuccessModal :global(.ant-modal-footer) {
+  border-top: none;
+  padding: 0 24px 24px;
+}
+
+/* Ensure the modal has higher z-index than other elements */
+:global(.ant-modal-root) {
+  z-index: 1100 !important;
+}
+
+:global(.ant-modal-mask) {
+  z-index: 1050 !important;
+}
+
+/* Add this to your CSS file to position toasts below navbar */
+.teacherToastContainer {
+  padding-top: 10px !important;
+}
+
+/* Override react-toastify's container position */
+.Toastify__toast-container--top-right {
+  top: 70px !important;
+}
+
+.teacherToastSuccess {
+  background: #f6ffed !important;
+  border-left: 4px solid #52c41a !important;
+  color: #333333 !important;
+}
+
+.teacherToastError {
+  background: #fff2f0 !important;
+  border-left: 4px solid #ff4d4f !important;
+  color: #333333 !important;
+}
+
+/* Status selection */
+.teacherStatusSelection {
+  display: flex;
+  align-items: center;
+}
+
+.teacherStatusRadioGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.teacherStatusBtn {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+/* Present/Attend button - always slightly green tinted */
+.teacherStatusBtn:first-child {
+  border-color: #d9f7be;
+  color: #389e0d;
+}
+
+/* Present/Attend button - stronger green when active */
+.teacherStatusBtnAttend {
+  background-color: #f6ffed;
+  border-color: #52c41a;
+  color: #52c41a;
+  font-weight: 600;
+}
+
+/* Absent button - always slightly red tinted */
+.teacherStatusBtn:last-child {
+  border-color: #ffccc7;
+  color: #cf1322;
+}
+
+/* Absent button - stronger red when active */
+.teacherStatusBtnAbsentActive {
+  background-color: #fff1f0;
+  border-color: #f5222d;
+  color: #f5222d;
+  font-weight: 600;
+}
+
+/* Table styling */
+.teacherTableHeader {
+  font-size: 16px;
+  color: #262626;
+}
+
+.teacherRowAttend {
+  background-color: rgba(82, 196, 26, 0.05);
+}
+
+.teacherRowAbsent {
+  background-color: rgba(245, 34, 45, 0.05);
+}
+
+/* Fix border issue between buttons */
+.teacherStatusRadioGroup :global(.ant-radio-button-wrapper:not(:first-child)::before) {
+  display: none;
+}
+
+/* Or if that doesn't work, try this alternative approach */
+.teacherStatusRadioGroup :global(.ant-radio-button-wrapper) {
+  margin-right: 8px;
+  border-radius: 6px !important;
+}

@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/navbar/Navbar';
-import Footer from '../components/footer/Footer';
-import ScrollToTopButton from '../components/scroll-button/ScrollToTopButton';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ScrollToTopButton from '../components/ScrollToTopButton';
+import PageLoadingScreen from '../components/PageLoadingScreen';
 
 const MainLayout = () => {
   return (
     <div className="main-layout">
       <Navbar />
       <main className="main-content">
-        <Outlet />
+        <Suspense fallback={<PageLoadingScreen message="Đang tải trang..." />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
       <ScrollToTopButton />

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getCurrentUser } from '../components/navbar/NavbarService';
+import { getCurrentUser } from '../services/NavbarService';
 
 const UserContext = createContext(null);
 
@@ -156,9 +156,20 @@ export const UserProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // Create a user object that matches what components expect
+  const user = currentUser ? {
+    ...currentUser,
+    // Ensure critical fields exist
+    id: currentUser.id || currentUser.userId || null,
+    role: currentUser.roleName || currentUser.role || null,
+    email: currentUser.email || null,
+    fullName: currentUser.fullName || currentUser.name || null
+  } : null;
+
   return (
     <UserContext.Provider value={{ 
       currentUser, 
+      user, // Add user as an alias to currentUser with standardized properties
       setCurrentUser, 
       isLoading, 
       isLoggedIn, 
@@ -173,4 +184,12 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+};
+
+export { UserContext };
