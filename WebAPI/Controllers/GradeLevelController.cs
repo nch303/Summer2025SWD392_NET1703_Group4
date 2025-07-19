@@ -56,5 +56,27 @@ namespace WebAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("update-grade-level")]
+        public async Task<IActionResult> UpdateGradeLevel(int id, string name, double fee)
+        {
+            try
+            {
+                var gradeLevel = await _gradeLevelService.GetGradeLevelByIdAsync(id);
+                if (gradeLevel == null)
+                {
+                    return NotFound(new { message = $"Grade level with ID {id} not found." });
+                }
+                gradeLevel.Name = name;
+                gradeLevel.Fee = fee;
+                var updatedGradeLevel = await _gradeLevelService.UpdateAsync(gradeLevel);
+                var response = _mapper.Map<GradeLevelResponse>(updatedGradeLevel);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

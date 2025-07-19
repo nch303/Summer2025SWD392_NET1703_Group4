@@ -58,5 +58,19 @@ namespace Application.Services
 
             return await _repository.CreateAsync(gradeLevel);
         }
+
+        public async Task<GradeLevel> UpdateAsync(GradeLevel gradeLevel)
+        {
+            if (gradeLevel == null)
+            {
+                throw new ArgumentNullException(nameof(gradeLevel), "Grade level cannot be null.");
+            }
+            var existingGradeLevel = await _repository.GetGradeLevelByIdAsync(gradeLevel.ID);
+            if (existingGradeLevel == null)
+            {
+                throw new KeyNotFoundException($"Grade level with ID {gradeLevel.ID} not found.");
+            }
+            return await _repository.UpdateAsync(gradeLevel);
+        }
     }
 }

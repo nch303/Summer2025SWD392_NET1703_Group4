@@ -97,5 +97,6 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(i => i.Name!.Contains(invoiceId.ToString()));
             return invoice;
         }
+
     }
 }

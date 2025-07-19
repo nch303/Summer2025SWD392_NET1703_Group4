@@ -43,5 +43,12 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return gradeLevel;
         }
+
+        public async Task<GradeLevel> UpdateAsync(GradeLevel gradeLevel)
+        {
+            _context.GradeLevels.Update(gradeLevel);
+            await _context.SaveChangesAsync();
+            return gradeLevel;
+        }
     }
 }
