@@ -32,61 +32,59 @@ namespace WebAPI.Controllers
             var now = DateTime.Now;
             var selectedYear = year ?? now.Year;
 
-            // Tổng số học sinh đang theo học (Status == "Active")
-            var totalActiveStudents = (await _childrenService.GetAllChildrenAsync())
-                .Count(c => c.Status == "Active");
+            // Tách các dữ liệu await phức tạp thành từng bước để tránh lỗi Hot Reload
+            var allChildren = await _childrenService.GetAllChildrenAsync();
+            var allAccounts = await _accountService.GetAllAsync();
+            var allClasses = await _classService.GetAllClass();
+            var allApplications = await _eaService.GetAllApplications();
+            var allInvoices = await _invoiceService.GetAllInvoiceAsync();
 
-            // Tổng số account đang hoạt động (Status == "Active")
-            var totalActiveAccounts = (await _accountService.GetAllAsync())
-                .Count(a => a.Status == "Active");
+            // Lọc dữ liệu theo điều kiện
+            var totalActiveStudents = allChildren.Count(c => c.Status == "Active");
+            var totalActiveAccounts = allAccounts.Count(a => a.Status == "Active");
+            var totalActiveClasses = allClasses.Count(cl => cl.Status == "Available");
+            var totalActiveTeachers = allAccounts.Count(a => a.RoleId == 3 && a.Status == "Active");
+            var totalApprovedEA = allApplications.Count(e => e.Status == "Enrolled");
+            var totalRejectedEA = allApplications.Count(e => e.Status == "Rejected");
 
-            // Tổng số lớp học đang hoạt động (Status == "Available")
-            var totalActiveClasses = (await _classService.GetAllClass())
-                .Count(cl => cl.Status == "Available");
-
-            // Tổng số giáo viên còn hoạt động (Status == "Active" và RoleId == 3)
-            var totalActiveTeachers = (await _accountService.GetAllAsync())
-                .Count(a => a.RoleId == 3 && a.Status == "Active");
-
-            // Tổng số đơn đã duyệt (Status == "Approve")
-            var totalApprovedEA = (await _eaService.GetAllApplications())
-                .Count(e => e.Status == "Enrolled");
-
-            // Tổng số đơn bị từ chối (Status == "Rejected")
-            var totalRejectedEA = (await _eaService.GetAllApplications())
-                .Count(e => e.Status == "Rejected");
-
-            var invoices = (await _invoiceService.GetAllInvoiceAsync())
+            var invoicesOfYear = allInvoices
                 .Where(i => i.Date.Year == selectedYear)
                 .ToList();
 
-            // Doanh thu theo tháng (luôn đủ 12 tháng)
             var months = Enumerable.Range(1, 12);
-            var monthlyRevenue = months.Select(m => new
+            var monthlyRevenueRefunds = months.Select(m => new
             {
                 Month = m,
-                Revenue = invoices
+                Revenue = invoicesOfYear
                     .Where(i => i.Date.Month == m)
+                    .Sum(i => i.Amount),
+                Refund = invoicesOfYear
+                    .Where(i => i.Date.Month == m && i.Status == "Refunded")
                     .Sum(i => i.Amount)
             }).ToList();
 
-            // Doanh thu theo quý (Q1–Q4)
-            var quarterlyRevenue = Enumerable.Range(1, 4).Select(q => new
+            var quarterlyRevenueRefunds = Enumerable.Range(1, 4).Select(q => new
             {
                 Quarter = q,
-                Revenue = invoices
+                Revenue = invoicesOfYear
                     .Where(i => (i.Date.Month - 1) / 3 + 1 == q)
+                    .Sum(i => i.Amount),
+                Refund = invoicesOfYear
+                    .Where(i => (i.Date.Month - 1) / 3 + 1 == q && i.Status == "Refunded")
                     .Sum(i => i.Amount)
             }).ToList();
 
-            // Doanh thu theo năm (chỉ năm đang xem)
             var yearlyRevenue = new[]
             {
         new {
             Year = selectedYear,
-            Revenue = invoices.Sum(i => i.Amount)
+            Revenue = invoicesOfYear.Sum(i => i.Amount)
         }
     };
+
+            var totalRefunds = invoicesOfYear
+                .Where(i => i.Status == "Refunded")
+                .Sum(i => i.Amount);
 
             return Ok(new
             {
@@ -97,14 +95,12 @@ namespace WebAPI.Controllers
                 totalActiveTeachers,
                 totalApprovedEA,
                 totalRejectedEA,
-                monthlyRevenue,
-                quarterlyRevenue,
-                yearlyRevenue
+                monthlyRevenueRefunds,
+                quarterlyRevenueRefunds,
+                yearlyRevenue,
+                totalRefunds
             });
         }
-
-
-
 
         [HttpGet("ExportToExcel")]
         public async Task<IActionResult> ExportToExcel([FromQuery] int? year)
@@ -113,22 +109,33 @@ namespace WebAPI.Controllers
             var now = DateTime.Now;
             var selectedYear = year ?? now.Year;
 
-            // Lấy dữ liệu tương tự GetDashboardData
-            var totalActiveStudents = (await _childrenService.GetAllChildrenAsync()).Count(c => c.Status == "Active");
-            var totalActiveAccounts = (await _accountService.GetAllAsync()).Count(a => a.Status == "Active");
-            var totalActiveClasses = (await _classService.GetAllClass()).Count(cl => cl.Status == "Available");
-            var totalActiveTeachers = (await _accountService.GetAllAsync()).Count(a => a.RoleId == 3 && a.Status == "Active");
-            var totalApprovedEA = (await _eaService.GetAllApplications()).Count(e => e.Status == "Approve");
-            var totalRejectedEA = (await _eaService.GetAllApplications()).Count(e => e.Status == "Rejected");
+            // Lấy dữ liệu cần thiết
+            var allChildren = await _childrenService.GetAllChildrenAsync();
+            var allAccounts = await _accountService.GetAllAsync();
+            var allClasses = await _classService.GetAllClass();
+            var allApplications = await _eaService.GetAllApplications();
+            var allInvoices = await _invoiceService.GetAllInvoiceAsync();
 
-            var invoices = (await _invoiceService.GetAllInvoiceAsync())
-                .Where(i => i.Date.Year == selectedYear)
-                .ToList();
+            var totalActiveStudents = allChildren.Count(c => c.Status == "Active");
+            var totalActiveAccounts = allAccounts.Count(a => a.Status == "Active");
+            var totalActiveClasses = allClasses.Count(cl => cl.Status == "Available");
+            var totalActiveTeachers = allAccounts.Count(a => a.RoleId == 3 && a.Status == "Active");
+            var totalApprovedEA = allApplications.Count(e => e.Status == "Approve");
+            var totalRejectedEA = allApplications.Count(e => e.Status == "Rejected");
 
-            var monthlyRevenue = Enumerable.Range(1, 12).Select(m => new
+            var invoices = allInvoices.Where(i => i.Date.Year == selectedYear).ToList();
+            var months = Enumerable.Range(1, 12);
+
+            var monthlyRevenue = months.Select(m => new
             {
                 Month = m,
                 Revenue = invoices.Where(i => i.Date.Month == m).Sum(i => i.Amount)
+            }).ToList();
+
+            var monthlyRefunds = months.Select(m => new
+            {
+                Month = m,
+                Refund = invoices.Where(i => i.Date.Month == m && i.Status == "Refunded").Sum(i => i.Amount)
             }).ToList();
 
             var quarterlyRevenue = Enumerable.Range(1, 4).Select(q => new
@@ -137,9 +144,17 @@ namespace WebAPI.Controllers
                 Revenue = invoices.Where(i => (i.Date.Month - 1) / 3 + 1 == q).Sum(i => i.Amount)
             }).ToList();
 
+            var quarterlyRefunds = Enumerable.Range(1, 4).Select(q => new
+            {
+                Quarter = q,
+                Refund = invoices.Where(i => (i.Date.Month - 1) / 3 + 1 == q && i.Status == "Refunded").Sum(i => i.Amount)
+            }).ToList();
+
             var yearlyRevenue = new[] {
         new { Year = selectedYear, Revenue = invoices.Sum(i => i.Amount) }
     };
+
+            var totalRefunds = invoices.Where(i => i.Status == "Refunded").Sum(i => i.Amount);
 
             using var package = new ExcelPackage();
             var sheet = package.Workbook.Worksheets.Add("Dashboard");
@@ -159,42 +174,53 @@ namespace WebAPI.Controllers
             sheet.Cells[row++, 1].Value = $"Total Active Teachers: {totalActiveTeachers}";
             sheet.Cells[row++, 1].Value = $"Total Approved Applications: {totalApprovedEA}";
             sheet.Cells[row++, 1].Value = $"Total Rejected Applications: {totalRejectedEA}";
+            sheet.Cells[row++, 1].Value = $"Total Refunds: {totalRefunds:N0}";
 
             row += 2;
 
-            // --- Doanh thu theo tháng
-            sheet.Cells[row++, 1].Value = "Monthly Revenue";
+            // --- Doanh thu + Hoàn tiền theo tháng
+            sheet.Cells[row++, 1].Value = "Monthly Revenue & Refund";
             sheet.Cells[row - 1, 1].Style.Font.Bold = true;
 
             sheet.Cells[row, 1].Value = "Month";
             sheet.Cells[row, 2].Value = "Revenue";
-            sheet.Cells[row, 1, row, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            sheet.Cells[row, 1, row, 2].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+            sheet.Cells[row, 3].Value = "Refund";
+            sheet.Cells[row, 1, row, 3].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells[row, 1, row, 3].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
             row++;
 
-            foreach (var m in monthlyRevenue)
+            foreach (var m in months)
             {
-                sheet.Cells[row, 1].Value = m.Month;
-                sheet.Cells[row, 2].Value = m.Revenue;
+                var revenue = monthlyRevenue.FirstOrDefault(x => x.Month == m)?.Revenue ?? 0;
+                var refund = monthlyRefunds.FirstOrDefault(x => x.Month == m)?.Refund ?? 0;
+
+                sheet.Cells[row, 1].Value = m;
+                sheet.Cells[row, 2].Value = revenue;
+                sheet.Cells[row, 3].Value = refund;
                 row++;
             }
 
             row += 2;
 
-            // --- Doanh thu theo quý
-            sheet.Cells[row++, 1].Value = "Quarterly Revenue";
+            // --- Doanh thu + Hoàn tiền theo quý
+            sheet.Cells[row++, 1].Value = "Quarterly Revenue & Refund";
             sheet.Cells[row - 1, 1].Style.Font.Bold = true;
 
             sheet.Cells[row, 1].Value = "Quarter";
             sheet.Cells[row, 2].Value = "Revenue";
-            sheet.Cells[row, 1, row, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            sheet.Cells[row, 1, row, 2].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+            sheet.Cells[row, 3].Value = "Refund";
+            sheet.Cells[row, 1, row, 3].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            sheet.Cells[row, 1, row, 3].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
             row++;
 
-            foreach (var q in quarterlyRevenue)
+            for (int q = 1; q <= 4; q++)
             {
-                sheet.Cells[row, 1].Value = $"Q{q.Quarter}";
-                sheet.Cells[row, 2].Value = q.Revenue;
+                var revenue = quarterlyRevenue.FirstOrDefault(x => x.Quarter == q)?.Revenue ?? 0;
+                var refund = quarterlyRefunds.FirstOrDefault(x => x.Quarter == q)?.Refund ?? 0;
+
+                sheet.Cells[row, 1].Value = $"Q{q}";
+                sheet.Cells[row, 2].Value = revenue;
+                sheet.Cells[row, 3].Value = refund;
                 row++;
             }
 
@@ -222,5 +248,6 @@ namespace WebAPI.Controllers
             var stream = new MemoryStream(package.GetAsByteArray());
             return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Dashboard_{selectedYear}.xlsx");
         }
+
     }
 }
