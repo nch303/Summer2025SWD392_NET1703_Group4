@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
             var totalActiveAccounts = allAccounts.Count(a => a.Status == "Active");
             var totalActiveClasses = allClasses.Count(cl => cl.Status == "Available");
             var totalActiveTeachers = allAccounts.Count(a => a.RoleId == 3 && a.Status == "Active");
-            var totalApprovedEA = allApplications.Count(e => e.Status == "Enrolled");
+            var totalApprovedEA = allApplications.Count(e => e.Status == "Enrolled" || e.Status == "Paid" || e.Status == "Approved");
             var totalRejectedEA = allApplications.Count(e => e.Status == "Rejected");
 
             var invoicesOfYear = allInvoices
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
             {
                 Month = m,
                 Revenue = invoicesOfYear
-                    .Where(i => i.Date.Month == m)
+                    .Where(i => i.Date.Month == m && i.Status == "Success")
                     .Sum(i => i.Amount),
                 Refund = invoicesOfYear
                     .Where(i => i.Date.Month == m && i.Status == "Refunded")
@@ -67,7 +67,7 @@ namespace WebAPI.Controllers
             {
                 Quarter = q,
                 Revenue = invoicesOfYear
-                    .Where(i => (i.Date.Month - 1) / 3 + 1 == q)
+                    .Where(i => (i.Date.Month - 1) / 3 + 1 == q && i.Status == "Success")
                     .Sum(i => i.Amount),
                 Refund = invoicesOfYear
                     .Where(i => (i.Date.Month - 1) / 3 + 1 == q && i.Status == "Refunded")
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
             {
         new {
             Year = selectedYear,
-            Revenue = invoicesOfYear.Sum(i => i.Amount)
+            Revenue = invoicesOfYear.Where(i => i.Status == "Success").Sum(i => i.Amount)
         }
     };
 

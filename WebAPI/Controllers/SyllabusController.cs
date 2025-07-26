@@ -43,6 +43,7 @@ namespace WebAPI.Controllers
             try
             {
                 var response = _mapper.Map<List<SyllabusResponse>>(await _syllabusService.GetAll());
+                response.Reverse();
                 return Ok(response);
             }
             catch (Exception ex)

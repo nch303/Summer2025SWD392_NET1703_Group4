@@ -10,6 +10,7 @@ namespace Application.DTOs.Response
     {
         public int ID { get; set; }
         public string? Name { get; set; }
+        public int SyllabusID { get; set; }
         public string? SyllabusName { get; set; }
         public string? GradeLevelName { get; set; }
         public string? AcademicYear { get; set; }

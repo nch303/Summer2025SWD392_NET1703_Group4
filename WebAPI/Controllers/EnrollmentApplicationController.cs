@@ -150,6 +150,7 @@ namespace WebAPI.Controllers
             {
                 var applications = await _eAService.GetAllApplications();
                 var responses = _mapper.Map<List<AdminViewEAResponse>>(applications);
+                responses.Reverse();
                 return Ok(responses);
             }
             catch (Exception ex)
