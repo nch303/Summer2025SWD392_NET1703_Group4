@@ -334,3 +334,84 @@
 .gradeRadioContent:has(+ :global(.ant-radio-inner:checked)) .gradeRadioIcon {
   background-color: rgba(24, 144, 255, 0.1);
 }
+
+/* Add these styles at the end of the file */
+
+/* Context Menu Styles */
+.contextMenu {
+  position: fixed;
+  z-index: 1000;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  min-width: 150px;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contextMenuItem {
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contextMenuItem:hover {
+  background-color: #f0f5ff;
+  color: #1890ff;
+}
+
+/* Grade Level Detail Modal Styles */
+.gradeLevelDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.gradeLevelDetailIcon {
+  font-size: 36px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* Color the background based on grade level */
+.gradeLevelDetailIcon {
+  background-color: #f0f0f0; /* Default color */
+}
+
+/* Color the background based on grade level */
+.gradeLevelDetailHeader:has(:contains("Mầm")) .gradeLevelDetailIcon {
+  background-color: #ffe7ba;
+}
+
+.gradeLevelDetailHeader:has(:contains("Chồi")) .gradeLevelDetailIcon {
+  background-color: #d9f7be;
+}
+
+.gradeLevelDetailHeader:has(:contains("Lá")) .gradeLevelDetailIcon {
+  background-color: #bae7ff;
+}
+
+.gradeLevelDetailActions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}

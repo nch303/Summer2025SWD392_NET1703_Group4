@@ -25,7 +25,7 @@ import {
   MenuFoldOutlined, LogoutOutlined, DashboardOutlined, ExclamationCircleOutlined,
   UploadOutlined, FileSearchOutlined, DownOutlined, ScheduleOutlined, StopOutlined,
   TrophyOutlined, UpOutlined, FileExcelOutlined, LoadingOutlined, MinusCircleOutlined,
-  LeftOutlined, RightOutlined
+  LeftOutlined, RightOutlined, LinkOutlined, TransactionOutlined
 } from '@ant-design/icons';
 
 const { Title, Text, Paragraph, TabPane } = Typography;
@@ -60,5 +60,5 @@ export {
   MenuFoldOutlined, LogoutOutlined, DashboardOutlined, ExclamationCircleOutlined,
   UploadOutlined, FileSearchOutlined, DownOutlined, ScheduleOutlined, StopOutlined,
   TrophyOutlined, UpOutlined, FileExcelOutlined, LoadingOutlined, MinusCircleOutlined,
-  LeftOutlined, RightOutlined
+  LeftOutlined, RightOutlined, LinkOutlined, TransactionOutlined
 };

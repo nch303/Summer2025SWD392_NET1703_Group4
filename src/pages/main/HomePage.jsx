@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './HomePage.module.css';
+import { getNewsForParent, getNewsDetail } from '../../services/HomeService';
 
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const parallaxRef = useRef(null);
+  const [newsList, setNewsList] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(true);
   
   const slides = [
     {
@@ -22,7 +26,7 @@ const HomePage = () => {
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 10000);
+    }, 8000);
     
     return () => clearInterval(slideInterval);
   }, [slides.length]);
@@ -42,6 +46,12 @@ const HomePage = () => {
           element.classList.add(styles.visible);
         }
       });
+      
+      // Parallax effect
+      if (parallaxRef.current) {
+        const scrolled = window.scrollY;
+        parallaxRef.current.style.transform = `translateY(${scrolled * 0.15}px)`;
+      }
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -65,7 +75,7 @@ const HomePage = () => {
           counter.innerText = Math.ceil(count);
           setTimeout(updateCount, 30);
         } else {
-          counter.innerText = target; // Ensure exact target is reached
+          counter.innerText = target;
         }
       };
       
@@ -91,7 +101,55 @@ const HomePage = () => {
       });
     };
   }, []);
+
+  // Fetch news with publish dates
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setNewsLoading(true);
+        const newsData = await getNewsForParent(1, 3);
+        
+        // Fetch details for each news item to get publish dates
+        const newsWithDetails = await Promise.all(
+          (newsData.data || []).map(async (news) => {
+            try {
+              const detail = await getNewsDetail(news.id);
+              return {
+                ...news,
+                publishDate: detail.publishDate
+              };
+            } catch (error) {
+              console.error(`Could not fetch details for news ${news.id}`, error);
+              // Return the news without details if there was an error
+              return news;
+            }
+          })
+        );
+        
+        setNewsList(newsWithDetails);
+      } catch (error) {
+        console.error('Failed to fetch news:', error);
+      } finally {
+        setNewsLoading(false);
+      }
+    };
+    
+    fetchNews();
+  }, []);
   
+  // Format date helper function
+  const formatDate = (dateString) => {
+    if (!dateString) return { month: 'N/A', day: 'N/A' };
+    
+    const date = new Date(dateString);
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    
+    return {
+      month: months[date.getMonth()],
+      day: date.getDate()
+    };
+  };
+
   // Handle manual navigation
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -107,6 +165,12 @@ const HomePage = () => {
 
   return (
     <div className={styles.homeContainer}>
+      <div className={styles.backgroundDecoration}>
+        <div className={`${styles.floatingShape} ${styles.shape1}`}></div>
+        <div className={`${styles.floatingShape} ${styles.shape2}`}></div>
+        <div className={`${styles.floatingShape} ${styles.shape3}`}></div>
+        <div className={styles.parallaxStars} ref={parallaxRef}></div>
+      </div>
       
       {/* Hero Slideshow */}
       <div className={styles.homeSlideshowContainer}>
@@ -152,7 +216,7 @@ const HomePage = () => {
       </div>
 
       <div className={styles.homeContentContainer}>
-        {/* Playful welcome section */}
+        {/* Welcome section */}
         <section className={`${styles.homeWelcomeSection} ${isVisible ? styles.visible : ''} ${styles.animateOnScroll}`}>
           <div className={styles.homeWelcomeBubbles}>
             <div className={`${styles.bubble} ${styles.bubble1}`}></div>
@@ -179,6 +243,61 @@ const HomePage = () => {
               Where little dreams grow big! Our magical kingdom of learning helps children explore,
               discover, and create wonderful memories while developing important skills for life.
             </p>
+            <div className={styles.welcomeButtonContainer}>
+              <Link to="/about-us" className={styles.welcomeButton}>
+                Discover Our Story
+              </Link>
+            </div>
+          </div>
+        </section>
+        
+        {/* Educational philosophy section - NEW */}
+        <section className={`${styles.homePhilosophySection} ${styles.animateOnScroll}`}>
+          <div className={styles.homeSectionHeader}>
+            <h2 className={styles.homeSectionTitle}>Our Educational Philosophy</h2>
+            <p className={styles.homeSectionSubtitle}>Nurturing young minds through play-based learning</p>
+          </div>
+          
+          <div className={styles.philosophyContainer}>
+            <div className={styles.philosophyImage}>
+              <img src="https://img.freepik.com/free-photo/children-classroom-with-teacher_23-2148633328.jpg" alt="Children learning" />
+              <div className={styles.philosophyImageDecoration}></div>
+            </div>
+            <div className={styles.philosophyContent}>
+              <div className={styles.philosophyPoint}>
+                <div className={styles.philosophyIcon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Play-based Learning</h3>
+                  <p>We believe children learn best through engaging, hands-on activities that spark curiosity and joy.</p>
+                </div>
+              </div>
+              <div className={styles.philosophyPoint}>
+                <div className={styles.philosophyIcon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Holistic Development</h3>
+                  <p>Our curriculum nurtures intellectual, physical, emotional, and social growth in a balanced approach.</p>
+                </div>
+              </div>
+              <div className={styles.philosophyPoint}>
+                <div className={styles.philosophyIcon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Individual Attention</h3>
+                  <p>We recognize each child's unique strengths and adapt our teaching to support their personal journey.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
         
@@ -204,14 +323,6 @@ const HomePage = () => {
                   Meet our amazing students! Watch them grow, learn and play in a nurturing environment 
                   designed to spark curiosity and joy.
                 </p>
-                <div className={styles.homeCardLinkContainer}>
-                  <Link to="/students" className={`${styles.homeCardLink} ${styles.studentLink}`}>
-                    Meet Our Stars
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </Link>
-                </div>
               </div>
             </div>
             
@@ -229,14 +340,6 @@ const HomePage = () => {
                   Step inside our themed learning spaces where imagination comes alive! Each classroom is 
                   designed for age-specific adventures and discovery.
                 </p>
-                <div className={styles.homeCardLinkContainer}>
-                  <Link to="/classes" className={`${styles.homeCardLink} ${styles.classroomLink}`}>
-                    Visit Clubhouses
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </Link>
-                </div>
               </div>
             </div>
             
@@ -254,14 +357,6 @@ const HomePage = () => {
                   Begin your child's educational journey with us! Our simple enrollment process will guide you 
                   through each step of joining our happy community.
                 </p>
-                <div className={styles.homeCardLinkContainer}>
-                  <Link to="/enrollment" className={`${styles.homeCardLink} ${styles.enrollmentLink}`}>
-                    Start Journey
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </Link>
-                </div>
               </div>
             </div>
           </div>
@@ -323,60 +418,47 @@ const HomePage = () => {
           </div>
         </section>
         
-        {/* Parent testimonials section */}
-        <section className={`${styles.homeTestimonialsSection} ${styles.animateOnScroll}`}>
+        {/* Update the News section */}
+        <section className={`${styles.homeNewsSection} ${styles.animateOnScroll}`}>
           <div className={styles.homeSectionHeader}>
-            <h2 className={styles.homeSectionTitle}>Happy Families</h2>
-            <p className={styles.homeSectionSubtitle}>What our parents and guardians have to say</p>
+            <h2 className={styles.homeSectionTitle}>Latest News & Events</h2>
+            <p className={styles.homeSectionSubtitle}>Stay updated with what's happening in our little community</p>
           </div>
           
-          <div className={styles.homeTestimonialsGrid}>
-            <div className={styles.homeTestimonialCard}>
-              <div className={styles.homeTestimonialQuote}>"Little Stars has transformed our daughter's early education experience. The staff is incredible and the curriculum is engaging."</div>
-              <div className={styles.homeTestimonialAuthor}>
-                <div className={styles.homeTestimonialName}>Jessica M.</div>
-                <div className={styles.homeTestimonialRole}>Parent of Anna, Age 4</div>
-              </div>
-            </div>
-            
-            <div className={styles.homeTestimonialCard}>
-              <div className={styles.homeTestimonialQuote}>"The enrollment process was seamless and the communication from the teachers has been excellent. My son loves going to school every day."</div>
-              <div className={styles.homeTestimonialAuthor}>
-                <div className={styles.homeTestimonialName}>Michael T.</div>
-                <div className={styles.homeTestimonialRole}>Parent of Lucas, Age 3</div>
-              </div>
-            </div>
-            
-            <div className={styles.homeTestimonialCard}>
-              <div className={styles.homeTestimonialQuote}>"We've seen tremendous growth in our twins since they started at Little Stars. The personalized attention they receive is wonderful."</div>
-              <div className={styles.homeTestimonialAuthor}>
-                <div className={styles.homeTestimonialName}>Sarah K.</div>
-                <div className={styles.homeTestimonialRole}>Parent of Emma & Noah, Age 5</div>
-              </div>
-            </div>
+          <div className={styles.homeNewsGrid}>
+            {newsLoading ? (
+              <div className={styles.newsLoading}>Loading news...</div>
+            ) : newsList.length > 0 ? (
+              newsList.map(news => {
+                const date = formatDate(news.publishDate);
+                return (
+                  <div key={news.id} className={styles.homeNewsCard}>
+                    <div className={styles.homeNewsDate}>
+                      <span className={styles.homeNewsMonth}>{date.month}</span>
+                      <span className={styles.homeNewsDay}>{date.day}</span>
+                    </div>
+                    <div className={styles.homeNewsContent}>
+                      <div className={styles.homeNewsThumbnail}>
+                        <img src={news.image} alt={news.title} />
+                      </div>
+                      <h3 className={styles.homeNewsTitle}>{news.title}</h3>
+                      <Link to={`/news/${news.id}`} className={styles.homeNewsLink}>Read More</Link>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className={styles.noNews}>No news available at the moment</div>
+            )}
           </div>
-        </section>
-        
-        {/* Playful CTA section */}
-        <section className={`${styles.homeCtaSection} ${styles.animateOnScroll}`}>
-          <div className={styles.homeCtaBackground}>
-            <div className={styles.homeCtaContent}>
-              <h2 className={styles.homeCtaTitle}>Ready for an Amazing Adventure?</h2>
-              <p className={styles.homeCtaText}>Join our colorful world of learning and watch your child blossom!</p>
-              <div className={styles.homeCtaButtons}>
-                <Link to="/dashboard" className={`${styles.homeCtaButton} ${styles.primary}`}>
-                  Start the Magic
-                </Link>
-                <Link to="/contact" className={`${styles.homeCtaButton} ${styles.secondary}`}>
-                  Talk to Us
-                </Link>
-              </div>
-            </div>
-            <div className={styles.ctaDecoration}>
-              <div className={`${styles.ctaStar} ${styles.star1}`}></div>
-              <div className={`${styles.ctaStar} ${styles.star2}`}></div>
-              <div className={`${styles.ctaStar} ${styles.star3}`}></div>
-            </div>
+          
+          <div className={styles.homeNewsViewAll}>
+            <Link to="/news" className={styles.homeNewsViewAllLink}>
+              View All News & Events
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </Link>
           </div>
         </section>
       </div>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
   Table, Button, Modal, Form, Input, DatePicker, Select, Radio,
   message, Popconfirm, Typography, Space, InputNumber, Tag, notification,
-  PlusOutlined, EditOutlined, DeleteOutlined, FilterOutlined, LeftOutlined, RightOutlined
+  PlusOutlined, EditOutlined, DeleteOutlined, FilterOutlined, LeftOutlined, RightOutlined,
+  InfoCircleOutlined, Dropdown, Menu
 } from '../../utils/AntComponents';
 import moment from 'moment';
 import {
@@ -10,7 +11,8 @@ import {
   createTuitionFee,
   updateTuitionFee,
   deleteTuitionFee,
-  getGradeLevels
+  getGradeLevels,
+  updateGradeLevel
 } from '../../services/AdminService';
 import styles from './TuitionFeeManagement.module.css';
 import { useCustomToast } from '../../components/CustomToast';
@@ -32,6 +34,12 @@ const TuitionFeeManagement = () => {
   const [feeItems, setFeeItems] = useState([{ name: '', amount: 0 }]);
   const [monthInput, setMonthInput] = useState('');
   const [yearInput, setYearInput] = useState('');
+  const [gradeLevelDetailVisible, setGradeLevelDetailVisible] = useState(false);
+  const [selectedGradeLevelDetail, setSelectedGradeLevelDetail] = useState(null);
+  const [gradeLevelFeeForm] = Form.useForm();
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [rightClickedGradeLevel, setRightClickedGradeLevel] = useState(null);
 
   // Initialize the custom toast hook
   const toast = useCustomToast();
@@ -94,6 +102,7 @@ const TuitionFeeManagement = () => {
   const fetchGradeLevels = async () => {
     try {
       const data = await getGradeLevels();
+      console.log('Fetched grade levels:', data);
       setGradeLevels(data);
     } catch (error) {
       message.error('Failed to fetch grade levels');
@@ -359,6 +368,90 @@ const TuitionFeeManagement = () => {
     }
   }, [modalVisible, editingId]);
 
+  // Add this function to handle right-click on grade level
+  const handleGradeLevelRightClick = (e, gradeLevel) => {
+    e.preventDefault();
+    setRightClickedGradeLevel(gradeLevel);
+    setContextMenuPosition({ x: e.clientX, y: e.clientY });
+    setContextMenuVisible(true);
+  };
+
+  // Add this function to handle context menu click outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (contextMenuVisible) {
+        setContextMenuVisible(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [contextMenuVisible]);
+
+  // Update the handleViewGradeLevelDetails function to work with our existing data
+  const handleViewGradeLevelDetails = (gradeLevel) => {
+    setContextMenuVisible(false);
+    setSelectedGradeLevelDetail(gradeLevel);
+    
+    // Use the data from the grade level directly
+    gradeLevelFeeForm.setFieldsValue({
+      id: gradeLevel.id,
+      name: gradeLevel.name,
+      fee: gradeLevel.fee
+    });
+    
+    setGradeLevelDetailVisible(true);
+  };
+
+  // Add this function to update grade level fee
+  const handleUpdateGradeLevelFee = async (values) => {
+    try {
+      await updateGradeLevel(values);
+      
+      // Update the grade level in the local state
+      const updatedGradeLevels = gradeLevels.map(level => 
+        level.id === values.id ? { ...level, fee: values.fee } : level
+      );
+      setGradeLevels(updatedGradeLevels);
+      
+      toast.success(`Updated fee for "${values.name}" grade level successfully!`, {
+        title: 'Success',
+        duration: 3000
+      });
+      
+      setGradeLevelDetailVisible(false);
+    } catch (error) {
+      toast.error('Failed to update grade level fee', {
+        title: 'Error',
+        duration: 3000
+      });
+    }
+  };
+
+  // Add this to render the context menu
+  const renderContextMenu = () => {
+    if (!contextMenuVisible || !rightClickedGradeLevel) return null;
+
+    return (
+      <div 
+        className={styles.contextMenu} 
+        style={{ 
+          top: contextMenuPosition.y, 
+          left: contextMenuPosition.x 
+        }}
+      >
+        <div 
+          className={styles.contextMenuItem}
+          onClick={() => handleViewGradeLevelDetails(rightClickedGradeLevel)}
+        >
+          <InfoCircleOutlined /> View Details
+        </div>
+      </div>
+    );
+  };
+
   // Fix for the form not connected warning
   const handleAddNew = () => {
     setEditingId(null);
@@ -487,6 +580,7 @@ const TuitionFeeManagement = () => {
                       key={level.id}
                       className={`${styles.gradeLevelItem} ${selectedGradeLevel === level.id ? styles.active : ''}`}
                       onClick={() => handleGradeLevelFilter(selectedGradeLevel === level.id ? null : level.id)}
+                      onContextMenu={(e) => handleGradeLevelRightClick(e, level)}
                     >
                       <div className={styles.gradeLevelIcon}>
                         {level.name === "Mầm" && "🌱"}
@@ -719,10 +813,70 @@ const TuitionFeeManagement = () => {
             </Form.Item>
           </Form>
         </Modal>
-      </div>
 
-      {/* Add the toast container at the end of the component */}
-      <toast.ToastContainer position="top-right" />
+        {/* Add Grade Level Detail Modal */}
+        <Modal
+          title={`Grade Level: ${selectedGradeLevelDetail?.name}`}
+          open={gradeLevelDetailVisible}
+          onCancel={() => setGradeLevelDetailVisible(false)}
+          footer={null}
+        >
+          <Form
+            form={gradeLevelFeeForm}
+            layout="vertical"
+            onFinish={handleUpdateGradeLevelFee}
+          >
+            <Form.Item name="id" hidden>
+              <Input />
+            </Form.Item>
+
+            <div className={styles.gradeLevelDetailHeader}>
+              <div className={styles.gradeLevelDetailIcon}>
+                {selectedGradeLevelDetail?.name === "Mầm" && "🌱"}
+                {selectedGradeLevelDetail?.name === "Chồi" && "🌿"}
+                {selectedGradeLevelDetail?.name === "Lá" && "🍃"}
+                {!["Mầm", "Chồi", "Lá"].includes(selectedGradeLevelDetail?.name) && "✓"}
+              </div>
+              <Form.Item
+                name="name"
+                label="Grade Level Name"
+              >
+                <Input disabled />
+              </Form.Item>
+            </div>
+
+            <Form.Item
+              name="fee"
+              label="Standard Fee (VND)"
+              rules={[{ required: true, message: 'Please enter the standard fee' }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                min={0}
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Space className={styles.gradeLevelDetailActions}>
+                <Button onClick={() => setGradeLevelDetailVisible(false)}>
+                  Cancel
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  Update Fee
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        {/* Render the context menu */}
+        {renderContextMenu()}
+
+        {/* Keep the toast container at the end of the component */}
+        <toast.ToastContainer position="top-right" />
+      </div>
     </>
   );
 };

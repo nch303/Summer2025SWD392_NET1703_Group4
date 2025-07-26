@@ -10,7 +10,7 @@ import styles from './AdminEnrichment.module.css';
 import {
   getAllEnrichmentPrograms, getEnrichmentProgramById,
   createEnrichmentProgram, updateEnrichmentProgram, deleteEnrichmentProgram,
-  restoreEnrichmentProgram, getAllProgramTypes
+  restoreEnrichmentProgram, getAllProgramTypes, createProgramType
 } from '../../services/AdminService';
 
 const { Title, Text } = Typography;
@@ -27,6 +27,11 @@ const AdminEnrichment = () => {
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
+  
+  // New states for Program Type creation
+  const [typeModalVisible, setTypeModalVisible] = useState(false);
+  const [typeForm] = Form.useForm();
+  const [typeLoading, setTypeLoading] = useState(false);
 
   // Fetch all enrichment programs
   const fetchPrograms = async () => {
@@ -133,6 +138,42 @@ const AdminEnrichment = () => {
     } catch (error) {
       message.error(`Failed to restore enrichment program: ${error.message}`);
     }
+  };
+
+  // Handle creating new program type
+  const handleCreateProgramType = async () => {
+    try {
+      setTypeLoading(true);
+      const values = await typeForm.validateFields();
+      
+      const result = await createProgramType(values.typeName);
+      
+      message.success('Program type created successfully');
+      
+      // Refresh program types list
+      await fetchProgramTypes();
+      
+      // Set the newly created type in the main form
+      form.setFieldsValue({ 
+        type: result.name,
+        typeProgramID: result.id 
+      });
+      
+      // Close the type creation modal and reset form
+      setTypeModalVisible(false);
+      typeForm.resetFields();
+      
+    } catch (error) {
+      message.error(`Failed to create program type: ${error.message}`);
+    } finally {
+      setTypeLoading(false);
+    }
+  };
+
+  // Show program type creation modal
+  const showTypeModal = () => {
+    typeForm.resetFields();
+    setTypeModalVisible(true);
   };
 
   // Function to get level badge color
@@ -365,17 +406,28 @@ const AdminEnrichment = () => {
             label="Program Type"
             rules={[{ required: true, message: 'Please select program type' }]}
           >
-            <Select
-              placeholder="Select program type"
-              onChange={(value, option) => {
-                // Set the corresponding typeProgramID based on selected type
-                form.setFieldsValue({ typeProgramID: option.key });
-              }}
-            >
-              {programTypes.map(type => (
-                <Option key={type.id} value={type.name}>{type.name}</Option>
-              ))}
-            </Select>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Select
+                placeholder="Select program type"
+                style={{ flex: 1 }}
+                onChange={(value, option) => {
+                  // Set the corresponding typeProgramID based on selected type
+                  form.setFieldsValue({ typeProgramID: option.key });
+                }}
+              >
+                {programTypes.map(type => (
+                  <Option key={type.id} value={type.name}>{type.name}</Option>
+                ))}
+              </Select>
+              <Button
+                type="dashed"
+                icon={<PlusOutlined />}
+                onClick={showTypeModal}
+                title="Add new program type"
+              >
+                Add Type
+              </Button>
+            </div>
           </Form.Item>
 
           <Form.Item
@@ -449,6 +501,40 @@ const AdminEnrichment = () => {
             hidden={true}
           >
             <InputNumber />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Program Type Creation Modal */}
+      <Modal
+        title="Create New Program Type"
+        open={typeModalVisible}
+        onCancel={() => {
+          setTypeModalVisible(false);
+          typeForm.resetFields();
+        }}
+        onOk={handleCreateProgramType}
+        confirmLoading={typeLoading}
+        width={400}
+        okText="Create"
+      >
+        <Form
+          form={typeForm}
+          layout="vertical"
+        >
+          <Form.Item
+            name="typeName"
+            label="Program Type Name"
+            rules={[
+              { required: true, message: 'Please enter program type name' },
+              { min: 2, message: 'Program type name must be at least 2 characters' },
+              { max: 50, message: 'Program type name cannot exceed 50 characters' }
+            ]}
+          >
+            <Input 
+              placeholder="e.g. Võ, Music, Art, etc." 
+              autoFocus
+            />
           </Form.Item>
         </Form>
       </Modal>

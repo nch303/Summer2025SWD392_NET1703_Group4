@@ -131,6 +131,7 @@ const Sidebar = ({ isSidebarCollapsed, setIsSidebarCollapsed }) => {
           </div>
           <span className={styles.staffSidebarText}>Refund Management</span>
         </Link>
+        
       </nav>
     </aside>
   );

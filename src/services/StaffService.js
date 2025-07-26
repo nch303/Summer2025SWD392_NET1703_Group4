@@ -458,3 +458,13 @@ export const processRefund = async (invoiceId) => {
     throw error;
   }
 };
+
+export const getTransactionHistory = async () => {
+  try {
+    const response = await api.get('/api/Invoice');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching transaction history:', error);
+    throw error;
+  }
+};

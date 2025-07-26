@@ -374,13 +374,13 @@
   border-radius: 3px;
 }
 
+.dashboardSections .antList::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
 .staffDashboardAntStatisticContent {
   font-size: 24px;
   font-weight: 600;
-}
-
-.dashboardSections .antList::-webkit-scrollbar-thumb:hover {
-  background: #999;
 }
 
 /* Enhanced Class Capacity Styling */
@@ -581,4 +581,95 @@
 
 .tooltipContent {
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* Add these styles at the end of the file */
+.transactionHistoryContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.transactionTable {
+  min-width: 800px;
+}
+
+.invoiceId {
+  font-family: monospace;
+  font-weight: 500;
+}
+
+.amount {
+  font-weight: 600;
+  color: #262626;
+}
+
+/* Custom scrollbar for transaction table */
+.transactionHistoryContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transactionHistoryContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.transactionHistoryContainer::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.transactionHistoryContainer::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Make the transaction card take up full width */
+.sectionCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  width: 100%;
+}
+
+/* Add these styles to your StaffDashboard.module.css file */
+.transactionSearchContainer {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.searchControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .searchControls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Add these styles for the transaction name column */
+.transactionNameCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.transactionName {
+  font-weight: 500;
+  line-height: 1.4;
+  max-height: 2.8em;  /* Allow for 2 lines of text */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.transactionId {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+  font-family: monospace;
 }

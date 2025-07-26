@@ -1,5 +1,5 @@
-/* HomePage.css - Redesigned for preschool theme */
-/* Base styles - keeping the slideshow section unchanged as requested */
+/* HomePage.css - Enhanced for professional preschool theme */
+/* Base styles */
 .homeContainer {
   margin-top: -1px;
   padding-top: 0;
@@ -10,143 +10,69 @@
   font-family: 'Comic Sans MS', 'Bubblegum Sans', 'Nunito', sans-serif;
 }
 
-/* Decorative elements */
-.homeCloud {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 50px;
-  z-index: 4;
+/* Background decorations */
+.backgroundDecoration {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
-.homeCloud::before,
-.homeCloud::after {
-  content: '';
+.floatingShape {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 50%;
+  opacity: 0.1;
 }
 
-.cloud1 {
-  width: 180px;
-  height: 60px;
-  top: 10%;
-  right: 15%;
-  animation: float-cloud 15s linear infinite;
+.shape1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #ffeb3b, transparent 70%);
+  top: -100px;
+  right: -100px;
+  animation: float-shape 20s infinite ease-in-out;
 }
 
-.cloud1::before {
-  width: 70px;
-  height: 70px;
-  top: -35px;
-  left: 35px;
+.shape2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #4caf50, transparent 70%);
+  bottom: -50px;
+  left: -50px;
+  animation: float-shape 15s infinite ease-in-out reverse;
 }
 
-.cloud1::after {
-  width: 60px;
-  height: 60px;
-  top: -30px;
-  right: 35px;
-}
-
-.cloud2 {
-  width: 130px;
-  height: 45px;
-  bottom: 40%;
-  left: 10%;
-  animation: float-cloud 20s linear infinite reverse;
-}
-
-.cloud2::before {
-  width: 55px;
-  height: 55px;
-  top: -30px;
-  left: 25px;
-}
-
-.cloud2::after {
-  width: 45px;
-  height: 45px;
-  top: -25px;
-  right: 25px;
-}
-
-.cloud3 {
-  width: 100px;
-  height: 35px;
-  top: 25%;
-  left: 20%;
-  animation: float-cloud 18s linear infinite;
-}
-
-.cloud3::before {
-  width: 40px;
-  height: 40px;
-  top: -20px;
-  left: 20px;
-}
-
-.cloud3::after {
-  width: 35px;
-  height: 35px;
-  top: -18px;
-  right: 20px;
-}
-
-.homeBalloon {
-  position: absolute;
-  width: 60px;
-  height: 75px;
-  border-radius: 50%;
-  z-index: 4;
-  pointer-events: none;
-}
-
-.balloon1 {
-  background-color: #ff6b6b;
-  top: 15%;
-  right: 30%;
-  animation: float-balloon 8s ease-in-out infinite;
-}
-
-.balloon2 {
-  background-color: #4ecdc4;
+.shape3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #2196f3, transparent 70%);
   top: 30%;
-  left: 5%;
-  animation: float-balloon 12s ease-in-out infinite 1s;
+  left: 10%;
+  animation: float-shape 18s infinite ease-in-out;
+  animation-delay: 5s;
 }
 
-.homeSun {
+.parallaxStars {
   position: absolute;
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle at center, #ffeb3b, #ff9800);
-  border-radius: 50%;
-  top: 5%;
-  right: 5%;
-  box-shadow: 0 0 30px rgba(255, 152, 0, 0.6);
-  z-index: 4;
-  animation: sun-pulse 3s infinite alternate;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='15' cy='15' r='1' fill='%23ffffff99'/%3E%3Ccircle cx='40' cy='30' r='0.5' fill='%23ffffff99'/%3E%3Ccircle cx='70' cy='50' r='1' fill='%23ffffff99'/%3E%3Ccircle cx='30' cy='70' r='0.7' fill='%23ffffff99'/%3E%3Ccircle cx='85' cy='30' r='0.5' fill='%23ffffff99'/%3E%3Ccircle cx='60' cy='80' r='1' fill='%23ffffff99'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  z-index: -1;
 }
 
-@keyframes float-cloud {
-  0% { transform: translateX(-20px); }
-  50% { transform: translateX(20px); }
-  100% { transform: translateX(-20px); }
+@keyframes float-shape {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(10px, -10px) rotate(2deg); }
+  50% { transform: translate(0, -20px) rotate(0deg); }
+  75% { transform: translate(-10px, -10px) rotate(-2deg); }
 }
 
-@keyframes float-balloon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes sun-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 152, 0, 0.6); }
-  100% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 152, 0, 0.8); }
-}
-
-/* Slideshow Banner - Keeping as requested */
+/* Enhanced slideshow styles */
 .homeSlideshowContainer {
   width: 100%;
   height: 600px;
@@ -154,13 +80,14 @@
   overflow: hidden;
   margin-bottom: 0;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .homeSlidesWrapper {
   display: flex;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .homeSlide {
@@ -185,6 +112,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: subtle-zoom 10s infinite alternate ease-in-out;
+}
+
+@keyframes subtle-zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
 }
 
 .homeSlideOverlay {
@@ -193,8 +126,68 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.5)
+  );
   z-index: 2;
+}
+
+/* Add slide content */
+.homeSlideContent {
+  position: relative;
+  z-index: 3;
+  color: white;
+  text-align: center;
+  max-width: 800px;
+  padding: 0 2rem;
+  animation: fade-in-up 1s ease forwards;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.homeSlideTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.5px;
+}
+
+.homeSlideSubtitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 2.5rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.homeSlideButton {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #ff9800;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+
+.homeSlideButton:hover {
+  background-color: #f57c00;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
 .homeSlideArrow {
@@ -272,12 +265,13 @@
   z-index: 5;
 }
 
-/* New preschool-themed content styles */
+/* New home content styles */
 .homeContentContainer {
   position: relative;
   padding: 0;
   max-width: 100%;
   margin: 0 auto;
+  z-index: 2;
   background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="3" fill="%23FFEB3B22"/><circle cx="50" cy="80" r="4" fill="%234CAF5022"/><circle cx="80" cy="40" r="3" fill="%23E91E6322"/><circle cx="40" cy="40" r="2" fill="%232196F322"/></svg>');
 }
 
@@ -285,6 +279,8 @@
 .homeWelcomeSection,
 .homeFeaturesSection,
 .homeStatsSection,
+.homePhilosophySection,
+.homeNewsSection,
 .homeTestimonialsSection,
 .homeCtaSection {
   padding: 5rem 2rem;
@@ -449,9 +445,112 @@
   line-height: 1.8;
   color: #666;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   position: relative;
   z-index: 1;
+}
+
+.welcomeButtonContainer {
+  margin-top: 2.5rem;
+}
+
+.welcomeButton {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(to right, #7048e8, #9c27b0);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 50px;
+  box-shadow: 0 5px 15px rgba(112, 72, 232, 0.3);
+  transition: all 0.3s;
+}
+
+.welcomeButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(112, 72, 232, 0.4);
+}
+
+/* New philosophy section */
+.homePhilosophySection {
+  background-color: #ffffff;
+  position: relative;
+  padding: 7rem 2rem;
+}
+
+.philosophyContainer {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  gap: 3rem;
+  align-items: center;
+}
+
+.philosophyImage {
+  position: relative;
+}
+
+.philosophyImage img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.philosophyImageDecoration {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px dashed #ff9800;
+  border-radius: 20px;
+  top: 15px;
+  left: 15px;
+  z-index: 0;
+}
+
+.philosophyContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.philosophyPoint {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.philosophyIcon {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #7048e8, #9c27b0);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.2);
+}
+
+.philosophyIcon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.philosophyPoint h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.philosophyPoint p {
+  font-size: 1.05rem;
+  color: #666;
+  line-height: 1.6;
 }
 
 /* Features section with colorful cards */
@@ -615,12 +714,14 @@
   text-align: center;
   position: relative;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
   border: 2px dashed #e0e0e0;
 }
 
 .homeStatCard:hover {
   transform: translateY(-10px);
+  border-color: transparent;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .homeStatIcon {
@@ -720,11 +821,132 @@
   background: linear-gradient(to right, #f06292, #f48fb1);
 }
 
-/* Testimonials section */
+/* New News section */
+.homeNewsSection {
+  background-color: #ffffff;
+  padding: 7rem 2rem;
+}
+
+.homeNewsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.homeNewsCard {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  transition: all 0.3s ease;
+}
+
+.homeNewsCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.homeNewsDate {
+  background: linear-gradient(to bottom, #7048e8, #9c27b0);
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.homeNewsMonth {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.homeNewsDay {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.homeNewsContent {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.homeNewsTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+.homeNewsExcerpt {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.homeNewsLink {
+  color: #7048e8;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.homeNewsLink:after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #7048e8;
+  transition: width 0.3s;
+}
+
+.homeNewsLink:hover:after {
+  width: 100%;
+}
+
+.homeNewsViewAll {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.homeNewsViewAllLink {
+  display: inline-flex;
+  align-items: center;
+  color: #7048e8;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.homeNewsViewAllLink svg {
+  margin-left: 8px;
+  transition: transform 0.3s;
+}
+
+.homeNewsViewAllLink:hover {
+  color: #9c27b0;
+}
+
+.homeNewsViewAllLink:hover svg {
+  transform: translateX(5px);
+}
+
+/* Enhanced Testimonials section */
 .homeTestimonialsSection {
   background-color: #ffffff;
   position: relative;
-  padding-top: 7rem;
+  padding: 7rem 2rem 5rem;
 }
 
 .homeTestimonialsSection::before {
@@ -741,33 +963,33 @@
 
 .homeTestimonialsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2.5rem;
 }
 
 .homeTestimonialCard {
   background-color: #fff;
-  padding: 2.5rem;
+  padding: 2.5rem 2rem;
   border-radius: 20px;
   position: relative;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
-  border: 2px solid #f0f0f0;
+  border-top: 5px solid #7048e8;
 }
 
 .homeTestimonialCard:hover {
   transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
-.homeTestimonialCard::before {
-  content: "";
+.testimonialQuoteMark {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 15px;
+  right: 20px;
   font-size: 5rem;
-  line-height: 0;
-  color: rgba(156, 39, 176, 0.1);
   font-family: Georgia, serif;
+  color: rgba(156, 39, 176, 0.1);
+  line-height: 0;
 }
 
 .homeTestimonialQuote {
@@ -782,8 +1004,26 @@
 
 .homeTestimonialAuthor {
   display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.homeTestimonialAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7048e8, #9c27b0);
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homeTestimonialInfo {
+  display: flex;
   flex-direction: column;
-  gap: 0.3rem;
 }
 
 .homeTestimonialName {
@@ -804,12 +1044,12 @@
 }
 
 .homeCtaBackground {
-  background: linear-gradient(to right, #ff9800, #f44336);
+  background: linear-gradient(to right, #7048e8, #9c27b0);
   border-radius: 30px;
   padding: 5rem 2rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(255, 152, 0, 0.2);
+  box-shadow: 0 20px 40px rgba(112, 72, 232, 0.2);
 }
 
 .homeCtaBackground::before {
@@ -907,7 +1147,7 @@
 
 .homeCtaButton.primary {
   background-color: white;
-  color: #ff9800;
+  color: #7048e8;
 }
 
 .homeCtaButton.primary:hover {
@@ -937,6 +1177,17 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 992px) {
+  .philosophyContainer {
+    grid-template-columns: 1fr;
+  }
+  
+  .philosophyImage {
+    margin: 0 auto;
+    max-width: 500px;
+  }
+}
+
 @media (max-width: 768px) {
   .homeMainTitle {
     font-size: 2.5rem;
@@ -965,6 +1216,8 @@
   .homeWelcomeSection,
   .homeFeaturesSection,
   .homeStatsSection,
+  .homePhilosophySection,
+  .homeNewsSection,
   .homeTestimonialsSection,
   .homeCtaSection {
     padding: 3rem 1.5rem;
@@ -975,12 +1228,16 @@
     padding: 2rem 1.5rem;
   }
   
-  .homeCloud, .homeBalloon, .homeSun {
-    display: none;
+  .homeSlideTitle {
+    font-size: 2.5rem;
+  }
+  
+  .homeSlideSubtitle {
+    font-size: 1.2rem;
   }
   
   .homeSlideshowContainer {
-    height: 400px;
+    height: 500px;
   }
 }
 
@@ -993,15 +1250,88 @@
     font-size: 1.2rem;
   }
   
-  .homeCardGrid {
+  .homeCardGrid,
+  .homeNewsGrid {
     grid-template-columns: 1fr;
   }
   
   .homeSlideshowContainer {
-    height: 300px;
+    height: 400px;
   }
   
   .homeWelcomeSection {
     border-radius: 0 0 25% 25% / 50px;
   }
+  
+  .homeSlideTitle {
+    font-size: 2rem;
+  }
+  
+  .homeSlideSubtitle {
+    font-size: 1rem;
+  }
+}
+
+.homeNewsThumbnail {
+  width: 100%;
+  height: 160px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.homeNewsThumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.homeNewsCard:hover .homeNewsThumbnail img {
+  transform: scale(1.05);
+}
+
+.newsLoading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.noNews {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Update the news card layout */
+.homeNewsCard {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  transition: all 0.3s ease;
+}
+
+.homeNewsContent {
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.homeNewsTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 2.8em;
 }

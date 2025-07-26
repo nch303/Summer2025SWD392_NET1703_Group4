@@ -36,7 +36,9 @@ const TeacherDashboard = () => {
   const [syllabi, setSyllabi] = useState([]);
   const [studentsByClass, setStudentsByClass] = useState({});
   const [genderDistribution, setGenderDistribution] = useState({ male: 0, female: 0 });
-
+  const [classSyllabi, setClassSyllabi] = useState([]);
+  const { currentUser } = useContext(UserContext);
+  
   // Load data on component mount
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -84,6 +86,24 @@ const TeacherDashboard = () => {
           absent: Math.floor(studentsCount * 0.10),
           late: Math.floor(studentsCount * 0.05)
         });
+
+        // Extract unique syllabi from the classes
+        const uniqueSyllabi = [];
+        const syllabusIds = new Set();
+        
+        classesData.forEach(cls => {
+          if (cls.syllabusID && !syllabusIds.has(cls.syllabusID)) {
+            syllabusIds.add(cls.syllabusID);
+            uniqueSyllabi.push({
+              id: cls.syllabusID,
+              name: cls.syllabusName,
+              className: cls.name,
+              classId: cls.id
+            });
+          }
+        });
+        
+        setClassSyllabi(uniqueSyllabi);
 
         setLoading(false);
       } catch (error) {
@@ -294,7 +314,7 @@ const TeacherDashboard = () => {
       {/* Charts & Analytics Section */}
       <h3 className={styles.sectionTitle}>Analytics & Insights</h3>
       <Row gutter={[24, 24]} className={styles.chartsSection}>
-        <Col xs={24} md={12} lg={8}>
+        <Col xs={24} md={24} lg={12}>
           <Card title="Today's Attendance" className={styles.chartCard}>
             <div className={styles.chartContainer}>
               <Pie data={attendanceChartData} />
@@ -311,7 +331,7 @@ const TeacherDashboard = () => {
             </div>
           </Card>
         </Col>
-        <Col xs={24} md={12} lg={8}>
+        <Col xs={24} md={24} lg={12}>
           <Card title="Gender Distribution" className={styles.chartCard}>
             <div className={styles.chartContainer}>
               <Pie data={genderChartData} />
@@ -325,22 +345,6 @@ const TeacherDashboard = () => {
                 <span className={styles.legendDot} style={{ backgroundColor: '#e91e63' }}></span>
                 <span>Female: {genderDistribution.female} students</span>
               </div>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} lg={8}>
-          <Card title="Weekly Progress" className={styles.chartCard}>
-            <div className={styles.chartContainer}>
-              <Line
-                data={weeklyProgressData}
-                options={{
-                  scales: {
-                    y: {
-                      beginAtZero: true
-                    }
-                  }
-                }}
-              />
             </div>
           </Card>
         </Col>
@@ -421,25 +425,19 @@ const TeacherDashboard = () => {
       <Row gutter={[24, 24]} className={styles.upcomingSection}>
         <Col xs={24}>
           <Card title="Teaching Program Progress" className={styles.programsCard}>
-            {syllabi.length > 0 ? (
+            {classSyllabi.length > 0 ? (
               <Row gutter={[16, 16]}>
-                {syllabi.slice(0, 4).map((program) => (
+                {classSyllabi.map((program) => (
                   <Col xs={24} sm={12} md={6} key={program.id}>
                     <Card className={styles.programProgressCard}>
-                      <h4>{program.title || program.name || `Program ${program.id}`}</h4>
-                      <Progress
-                        percent={program.progress || Math.floor(Math.random() * 100)}
-                        status={program.status === 'Completed' ? 'success' : 'active'}
-                      />
+                      <h4>Syllabus: {program.name || `Program ${program.id}`}</h4>
                       <div className={styles.programDetails}>
-                        <span>{program.description || 'Teaching program for students'}</span>
-                        {program.deadline && (
-                          <div className={styles.programDeadline}>
-                            <ClockCircleOutlined /> Deadline: {program.deadline}
-                          </div>
-                        )}
+                        <span>Class: {program.className}</span>
                       </div>
-                      <Button type="link" onClick={() => navigate(`/teacher/syllabus/${program.id}`)}>
+                      <Button 
+                        type="link" 
+                        onClick={() => navigate(`/teacher/syllabus?syllabusId=${program.id}&openDrawer=true`)}
+                      >
                         View Content
                       </Button>
                     </Card>
@@ -449,7 +447,9 @@ const TeacherDashboard = () => {
             ) : (
               <div className={styles.emptyState}>
                 <p>No active teaching programs found.</p>
-                <Button type="primary">Browse Programs</Button>
+                <Button type="primary" onClick={() => navigate('/teacher/syllabus')}>
+                  Browse Programs
+                </Button>
               </div>
             )}
           </Card>

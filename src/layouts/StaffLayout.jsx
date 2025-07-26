@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import Sidebar from '../components/Sidebar';
+import siderbarStyles from '../components/Sidebar.module.css';
 import PageLoadingScreen from '../components/PageLoadingScreen';
 import styles from './StaffLayout.module.css';
 
@@ -11,7 +12,7 @@ const StaffLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className={`${styles.staffLayout} ${isSidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
+    <div className={`${styles.staffLayout} ${isSidebarCollapsed ? siderbarStyles.sidebarCollapsed : ''}`}>
       <Navbar />
       <div className={styles.staffContainer}>
         <Sidebar

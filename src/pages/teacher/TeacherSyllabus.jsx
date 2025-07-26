@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Card, Table, Button, Space, Tag,
   Tooltip, Empty, Spin, Tabs, Avatar, Dropdown,
@@ -26,6 +27,10 @@ const TeacherSyllabus = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
 
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchSyllabi = async () => {
       try {
@@ -42,6 +47,59 @@ const TeacherSyllabus = () => {
 
     fetchSyllabi();
   }, []);
+
+  useEffect(() => {
+    const syllabusId = searchParams.get('syllabusId');
+    const openDrawer = searchParams.get('openDrawer') === 'true';
+    
+    let checkInterval = null;
+    let checkTimeout = null;
+    
+    if (syllabusId && openDrawer) {
+      const syllabus = syllabi.find(s => s.id === parseInt(syllabusId));
+      if (syllabus) {
+        showSyllabusDetail(syllabus);
+        // Clear URL parameters after opening the drawer
+        navigate('/teacher/syllabus', { replace: true });
+      } else if (syllabi.length > 0) {
+        // If we have syllabi but didn't find the one we want
+        navigate('/teacher/syllabus', { replace: true });
+      } else {
+        // If syllabi are not loaded yet, check again when they are
+        checkInterval = setInterval(() => {
+          const foundSyllabus = syllabi.find(s => s.id === parseInt(syllabusId));
+          if (foundSyllabus) {
+            showSyllabusDetail(foundSyllabus);
+            clearInterval(checkInterval);
+            // Clear URL parameters after opening the drawer
+            navigate('/teacher/syllabus', { replace: true });
+          } else if (syllabi.length > 0) {
+            // If we have syllabi but didn't find the one we want
+            clearInterval(checkInterval);
+            navigate('/teacher/syllabus', { replace: true });
+          }
+        }, 500);
+        
+        // Clear interval after 5 seconds if syllabus not found
+        checkTimeout = setTimeout(() => {
+          if (checkInterval) {
+            clearInterval(checkInterval);
+          }
+          navigate('/teacher/syllabus', { replace: true });
+        }, 5000);
+      }
+    }
+    
+    // Cleanup function to prevent memory leaks and unexpected behaviors
+    return () => {
+      if (checkInterval) {
+        clearInterval(checkInterval);
+      }
+      if (checkTimeout) {
+        clearTimeout(checkTimeout);
+      }
+    };
+  }, [syllabi, searchParams, navigate]);
 
   const handleSearch = (value) => {
     setSearchValue(value);
@@ -70,6 +128,12 @@ const TeacherSyllabus = () => {
     setDrawerVisible(false);
     setSelectedSyllabus(null);
     setSyllabusSlots([]);
+    
+    // Make sure we're on the clean URL
+    const currentPath = window.location.pathname;
+    if (currentPath === '/teacher/syllabus' && window.location.search) {
+      navigate('/teacher/syllabus', { replace: true });
+    }
   };
 
   // Mô phỏng dữ liệu giáo trình đã gán
@@ -323,24 +387,6 @@ const TeacherSyllabus = () => {
         </>
       )
     },
-    {
-      key: 'assigned',
-      label: (
-        <span>
-          <CheckCircleOutlined />
-          Assigned syllabi
-        </span>
-      ),
-      children: (
-        <Table
-          columns={assignedColumns}
-          dataSource={assignedSyllabi}
-          rowKey="id"
-          pagination={{ pageSize: 10 }}
-          className={styles.syllabiTable}
-        />
-      )
-    }
   ];
 
   return (
@@ -365,43 +411,6 @@ const TeacherSyllabus = () => {
               style={{ width: 300 }}
             />
 
-            <Dropdown menu={{
-              items: [
-                {
-                  key: '1',
-                  label: 'All syllabi',
-                },
-                {
-                  key: '2',
-                  label: 'Newest',
-                },
-                {
-                  key: '3',
-                  label: 'Most popular',
-                },
-              ],
-            }} trigger={['click']}>
-              <Button icon={<FilterOutlined />}>
-                Filter
-              </Button>
-            </Dropdown>
-
-            <Dropdown menu={{
-              items: [
-                {
-                  key: '1',
-                  label: 'Name (A-Z)',
-                },
-                {
-                  key: '2',
-                  label: 'Name (Z-A)',
-                },
-              ],
-            }} trigger={['click']}>
-              <Button icon={<SortAscendingOutlined />}>
-                Sort
-              </Button>
-            </Dropdown>
           </div>
         </div>
       </div>

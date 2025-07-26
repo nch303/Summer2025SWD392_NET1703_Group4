@@ -141,6 +141,19 @@ export const getAllProgramTypes = async () => {
   }
 };
 
+export const createProgramType = async (typeName) => {
+  try {
+    const response = await api.post('/api/TypeProgram/CreateTypeProgram', null, {
+      params: {
+        typeName: typeName
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating program type:', error);
+    throw error;
+  }
+};
 // ==================== ACCOUNT SERVICES ====================
 
 export const fetchPaginatedAccounts = async (pageNumber = 1, pageSize = 10) => {
@@ -779,6 +792,39 @@ export const updateNewsStatus = async (id, status) => {
     return response.data;
   } catch (error) {
     console.error('Error updating news status:', error);
+    throw error;
+  }
+}; 
+
+/**
+ * Get all transaction history
+ * @returns {Promise<Array>} List of transactions/invoices
+ */
+export const getTransactionHistory = async () => {
+  try {
+    const response = await api.get('/api/Invoice');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching transaction history:', error);
+    throw error;
+  }
+}; 
+
+// Add these functions to the existing file
+
+// Update grade level fee - corrected to use query parameters
+export const updateGradeLevel = async (gradeLevelData) => {
+  try {
+    const response = await api.put('/api/GradeLevel/update-grade-level', null, {
+      params: {
+        id: gradeLevelData.id,
+        name: gradeLevelData.name,
+        fee: gradeLevelData.fee
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating grade level:', error);
     throw error;
   }
 }; 

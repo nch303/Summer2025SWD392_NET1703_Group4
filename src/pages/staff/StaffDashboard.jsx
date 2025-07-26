@@ -2,17 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Card, Row, Col, Statistic, Button, Spin, Avatar,
-  List, Tag, Badge, Empty, Tooltip,
+  List, Tag, Badge, Empty, Tooltip, Table, Input, DatePicker, Select, Space,
   AppstoreOutlined, TeamOutlined, UserOutlined,
   FormOutlined, BookOutlined, CalendarOutlined, BarChartOutlined,
-  ProfileOutlined
+  ProfileOutlined, DollarOutlined, SearchOutlined, FilterOutlined
 } from '../../utils/AntComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './StaffDashboard.module.css';
 import {
   getAllClasses, getAllApplications,
-  getAllChildren, getAllTeachers
+  getAllChildren, getAllTeachers, getTransactionHistory
 } from '../../services/StaffService';
+
+const { Search } = Input;
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 const StaffDashboard = () => {
   const navigate = useNavigate();
@@ -27,6 +31,11 @@ const StaffDashboard = () => {
   });
   const [recentApplications, setRecentApplications] = useState([]);
   const [classesByCapacity, setClassesByCapacity] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
+  const [dateRange, setDateRange] = useState(null);
 
   useEffect(() => {
     fetchDashboardData();
@@ -36,11 +45,12 @@ const StaffDashboard = () => {
     setLoading(true);
     try {
       // Fetch all required data in parallel
-      const [classesData, applicationsData, childrenData, teachersData] = await Promise.all([
+      const [classesData, applicationsData, childrenData, teachersData, transactionsData] = await Promise.all([
         getAllClasses(),
         getAllApplications(),
         getAllChildren(),
-        getAllTeachers()
+        getAllTeachers(),
+        getTransactionHistory()
       ]);
 
       // Process classes data
@@ -65,6 +75,10 @@ const StaffDashboard = () => {
         .sort((a, b) => new Date(b.applicationDate) - new Date(a.applicationDate))
         .slice(0, 5);
 
+      // Get all transactions and sort by date (newest first)
+      const allTransactions = transactionsData
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
       // Update state with all data
       setStats({
         totalClasses: activeClasses.length,
@@ -77,6 +91,8 @@ const StaffDashboard = () => {
 
       setRecentApplications(recentApps);
       setClassesByCapacity(sortedClasses);
+      setTransactions(allTransactions);
+      setFilteredTransactions(allTransactions);
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -89,6 +105,61 @@ const StaffDashboard = () => {
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('vi-VN', options);
+  };
+
+  // Search and filtering functionality
+  const handleSearch = (value) => {
+    setSearchText(value);
+    filterTransactions(value, filterStatus, dateRange);
+  };
+
+  const handleStatusChange = (value) => {
+    setFilterStatus(value);
+    filterTransactions(searchText, value, dateRange);
+  };
+
+  const handleDateChange = (dates) => {
+    setDateRange(dates);
+    filterTransactions(searchText, filterStatus, dates);
+  };
+
+  const filterTransactions = (text, status, dates) => {
+    let result = [...transactions];
+
+    // Filter by search text
+    if (text) {
+      result = result.filter(
+        item =>
+          (item.id && item.id.toString().toLowerCase().includes(text.toLowerCase())) ||
+          (item.name && item.name.toLowerCase().includes(text.toLowerCase())) ||
+          (item.parentName && item.parentName.toLowerCase().includes(text.toLowerCase())) ||
+          (item.childrenName && item.childrenName.toLowerCase().includes(text.toLowerCase()))
+      );
+    }
+
+    // Filter by status
+    if (status !== 'All') {
+      result = result.filter(item => item.status === status);
+    }
+
+    // Filter by date range
+    if (dates && dates.length === 2) {
+      const startDate = dates[0].startOf('day');
+      const endDate = dates[1].endOf('day');
+      result = result.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+    }
+
+    setFilteredTransactions(result);
+  };
+
+  const resetFilters = () => {
+    setSearchText('');
+    setFilterStatus('All');
+    setDateRange(null);
+    setFilteredTransactions(transactions);
   };
 
   // Navigation shortcuts
@@ -370,6 +441,129 @@ const StaffDashboard = () => {
             </Card>
           </Col>
         </Row>
+
+        {/* Transaction History Section - Full list with pagination and search */}
+        <Card
+          title={
+            <span className={styles.sectionTitle}>
+              <DollarOutlined /> Transaction History
+            </span>
+          }
+          variant="borderless"
+          className={styles.sectionCard}
+        >
+          <div className={styles.transactionSearchContainer}>
+            <div className={styles.searchControls}>
+              <Space wrap>
+                <Search
+                  placeholder="Search transactions..."
+                  allowClear
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onSearch={handleSearch}
+                  style={{ width: 250 }}
+                />
+                <Select
+                  value={filterStatus}
+                  onChange={handleStatusChange}
+                  style={{ width: 120 }}
+                >
+                  <Option value="All">All Status</Option>
+                  <Option value="Success">Success</Option>
+                  <Option value="Failed">Failed</Option>
+                  <Option value="Refunded">Refunded</Option>
+                </Select>
+                <RangePicker 
+                  value={dateRange} 
+                  onChange={handleDateChange}
+                  format="DD/MM/YYYY"
+                />
+                <Button onClick={resetFilters} icon={<FilterOutlined />}>
+                  Reset
+                </Button>
+              </Space>
+            </div>
+          </div>
+
+          {filteredTransactions.length > 0 ? (
+            <div className={styles.transactionHistoryContainer}>
+              <Table
+                dataSource={filteredTransactions}
+                rowKey="id"
+                pagination={{
+                  pageSize: 10,
+                  showSizeChanger: true,
+                  pageSizeOptions: ['10', '20', '50'],
+                  showTotal: (total) => `Total ${total} transactions`,
+                }}
+                size="small"
+                className={styles.transactionTable}
+                columns={[
+                  {
+                    title: 'Transaction Name',
+                    dataIndex: 'name',
+                    key: 'name',
+                    ellipsis: false,
+                    width: '25%',
+                    render: (name, record) => (
+                      <div className={styles.transactionNameCell}>
+                        <div className={styles.transactionName}>{name}</div>
+                        <div className={styles.transactionId}>ID: {record.id}</div>
+                      </div>
+                    )
+                  },
+                  {
+                    title: 'Parent',
+                    dataIndex: 'parentName',
+                    key: 'parentName',
+                    ellipsis: true,
+                  },
+                  {
+                    title: 'Child',
+                    dataIndex: 'childrenName',
+                    key: 'childrenName',
+                    ellipsis: true,
+                  },
+                  {
+                    title: 'Amount',
+                    dataIndex: 'amount',
+                    key: 'amount',
+                    render: amount => <span className={styles.amount}>{amount.toLocaleString()} VND</span>,
+                  },
+                  {
+                    title: 'Status',
+                    dataIndex: 'status',
+                    key: 'status',
+                    render: status => (
+                      <Tag color={
+                        status === 'Success' ? 'green' :
+                        status === 'Failed' ? 'red' :
+                        status === 'Refunded' ? 'orange' : 'blue'
+                      }>
+                        {status}
+                      </Tag>
+                    ),
+                    filters: [
+                      { text: 'Success', value: 'Success' },
+                      { text: 'Failed', value: 'Failed' },
+                      { text: 'Refunded', value: 'Refunded' },
+                    ],
+                    onFilter: (value, record) => record.status === value,
+                  },
+                  {
+                    title: 'Date',
+                    dataIndex: 'date',
+                    key: 'date',
+                    render: date => formatDate(date),
+                    sorter: (a, b) => new Date(a.date) - new Date(b.date),
+                  },
+                ]}
+              />
+            </div>
+          ) : (
+            <Empty description="No transaction data matching your search" />
+          )}
+        </Card>
 
         {/* Todo list and notifications section */}
         <Row gutter={[24, 24]} className={styles.dashboardSections}>

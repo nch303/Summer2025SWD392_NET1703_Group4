@@ -79,6 +79,12 @@ const ClassManagement = () => {
   const [restoringClass, setRestoringClass] = useState(null);
   const [restoreLoading, setRestoreLoading] = useState(false);
 
+  // Add these state variables for program type creation
+  const [programTypeModalVisible, setProgramTypeModalVisible] = useState(false);
+  const [programTypeForm] = Form.useForm();
+  const [programTypeLoading, setProgramTypeLoading] = useState(false);
+  const [programTypes, setProgramTypes] = useState([]);
+
   // Add this state near the top with other state declarations
   const [classTypeSelection, setClassTypeSelection] = useState(null); // 'grade' or 'enrichment' or null
 

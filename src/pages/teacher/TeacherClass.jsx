@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card, Row, Col, Tag, Empty, Input,
-  Segmented, Button, Progress, Tabs, Skeleton, Avatar, Dropdown,
+  Segmented, Button, Progress, Tabs, Skeleton, Avatar, Dropdown, Select,
   Title, Text, Search,
   TeamOutlined, ReadOutlined, BookOutlined, SearchOutlined,
   AppstoreOutlined, UnorderedListOutlined, FilterOutlined,
   EllipsisOutlined, FileTextOutlined, UserOutlined, CalendarOutlined,
-  PieChartOutlined
+  PieChartOutlined, LeftOutlined, RightOutlined
 } from '../../utils/AntComponents';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { getClassesByTeacherId, getStatusColor } from '../../services/TeacherService';
 import styles from './TeacherClass.module.css';
+
+const { Option } = Select;
 
 const TeacherClass = () => {
   const [classes, setClasses] = useState([]);
@@ -19,14 +21,35 @@ const TeacherClass = () => {
   const [loading, setLoading] = useState(true);
   const [viewType, setViewType] = useState('grid');
   const [searchValue, setSearchValue] = useState('');
+  const [academicYears, setAcademicYears] = useState(['all']);
+  const [selectedYearIndex, setSelectedYearIndex] = useState(0); // Track index instead of value
   const { currentUser } = useUser();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
+  // Update the useEffect that extracts academic years
   useEffect(() => {
     const fetchClasses = async () => {
       try {
         if (currentUser?.id) {
           const data = await getClassesByTeacherId(currentUser.id);
           setClasses(data);
+          
+          // Extract unique academic years
+          const years = extractAcademicYears(data);
+          setAcademicYears(years);
+          
+          // Set default to current academic year
+          const currentYear = getCurrentAcademicYear();
+          const currentYearIndex = years.indexOf(currentYear);
+          
+          // If current year exists in the list, select it
+          if (currentYearIndex !== -1) {
+            setSelectedYearIndex(currentYearIndex);
+          }
+          
+          // Set filtered classes
           setFilteredClasses(data);
         }
       } catch (error) {
@@ -38,18 +61,79 @@ const TeacherClass = () => {
 
     fetchClasses();
   }, [currentUser]);
+  
+  // Extract academic years from classes
+  const extractAcademicYears = (classList) => {
+    const yearsSet = new Set();
+    
+    classList.forEach(classItem => {
+      // Extract academic year from the class data
+      const year = classItem.academicYear || getCurrentAcademicYear();
+      yearsSet.add(year);
+    });
+    
+    // Sort years but don't add "all" option
+    return Array.from(yearsSet).sort();
+  };
+  
+  // Get current academic year
+  const getCurrentAcademicYear = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1; // JavaScript months are 0-based
+    
+    // Academic year typically starts in September
+    return month >= 9 ? `${year}-${year + 1}` : `${year - 1}-${year}`;
+  };
+
+  // Combined filter function
+  const applyFilters = () => {
+    let result = [...classes];
+    
+    // Apply search filter
+    if (searchValue) {
+      result = result.filter(classItem =>
+        classItem.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        (classItem.syllabusName && classItem.syllabusName.toLowerCase().includes(searchValue.toLowerCase())) ||
+        (classItem.gradeLevelName && classItem.gradeLevelName.toLowerCase().includes(searchValue.toLowerCase()))
+      );
+    }
+    
+    // Apply academic year filter if there are years available
+    if (academicYears.length > 0 && selectedYearIndex >= 0 && selectedYearIndex < academicYears.length) {
+      const selectedYear = academicYears[selectedYearIndex];
+      result = result.filter(classItem => {
+        const classYear = classItem.academicYear || getCurrentAcademicYear();
+        return classYear === selectedYear;
+      });
+    }
+    
+    setFilteredClasses(result);
+  };
+
+  // Navigation functions for academic year
+  const goToPreviousYear = () => {
+    if (selectedYearIndex > 0) {
+      setSelectedYearIndex(selectedYearIndex - 1);
+    }
+  };
+
+  const goToNextYear = () => {
+    if (selectedYearIndex < academicYears.length - 1) {
+      setSelectedYearIndex(selectedYearIndex + 1);
+    }
+  };
+
+  // Update filters when dependencies change
+  useEffect(() => {
+    applyFilters();
+  }, [selectedYearIndex, searchValue, classes]);
 
   // Hàm tìm kiếm/lọc lớp học
   const handleSearch = (value) => {
     setSearchValue(value);
-    const filtered = classes.filter(classItem =>
-      classItem.name.toLowerCase().includes(value.toLowerCase()) ||
-      classItem.syllabusName.toLowerCase().includes(value.toLowerCase()) ||
-      classItem.gradeLevelName.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredClasses(filtered);
   };
-
+  
   // Render skeleton loading
   const renderSkeletons = () => {
     return Array(6).fill().map((_, index) => (
@@ -66,28 +150,23 @@ const TeacherClass = () => {
   const activeClasses = classes.filter(c => c.status === 'Available').length;
 
   // Menu cho các actions
-  const moreMenu = (classId) => {
+  const moreMenu = (classItem) => {
     return {
       items: [
         {
           key: '1',
-          label: <Link to={`/teacher/classes/${classId}`}>View class details</Link>,
+          label: <Link to={`/teacher/classes/${classItem.id}`}>View class details</Link>,
           icon: <TeamOutlined />,
         },
         {
           key: '2',
-          label: <span>View syllabus</span>,
+          label: <Link to={`/teacher/syllabus?syllabusId=${classItem.syllabusID || classItem.syllabusId}&openDrawer=true`}>View syllabus</Link>,
           icon: <BookOutlined />,
         },
         {
           key: '3',
-          label: <Link to={`/teacher/classes/${classId}/view-all-attendance`}>Attendance history</Link>,
+          label: <Link to={`/teacher/classes/${classItem.id}/view-all-attendance`}>Attendance history</Link>,
           icon: <FileTextOutlined />,
-        },
-        {
-          key: '4',
-          label: <span>Progress report</span>,
-          icon: <PieChartOutlined />,
         },
       ],
     };
@@ -110,7 +189,7 @@ const TeacherClass = () => {
                 <FileTextOutlined />
                 <Text>Attendance</Text>
               </Link>,
-              <Dropdown menu={moreMenu(classItem.id)} trigger={['click']}>
+              <Dropdown menu={moreMenu(classItem)} trigger={['click']}>
                 <Button type="text">
                   <EllipsisOutlined />
                 </Button>
@@ -301,16 +380,6 @@ const TeacherClass = () => {
         renderEmpty() :
         (viewType === 'grid' ? renderGridView() : renderListView())
     },
-    {
-      key: 'active',
-      label: 'Active classes',
-      children: null // Replace with actual content when needed
-    },
-    {
-      key: 'full',
-      label: 'Full classes',
-      children: null // Replace with actual content when needed
-    }
   ];
 
   return (
@@ -332,23 +401,34 @@ const TeacherClass = () => {
                 enterButton={<SearchOutlined />}
                 size="large"
                 onSearch={handleSearch}
-                onChange={e => handleSearch(e.target.value)}
+                onChange={e => setSearchValue(e.target.value)}
                 style={{ width: 300 }}
               />
+              
+              <div className={styles.academicYearNavigator}>
+                <Button 
+                  icon={<LeftOutlined />} 
+                  onClick={goToPreviousYear}
+                  disabled={selectedYearIndex === 0}
+                  className={styles.yearNavButton}
+                />
+                <div className={styles.yearDisplay}>
+                  {academicYears.length > 0 && selectedYearIndex >= 0 && selectedYearIndex < academicYears.length ? 
+                    academicYears[selectedYearIndex] : 'No academic years'}
+                </div>
+                <Button 
+                  icon={<RightOutlined />} 
+                  onClick={goToNextYear}
+                  disabled={selectedYearIndex === academicYears.length - 1}
+                  className={styles.yearNavButton}
+                />
+              </div>
 
               <Dropdown menu={{
                 items: [
                   {
                     key: '1',
                     label: 'All classes',
-                  },
-                  {
-                    key: '2',
-                    label: 'Active classes',
-                  },
-                  {
-                    key: '3',
-                    label: 'Full classes',
                   },
                 ],
               }} trigger={['click']}>
